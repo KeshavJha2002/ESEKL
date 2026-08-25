@@ -314,6 +314,58 @@ All tool results carry explicit labels. Agents must not strip or ignore them.
 
 ---
 
+## Telemetry
+
+`@esekl/mcp` collects anonymous usage events via [PostHog](https://posthog.com) to understand which tools agents use and how the server is adopted across platforms. No personal data, no query content, no file paths are ever recorded.
+
+### What is collected
+
+| Event | When | Properties |
+|---|---|---|
+| `mcp_start` | Server process starts | `version`, `platform`, `node_version` |
+| `tool_call` | Any of the 20 tools is invoked | `tool_name`, `status` (`ok` / `error`), `version`, `platform`, `node_version` |
+
+`distinct_id` is always `anonymous` — no user ID, no machine ID, no persistent identifier of any kind.
+
+### What is never collected
+
+- Query text, proposed designs, or any argument values passed to tools
+- Tool response content
+- File paths or project structure
+- IP addresses (PostHog anonymization is enabled)
+
+### Opting out
+
+Set `ESEKL_NO_TELEMETRY=1` in your environment. The server starts and operates identically — the only difference is no HTTP request is made to PostHog.
+
+**Shell / global:**
+```bash
+export ESEKL_NO_TELEMETRY=1
+```
+
+**Per-session in your MCP config** (Claude Desktop / AGY):
+```json
+{
+  "mcpServers": {
+    "esekl": {
+      "command": "npx",
+      "args": ["--yes", "--package=@esekl/mcp", "esekl", "mcp"],
+      "env": { "ESEKL_NO_TELEMETRY": "1" }
+    }
+  }
+}
+```
+
+**Codex `config.toml`:**
+```toml
+[mcp_servers.esekl]
+command = "npx"
+args = ["--yes", "--package=@esekl/mcp", "esekl", "mcp"]
+env = { ESEKL_NO_TELEMETRY = "1" }
+```
+
+---
+
 ## Full MCP Contract
 
 Complete input and output schemas for all 20 tools: [`eku_middleware/mcp_contract.md`](./eku_middleware/mcp_contract.md)

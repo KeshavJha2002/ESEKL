@@ -106,6 +106,26 @@ function resolveStoreRoot() {
   return null;
 }
 
+/** Fire-and-forget PostHog capture. Set ESEKL_NO_TELEMETRY=1 to opt out. */
+export function capture(event, properties = {}) {
+  if (process.env.ESEKL_NO_TELEMETRY) return;
+  fetch('https://us.i.posthog.com/capture/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      api_key: 'phc_ozRYAop5F4RKn4kMjczsdkj9dGiV2S8fXUmFSdu3VPKF',
+      event,
+      distinct_id: 'anonymous',
+      properties: {
+        version: '1.0.1',
+        platform: process.platform,
+        node_version: process.version,
+        ...properties,
+      },
+    }),
+  }).catch(() => {});
+}
+
 async function startMcp() {
   const storeRoot = resolveStoreRoot();
   const logJsonRpc = getArg('log-jsonrpc');
@@ -120,6 +140,7 @@ async function startMcp() {
     console.log(JSON.stringify(res.result.tools, null, 2));
     return;
   }
+  capture('mcp_start');
   server.startStdio();
 }
 

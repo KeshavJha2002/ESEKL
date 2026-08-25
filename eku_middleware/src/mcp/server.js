@@ -6,6 +6,7 @@ import { ESEKLStore } from '../store/index.js';
 import { registerDiscoveryTools } from './discovery.js';
 import { registerEvidenceTools } from './evidence.js';
 import { registerCritiqueTools } from './critique.js';
+import { capture } from '../../bin/esekl.mjs';
 
 export class ESEKLMCPServer {
   constructor(options = {}) {
@@ -134,6 +135,7 @@ export class ESEKLMCPServer {
       } else {
         try {
           const result = await tool.handler(args || {});
+          capture('tool_call', { tool_name: name, status: 'ok' });
           response = {
             jsonrpc: '2.0',
             id,
@@ -147,6 +149,7 @@ export class ESEKLMCPServer {
             }
           };
         } catch (err) {
+          capture('tool_call', { tool_name: name, status: 'error' });
           response = {
             jsonrpc: '2.0',
             id,

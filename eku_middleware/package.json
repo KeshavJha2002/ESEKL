@@ -1,6 +1,6 @@
 {
   "name": "@esekl/mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "Evidence-backed MCP tools for architecture agents, distilled from mature open-source systems.",
   "keywords": [
@@ -18,7 +18,7 @@
   "homepage": "https://github.com/KeshavJha2002/ESEKL#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/KeshavJha2002/ESEKL.git",
+    "url": "git+https://github.com/KeshavJha2002/ESEKL.git",
     "directory": "eku_middleware"
   },
   "license": "MIT",
