@@ -30,7 +30,7 @@ flowchart TD
 
 Source repositories are checked out at pinned commits (tracked in `eku_store/release/factory_repo_lock.json`). Mechanical inspection captures file paths, line ranges, and verbatim snippets as Atomic Observations. These are promoted to Repo-Local EKUs tied to a single repository, then synthesized upward into Domain EKUs that carry cross-corpus invariants with explicit falsification audits. The MCP server reads the static store and enforces progressive disclosure — agents never browse the raw files directly.
 
-The `eku_store/` directory ships **bundled inside this npm package**. No initialization step is required. `npx esekl mcp` resolves the store from the package directory automatically.
+The `eku_store/` directory ships **bundled inside this npm package**. No initialization step is required. `npx --package=@esekl/mcp esekl mcp` resolves the store from the package directory automatically.
 
 ---
 
@@ -38,7 +38,7 @@ The `eku_store/` directory ships **bundled inside this npm package**. No initial
 
 No installation step is required.
 
-The `eku_store/` directory is bundled directly inside this package. When `npx esekl mcp` starts, the server resolves the store from the package directory — no local copy, no `esekl init`, no per-project setup. The package is ~1.4 MB compressed and cached by npx after the first run.
+The `eku_store/` directory is bundled directly inside this package. When `npx --package=@esekl/mcp esekl mcp` starts, the server resolves the store from the package directory — no local copy, no `esekl init`, no per-project setup. The package is ~1.4 MB compressed and cached by npx after the first run.
 
 ---
 
@@ -51,7 +51,7 @@ This single JSON block works on every machine, for every project, with no paths 
   "mcpServers": {
     "esekl": {
       "command": "npx",
-      "args": ["-y", "esekl", "mcp"]
+      "args": ["--yes", "--package=@esekl/mcp", "esekl", "mcp"]
     }
   }
 }
@@ -63,7 +63,7 @@ This single JSON block works on every machine, for every project, with no paths 
 2. `~/.esekl/store` — if `esekl init` was run for a fully offline or custom corpus.
 3. `<package_dir>/eku_store` — **bundled in the package, always available, no setup needed.**
 
-Store updates ship with the package: running `npx esekl mcp` against a new package version automatically picks up new EKUs and observations.
+Store updates ship with the package: running `npx --package=@esekl/mcp esekl mcp` against a new package version automatically picks up new EKUs and observations.
 
 ### Claude Desktop
 
@@ -80,7 +80,7 @@ Add to `~/.codex/config.toml`:
 ```toml
 [mcp_servers.esekl]
 command = "npx"
-args = ["-y", "esekl", "mcp"]
+args = ["--yes", "--package=@esekl/mcp", "esekl", "mcp"]
 ```
 
 For Codex environments that accept JSON `mcpServers` config, use the JSON block above.
@@ -263,6 +263,43 @@ For Codex environments that accept JSON `mcpServers` config, use the JSON block 
   ]
 }
 ```
+
+---
+
+## Roadmap: Domain Expansion
+
+The current package bundles the queue and broker corpus. As new domains are researched, the corpus splits into independently versioned scoped packages under the `@esekl/` org:
+
+```
+@esekl/mcp               Core MCP server — always installed, always the entry point
+@esekl/store-queues      Queue and broker corpus (asynq, bullmq, pgmq, river, nats, ...)  ← current
+@esekl/store-databases   Database internals corpus (postgres, sqlite, redis internals, ...)
+@esekl/store-networking  Networking and protocol corpus (gRPC, HTTP/2, QUIC, ...)
+@esekl/store-all         Meta-package: installs all domain stores
+```
+
+**MCP config never changes.** The single JSON block works regardless of which domain stores are installed:
+
+```json
+{
+  "mcpServers": {
+    "esekl": {
+      "command": "npx",
+      "args": ["--yes", "--package=@esekl/mcp", "esekl", "mcp"]
+    }
+  }
+}
+```
+
+**Opting into a domain** (when additional stores ship):
+
+```bash
+npm install @esekl/store-databases
+# MCP server discovers and loads it automatically on next start — no config change.
+```
+
+**Why scoped packages instead of a CLI-download model:**
+The store is read-only versioned data, not source code you own. npm is the right distribution primitive: reproducible installs, per-domain changelogs, and automatic caching via `npx`. Domain updates ship as npm version bumps; the MCP server picks them up without any re-configuration.
 
 ---
 

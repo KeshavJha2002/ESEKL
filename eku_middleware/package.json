@@ -1,8 +1,35 @@
 {
   "name": "@esekl/mcp",
-  "version": "1.0.0-beta",
+  "version": "1.0.0",
   "type": "module",
   "description": "Evidence-backed MCP tools for architecture agents, distilled from mature open-source systems.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "llm",
+    "agent",
+    "empirical",
+    "software-engineering",
+    "distributed-systems",
+    "queue",
+    "broker",
+    "streaming"
+  ],
+  "homepage": "https://github.com/KeshavJha2002/ESEKL#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KeshavJha2002/ESEKL.git",
+    "directory": "eku_middleware"
+  },
+  "license": "MIT",
+  "author": "Keshav Jha",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "files": [
     "bin/esekl_mcp.mjs",
     "bin/esekl_query.mjs",
@@ -31,3 +58,4 @@
     "test": "node test/mcp_smoke_test.mjs && node test/mcp_contract_fixtures.mjs && node test/mcp_docs_sync.mjs && node test/mcp_quality_fixtures.mjs && node test/mcp_logger_test.mjs && node test/mcp_security_caps.mjs && bash test/package_install_smoke.sh && node bin/esekl_validate.mjs"
   }
 }
+
