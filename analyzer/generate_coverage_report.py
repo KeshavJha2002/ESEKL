@@ -28,11 +28,11 @@ def audit_note_quality(eku):
     return issues
 
 def build_coverage_report_content():
-    ekus_data = load_json("eku_store/synthesized_queue_ekus.json")
+    ekus_data = load_json("eku_middleware/eku_store/synthesized_queue_ekus.json")
     domain_ekus = ekus_data.get("ekus", [])
 
     repo_ekus = []
-    for f in sorted(glob.glob("eku_store/repo_ekus/*.json")):
+    for f in sorted(glob.glob("eku_middleware/eku_store/repo_ekus/*.json")):
         repo_ekus.extend(load_json(f))
 
     repo_eku_ids = {r["id"]: r for r in repo_ekus}
@@ -42,7 +42,7 @@ def build_coverage_report_content():
         "",
         "**Generated Date**: 2026-08-23  ",
         f"**Domain EKUs Audited**: {len(domain_ekus)}  ",
-        f"**RepoEKUs Active**: {len(repo_ekus)} across {len(glob.glob('eku_store/repo_ekus/*.json'))} repositories  ",
+        f"**RepoEKUs Active**: {len(repo_ekus)} across {len(glob.glob('eku_middleware/eku_store/repo_ekus/*.json'))} repositories  ",
         "",
         "---",
         "",
@@ -141,7 +141,7 @@ def build_coverage_report_content():
 
 def generate_coverage_report():
     report_content = build_coverage_report_content()
-    out_path = "eku_store/repo_ekus/coverage.md"
+    out_path = "eku_middleware/eku_store/repo_ekus/coverage.md"
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(report_content)
     print(f"✅ Generated {out_path}.")

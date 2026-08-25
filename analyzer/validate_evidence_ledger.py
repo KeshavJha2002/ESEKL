@@ -74,7 +74,7 @@ REQUIRED_FRONTMATTER_FIELDS = [
 ]
 
 ALLOW_MISSING_FACTORY = "--allow-missing-factory" in sys.argv
-FACTORY_LOCK_FILE = "eku_store/release/factory_repo_lock.json"
+FACTORY_LOCK_FILE = "eku_middleware/eku_store/release/factory_repo_lock.json"
 FACTORY_LOCK = None
 
 
@@ -262,12 +262,12 @@ def main():
     warnings = []
 
     # 1. Load Evidence Files
-    obs_file = 'eku_store/evidence/observations.json'
-    hist_file = 'eku_store/evidence/historical_failures.json'
-    claims_file = 'eku_store/evidence/claims.json'
-    ekus_file = 'eku_store/synthesized_queue_ekus.json'
-    matrix_file = 'eku_store/claim_matrix.json'
-    manifest_file = 'eku_store/corpus_manifest.json'
+    obs_file = 'eku_middleware/eku_store/evidence/observations.json'
+    hist_file = 'eku_middleware/eku_store/evidence/historical_failures.json'
+    claims_file = 'eku_middleware/eku_store/evidence/claims.json'
+    ekus_file = 'eku_middleware/eku_store/synthesized_queue_ekus.json'
+    matrix_file = 'eku_middleware/eku_store/claim_matrix.json'
+    manifest_file = 'eku_middleware/eku_store/corpus_manifest.json'
 
     for f in [obs_file, hist_file, claims_file, ekus_file, matrix_file, manifest_file]:
         if not os.path.exists(f):
@@ -292,10 +292,10 @@ def main():
 
     # 1.5. Validate Repo-Local EKUs
     print("\n--- 1.5. Validating Repo-Local EKUs ---")
-    repo_eku_files = glob.glob("eku_store/repo_ekus/*.json")
+    repo_eku_files = glob.glob("eku_middleware/eku_store/repo_ekus/*.json")
     repo_ekus = []
     repo_eku_ids = set()
-    repo_eku_schema = load_json("eku_store/schema/repo_eku_schema.json")
+    repo_eku_schema = load_json("eku_middleware/eku_store/schema/repo_eku_schema.json")
     import jsonschema
     manifest_repo_names = {r.get("id", "").lower() for r in manifest_data.get("repositories", [])} | \
                           {r.get("repo", "").lower().replace("factory/", "") for r in manifest_data.get("repositories", [])} | \
@@ -386,7 +386,7 @@ def main():
     ]
 
     # 1. Check schema
-    schema_path = "eku_store/schema/repo_eku_schema.json"
+    schema_path = "eku_middleware/eku_store/schema/repo_eku_schema.json"
     if os.path.exists(schema_path):
         schema_json = load_json(schema_path)
         schema_req = set(schema_json.get("required", []))
@@ -395,7 +395,7 @@ def main():
                 errors.append(f"RepoEKU schema {schema_path}: missing required field '{rf}' in schema 'required' array")
 
     # 2. Check template
-    template_path = "eku_store/templates/repo_eku_entry.template.json"
+    template_path = "eku_middleware/eku_store/templates/repo_eku_entry.template.json"
     if os.path.exists(template_path):
         template_json = load_json(template_path)
         for rf in CANONICAL_REPO_EKU_REQUIRED_FIELDS:
@@ -403,7 +403,7 @@ def main():
                 errors.append(f"RepoEKU template {template_path}: missing required field '{rf}'")
 
     # 3. Check specification table
-    spec_path = "eku_store/schema/repo_eku_specification.md"
+    spec_path = "eku_middleware/eku_store/schema/repo_eku_specification.md"
     if os.path.exists(spec_path):
         with open(spec_path, "r", encoding="utf-8") as sf:
             spec_txt = sf.read()
@@ -651,7 +651,7 @@ def main():
     for repo_info in manifest_data.get("repositories", []):
         rname = repo_info.get("repo")
         rfs = repo_fs_name(rname)
-        dossier_path = f"eku_store/{rfs}/dossier_{rfs}.json"
+        dossier_path = f"eku_middleware/eku_store/{rfs}/dossier_{rfs}.json"
         if os.path.exists(dossier_path):
             with open(dossier_path) as df:
                 dd = json.load(df)
@@ -666,7 +666,7 @@ def main():
 
     # 7. Check EKU Patch Releases
     print("\n--- 6. Validating EKU Patch Releases ---")
-    patch_release_files = glob.glob("eku_store/synthesized_queue_ekus_v*.json")
+    patch_release_files = glob.glob("eku_middleware/eku_store/synthesized_queue_ekus_v*.json")
     for pr_file in patch_release_files:
         try:
             pr_data = load_json(pr_file)
@@ -699,7 +699,7 @@ def main():
 
     # 8. Check Promotion Records
     print("\n--- 7. Validating Promotion Records ---")
-    promotion_records = glob.glob("eku_store/promotion/records/*.json")
+    promotion_records = glob.glob("eku_middleware/eku_store/promotion/records/*.json")
     for pr_rec in promotion_records:
         try:
             rec_data = load_json(pr_rec)
@@ -1017,14 +1017,14 @@ def main():
                     errors.append("evaluation/OUTCOME_MATRIX.md missing generated table marker comments")
 
             # 7. Byte-for-byte freshness check for coverage.md
-            coverage_path = "eku_store/repo_ekus/coverage.md"
+            coverage_path = "eku_middleware/eku_store/repo_ekus/coverage.md"
             if os.path.exists(coverage_path):
                 with open(coverage_path, "r", encoding="utf-8") as cov_f:
                     actual_cov = cov_f.read().strip()
                 from analyzer.generate_coverage_report import build_coverage_report_content
                 expected_cov = build_coverage_report_content().strip()
                 if actual_cov != expected_cov:
-                    errors.append("eku_store/repo_ekus/coverage.md is stale! Run 'python3 analyzer/generate_coverage_report.py' to regenerate.")
+                    errors.append("eku_middleware/eku_store/repo_ekus/coverage.md is stale! Run 'python3 analyzer/generate_coverage_report.py' to regenerate.")
 
         except Exception as e:
             errors.append(f"Failed score consistency validation: {e}")

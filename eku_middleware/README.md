@@ -30,31 +30,21 @@ flowchart TD
 
 Source repositories are checked out at pinned commits (tracked in `eku_store/release/factory_repo_lock.json`). Mechanical inspection captures file paths, line ranges, and verbatim snippets as Atomic Observations. These are promoted to Repo-Local EKUs tied to a single repository, then synthesized upward into Domain EKUs that carry cross-corpus invariants with explicit falsification audits. The MCP server reads the static store and enforces progressive disclosure — agents never browse the raw files directly.
 
+The `eku_store/` directory ships **bundled inside this npm package**. No initialization step is required. `npx esekl mcp` resolves the store from the package directory automatically.
+
 ---
 
 ## Installation
 
-**Step 1: Initialize the local knowledge store**
+No installation step is required.
 
-```bash
-npx esekl init
-```
-
-This downloads the versioned static knowledge store (`.eku_store/`) into the current working directory. The store contains all EKUs, observations, failure chains, and claim matrices. The npm package itself does not bundle the store; it stays separate so research updates ship as store patches without reinstalling the package.
-
-Run this once per project root. The MCP server will look for `.eku_store/` in the directory where it is started.
-
-**Step 2: Wire the MCP server into your agent host**
-
-The server speaks JSON-RPC 2.0 over stdio. No daemon or network port is required. Configuration varies by agent host — see the sections below.
+The `eku_store/` directory is bundled directly inside this package. When `npx esekl mcp` starts, the server resolves the store from the package directory — no local copy, no `esekl init`, no per-project setup. The package is ~1.4 MB compressed and cached by npx after the first run.
 
 ---
 
 ## MCP Configuration
 
-### Claude Desktop
-
-Edit `~/.config/claude/claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`):
+This single JSON block works on every machine, for every project, with no paths and no prior setup:
 
 ```json
 {
@@ -67,22 +57,21 @@ Edit `~/.config/claude/claude_desktop_config.json` (macOS: `~/Library/Applicatio
 }
 ```
 
-Restart Claude Desktop. The server starts on demand when the agent makes its first tool call.
+**Store resolution order** (first match wins):
+
+1. `--store-root=<path>` — explicit override, for advanced use.
+2. `~/.esekl/store` — if `esekl init` was run for a fully offline or custom corpus.
+3. `<package_dir>/eku_store` — **bundled in the package, always available, no setup needed.**
+
+Store updates ship with the package: running `npx esekl mcp` against a new package version automatically picks up new EKUs and observations.
+
+### Claude Desktop
+
+Edit `~/.config/claude/claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`) and add the block above. Restart Claude Desktop.
 
 ### AGY (Antigravity)
 
-Add to your AGY MCP config file:
-
-```json
-{
-  "mcpServers": {
-    "esekl": {
-      "command": "npx",
-      "args": ["-y", "esekl", "mcp"]
-    }
-  }
-}
-```
+Add the block above to your AGY MCP config file. No restart required for most AGY configurations.
 
 ### Codex CLI
 
@@ -94,7 +83,7 @@ command = "npx"
 args = ["-y", "esekl", "mcp"]
 ```
 
-For Codex environments that accept JSON `mcpServers` config, use the Claude Desktop block above.
+For Codex environments that accept JSON `mcpServers` config, use the JSON block above.
 
 ---
 
@@ -312,3 +301,53 @@ All paged tools enforce default limits (`pageSize: 10`, `limit: 5`) to prevent a
 ## Full MCP Contract
 
 Complete input schemas, output schemas, and error contracts for all 20 tools: [`mcp_contract.md`](./mcp_contract.md)
+
+---
+
+## Layer Query Scenarios
+
+These five scenarios cover the full retrieval and critique surface of the ESEKL MCP server.
+
+### Scenario A: Investigating a Repo-Specific Mechanism
+
+Use `list_repo_ekus` filtered by `repo` to surface concrete, evidence-bearing Repo-Local EKUs for a specific codebase. Follow with `get_repo_eku` for full source provenance and SQL/Lua snippets.
+
+```
+list_repo_ekus({ "repo": "river" })
+→ get_repo_eku({ "repoEkuId": "REKU-RIVER-001" })
+```
+
+### Scenario B: Exploring Cross-Cutting Keyword & Substrate Facets
+
+Use `list_keyword_groups` to find which repositories share a common mechanism keyword, then `get_keyword_group` for the full set of participating Repo-Local and Domain EKUs.
+
+```
+list_keyword_groups({ "keyword": "skip_locked" })
+→ get_keyword_group({ "groupId": "skip_locked" })
+```
+
+### Scenario C: Down-Tracing a Domain Invariant to Ground-Truth Evidence
+
+Use `trace_domain_eku` to down-trace a Domain EKU to its supporting Repo-Local EKUs, alternative mechanisms, and counterexamples. Use `explain_provenance` to retrieve exact source file lines and snippet SHA-256.
+
+```
+trace_domain_eku({ "ekuId": "EKU-QUEUE-007" })
+→ explain_provenance({ "evidenceId": "OBS-RIVER-001" })
+```
+
+### Scenario D: Querying Concrete Implementation Evidence Packets
+
+Use `get_implementation_evidence` filtered by domain EKU and substrate to surface bounded implementation packets with source snippets, test references, and keyword facets.
+
+```
+get_implementation_evidence({ "ekuId": "EKU-QUEUE-001", "substrate": "postgres" })
+```
+
+### Scenario E: Evidence-Constrained Architectural Critique & Adversarial Verification
+
+Use `compare_design_against_evidence` to audit a proposed architecture against empirical invariants, then `generate_verification_plan` to produce adversarial test suites mapped to specific EKUs and historical failure commits.
+
+```
+compare_design_against_evidence({ "proposedDesign": "..." })
+→ generate_verification_plan({ "requirementOrDesign": "..." })
+```

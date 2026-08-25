@@ -20,7 +20,7 @@ function resolveStorePaths(storeRoot) {
     : [
         path.resolve(process.cwd(), '.eku_store'),
         path.resolve(process.cwd(), 'eku_store'),
-        path.resolve(__dirname, '../../../eku_store')
+        path.resolve(__dirname, '../../eku_store')
       ];
 
   for (const root of roots) {

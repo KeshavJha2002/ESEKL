@@ -8,7 +8,7 @@ export npm_config_cache="/tmp/npm-cache"
 
 echo "🧪 Running Packaged Distribution Install Smoke Test..."
 echo "   Temp Directory: $TEMP_DIR"
-echo "   Store Root: $REPO_ROOT"
+echo "   Store Root: $REPO_ROOT/eku_middleware"
 
 cd "$PACKAGE_DIR"
 TARBALL_NAME=$(npm pack --pack-destination "$TEMP_DIR" | tail -n 1)
@@ -22,16 +22,16 @@ echo "  ✅ Installed package $TARBALL_NAME successfully"
 echo "  ▶ Testing: esekl-mcp --list-tools"
 ./node_modules/.bin/esekl-mcp --list-tools > /dev/null
 
-echo "  ▶ Testing: esekl-query --store-root=$REPO_ROOT capabilities"
-./node_modules/.bin/esekl-query --store-root="$REPO_ROOT" capabilities > /dev/null
+echo "  ▶ Testing: esekl-query --store-root=$REPO_ROOT/eku_middleware capabilities"
+./node_modules/.bin/esekl-query --store-root="$REPO_ROOT/eku_middleware" capabilities > /dev/null
 
-echo "  ▶ Testing: esekl-query --store-root=$REPO_ROOT eku EKU-QUEUE-015"
-./node_modules/.bin/esekl-query --store-root="$REPO_ROOT" eku EKU-QUEUE-015 > /dev/null
+echo "  ▶ Testing: esekl-query --store-root=$REPO_ROOT/eku_middleware eku EKU-QUEUE-015"
+./node_modules/.bin/esekl-query --store-root="$REPO_ROOT/eku_middleware" eku EKU-QUEUE-015 > /dev/null
 
-echo "  ▶ Testing: esekl init --source-dir=$REPO_ROOT/eku_store"
+echo "  ▶ Testing: esekl init --source-dir=$REPO_ROOT/eku_middleware/eku_store"
 mkdir nested-project
 cd nested-project
-../node_modules/.bin/esekl init --source-dir="$REPO_ROOT/eku_store" > /dev/null
+../node_modules/.bin/esekl init --source-dir="$REPO_ROOT/eku_middleware/eku_store" > /dev/null
 ../node_modules/.bin/esekl capabilities > /dev/null
 ../node_modules/.bin/esekl mcp --list-tools > /dev/null
 

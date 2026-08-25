@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { cpSync, existsSync, mkdtempSync, rmSync, renameSync } from 'node:fs';
 import { dirname, resolve, join } from 'node:path';
-import { tmpdir } from 'node:os';
+import { tmpdir, homedir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { ESEKLMCPServer } from '../src/mcp/server.js';
@@ -9,6 +9,11 @@ import { ESEKLStore } from '../src/store/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+/** Default global store: ~/.esekl/store */
+function globalStoreDir() {
+  return join(homedir(), '.esekl', 'store');
+}
 
 function getArg(name, fallback = null) {
   const prefix = `--${name}=`;
@@ -25,17 +30,21 @@ function printHelp() {
 ESEKL CLI
 
 Usage:
-  esekl init [--dir=.eku_store] [--ref=main] [--force]
+  esekl init [--dir=<path>] [--ref=main] [--force]
   esekl mcp [--store-root=<path>] [--log-jsonrpc=<path>]
   esekl query [--store-root=<path>] <command> [args...]
   esekl capabilities
   esekl search <term>
   esekl eku <EKU-ID>
 
+Store resolution (in order):
+  1. --store-root=<path>   explicit override
+  2. ~/.esekl/store        global default (written by: esekl init)
+
 Examples:
-  npx esekl init
-  npx esekl capabilities
-  npx esekl mcp
+  npx esekl init           # one-time setup, writes to ~/.esekl/store
+  npx esekl capabilities   # verify store loaded
+  npx esekl mcp            # start MCP server, no path needed
 `);
 }
 
@@ -50,7 +59,7 @@ function run(command, args, options = {}) {
 }
 
 function initStore() {
-  const outDir = resolve(process.cwd(), getArg('dir', '.eku_store'));
+  const outDir = resolve(getArg('dir', globalStoreDir()));
   const ref = getArg('ref', 'main');
   const repo = getArg('repo', 'https://github.com/KeshavJha2002/ESEKL.git');
   const sourceDir = getArg('source-dir');
@@ -82,9 +91,28 @@ function initStore() {
   }
 }
 
+/** Bundled store ships inside the npm package at eku_middleware/eku_store/ */
+function bundledStoreDir() {
+  return join(__dirname, '..', 'eku_store');
+}
+
+function resolveStoreRoot() {
+  const explicit = getArg('store-root');
+  if (explicit) return explicit;
+  const global = globalStoreDir();
+  if (existsSync(global)) return global;
+  const bundled = bundledStoreDir();
+  if (existsSync(bundled)) return bundled;
+  return null;
+}
+
 async function startMcp() {
-  let storeRoot = getArg('store-root');
-  let logJsonRpc = getArg('log-jsonrpc');
+  const storeRoot = resolveStoreRoot();
+  const logJsonRpc = getArg('log-jsonrpc');
+  if (!storeRoot) {
+    console.error('ESEKL store not found. Run: npx esekl init');
+    process.exit(1);
+  }
   const server = new ESEKLMCPServer({ storeRoot, logJsonRpc });
   if (process.argv.includes('--list-tools')) {
     const req = { id: 1, method: 'tools/list' };
@@ -96,7 +124,11 @@ async function startMcp() {
 }
 
 function runQuery(command, args) {
-  const storeRoot = getArg('store-root');
+  const storeRoot = resolveStoreRoot();
+  if (!storeRoot) {
+    console.error('ESEKL store not found. Run: npx esekl init');
+    process.exit(1);
+  }
   const store = new ESEKLStore(storeRoot);
   const query = args.join(' ');
 

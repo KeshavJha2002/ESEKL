@@ -1,5 +1,5 @@
 {
-  "name": "esekl",
+  "name": "@esekl/mcp",
   "version": "1.0.0-beta",
   "type": "module",
   "description": "Evidence-backed MCP tools for architecture agents, distilled from mature open-source systems.",
@@ -12,7 +12,8 @@
     "src",
     "README.md",
     "mcp_contract.md",
-    "demo_scope.md"
+    "demo_scope.md",
+    "eku_store"
   ],
   "bin": {
     "esekl": "bin/esekl.mjs",

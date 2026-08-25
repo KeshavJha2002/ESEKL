@@ -46,7 +46,7 @@ if (explicitOutDir) {
   outDirs.push(explicitOutDir);
 } else {
   // Check if standard eku_store/<repoName> exists
-  const storeDir = resolve(process.cwd(), 'eku_store', repoName);
+  const storeDir = resolve(process.cwd(), 'eku_middleware', 'eku_store', repoName);
   mkdirSync(storeDir, { recursive: true });
   outDirs.push(storeDir);
 }

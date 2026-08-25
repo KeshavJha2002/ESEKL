@@ -29,9 +29,9 @@ Every result carries an epistemic label. Agents never confuse a cross-repo abstr
 ```mermaid
 flowchart TD
     A["Tier 0: Raw Codebase\n(factory/<repo>)"]
-    B["Tier 1: Atomic Observations\n(eku_store/evidence/observations.json)\nExact file path, line range, verbatim snippet,\nlanguage, substrate"]
-    C["Tier 2: Repo-Local EKUs\n(eku_store/repo_ekus/<repo>.json)\nConcrete mechanism, source snippet,\ntest provenance, failure provenance\nEpistemic: REPO_LOCAL"]
-    D["Tier 3: Domain EKUs\n(eku_store/synthesized_queue_ekus.json)\nCross-repository behavioral invariants,\ndesign contracts, falsification audits\nEpistemic: DOMAIN_ABSTRACTION"]
+    B["Tier 1: Atomic Observations\n(eku_middleware/eku_store/evidence/observations.json)\nExact file path, line range, verbatim snippet,\nlanguage, substrate"]
+    C["Tier 2: Repo-Local EKUs\n(eku_middleware/eku_store/repo_ekus/<repo>.json)\nConcrete mechanism, source snippet,\ntest provenance, failure provenance\nEpistemic: REPO_LOCAL"]
+    D["Tier 3: Domain EKUs\n(eku_middleware/eku_store/synthesized_queue_ekus.json)\nCross-repository behavioral invariants,\ndesign contracts, falsification audits\nEpistemic: DOMAIN_ABSTRACTION"]
     E["MCP Server\n(esekl mcp)\nProgressively discloses\nTier 1-3 via 20 tools"]
     F["Agent\n(Claude, Codex, AGY, etc.)"]
 
@@ -46,28 +46,23 @@ flowchart TD
 
 The factory directory holds commit-pinned checkouts of the source repositories. Inspection is mechanical: source file paths, line ranges, verbatim code snippets, and test function names are captured as Atomic Observations. Those observations are grouped into Repo-Local EKUs — concrete, evidence-bearing records tied to a single repository — then synthesized upward into Domain EKUs that carry cross-corpus behavioral invariants with explicit falsification audits. The MCP server reads the static store and serves it through progressive disclosure tools. Agents interact only through those tools; they never touch the raw store.
 
-The static store ships separately from the npm package. `npx esekl init` downloads `.eku_store/` into the current project directory. The MCP server reads from that local copy.
+The knowledge store (`eku_store/`) ships **bundled inside the npm package**. No initialization step is required. Add the MCP config once and every machine that can run `npx` has the full corpus immediately.
 
 ---
 
 ## Installation
 
-```bash
-# Download the local knowledge store into the current project
-npx esekl init
-```
+No installation step is required.
 
-`init` fetches the versioned static store from the ESEKL GitHub release and writes `.eku_store/` into the working directory. This must run once per project before the MCP server can serve evidence. The npm package itself stays minimal; the store is not bundled inside it.
+The `eku_store/` directory is bundled directly inside the `esekl` npm package. When `npx esekl mcp` starts, the server resolves the store from the package directory — no local copy, no `init`, no per-project setup.
 
-After `init`, the MCP server is ready. Wire it into your agent host using one of the configs below.
+Wire the MCP server into your agent host using one of the configs below.
 
 ---
 
 ## MCP Configuration
 
-### Claude Desktop
-
-Edit `~/.config/claude/claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`):
+This single JSON block works on every machine, for every project, with no paths and no prior setup:
 
 ```json
 {
@@ -80,22 +75,19 @@ Edit `~/.config/claude/claude_desktop_config.json` (macOS: `~/Library/Applicatio
 }
 ```
 
-Restart Claude Desktop after saving.
+**Store resolution order** (first match wins):
+
+1. `--store-root=<path>` — explicit override, for advanced use.
+2. `~/.esekl/store` — if `esekl init` was run for a fully offline or custom corpus.
+3. `<package_dir>/eku_store` — **bundled in the package, always available, no setup needed.**
+
+### Claude Desktop
+
+Edit `~/.config/claude/claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`) and add the block above. Restart Claude Desktop.
 
 ### AGY (Antigravity)
 
-Add to your AGY MCP config file:
-
-```json
-{
-  "mcpServers": {
-    "esekl": {
-      "command": "npx",
-      "args": ["-y", "esekl", "mcp"]
-    }
-  }
-}
-```
+Add the block above to your AGY MCP config file. No restart required for most AGY configurations.
 
 ### Codex CLI
 
@@ -107,7 +99,7 @@ command = "npx"
 args = ["-y", "esekl", "mcp"]
 ```
 
-For Codex environments that accept JSON `mcpServers` config, use the same block as Claude Desktop above.
+For Codex environments that accept JSON `mcpServers` config, use the JSON block above.
 
 ---
 
@@ -251,21 +243,20 @@ The MCP server exposes 20 tools across three tiers.
 ## Repository Layout
 
 ```
-eku_store/          Static empirical knowledge store (downloaded by npx esekl init)
-  evidence/         Atomic observations and historical failure records
-  repo_ekus/        Repo-Local EKUs per repository
-  synthesized_queue_ekus.json   Cross-corpus Domain EKUs
-  claim_matrix.json             Claim-to-corpus coverage matrix
-  schema/           JSON schema and specification for RepoEKUs
-  release/          factory_repo_lock.json — commit-pinned source provenance
+eku_middleware/          npm package root (published as esekl)
+  bin/                   CLI and MCP server entry points
+  src/                   MCP server implementation
+  eku_store/             Static knowledge store — ships bundled inside the package
+    evidence/            Atomic observations and historical failure records
+    repo_ekus/           Repo-Local EKUs per repository
+    synthesized_queue_ekus.json   Cross-corpus Domain EKUs
+    claim_matrix.json             Claim-to-corpus coverage matrix
+    schema/              JSON schema and specification for RepoEKUs
+    release/             factory_repo_lock.json — commit-pinned source provenance
+  mcp_contract.md        Full JSON-RPC contract with input/output schemas
 
-eku_middleware/     npm package root (published as esekl)
-  bin/              CLI and MCP server entry points
-  src/              MCP server implementation
-  mcp_contract.md   Full JSON-RPC contract with input/output schemas
-
-analyzer/           Validation scripts (not shipped in npm package)
-factory/            Local raw repository cache for research rounds (git-ignored)
+analyzer/                Validation scripts (not shipped in npm package)
+factory/                 Local raw repository cache for research rounds (git-ignored)
 ```
 
 ---

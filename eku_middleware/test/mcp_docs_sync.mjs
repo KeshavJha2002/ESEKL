@@ -15,24 +15,24 @@ const registeredTools = res.result.tools || [];
 const registeredToolNames = new Set(registeredTools.map(t => t.name));
 
 const mcpContractPath = path.join(__dirname, '..', 'mcp_contract.md');
-const readmePath = path.join(__dirname, '..', 'readme.md');
+const readmePath = path.join(__dirname, '..', 'README.md');
 
 assert(fs.existsSync(mcpContractPath), 'mcp_contract.md must exist');
-assert(fs.existsSync(readmePath), 'readme.md must exist');
+assert(fs.existsSync(readmePath), 'README.md must exist');
 
 const contractMd = fs.readFileSync(mcpContractPath, 'utf-8');
 const readmeMd = fs.readFileSync(readmePath, 'utf-8');
 
 console.log(`   Found ${registeredToolNames.size} registered MCP tools.`);
 
-// 1. Check all registered tools are documented in mcp_contract.md and readme.md
+// 1. Check all registered tools are documented in mcp_contract.md and README.md
 for (const toolName of registeredToolNames) {
   assert(contractMd.includes(`### \`${toolName}\``) || contractMd.includes(`\`${toolName}`),
     `Tool '${toolName}' is registered but missing documentation in mcp_contract.md`);
   assert(readmeMd.includes(`\`${toolName}`),
-    `Tool '${toolName}' is registered but missing in readme.md tool list`);
+    `Tool '${toolName}' is registered but missing in README.md tool list`);
 }
-console.log('  ✅ All registered tools documented in mcp_contract.md and readme.md');
+console.log('  ✅ All registered tools documented in mcp_contract.md and README.md');
 
 // 2. Extract tools documented in mcp_contract.md and ensure they are actually registered
 const contractToolMatches = [...contractMd.matchAll(/### `([a-z_]+)`/g)].map(m => m[1]);
@@ -76,7 +76,7 @@ for (const [toolName, expectedKeys] of Object.entries(outputKeyChecks)) {
 }
 console.log('  ✅ Core tools output schema keys verified in mcp_contract.md');
 
-// 6. Verify readme.md contains layer query scenarios A through E
+// 6. Verify README.md contains layer query scenarios A through E
 const requiredScenarios = [
   'Scenario A: Investigating a Repo-Specific Mechanism',
   'Scenario B: Exploring Cross-Cutting Keyword & Substrate Facets',
@@ -85,9 +85,9 @@ const requiredScenarios = [
   'Scenario E: Evidence-Constrained Architectural Critique & Adversarial Verification'
 ];
 for (const sc of requiredScenarios) {
-  assert(readmeMd.includes(sc), `readme.md missing documented layer query scenario '${sc}'`);
+  assert(readmeMd.includes(sc), `README.md missing documented layer query scenario '${sc}'`);
 }
-console.log('  ✅ readme.md includes verified examples across all 5 retrieval and critique layers');
+console.log('  ✅ README.md includes verified examples across all 5 retrieval and critique layers');
 
 // 7. Verify JSON code fences in mcp_contract.md are parseable examples/schemas
 const jsonFenceMatches = [...contractMd.matchAll(/```json\s*([\s\S]*?)```/g)];

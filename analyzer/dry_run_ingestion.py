@@ -10,7 +10,7 @@ import os
 import sys
 import tempfile
 
-TEMPLATES_DIR = "eku_store/templates"
+TEMPLATES_DIR = "eku_middleware/eku_store/templates"
 
 def load_template(filename):
     path = os.path.join(TEMPLATES_DIR, filename)
@@ -25,7 +25,7 @@ def load_template(filename):
 def test_template_instantiation():
     print("▶ 1. Validating RepoEKU template instantiation against repo_eku_schema.json...")
     template = load_template("repo_eku_entry.template.json")
-    schema_path = "eku_store/schema/repo_eku_schema.json"
+    schema_path = "eku_middleware/eku_store/schema/repo_eku_schema.json"
 
     with open(schema_path, "r", encoding="utf-8") as f:
         schema = json.load(f)
@@ -197,7 +197,7 @@ def test_connected_mini_corpus_dry_run():
                 json.dump(data, out, indent=2)
 
         # Cross-reference & schema validation
-        schema = json.load(open("eku_store/schema/repo_eku_schema.json"))
+        schema = json.load(open("eku_middleware/eku_store/schema/repo_eku_schema.json"))
         import jsonschema
         try:
             jsonschema.validate(instance=reku_entry, schema=schema)
