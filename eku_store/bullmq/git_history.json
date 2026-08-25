@@ -1,0 +1,4157 @@
+[
+  {
+    "commitHash": "c06b51cd3aacd0d9ee65e2544220c89f24d2479c",
+    "authorDate": "2026-08-21T01:14:23-04:00",
+    "subject": "feat(types): add generic ProgressType parameter to Job and Worker (#4529) fixes #3721",
+    "body": "",
+    "issueRefs": [
+      "#4529",
+      "fixes #3721"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/workers/readme.md",
+      "src/classes/job.ts",
+      "src/classes/worker.ts",
+      "src/interfaces/minimal-job.ts",
+      "src/types/processor.ts",
+      "tests/worker.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cb372332210af739efb159b6ac2ffc3fdd4d4d2d",
+    "authorDate": "2026-08-16T10:06:19+02:00",
+    "subject": "fix(deps): update security patches [security] (#4566)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#4566"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "rust/Cargo.lock",
+      "rust/Cargo.toml",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d464a51781177cc7ec23b011355f1df54385dab0",
+    "authorDate": "2026-08-15T12:41:48-07:00",
+    "subject": "fix(queue-events): ignore late queue event task replies during close (#4572) [elixir]",
+    "body": "Co-authored-by: copilot-swe-agent[bot] <198982749+Copilot@users.noreply.github.com>\nCo-authored-by: manast <95200+manast@users.noreply.github.com>",
+    "issueRefs": [
+      "#4572"
+    ],
+    "touchedFiles": [
+      "elixir/lib/bullmq/queue_events.ex",
+      "elixir/test/bullmq/queue_events_integration_test.exs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6df4589805aca2144eed9a9f24d4a9f52dcbbb7b",
+    "authorDate": "2026-08-14T21:23:08-07:00",
+    "subject": "perf: check script existence before loading [rust] [elixir] (#4563)",
+    "body": "* perf: optimize script loading with SCRIPT EXISTS in Rust and Elixir\n\n* refactor: align Rust and Elixir with lazy script loading\n\nCo-authored-by: manast <95200+manast@users.noreply.github.com>\n\n* rust: make script registry internal API\n\nCo-authored-by: manast <95200+manast@users.noreply.github.com>\n\n* fix(elixir): remove unused Scripts alias in RedisConnection\n\nCo-authored-by: manast <95200+manast@users.noreply.github.com>\n\n* fix(rust): avoid dead_code warnings in scripts registry\n\n---------\n\nCo-authored-by: copilot-swe-agent[bot] <198982749+Copilot@users.noreply.github.com>\nCo-authored-by: manast <95200+manast@users.noreply.github.com>",
+    "issueRefs": [
+      "#4563"
+    ],
+    "touchedFiles": [
+      "elixir/lib/bullmq/redis_connection.ex",
+      "elixir/test/bullmq/script_loading_integration_test.exs",
+      "rust/src/flow_producer.rs",
+      "rust/src/lib.rs",
+      "rust/src/redis_connection.rs",
+      "rust/src/scripts.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ab7009da8a732d8d5e8f13228e1ef81806422128",
+    "authorDate": "2026-08-13T20:24:16-07:00",
+    "subject": "fix(flow): allow parent opts from root parent (#4548) fixes #4547",
+    "body": "",
+    "issueRefs": [
+      "#4548",
+      "fixes #4547"
+    ],
+    "touchedFiles": [
+      "src/interfaces/flow-job.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "beab7b54fb0d441808f1549fc399482b320bfe43",
+    "authorDate": "2026-08-12T21:40:04-07:00",
+    "subject": "fix(deps): upgrade futures to v0.3.34 [rust] (#4552)",
+    "body": "",
+    "issueRefs": [
+      "#4552"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "rust/Cargo.lock",
+      "rust/Cargo.toml",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c6134469c7e8a4b93269c19a77c5a2905d17dfa8",
+    "authorDate": "2026-08-11T18:43:44+02:00",
+    "subject": "test(cancellation): fix flaky job cancellation tests due to active event race (#4551)",
+    "body": "",
+    "issueRefs": [
+      "#4551"
+    ],
+    "touchedFiles": [
+      "tests/job_cancellation_advanced.test.ts"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "48c54268642b724b8823086db2c6d1a61c10c3cf",
+    "authorDate": "2026-08-10T23:26:12+02:00",
+    "subject": "fix(deps): update security patches [security] (#4539)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#4539"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "30c2c7518a8a754d6f688de3373df8113f4df7b1",
+    "authorDate": "2026-08-10T13:54:46+02:00",
+    "subject": "fix: make ioredis optional (#4513)",
+    "body": "",
+    "issueRefs": [
+      "#4513"
+    ],
+    "touchedFiles": [
+      "src/classes/ioredis-client.ts",
+      "src/classes/redis-connection.ts",
+      "src/interfaces/redis-options.ts",
+      "tests/node-redis.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7c941774ca9528bc25f628593cf1ccb2e92c261e",
+    "authorDate": "2026-08-08T15:57:02-07:00",
+    "subject": "fix(deps): update security patches [security] (#4530)",
+    "body": "",
+    "issueRefs": [
+      "#4530"
+    ],
+    "touchedFiles": [
+      "elixir/mix.exs",
+      "package.json",
+      "rust/Cargo.lock",
+      "rust/Cargo.toml",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "94d32867f9b4f439cd1fc57f9f8c3543dd913e42",
+    "authorDate": "2026-08-07T17:54:15+02:00",
+    "subject": "fix(worker): resolve worker delay in picking up new jobs [rust] fixes #4512  (#4523)",
+    "body": "",
+    "issueRefs": [
+      "fixes #4512",
+      "#4523"
+    ],
+    "touchedFiles": [
+      "rust/src/redis_connection.rs",
+      "rust/src/worker.rs",
+      "rust/tests/worker_test.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5910cccfc8a773067621953087d0d055670e1e2a",
+    "authorDate": "2026-08-07T09:20:11+06:00",
+    "subject": "fix(events): type completed event returnvalue as deserialized value (#4441) fixes #4147",
+    "body": "",
+    "issueRefs": [
+      "#4441",
+      "fixes #4147"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/bullmq-pro/nestjs/queue-events-listeners.md",
+      "docs/gitbook/guide/nestjs/queue-events-listeners.md",
+      "src/classes/queue-events.ts",
+      "tests/events.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9b1861e3f34eba38e9072df1738e07e6cf6c8710",
+    "authorDate": "2026-08-04T21:36:20-07:00",
+    "subject": "ci(docs): upgrade vitepress to fix docs",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "package.json",
+      "php/package.json",
+      "php/yarn.lock",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5eb9dca3050b472cc0f72a1fc0cb491b32b705d3",
+    "authorDate": "2026-08-05T06:12:39+02:00",
+    "subject": "fix(scheduler): make job schedulers advance and support the postgres backend [python] fixes #4483 (#4498)",
+    "body": "",
+    "issueRefs": [
+      "fixes #4483",
+      "#4498"
+    ],
+    "touchedFiles": [
+      ".github/workflows/test.yml",
+      "python/bullmq/backend.py",
+      "python/bullmq/backends/postgres_backend.py",
+      "python/bullmq/backends/redis_backend.py",
+      "python/bullmq/job_scheduler.py",
+      "python/bullmq/queue.py",
+      "python/bullmq/worker.py",
+      "python/tests/job_scheduler_test.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f3936a22fe564ddf3468ee8388e7024ad9a76265",
+    "authorDate": "2026-08-04T20:39:24-07:00",
+    "subject": "fix(postgres): fail fast when SQL loader directory cannot be resolved (#4482)",
+    "body": "",
+    "issueRefs": [
+      "#4482"
+    ],
+    "touchedFiles": [
+      "src/postgres/sql-loader.ts",
+      "tests/postgres/sql_loader.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "550e446db235be4bb9ee15d4d882632e139b3afb",
+    "authorDate": "2026-08-04T20:11:33-07:00",
+    "subject": "fix(deps): avoid deep ioredis import so postgres backend works without ioredis internals (#4437) fixes #4435",
+    "body": "",
+    "issueRefs": [
+      "#4437",
+      "fixes #4435"
+    ],
+    "touchedFiles": [
+      "src/classes/errors/connection-closed-error.ts",
+      "src/classes/redis-connection.ts",
+      "src/utils/index.ts",
+      "tests/connection-closed-error.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6a166ea3f747f5dece935d206057d43c2febcde7",
+    "authorDate": "2026-08-04T18:27:30-07:00",
+    "subject": "fix(deps): upgrade predis to v3 (major) [php] (major) (#4489)",
+    "body": "",
+    "issueRefs": [
+      "#4489"
+    ],
+    "touchedFiles": [
+      "composer.json",
+      "php/composer.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e7e9a6478d39d43406559b03410b2c5c28639e74",
+    "authorDate": "2026-08-04T09:05:47+02:00",
+    "subject": "fix(worker): recover blocking reads that never settle after a reconnect fixes #4479 (#4484)",
+    "body": "",
+    "issueRefs": [
+      "fixes #4479",
+      "#4484"
+    ],
+    "touchedFiles": [
+      "src/classes/redis-queue-backend.ts",
+      "tests/events.redis.test.ts",
+      "tests/worker.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a514f2d3976848aa631de22bfa458b7e9f60b384",
+    "authorDate": "2026-08-02T18:40:51-07:00",
+    "subject": "fix(deps): update cron-parser to v5.7.0 (#4462)",
+    "body": "",
+    "issueRefs": [
+      "#4462"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "740985ae2f67a9144e7787f89955bf8c7f9500e0",
+    "authorDate": "2026-08-02T20:19:48+02:00",
+    "subject": "fix(worker): fail jobs with deferred failure in task-based worker path [elixir] (#4458)",
+    "body": "",
+    "issueRefs": [
+      "#4458"
+    ],
+    "touchedFiles": [
+      "elixir/lib/bullmq/worker.ex",
+      "elixir/test/bullmq/backends/postgres_integration_test.exs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e58f9e1892463da4ca411506d66ee01413e5daeb",
+    "authorDate": "2026-08-01T10:12:32+02:00",
+    "subject": "fix(deps): update python dependencies (python) (#4453)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#4453"
+    ],
+    "touchedFiles": [
+      "python/pyproject.toml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c1cf32881474f3f1e9b620e025abde07a359eb06",
+    "authorDate": "2026-08-01T09:38:23+02:00",
+    "subject": "fix(deps): update security patches [security] (#4444)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#4444"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "956e2d4b1cefd5b1e4da98d69013a2fa866e8d75",
+    "authorDate": "2026-07-31T19:27:02-07:00",
+    "subject": "fix(deps): update security patches [security] [rust] (#4404)",
+    "body": "",
+    "issueRefs": [
+      "#4404"
+    ],
+    "touchedFiles": [
+      "rust/Cargo.lock",
+      "rust/Cargo.toml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "067a73f3666a493c36c03ec2cca8228ae149f043",
+    "authorDate": "2026-07-31T20:41:17+02:00",
+    "subject": "fix(postgres): drop redundant bullmq_ prefix from schema objects (#4436) (elixir) (python) (node)",
+    "body": "",
+    "issueRefs": [
+      "#4436"
+    ],
+    "touchedFiles": [
+      "elixir/docs/transactional-jobs-design.md",
+      "elixir/lib/bullmq/backends/postgres.ex",
+      "elixir/lib/bullmq/backends/postgres/migrator.ex",
+      "python/bullmq/backends/postgres_backend.py",
+      "python/bullmq/backends/postgres_connection.py",
+      "src/postgres/commands/add_flow.sql",
+      "src/postgres/commands/add_job.sql",
+      "src/postgres/commands/add_job_scheduler.sql",
+      "src/postgres/commands/add_jobs_bulk.sql",
+      "src/postgres/commands/add_log.sql",
+      "src/postgres/commands/change_delay.sql",
+      "src/postgres/commands/change_priority.sql",
+      "src/postgres/commands/clean.sql",
+      "src/postgres/commands/clear_logs.sql",
+      "src/postgres/commands/collect_metrics.sql",
+      "src/postgres/commands/delete_deduplication_key.sql",
+      "src/postgres/commands/drain.sql",
+      "src/postgres/commands/extend_lock.sql",
+      "src/postgres/commands/extend_locks.sql",
+      "src/postgres/commands/get_counts.sql",
+      "src/postgres/commands/get_counts_per_priority.sql",
+      "src/postgres/commands/get_deduplication_job_id.sql",
+      "src/postgres/commands/get_dependencies.sql",
+      "src/postgres/commands/get_dependencies_page.sql",
+      "src/postgres/commands/get_dependency_counts.sql",
+      "src/postgres/commands/get_ignored_children_failures.sql",
+      "src/postgres/commands/get_job_data.sql",
+      "src/postgres/commands/get_job_logs_asc.sql",
+      "src/postgres/commands/get_job_logs_count.sql",
+      "src/postgres/commands/get_job_logs_desc.sql",
+      "src/postgres/commands/get_job_scheduler.sql",
+      "src/postgres/commands/get_job_schedulers_count.sql",
+      "src/postgres/commands/get_job_schedulers_range.sql",
+      "src/postgres/commands/get_metrics.sql",
+      "src/postgres/commands/get_processed_children_values.sql",
+      "src/postgres/commands/get_queue_meta.sql",
+      "src/postgres/commands/get_queue_meta_field.sql",
+      "src/postgres/commands/get_queue_meta_fields.sql",
+      "src/postgres/commands/get_range.sql",
+      "src/postgres/commands/get_rate_limit_ttl.sql",
+      "src/postgres/commands/get_state.sql",
+      "src/postgres/commands/has_queue_meta_field.sql",
+      "src/postgres/commands/has_waiting_job.sql",
+      "src/postgres/commands/is_finished.sql",
+      "src/postgres/commands/is_job_in_state.sql",
+      "src/postgres/commands/is_job_in_wait.sql",
+      "src/postgres/commands/is_job_prioritized.sql",
+      "src/postgres/commands/is_job_scheduler.sql",
+      "src/postgres/commands/is_maxed.sql",
+      "src/postgres/commands/move_active_to_wait.sql",
+      "src/postgres/commands/move_stalled_jobs_to_wait.sql",
+      "src/postgres/commands/move_to_active.sql",
+      "src/postgres/commands/move_to_completed.sql",
+      "src/postgres/commands/move_to_completed_fetch.sql",
+      "src/postgres/commands/move_to_delayed.sql",
+      "src/postgres/commands/move_to_failed.sql",
+      "src/postgres/commands/move_to_failed_fetch.sql",
+      "src/postgres/commands/move_to_waiting_children.sql",
+      "src/postgres/commands/next_delay.sql",
+      "src/postgres/commands/next_signal.sql",
+      "src/postgres/commands/obliterate.sql",
+      "src/postgres/commands/paginate_dependencies.sql",
+      "src/postgres/commands/pause.sql",
+      "src/postgres/commands/promote.sql",
+      "src/postgres/commands/promote_jobs.sql",
+      "src/postgres/commands/publish_event.sql",
+      "src/postgres/commands/read_events.sql",
+      "src/postgres/commands/read_events_max.sql",
+      "src/postgres/commands/remove.sql",
+      "src/postgres/commands/remove_child_dependency.sql",
+      "src/postgres/commands/remove_deduplication_key.sql",
+      "src/postgres/commands/remove_job_scheduler.sql",
+      "src/postgres/commands/remove_queue_meta_fields.sql",
+      "src/postgres/commands/remove_rate_limit.sql",
+      "src/postgres/commands/remove_unprocessed_children.sql",
+      "src/postgres/commands/reprocess_job.sql",
+      "src/postgres/commands/retry_job.sql",
+      "src/postgres/commands/retry_jobs.sql",
+      "src/postgres/commands/set_queue_meta.sql",
+      "src/postgres/commands/set_rate_limit.sql",
+      "src/postgres/commands/trim_logs.sql",
+      "src/postgres/commands/update_data.sql",
+      "src/postgres/commands/update_job_scheduler.sql",
+      "src/postgres/commands/update_progress.sql",
+      "src/postgres/migrations/0001_schema.sql",
+      "src/postgres/migrations/0002_functions.sql",
+      "src/postgres/migrations/index.ts",
+      "src/postgres/migrator.ts",
+      "src/postgres/postgres-queue-backend.ts",
+      "tests/postgres/migration.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a72dcfec62896013128fe1ac5ca21b08107e5412",
+    "authorDate": "2026-07-31T16:16:08+02:00",
+    "subject": "chore(deps): update dependency brace-expansion to v5.0.9 (#4425)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#4425"
+    ],
+    "touchedFiles": [
+      "elixir/package.json",
+      "elixir/yarn.lock",
+      "package.json",
+      "php/package.json",
+      "php/yarn.lock",
+      "python/package.json",
+      "python/yarn.lock",
+      "yarn.lock"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "2ac754fd718927e2c0043d6d7787de32d0d196f7",
+    "authorDate": "2026-07-31T08:35:34+02:00",
+    "subject": "fix(deps): update dependency redis to v7.4.1 (#4426)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#4426"
+    ],
+    "touchedFiles": [
+      "python/pyproject.toml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a1382307c1d0b8b185e16443daad6f221067f55d",
+    "authorDate": "2026-07-31T03:37:18+02:00",
+    "subject": "fix: add missing sql files to release packages (elixir) (python) (#4413)",
+    "body": "",
+    "issueRefs": [
+      "#4413"
+    ],
+    "touchedFiles": [
+      ".github/workflows/elixir-test.yml",
+      ".github/workflows/python-test.yml",
+      ".github/workflows/release.yml",
+      "elixir/.gitignore",
+      "package.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "eb956b07fde2ab3d43b41325a06a6b103610e3e3",
+    "authorDate": "2026-07-30T00:16:26-07:00",
+    "subject": "fix(deps): pin dependencies [rust] (#4402)",
+    "body": "",
+    "issueRefs": [
+      "#4402"
+    ],
+    "touchedFiles": [
+      ".github/workflows/api.yml",
+      ".github/workflows/codeql-analysis.yml",
+      ".github/workflows/codeql.yml",
+      ".github/workflows/docs.yml",
+      ".github/workflows/elixir-test.yml",
+      ".github/workflows/python-test.yml",
+      ".github/workflows/release.yml",
+      ".github/workflows/rust-test.yml",
+      ".github/workflows/test.yml",
+      ".github/workflows/valkey-glide-test.yml",
+      "rust/Cargo.toml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9e196bf005acb26e6189fd3714519c71e9cfaac3",
+    "authorDate": "2026-07-29T18:48:57-07:00",
+    "subject": "ci: fix renovate to run once per day instead of per week (#4390)",
+    "body": "",
+    "issueRefs": [
+      "#4390"
+    ],
+    "touchedFiles": [
+      "renovate.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "93649b8694a155a7c6fcd596f772e43b86285f1f",
+    "authorDate": "2026-07-29T18:17:16+02:00",
+    "subject": "fix(worker): recover blocking client after sentinel disconnect, fixes… (#4384)",
+    "body": "",
+    "issueRefs": [
+      "#4384"
+    ],
+    "touchedFiles": [
+      "src/classes/bun-redis-client.ts",
+      "src/classes/redis-connection.ts",
+      "src/classes/worker.ts",
+      "tests/bun-redis.test.ts",
+      "tests/connection.test.ts",
+      "tests/worker.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6fccb59248c3d78e81ae09ad70b8cbea7ae48b87",
+    "authorDate": "2026-07-28T22:11:30-07:00",
+    "subject": "fix(deps): update dependency msgpackr to v2.0.5 [security] (#4387)",
+    "body": "",
+    "issueRefs": [
+      "#4387"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2a120dfea7324d7af67ad505c78f48571c74402b",
+    "authorDate": "2026-07-27T10:06:32+02:00",
+    "subject": "fix(deps): update dependency redis [security] (#4369)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#4369"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "rust/Cargo.lock",
+      "rust/Cargo.toml",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "968bdc21a98a0dea55691d833ba05c6fa0f9af37",
+    "authorDate": "2026-07-26T12:53:47-07:00",
+    "subject": "ci: deploy docs to gh-pages branch to fix Pages deployment (#4353)",
+    "body": "",
+    "issueRefs": [
+      "#4353"
+    ],
+    "touchedFiles": [
+      ".github/workflows/docs.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "56cf3653f430e537c154c7288226395d143bb90a",
+    "authorDate": "2026-07-26T12:03:19-07:00",
+    "subject": "chore(deps): bump undici to patched versions to fix CVE-2026-9678/9679 (#4361)",
+    "body": "",
+    "issueRefs": [
+      "#4361"
+    ],
+    "touchedFiles": [
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2664876092793ca2ba5e0eb080d99c3042ed136a",
+    "authorDate": "2026-07-25T22:22:35-07:00",
+    "subject": "feat: port JobScheduler, LockManager, AbortController, QueueEvents classes and global limits [python] fixes #2772 (#4336)",
+    "body": "",
+    "issueRefs": [
+      "fixes #2772",
+      "#4336"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/SUMMARY.md",
+      "docs/gitbook/python/flow-producer.md",
+      "docs/gitbook/python/global-concurrency-and-rate-limit.md",
+      "docs/gitbook/python/job-cancellation.md",
+      "docs/gitbook/python/job-scheduler.md",
+      "docs/gitbook/python/lock-manager.md",
+      "docs/gitbook/python/queue-events.md",
+      "python/readme.md",
+      "python/bullmq/__init__.py",
+      "python/bullmq/abort_controller.py",
+      "python/bullmq/error_code.py",
+      "python/bullmq/flow_producer.py",
+      "python/bullmq/job.py",
+      "python/bullmq/job_scheduler.py",
+      "python/bullmq/lock_manager.py",
+      "python/bullmq/queue.py",
+      "python/bullmq/queue_events.py",
+      "python/bullmq/queue_events_producer.py",
+      "python/bullmq/redis_connection.py",
+      "python/bullmq/scripts.py",
+      "python/bullmq/types/__init__.py",
+      "python/bullmq/types/job_options.py",
+      "python/bullmq/types/queue_events_options.py",
+      "python/bullmq/types/repeat_options.py",
+      "python/bullmq/types/worker_options.py",
+      "python/bullmq/worker.py",
+      "python/pyproject.toml",
+      "python/tests/flow_test.py",
+      "python/tests/global_rate_limit_concurrency_test.py",
+      "python/tests/job_cancellation_test.py",
+      "python/tests/job_scheduler_test.py",
+      "python/tests/lock_manager_test.py",
+      "python/tests/priority_test.py",
+      "python/tests/queue_events_test.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "16838aaed10fdbbad74035a38c48c21a69e9bf4a",
+    "authorDate": "2026-07-24T23:28:02-07:00",
+    "subject": "chore(deps): update dependency brace-expansion to v5.0.8 [security] (#4343)",
+    "body": "",
+    "issueRefs": [
+      "#4343"
+    ],
+    "touchedFiles": [
+      "yarn.lock"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "4085792106fd3d381ec7980a8ae3c65788dd2d70",
+    "authorDate": "2026-07-24T22:51:22-07:00",
+    "subject": "feat(connection): add support for Redis TLS certs option (#4334) fixes #4333 [rust]",
+    "body": "",
+    "issueRefs": [
+      "#4334",
+      "fixes #4333"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/rust/introduction.md",
+      "rust/src/options.rs",
+      "rust/src/redis_connection.rs",
+      "rust/tests/connection_test.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "65f1f0a73902df87a50d799d097450e2867eb9c3",
+    "authorDate": "2026-07-24T22:39:16-07:00",
+    "subject": "fix(flows): fix parent job stuck in waiting-children state (#4335) fixes #4332 [elixir]",
+    "body": "",
+    "issueRefs": [
+      "#4335",
+      "fixes #4332"
+    ],
+    "touchedFiles": [
+      "elixir/lib/bullmq/scripts.ex",
+      "elixir/lib/bullmq/worker.ex",
+      "elixir/test/bullmq/worker_integration_test.exs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "315ec3309a42ccf898b2b825e39c42292b7932e7",
+    "authorDate": "2026-07-24T22:38:05+02:00",
+    "subject": "fix: prevent unhandled rejection when a connection's init fails before an 'error' listener is attached (#4328)",
+    "body": "",
+    "issueRefs": [
+      "#4328"
+    ],
+    "touchedFiles": [
+      "src/classes/flow-producer.ts",
+      "src/classes/queue-base.ts",
+      "src/classes/worker.ts",
+      "src/utils/index.ts",
+      "tests/connection.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "36a3b2a4196b4611db89b1640a6315e26de37eb0",
+    "authorDate": "2026-07-24T08:47:31-07:00",
+    "subject": "fix(telemetry): emit job.state while preserving job.status compatibility (#4293)",
+    "body": "",
+    "issueRefs": [
+      "#4293"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/telemetry/metrics.md",
+      "src/classes/job.ts",
+      "src/enums/telemetry-attributes.ts",
+      "tests/telemetry_interface.test.ts",
+      "tests/worker.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8571503034a43c6d5882e290051957215fd20fee",
+    "authorDate": "2026-07-23T19:45:47-07:00",
+    "subject": "fix(queue): retrieve jobs in same transaction under getJobs (#4300) (python) (elixir) (php) (rust)",
+    "body": "",
+    "issueRefs": [
+      "#4300"
+    ],
+    "touchedFiles": [
+      "elixir/lib/bullmq/queue.ex",
+      "elixir/lib/bullmq/scripts.ex",
+      "elixir/test/bullmq/queue_getters_test.exs",
+      "elixir/test/bullmq/queue_integration_test.exs",
+      "elixir/test/bullmq/worker_integration_test.exs",
+      "php/src/Queue.php",
+      "php/src/Scripts.php",
+      "php/tests/QueueTest.php",
+      "python/bullmq/queue.py",
+      "python/bullmq/redis_connection.py",
+      "python/bullmq/scripts.py",
+      "python/tests/queue_test.py",
+      "rust/src/queue.rs",
+      "rust/src/scripts.rs",
+      "rust/tests/queue_test.rs",
+      "src/classes/queue-getters.ts",
+      "src/classes/scripts.ts",
+      "src/commands/getJobs-1.lua",
+      "tests/getters.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c7bd217ab0496fbdcbacd486b85cca8a825aa4d4",
+    "authorDate": "2026-07-23T04:35:48-07:00",
+    "subject": "fix(bun): match Bun RedisClient callback types and suppress teardown ConnectionClosedError (#4329) fixes #4212",
+    "body": "",
+    "issueRefs": [
+      "#4329",
+      "fixes #4212"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/connections.md",
+      "src/classes/bun-redis-client.ts",
+      "tests/bun-redis.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b002d4836f7819b995378112e0c40fbbbe694e4d",
+    "authorDate": "2026-07-23T06:13:07+02:00",
+    "subject": "fix(worker): emit active event for all jobs moved to active fixes #3911 (#4326)",
+    "body": "",
+    "issueRefs": [
+      "fixes #3911",
+      "#4326"
+    ],
+    "touchedFiles": [
+      "src/classes/worker.ts",
+      "tests/events.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6320cf3d7955e291c1e626cd36bb21fcc9b409d6",
+    "authorDate": "2026-07-21T19:23:31-07:00",
+    "subject": "fix(deps): update rust crate sha1 to 0.11 [rust] (#4315)",
+    "body": "",
+    "issueRefs": [
+      "#4315"
+    ],
+    "touchedFiles": [
+      "rust/Cargo.lock",
+      "rust/Cargo.toml",
+      "rust/src/scripts.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "88730b08ecc18cd243dfeddaa80bd8b2d3a5151a",
+    "authorDate": "2026-07-21T17:54:02+02:00",
+    "subject": "fix(ci): remove stale OSV ignore (#4320)",
+    "body": "",
+    "issueRefs": [
+      "#4320"
+    ],
+    "touchedFiles": [
+      ".github/workflows/osv-scanner.yml",
+      "osv-scanner.toml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7603a785efca31e905afe7d32670ab1f875c7bd9",
+    "authorDate": "2026-07-20T22:21:38-07:00",
+    "subject": "chore(deps): update dependency brace-expansion to v5.0.7 [security] (#4318)",
+    "body": "",
+    "issueRefs": [
+      "#4318"
+    ],
+    "touchedFiles": [
+      "yarn.lock"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "4f4b574de507e56e1e3a7f359565eb359463710f",
+    "authorDate": "2026-07-19T01:50:04+02:00",
+    "subject": "perf(flow-producer): reuse queue's shared Scripts instance in jobs fixes #4263 (#4308)",
+    "body": "",
+    "issueRefs": [
+      "fixes #4263",
+      "#4308"
+    ],
+    "touchedFiles": [
+      "src/classes/flow-producer.ts",
+      "src/classes/job.ts",
+      "src/classes/queue-base.ts",
+      "src/interfaces/minimal-queue.ts",
+      "tests/job.test.ts",
+      "tests/job_cancellation_advanced.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e8af56348a77677a4d802d2563e33b7313a79570",
+    "authorDate": "2026-07-17T21:06:32-07:00",
+    "subject": "fix(scheduler): walk past stale slots when re-upserting under same id (#4299)",
+    "body": "",
+    "issueRefs": [
+      "#4299"
+    ],
+    "touchedFiles": [
+      "src/commands/addJobScheduler-11.lua",
+      "tests/job_scheduler.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c4a0a4a90d48303b1b6b7c45f67898573a73c424",
+    "authorDate": "2026-07-17T08:40:00-07:00",
+    "subject": "fix(worker): move stalled job to failed when fetched manually (#4294)",
+    "body": "",
+    "issueRefs": [
+      "#4294"
+    ],
+    "touchedFiles": [
+      ".github/workflows/test.yml",
+      "src/classes/worker.ts",
+      "tests/telemetry_interface.test.ts",
+      "tests/worker.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5044cf8fc17f0842655eda581b9e26b27f6abfe8",
+    "authorDate": "2026-07-16T19:36:12-07:00",
+    "subject": "fix(sandbox): preserve child_process exports in null-stdio (#4301)",
+    "body": "",
+    "issueRefs": [
+      "#4301"
+    ],
+    "touchedFiles": [
+      "src/classes/child.ts",
+      "tests/child_stdio_null.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5c657627785662e0c8293655795acdaf3da46fd4",
+    "authorDate": "2026-07-16T00:31:36-07:00",
+    "subject": "ci: ignore changelog from auto styling and fix rust/elixir paths-filter permissions (#4210)",
+    "body": "",
+    "issueRefs": [
+      "#4210"
+    ],
+    "touchedFiles": [
+      ".github/workflows/elixir-test.yml",
+      ".github/workflows/rust-test.yml",
+      ".prettierignore",
+      "rust/.gitignore"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "7dd064ec794ff2f8f67a859caf11cd5554ad75e4",
+    "authorDate": "2026-07-16T03:49:31+02:00",
+    "subject": "fix(sandbox): kill children that fail init and surface refusal errors fixes #4283 (#4284)",
+    "body": "",
+    "issueRefs": [
+      "fixes #4283",
+      "#4284"
+    ],
+    "touchedFiles": [
+      "src/classes/child-pool.ts",
+      "src/classes/child-processor.ts",
+      "src/classes/sandbox.ts",
+      "tests/child-pool.test.ts",
+      "tests/fixtures/fixture_processor_fail_init_once.js",
+      "tests/sandboxed_process.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d978d721995aa4d40aa93980866e2a6b02bcfed1",
+    "authorDate": "2026-07-15T08:22:51-07:00",
+    "subject": "fix(deps): update dependency ioredis to v5.11.1 [security] (#4282)",
+    "body": "",
+    "issueRefs": [
+      "#4282"
+    ],
+    "touchedFiles": [
+      ".github/workflows/test.yml",
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4e8b59592d1f285f2e9e3860f8ece8bc60769fe5",
+    "authorDate": "2026-07-15T11:40:42+02:00",
+    "subject": "fix: fix potential job id integer to string conversion (#4262)",
+    "body": "",
+    "issueRefs": [
+      "#4262"
+    ],
+    "touchedFiles": [
+      "rust/tests/job_scheduler_test.rs",
+      "src/classes/flow-producer.ts",
+      "src/commands/addDelayedJob-6.lua",
+      "src/commands/addParentJob-6.lua",
+      "src/commands/addPrioritizedJob-9.lua",
+      "src/commands/addStandardJob-9.lua",
+      "tests/connection.test.ts",
+      "tests/flow.test.ts",
+      "tests/job_cancellation_advanced.test.ts",
+      "tests/queue.test.ts",
+      "tests/telemetry_interface.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "78bbb253546b4c45f7e23ceccc31eb644651416c",
+    "authorDate": "2026-07-11T21:43:26+05:30",
+    "subject": "fix(job-scheduler): respect offset option in upsertJobScheduler (elixir) (rust) (#3993)",
+    "body": "",
+    "issueRefs": [
+      "#3993"
+    ],
+    "touchedFiles": [
+      "src/commands/includes/getJobSchedulerEveryNextMillis.lua",
+      "tests/job_scheduler.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "418de1e51db09ffc8e95bac35015a1057d8a7271",
+    "authorDate": "2026-07-10T08:02:42-07:00",
+    "subject": "fix(job): enforce priority max of 2^21-1 to preserve FIFO at the boundary (#4261)",
+    "body": "",
+    "issueRefs": [
+      "#4261"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/jobs/prioritized.md",
+      "src/classes/job.ts",
+      "src/interfaces/base-job-options.ts",
+      "tests/job.test.ts",
+      "tests/worker.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5a88614312243a12bb9e56b525c4deb60d76cf12",
+    "authorDate": "2026-07-09T20:11:07-07:00",
+    "subject": "fix(job-scheduler): coerce string offset in Lua helper (#4266) (python) (elixir)",
+    "body": "",
+    "issueRefs": [
+      "#4266"
+    ],
+    "touchedFiles": [
+      "elixir/test/bullmq/worker_integration_test.exs",
+      "src/commands/includes/getJobSchedulerEveryNextMillis.lua"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6ffd88a0070b3ab84b77539dca7c35266716425e",
+    "authorDate": "2026-07-07T10:38:20+05:30",
+    "subject": "fix(queue-events): correct delay event number type and documentation (#3989)",
+    "body": "",
+    "issueRefs": [
+      "#3989"
+    ],
+    "touchedFiles": [
+      "src/classes/queue-events.ts",
+      "tests/flow.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6f1b2e33b01c9f97dee6ff96bab782a8399c7ae5",
+    "authorDate": "2026-06-27T17:37:15+02:00",
+    "subject": "fix(flow): use correct data structure when retrying failed child using ignoreDependencyOnFailure fixes #4235 (#4236)",
+    "body": "",
+    "issueRefs": [
+      "fixes #4235",
+      "#4236"
+    ],
+    "touchedFiles": [
+      "src/commands/reprocessJob-8.lua",
+      "tests/flow.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1aefd5b80618a8a9080b98ca9e6e89463a98b713",
+    "authorDate": "2026-06-21T08:17:33-07:00",
+    "subject": "fix(node-redis): accept plain createClient result without cast (#4201) (#4209)",
+    "body": "",
+    "issueRefs": [
+      "#4201",
+      "#4209"
+    ],
+    "touchedFiles": [
+      "src/classes/node-redis-client.ts",
+      "tests/node-redis.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d1fcda5f9c4f53b56846a73421d6eb9a32603aa4",
+    "authorDate": "2026-06-13T14:39:19-07:00",
+    "subject": "fix(scheduler): fail stalled jobs if scheduler does not longer exist (elixir) (rust) (#4222)",
+    "body": "",
+    "issueRefs": [
+      "#4222"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/rust/introduction.md",
+      "elixir/lib/bullmq/scripts.ex",
+      "python/bullmq/redis_connection.py",
+      "python/bullmq/scripts.py",
+      "rust/Cargo.toml",
+      "rust/src/scripts.rs",
+      "rust/src/worker.rs",
+      "src/classes/scripts.ts",
+      "src/commands/moveStalledJobsToWait-9.lua",
+      "tests/job_scheduler.test.ts",
+      "tests/repeat.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cda941abf90f6064542a5542ea2efb97579d3078",
+    "authorDate": "2026-06-10T06:16:24-07:00",
+    "subject": "fix(release): include commands [rust] (#4208)",
+    "body": "",
+    "issueRefs": [
+      "#4208"
+    ],
+    "touchedFiles": [
+      ".github/workflows/elixir-test.yml",
+      "rust/Cargo.toml",
+      "rust/src/scripts.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3fe7cb1a20b16247946c3e278a4abb4b999edc79",
+    "authorDate": "2026-06-02T01:47:05-07:00",
+    "subject": "fix(relase): copy lua scripts [rust] (#4206)",
+    "body": "",
+    "issueRefs": [
+      "#4206"
+    ],
+    "touchedFiles": [
+      ".github/pull_request_template.md",
+      ".github/workflows/elixir-test.yml",
+      ".github/workflows/release.yml",
+      ".github/workflows/test.yml",
+      "docs/gitbook/changelog.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fbe04af1b3e9c7c9683229544914a54c5bb1f8d8",
+    "authorDate": "2026-06-01T09:58:56+02:00",
+    "subject": "fix(deps): update dependency msgpackr to v2.0.2 [security] (#4202)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#4202"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "81709e4abe71f4e7c05c748938ec004a50c1fd4b",
+    "authorDate": "2026-05-26T23:37:56-07:00",
+    "subject": "fix(types): change NodeRedisRawClient to be node-redis compliant (#4195)",
+    "body": "",
+    "issueRefs": [
+      "#4195"
+    ],
+    "touchedFiles": [
+      "src/classes/node-redis-client.ts"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "411690e9070ba0dda59a86628fc8b56ad9ebea04",
+    "authorDate": "2026-05-26T22:49:05-07:00",
+    "subject": "fix(connection): handle cluster reconnection with timeouts (#4186)",
+    "body": "",
+    "issueRefs": [
+      "#4186"
+    ],
+    "touchedFiles": [
+      "src/classes/redis-connection.ts",
+      "tests/connection.test.ts"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "6e4972e8fd721035d680ca291049134c3876f8ba",
+    "authorDate": "2026-05-26T08:12:41-07:00",
+    "subject": "fix(deduplication): preserve custom jobId when requeuing keepLastIfActive proto-jobs (#4190) fixes #4030",
+    "body": "",
+    "issueRefs": [
+      "#4190",
+      "fixes #4030"
+    ],
+    "touchedFiles": [
+      "src/commands/includes/requeueDeduplicatedJob.lua",
+      "src/commands/includes/storeDeduplicatedNextJob.lua",
+      "tests/deduplication.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0feec14452865c419961edb9c733f9951b6a663f",
+    "authorDate": "2026-05-24T02:27:19-07:00",
+    "subject": "fix(connection): use more permissive typing on NodeRedisRawClient options (#4184) (#4187)",
+    "body": "Fixes #4170",
+    "issueRefs": [
+      "#4184",
+      "#4187",
+      "Fixes #4170"
+    ],
+    "touchedFiles": [
+      "src/classes/node-redis-client.ts",
+      "tests/bulk.test.ts",
+      "tests/clean.test.ts",
+      "tests/concurrency.test.ts",
+      "tests/deduplication.test.ts",
+      "tests/delay.test.ts",
+      "tests/events.test.ts",
+      "tests/flow.test.ts",
+      "tests/getters.test.ts",
+      "tests/job.test.ts",
+      "tests/job_cancellation.test.ts",
+      "tests/job_cancellation_advanced.test.ts",
+      "tests/job_scheduler.test.ts",
+      "tests/job_scheduler_stress.test.ts",
+      "tests/lock_manager.test.ts",
+      "tests/metrics.test.ts",
+      "tests/obliterate.test.ts",
+      "tests/pause.test.ts",
+      "tests/queue.test.ts",
+      "tests/rate_limiter.test.ts",
+      "tests/repeat.test.ts",
+      "tests/scripts.test.ts",
+      "tests/stalled_jobs.test.ts",
+      "tests/telemetry_interface.test.ts",
+      "tests/utils/connection-factory.ts",
+      "tests/worker.test.ts",
+      "vitest.bun.setup.ts",
+      "vitest.node-redis.setup.ts",
+      "vitest.setup.ts",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "75a66af36f7d56c149e070826a20116ea1ef5e7b",
+    "authorDate": "2026-05-23T04:08:35+02:00",
+    "subject": "fix(connections): make sure we do not mutate ioredis (#4182)",
+    "body": "",
+    "issueRefs": [
+      "#4182"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/connections.md",
+      "src/classes/ioredis-client.ts",
+      "tests/cluster.test.ts",
+      "tests/repeat.test.ts",
+      "vitest.ioredis.config.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7b9f7e0c81427fb9d936a6366c21ef2a96729335",
+    "authorDate": "2026-05-21T08:28:17-07:00",
+    "subject": "fix(worker): stop fetching next jobs when closing on manual job movement (#4178) fixes #4163",
+    "body": "",
+    "issueRefs": [
+      "#4178",
+      "fixes #4163"
+    ],
+    "touchedFiles": [
+      "elixir/yarn.lock",
+      "php/yarn.lock",
+      "python/yarn.lock",
+      "src/classes/worker.ts",
+      "tests/flow.test.ts",
+      "tests/worker.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a345b1533be68a346d9f02f7b4693812b32bca05",
+    "authorDate": "2026-05-19T21:19:50-07:00",
+    "subject": "chore(deps): update dependency brace-expansion to v5.0.6 [security] (#4177)",
+    "body": "",
+    "issueRefs": [
+      "#4177"
+    ],
+    "touchedFiles": [
+      "yarn.lock"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "6396b4e2a146d733d01d8d9629cc8c8ffb8fac2d",
+    "authorDate": "2026-05-17T08:06:30-06:00",
+    "subject": "fix(flow): respect parent attribute deletion from child when calling removeChildDependency (#4169)",
+    "body": "",
+    "issueRefs": [
+      "#4169"
+    ],
+    "touchedFiles": [
+      "src/classes/job.ts",
+      "tests/flow.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "41713ca67f9a0d0c45c27bbccb7a79320204c3ac",
+    "authorDate": "2026-05-16T09:07:23-06:00",
+    "subject": "fix(build): remove source map generation (#4167)",
+    "body": "",
+    "issueRefs": [
+      "#4167"
+    ],
+    "touchedFiles": [
+      "tests/deduplication.test.ts",
+      "tests/events.test.ts",
+      "tests/stalled_jobs.test.ts",
+      "tsconfig.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1b8f9009bd8a59d3a82839e6732c6e7e87eb01d2",
+    "authorDate": "2026-05-12T11:07:46+05:30",
+    "subject": "fix(scheduler): align first 'every' job to the next offset slot (#4113) fixes #3705",
+    "body": "",
+    "issueRefs": [
+      "#4113",
+      "fixes #3705"
+    ],
+    "touchedFiles": [
+      "src/classes/job-scheduler.ts",
+      "src/commands/includes/getJobSchedulerEveryNextMillis.lua",
+      "tests/job_scheduler.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "093743a0d5b24f170280e0bd754ef5c378576846",
+    "authorDate": "2026-05-10T21:45:12-07:00",
+    "subject": "fix(deps): update dependency semver to v7.8.0 [security] (#4160)",
+    "body": "",
+    "issueRefs": [
+      "#4160"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "51c935bdbf19744edccf1b39002585d81a014613",
+    "authorDate": "2026-05-11T02:40:19+05:30",
+    "subject": "fix(worker): [python] avoid tight error loop on Redis disconnect (#4102)",
+    "body": "",
+    "issueRefs": [
+      "#4102"
+    ],
+    "touchedFiles": [
+      "python/bullmq/worker.py",
+      "python/tests/worker_disconnect_test.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "16cb101f7b88aa1da893db5ca24eb20133ddf5c7",
+    "authorDate": "2026-05-10T13:39:02-07:00",
+    "subject": "docs: fix several typos (#4130) (#4153)",
+    "body": "",
+    "issueRefs": [
+      "#4130",
+      "#4153"
+    ],
+    "touchedFiles": [
+      "python/bullmq/flow_producer.py",
+      "src/classes/queue-events.ts",
+      "src/classes/queue-getters.ts",
+      "src/commands/addPrioritizedJob-9.lua",
+      "src/commands/extendLock-2.lua",
+      "src/commands/includes/collectMetrics.lua",
+      "src/commands/moveStalledJobsToWait-8.lua",
+      "src/commands/moveToFinished-14.lua",
+      "src/commands/obliterate-2.lua",
+      "src/commands/pause-7.lua",
+      "src/commands/releaseLock-1.lua"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e94e8cdfadbea9508412bcfdc51dabb920d7692c",
+    "authorDate": "2026-05-06T17:26:25+02:00",
+    "subject": "fix(connection): reconnect wedged blocking cluster clients (#4151)",
+    "body": "",
+    "issueRefs": [
+      "#4151"
+    ],
+    "touchedFiles": [
+      "src/classes/redis-connection.ts",
+      "tests/connection.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c9c0c0a03218511deb73eac74c31ac50ba9c4f77",
+    "authorDate": "2026-05-04T07:48:09-07:00",
+    "subject": "fix(connection): deprecate skipWaitingForReady option as is not having any effect [python] (#4140)",
+    "body": "",
+    "issueRefs": [
+      "#4140"
+    ],
+    "touchedFiles": [
+      "python/bullmq/flow_producer.py",
+      "python/bullmq/queue.py",
+      "python/bullmq/redis_connection.py",
+      "python/bullmq/types/queue_options.py",
+      "python/bullmq/types/worker_options.py",
+      "python/bullmq/worker.py",
+      "python/tests/redis_connection_test.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d0f9dda8237502821fb553b1eb7d112cb0f5692b",
+    "authorDate": "2026-05-03T07:18:49-07:00",
+    "subject": "test(stalled): address race condition (#4139)",
+    "body": "",
+    "issueRefs": [
+      "#4139"
+    ],
+    "touchedFiles": [
+      "tests/deduplication.test.ts",
+      "tests/events.test.ts",
+      "tests/stalled_jobs.test.ts"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "b47f00b9a2c5766ca92cebc867369f2c467a220d",
+    "authorDate": "2026-05-02T07:05:43-07:00",
+    "subject": "fix(deps): update dependency msgpackr to v1.11.12 (#3939)",
+    "body": "",
+    "issueRefs": [
+      "#3939"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7ed0eeca96a3c5168e822831b2f3d938ab37bb91",
+    "authorDate": "2026-04-29T15:28:01+05:30",
+    "subject": "fix(flow-producer): surface ParentJobNotExist errors from add() (#3264) (#4058)",
+    "body": "",
+    "issueRefs": [
+      "#3264",
+      "#4058"
+    ],
+    "touchedFiles": [
+      "src/classes/flow-producer.ts",
+      "tests/flow.test.ts",
+      "tests/telemetry_interface.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0bf1b4d38475b320c89947b9779ec7301ec10117",
+    "authorDate": "2026-04-28T22:13:26+05:30",
+    "subject": "fix(metrics): add total counters to Prometheus export for accurate counts with auto-removal (#3967)",
+    "body": "",
+    "issueRefs": [
+      "#3967"
+    ],
+    "touchedFiles": [
+      "src/classes/queue-getters.ts",
+      "tests/getters.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f4506b1b6aff7946399cb8010f3cef0be26ddf25",
+    "authorDate": "2026-04-28T19:50:04+05:30",
+    "subject": "docs(queue-events): fix typo markes -> marked in close() comment (#4122)",
+    "body": "",
+    "issueRefs": [
+      "#4122"
+    ],
+    "touchedFiles": [
+      "src/classes/queue-events.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "19b9ca08be6f6efbc58291fa55efd93a0663d536",
+    "authorDate": "2026-04-26T14:31:51-07:00",
+    "subject": "fix(queue): guard getCompleted against empty task set [python] (#3885)",
+    "body": "",
+    "issueRefs": [
+      "#3885"
+    ],
+    "touchedFiles": [
+      "python/bullmq/worker.py",
+      "python/tests/worker_test.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0866f39123010c9664fe32c1066f5e075faa4e23",
+    "authorDate": "2026-04-25T01:51:26-07:00",
+    "subject": "docs(changelog): fix misleading descriptions (#4097)",
+    "body": "",
+    "issueRefs": [
+      "#4097"
+    ],
+    "touchedFiles": [
+      ".github/pull_request_template.md",
+      ".github/workflows/release.yml",
+      "docs/gitbook/changelog.md",
+      "python/package.json"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "f6ee978089bda7edaf0e07beef369a3f8ecb4c5f",
+    "authorDate": "2026-04-25T13:40:39+05:30",
+    "subject": "test(events): move timeout value to describe() options (#4100)",
+    "body": "",
+    "issueRefs": [
+      "#4100"
+    ],
+    "touchedFiles": [
+      "tests/events.test.ts"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "595016ef1d3a960ad83dfbbc189034561e099482",
+    "authorDate": "2026-04-24T18:19:10-07:00",
+    "subject": "fix(deps): replace uuid with crypto (#4099)",
+    "body": "",
+    "issueRefs": [
+      "#4099"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "src/classes/flow-producer.ts",
+      "src/classes/queue.ts",
+      "src/classes/worker.ts",
+      "src/utils/index.ts",
+      "tests/bulk.test.ts",
+      "tests/clean.test.ts",
+      "tests/cluster.test.ts",
+      "tests/concurrency.test.ts",
+      "tests/connection.test.ts",
+      "tests/deduplication.test.ts",
+      "tests/delay.test.ts",
+      "tests/events.test.ts",
+      "tests/flow.test.ts",
+      "tests/getters.test.ts",
+      "tests/job.test.ts",
+      "tests/job_cancellation.test.ts",
+      "tests/job_cancellation_advanced.test.ts",
+      "tests/job_scheduler.test.ts",
+      "tests/job_scheduler_stress.test.ts",
+      "tests/lock_manager.test.ts",
+      "tests/metrics.test.ts",
+      "tests/obliterate.test.ts",
+      "tests/pause.test.ts",
+      "tests/queue.test.ts",
+      "tests/rate_limiter.test.ts",
+      "tests/repeat.test.ts",
+      "tests/sandboxed_process.test.ts",
+      "tests/scripts.test.ts",
+      "tests/stalled_jobs.test.ts",
+      "tests/telemetry_interface.test.ts",
+      "tests/worker.test.ts",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e66d3d35134152679b6584dac4add4a4d3e64954",
+    "authorDate": "2026-04-24T13:03:54+05:30",
+    "subject": "test(flow): move timeout values to it() options (#4101)",
+    "body": "",
+    "issueRefs": [
+      "#4101"
+    ],
+    "touchedFiles": [
+      "tests/flow.test.ts"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "ea7705df6938cb432eceff242f6828054766f61a",
+    "authorDate": "2026-04-23T01:55:12+05:30",
+    "subject": "fix(worker): use scheduler registry to discriminate repeatable keys (#4007)",
+    "body": "",
+    "issueRefs": [
+      "#4007"
+    ],
+    "touchedFiles": [
+      "src/classes/job-scheduler.ts",
+      "src/classes/worker.ts",
+      "tests/job_scheduler.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "43a5e59b7f7c2d63692fd7f56f4cafc3c79697d5",
+    "authorDate": "2026-04-22T08:00:00+05:30",
+    "subject": "test(worker): move timeout values to it() options (#4078)",
+    "body": "",
+    "issueRefs": [
+      "#4078"
+    ],
+    "touchedFiles": [
+      "tests/worker.test.ts"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "4217f8756b3d58dfd92f55360d421c4ac0b2a219",
+    "authorDate": "2026-04-22T02:40:01+05:30",
+    "subject": "docs(worker-options): fix typos checkd and halv in JSDoc (#4080)",
+    "body": "",
+    "issueRefs": [
+      "#4080"
+    ],
+    "touchedFiles": [
+      "src/interfaces/worker-options.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bdd28386ac3e59c5474b03a847c6b27a81ef4eea",
+    "authorDate": "2026-04-22T02:38:35+05:30",
+    "subject": "docs(lua): fix grammar in checkItemInList comment (#4081)",
+    "body": "",
+    "issueRefs": [
+      "#4081"
+    ],
+    "touchedFiles": [
+      "src/commands/includes/checkItemInList.lua"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f77f249acb82daf331bd61e1f425780270888d8d",
+    "authorDate": "2026-04-20T15:21:57+05:30",
+    "subject": "fix(python): getFailed() incorrectly returns completed jobs (#3996) [python]",
+    "body": "",
+    "issueRefs": [
+      "#3996"
+    ],
+    "touchedFiles": [
+      "python/bullmq/queue.py",
+      "python/tests/queue_test.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "422e2d5091f2f318e0f6bd3e1872a71deee92aec",
+    "authorDate": "2026-04-20T15:20:07+05:30",
+    "subject": "fix: handle ioredis Cluster connect status in waitUntilReady (#2402) (#4055)",
+    "body": "",
+    "issueRefs": [
+      "#2402",
+      "#4055"
+    ],
+    "touchedFiles": [
+      "src/classes/redis-connection.ts",
+      "tests/connection.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1652435b06f583015055df4e74ee7dea203bdae4",
+    "authorDate": "2026-04-20T14:49:51+05:30",
+    "subject": "fix(python): use slice reversal instead of reverse() which returns None (#4022)",
+    "body": "",
+    "issueRefs": [
+      "#4022"
+    ],
+    "touchedFiles": [
+      "python/bullmq/scripts.py",
+      "python/tests/queue_test.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "37c4bb3725fe668fb4fbe27e3474b72eafa6a6fe",
+    "authorDate": "2026-04-15T08:03:52+05:30",
+    "subject": "fix(types): correct unsafe type cast in getJob to include undefined",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/classes/queue-getters.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "34efd39458dde0378202b661c37b03b283473b94",
+    "authorDate": "2026-04-20T10:57:11+05:30",
+    "subject": "chore(types): add null to stacktrace type annotation in Job class (#4002)",
+    "body": "",
+    "issueRefs": [
+      "#4002"
+    ],
+    "touchedFiles": [
+      "src/classes/job.ts",
+      "src/interfaces/minimal-job.ts"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "2149236cea413622ec654ce08ae547f23e8d2abe",
+    "authorDate": "2026-04-20T08:08:31+05:30",
+    "subject": "test(pause): move timeout value to it() options (#4066)",
+    "body": "",
+    "issueRefs": [
+      "#4066"
+    ],
+    "touchedFiles": [
+      "tests/pause.test.ts"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "ee246fb60d38f682be234b6221fcc0d99e0897cd",
+    "authorDate": "2026-04-20T03:20:38+05:30",
+    "subject": "test(rate-limiter): move timeout values to it() options (#4067)",
+    "body": "",
+    "issueRefs": [
+      "#4067"
+    ],
+    "touchedFiles": [
+      "tests/rate_limiter.test.ts"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "19181958e9d15cbda263a6925a4acc862df44db4",
+    "authorDate": "2026-04-19T13:43:12+05:30",
+    "subject": "test(lock-manager): move timeout values to it() and afterEach() options (#4053)",
+    "body": "",
+    "issueRefs": [
+      "#4053"
+    ],
+    "touchedFiles": [
+      "tests/lock_manager.test.ts"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "4f79475e2c0e7d9970f3404a77ae3d3c0173cd5d",
+    "authorDate": "2026-04-19T11:49:47+05:30",
+    "subject": "test(concurrency): move timeout values to it() options (#4061)",
+    "body": "",
+    "issueRefs": [
+      "#4061"
+    ],
+    "touchedFiles": [
+      "tests/concurrency.test.ts"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "be9f03246d1644f397d660fba91285604a824284",
+    "authorDate": "2026-04-17T11:25:57+05:30",
+    "subject": "fix(error): export UnrecoverableError from package root (#4047) [python]",
+    "body": "",
+    "issueRefs": [
+      "#4047"
+    ],
+    "touchedFiles": [
+      "python/bullmq/__init__.py",
+      "python/tests/test_imports.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e9d0c2d50ac9cd3c91e5f7a9f8466ae9c98ff87d",
+    "authorDate": "2026-04-15T00:51:19-07:00",
+    "subject": "fix(sandbox): remove returnvalue from JobJsonSandbox interface (#3950)",
+    "body": "",
+    "issueRefs": [
+      "#3950"
+    ],
+    "touchedFiles": [
+      "src/interfaces/sandboxed-job.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1a3ca68252b745119c7ff9edd46c9f6115a2003c",
+    "authorDate": "2026-04-13T15:56:28+05:30",
+    "subject": "chore(redis-connection): fix typo custon -> custom in comment (#4001)",
+    "body": "",
+    "issueRefs": [
+      "#4001"
+    ],
+    "touchedFiles": [
+      "src/classes/redis-connection.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d6477ee34417ebc86a8b2eb20dca78e30da050c2",
+    "authorDate": "2026-04-13T15:37:06+05:30",
+    "subject": "docs(job): fix typo occured -> occurred in JSDoc (#4018)",
+    "body": "",
+    "issueRefs": [
+      "#4018"
+    ],
+    "touchedFiles": [
+      "src/classes/job.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8b8d46441f7af7f9bd75d81283a8804ff5fc4bc1",
+    "authorDate": "2026-04-12T13:11:31-07:00",
+    "subject": "fix(worker): resume processing after pause with doNotWaitActive (#3974) fixes #3971",
+    "body": "",
+    "issueRefs": [
+      "#3974",
+      "fixes #3971"
+    ],
+    "touchedFiles": [
+      "src/classes/worker.ts",
+      "tests/worker.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d5eca5acff37b7a95f72c136685105504fc7f5be",
+    "authorDate": "2026-04-10T07:49:38-07:00",
+    "subject": "fix(worker): emit active event as soon as getting next job (elixir) (python) (#3936) ref #3911",
+    "body": "",
+    "issueRefs": [
+      "#3936",
+      "#3911"
+    ],
+    "touchedFiles": [
+      "elixir/lib/bullmq/worker.ex",
+      "elixir/test/bullmq/manual_processing_test.exs",
+      "elixir/test/bullmq/worker_integration_test.exs",
+      "python/bullmq/worker.py",
+      "python/tests/worker_test.py",
+      "src/classes/worker.ts",
+      "tests/job_cancellation.test.ts",
+      "tests/job_cancellation_advanced.test.ts",
+      "tests/sandboxed_process.test.ts",
+      "tests/stalled_jobs.test.ts",
+      "tests/worker.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bf451868b932125d857280a5a21173bfafbc2801",
+    "authorDate": "2026-04-08T22:33:56-07:00",
+    "subject": "fix(connection): use single_connection_client as true (#3887) fixes #2243 [python]",
+    "body": "",
+    "issueRefs": [
+      "#3887",
+      "fixes #2243"
+    ],
+    "touchedFiles": [
+      "python/bullmq/redis_connection.py",
+      "python/tests/redis_connection_test.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "242f2648f6ba51f0023aa9a6688f0cd3e0ec2d70",
+    "authorDate": "2026-04-09T10:30:54+05:30",
+    "subject": "fix(flow): correctly propagate root jobId from pipeline results (#3905)",
+    "body": "",
+    "issueRefs": [
+      "#3905"
+    ],
+    "touchedFiles": [
+      "src/classes/flow-producer.ts",
+      "tests/flow.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0449666746452e618131a6080908fb2dae8491a0",
+    "authorDate": "2026-04-08T11:34:25+05:30",
+    "subject": "docs(job): fix typos and add missing JSDoc descriptions (#3952)",
+    "body": "",
+    "issueRefs": [
+      "#3952"
+    ],
+    "touchedFiles": [
+      "src/classes/job.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4c6b2b2d73b5053f3bd3bee2019533b6e7b5682b",
+    "authorDate": "2026-04-08T09:46:32+05:30",
+    "subject": "fix(sandbox): add missing type declarations to SandboxedJob interface (#3946) fixes #3925",
+    "body": "",
+    "issueRefs": [
+      "#3946",
+      "fixes #3925"
+    ],
+    "touchedFiles": [
+      "src/classes/child-processor.ts",
+      "src/interfaces/sandboxed-job.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "46880af9629e9aee9abbc2782074a3e76d17b924",
+    "authorDate": "2026-04-02T13:15:36+02:00",
+    "subject": "fix(cancellation): use native AbortController implementation if found (#3903)",
+    "body": "",
+    "issueRefs": [
+      "#3903"
+    ],
+    "touchedFiles": [
+      "src/classes/abort-controller.ts",
+      "src/classes/child-processor.ts",
+      "src/classes/lock-manager.ts",
+      "src/classes/worker.ts",
+      "src/utils/index.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f6a44359e30754310fd4f94c37d9679b1012a281",
+    "authorDate": "2026-04-01T06:41:02-07:00",
+    "subject": "ci(renovate): support security vulnerability fixes (#3921)",
+    "body": "",
+    "issueRefs": [
+      "#3921"
+    ],
+    "touchedFiles": [
+      "renovate.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "60f645a472102336a6294e66f2b0a801a5a5207d",
+    "authorDate": "2026-03-24T23:17:09-07:00",
+    "subject": "fix(deps): update dependency ioredis to v5.10.1 (#3897)",
+    "body": "",
+    "issueRefs": [
+      "#3897"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1e4b845927cecb72d55f026e37824bcae7ed0ffe",
+    "authorDate": "2026-03-23T04:11:52-07:00",
+    "subject": "chore(deps): fix undici and flatted vulnerabilities (#3883)",
+    "body": "",
+    "issueRefs": [
+      "#3883"
+    ],
+    "touchedFiles": [
+      "elixir/yarn.lock",
+      "php/yarn.lock",
+      "python/yarn.lock",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3c118d11c8e6dc03e90548bc7efa5c5b5d0315c7",
+    "authorDate": "2026-03-18T20:53:25-07:00",
+    "subject": "fix(worker): make close method fault-tolerant (#3886) [python]",
+    "body": "",
+    "issueRefs": [
+      "#3886"
+    ],
+    "touchedFiles": [
+      "python/bullmq/worker.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e5b7aff4edbe44983803cfa3fb3ea48f0b1b998e",
+    "authorDate": "2026-03-18T08:42:01-07:00",
+    "subject": "fix(worker): use discard instead of remove in processJob to prevent KeyError (#3884) [python]",
+    "body": "",
+    "issueRefs": [
+      "#3884"
+    ],
+    "touchedFiles": [
+      "python/bullmq/worker.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ca538b70050d49accd1153087d18a22ce16c12b8",
+    "authorDate": "2026-03-18T04:45:03-03:00",
+    "subject": "docs: fix job data syntax in fail-fast strategy example (#3890)",
+    "body": "",
+    "issueRefs": [
+      "#3890"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/patterns/failing-fast-when-redis-is-down.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0d1371ff624eab2f8998ce4ace4f6cd3c870d840",
+    "authorDate": "2026-03-11T14:23:17-07:00",
+    "subject": "docs(changelog): update missed fix ref (#3862)",
+    "body": "",
+    "issueRefs": [
+      "#3862"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/elixir/changelog.md",
+      "docs/gitbook/python/changelog.md"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "6cd60a79249a665270cf0723f43eb98f773f4b83",
+    "authorDate": "2026-03-05T18:43:43-06:00",
+    "subject": "fix(flow): allow deduplication from root parent (python) (elixir) (#3817) fixes #3761",
+    "body": "",
+    "issueRefs": [
+      "#3817",
+      "fixes #3761"
+    ],
+    "touchedFiles": [
+      "src/classes/job.ts",
+      "src/commands/addParentJob-6.lua",
+      "src/commands/includes/deduplicateJob.lua",
+      "src/commands/includes/deduplicateJobWithoutReplace.lua",
+      "src/interfaces/flow-job.ts",
+      "tests/flow.test.ts",
+      "tests/job.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "450253c3457f500d7f4e5aeebaa4ddfc937a1f39",
+    "authorDate": "2026-03-05T18:20:29-06:00",
+    "subject": "fix(otel): use job timestamps for process span attributes (#3832)",
+    "body": "",
+    "issueRefs": [
+      "#3832"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/SUMMARY.md",
+      "docs/gitbook/guide/telemetry/traces.md",
+      "src/classes/worker.ts",
+      "src/enums/telemetry-attributes.ts",
+      "tests/telemetry_interface.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "504b53689a29b3b4ddc902d25211a92da6a4d7af",
+    "authorDate": "2026-03-05T05:04:09+01:00",
+    "subject": "fix(auto-remove): remove orphaned jobs when auto-remove is enabled (#3853)",
+    "body": "",
+    "issueRefs": [
+      "#3853"
+    ],
+    "touchedFiles": [
+      "elixir/yarn.lock",
+      "php/yarn.lock",
+      "python/yarn.lock",
+      "src/classes/queue.ts",
+      "src/classes/scripts.ts",
+      "src/commands/includes/removeJobsByMaxAge.lua",
+      "src/commands/removeOrphanedJobs-1.lua",
+      "tests/clean.test.ts",
+      "tests/worker.test.ts",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0fafcc0950698f6a8a55a2b77ef1b82af5d5712f",
+    "authorDate": "2026-02-22T19:25:41-06:00",
+    "subject": "fix(deps): update dependency ioredis to v5.9.3 (#3821) fixes #3793",
+    "body": "",
+    "issueRefs": [
+      "#3821",
+      "fixes #3793"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1f67df99372205fd641102d57d1de6f7b7282eb3",
+    "authorDate": "2026-02-22T18:50:11-06:00",
+    "subject": "ci: fix husky warning (#3809)",
+    "body": "",
+    "issueRefs": [
+      "#3809"
+    ],
+    "touchedFiles": [
+      ".husky/commit-msg",
+      "package.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9c722585bd9873561fae3f32971d65cf00a7d092",
+    "authorDate": "2026-02-21T00:37:27+00:00",
+    "subject": "fix(sandbox): ensure non-bullmq messages are ignored (#3704) fixes #3703",
+    "body": "",
+    "issueRefs": [
+      "#3704",
+      "fixes #3703"
+    ],
+    "touchedFiles": [
+      "src/classes/child.ts",
+      "tests/fixtures/fixture_main_non_bullmq_messages.js",
+      "tests/fixtures/fixture_processor_simple.js",
+      "tests/sandboxed_process.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cce160d5e358b8590e9d7f5ee8db4438a699babb",
+    "authorDate": "2026-02-19T22:12:48-08:00",
+    "subject": "docs: fix deduplicated event parameter descriptions (#3747) ref #3523",
+    "body": "",
+    "issueRefs": [
+      "#3747",
+      "#3523"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/jobs/deduplication.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "87386ca88e29755fc68e6cc8fcfebfb7f8f8237f",
+    "authorDate": "2026-02-16T12:30:33+06:30",
+    "subject": "fix(job-scheduler): handle empty scheduler hash fallback (#3797) fixes #3796",
+    "body": "",
+    "issueRefs": [
+      "#3797",
+      "fixes #3796"
+    ],
+    "touchedFiles": [
+      "src/classes/job-scheduler.ts",
+      "tests/job_scheduler.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a62241f5831a1d3bb6c328a9037ea852be7832cd",
+    "authorDate": "2026-02-14T11:11:28+06:30",
+    "subject": "fix(queue): forward error from repeat or job-scheduler instances (#3775) fixes #3774",
+    "body": "",
+    "issueRefs": [
+      "#3775",
+      "fixes #3774"
+    ],
+    "touchedFiles": [
+      "src/classes/queue.ts",
+      "src/classes/worker.ts",
+      "tests/error-forwarding.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d249301ddc9afc607c9e86a8a44312af682e6be0",
+    "authorDate": "2026-02-12T18:59:45-06:00",
+    "subject": "fix(utils): use exact import of DatabaseType (#3786)",
+    "body": "",
+    "issueRefs": [
+      "#3786"
+    ],
+    "touchedFiles": [
+      "eslint.config.mjs",
+      "src/utils/index.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "590542314f13590cf68330097f5bb09a96bb240c",
+    "authorDate": "2026-02-11T09:39:37+01:00",
+    "subject": "fix: important performance fixes and improvements [elixir] (#3749)",
+    "body": "",
+    "issueRefs": [
+      "#3749"
+    ],
+    "touchedFiles": [
+      "elixir/guides/benchmarks.md",
+      "elixir/guides/introduction.md",
+      "elixir/guides/job_options.md",
+      "elixir/guides/workers.md",
+      "elixir/lib/bullmq/job.ex",
+      "elixir/lib/bullmq/lock_manager.ex",
+      "elixir/lib/bullmq/queue.ex",
+      "elixir/lib/bullmq/redis_connection.ex",
+      "elixir/lib/bullmq/redis_connection/pool.ex",
+      "elixir/lib/bullmq/scripts.ex",
+      "elixir/lib/bullmq/worker.ex",
+      "elixir/test/bullmq/blocking_wait_test.exs",
+      "elixir/test/bullmq/concurrency_diagnostic_test.exs",
+      "elixir/test/bullmq/concurrency_scaling_test.exs",
+      "elixir/test/bullmq/concurrency_verification_test.exs",
+      "elixir/test/bullmq/high_concurrency_test.exs",
+      "elixir/test/bullmq/integration_test.exs",
+      "elixir/test/bullmq/job_scheduler_integration_test.exs",
+      "elixir/test/bullmq/job_scheduler_processing_test.exs",
+      "elixir/test/bullmq/job_scheduler_stress_test.exs",
+      "elixir/test/bullmq/manual_processing_test.exs",
+      "elixir/test/bullmq/multi_worker_test.exs",
+      "elixir/test/bullmq/queue_events_integration_test.exs",
+      "elixir/test/bullmq/queue_integration_test.exs",
+      "elixir/test/bullmq/rate_limiter_integration_test.exs",
+      "elixir/test/bullmq/redis_baseline_test.exs",
+      "elixir/test/bullmq/redis_connection_pool_integration_test.exs",
+      "elixir/test/bullmq/stress_test.exs",
+      "elixir/test/bullmq/version_test.exs",
+      "elixir/test/bullmq/worker_cancellation_test.exs",
+      "elixir/test/bullmq/worker_integration_test.exs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "afb878f97ebeaf89c1308b7dde0b5a440381d113",
+    "authorDate": "2026-02-05T08:37:33-06:00",
+    "subject": "fix(connection): merge redisOptions when duplicating cluster (#3759)",
+    "body": "",
+    "issueRefs": [
+      "#3759"
+    ],
+    "touchedFiles": [
+      "docker-compose.yml",
+      "src/classes/queue-events.ts",
+      "src/classes/worker.ts",
+      "tests/cluster.test.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "da198f97babfdb30b2e195e131a88d4c9eff001f",
+    "authorDate": "2026-02-05T08:35:49-06:00",
+    "subject": "chore(deps): bump @isaacs/brace-expansion to v5.0.1 (#3763)",
+    "body": "",
+    "issueRefs": [
+      "#3763"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/flows/fail-parent.md",
+      "elixir/yarn.lock",
+      "php/yarn.lock",
+      "python/yarn.lock",
+      "tests/deduplication.test.ts",
+      "tests/events.test.ts",
+      "yarn.lock"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "de0fca894f47d8aa2b2c66ca9475e526ca477508",
+    "authorDate": "2026-01-27T20:17:13-06:00",
+    "subject": "fix(deps): use caret versioning for ioredis dependency (#3719) fixes #3718",
+    "body": "",
+    "issueRefs": [
+      "#3719",
+      "fixes #3718"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f824c01c53d57e75d7b57efce7a124adffed9dfa",
+    "authorDate": "2026-01-27T18:51:43-06:00",
+    "subject": "fix: use prioritized key name instead of priority [python] (#3717) fixes #3716",
+    "body": "",
+    "issueRefs": [
+      "#3717",
+      "fixes #3716"
+    ],
+    "touchedFiles": [
+      "python/bullmq/scripts.py",
+      "python/tests/queue_test.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3bd23d990c780ff0808d79499edd803084d2efe8",
+    "authorDate": "2026-01-27T11:55:21+01:00",
+    "subject": "fix(scheduler): fix job scheduler not creating subsequent iterations [elixir] (#3729)",
+    "body": "",
+    "issueRefs": [
+      "#3729"
+    ],
+    "touchedFiles": [
+      "elixir/lib/bullmq/job_scheduler.ex",
+      "elixir/lib/bullmq/telemetry/opentelemetry.ex",
+      "elixir/lib/bullmq/worker.ex",
+      "elixir/test/bullmq/job_scheduler_integration_test.exs",
+      "elixir/test/bullmq/job_scheduler_processing_test.exs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fa22e844d29961db95df58f2ae63b440d71c11f6",
+    "authorDate": "2026-01-24T22:58:34+00:00",
+    "subject": "fix: fix worker connection name on cluster #3340 (#3660)",
+    "body": "* fix(worker): connection name on cluster\n\n* fix(queue-getters): get connection from all cluster nodes\n\n* fix(worker): connection type cast to cluster\n\n* fix(queue-getters): import Cluster as type\n\n* Update src/classes/queue-getters.ts\n\nCo-authored-by: Copilot <175728472+Copilot@users.noreply.github.com>\n\n* test(cluster): add tests covering get workers\n\n* feat(worker): add worker name cluster support [elixir]\n\n* feat: add worker naming support [python]\n\n* fix(worker): fix compiler error [elixir]\n\n* fix: fix formatting [elixir]\n\n* fix: fix osv vulnerabilities\n\n* chore(getters): use a better name for nodeWithTheMostClients\n\n---------\n\nCo-authored-by: Manuel Astudillo <manuel@optimalbits.com>",
+    "issueRefs": [
+      "#3340",
+      "#3660"
+    ],
+    "touchedFiles": [
+      "elixir/lib/bullmq/queue.ex",
+      "elixir/lib/bullmq/redis_connection.ex",
+      "elixir/lib/bullmq/worker.ex",
+      "elixir/package.json",
+      "elixir/test/bullmq/queue_getters_test.exs",
+      "elixir/yarn.lock",
+      "package.json",
+      "php/package.json",
+      "php/yarn.lock",
+      "python/bullmq/queue.py",
+      "python/bullmq/redis_connection.py",
+      "python/bullmq/types/worker_options.py",
+      "python/bullmq/utils.py",
+      "python/bullmq/worker.py",
+      "python/package.json",
+      "python/tests/queue_getters_cluster_test.py",
+      "python/tests/redis_connection_cluster_test.py",
+      "python/yarn.lock",
+      "src/classes/queue-getters.ts",
+      "src/classes/worker.ts",
+      "tests/test_cluster.ts",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "87e74b5713b5017c29789094d6ac6ff26bfe79c1",
+    "authorDate": "2026-01-22T19:00:37-06:00",
+    "subject": "fix(deps): update dependency ioredis to v5.9.2 (#3713)",
+    "body": "",
+    "issueRefs": [
+      "#3713"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "61504f12fe591295fea5b087a6b7c533465e8653",
+    "authorDate": "2026-01-22T00:14:24-06:00",
+    "subject": "fix(queue): add missing defaultJobOptions field to QueueBaseOptions TypedDict [python] (#3702) fixes #3695",
+    "body": "",
+    "issueRefs": [
+      "#3702",
+      "fixes #3695"
+    ],
+    "touchedFiles": [
+      "python/bullmq/queue.py",
+      "python/bullmq/types/queue_options.py",
+      "python/tests/queue_test.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a8fc316c0989bd3edb54577ceb02bff0c600aa93",
+    "authorDate": "2026-01-21T18:04:32-06:00",
+    "subject": "perf(job): apply limit when removing jobs by max age (python) (elixir) (#3694) fixes #3672",
+    "body": "",
+    "issueRefs": [
+      "#3694",
+      "fixes #3672"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/workers/auto-removal-of-jobs.md",
+      "elixir/lib/bullmq/scripts.ex",
+      "elixir/lib/bullmq/worker.ex",
+      "elixir/test/bullmq/worker_integration_test.exs",
+      "python/bullmq/worker.py",
+      "python/tests/worker_test.py",
+      "src/classes/scripts.ts",
+      "src/commands/includes/removeJobsByMaxAge.lua",
+      "src/commands/includes/removeJobsOnFail.lua",
+      "src/commands/moveToFinished-14.lua",
+      "src/interfaces/base-job-options.ts",
+      "src/interfaces/index.ts",
+      "src/interfaces/keep-jobs.ts",
+      "src/interfaces/worker-options.ts",
+      "src/types/index.ts",
+      "src/types/keep-jobs.ts",
+      "tests/test_worker.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c2c6743428a306e39f74c86f63dc9122633040ea",
+    "authorDate": "2026-01-14T23:44:45+01:00",
+    "subject": "fix(scripts): add missing lua scripts in mix config [elixir] (#3697) fixes #3681",
+    "body": "",
+    "issueRefs": [
+      "#3697",
+      "fixes #3681"
+    ],
+    "touchedFiles": [
+      ".github/workflows/release.yml",
+      "elixir/mix.exs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5bcd4fbe0eb725a95b878f97b95c74106e7dff0f",
+    "authorDate": "2026-01-13T18:09:19-06:00",
+    "subject": "fix(scripts): copy lua scripts before releasing [elixir] (#3685) fixes #3681",
+    "body": "",
+    "issueRefs": [
+      "#3685",
+      "fixes #3681"
+    ],
+    "touchedFiles": [
+      ".github/workflows/release.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "661c581270186bc405967b91326daff061370d03",
+    "authorDate": "2026-01-11T22:21:23-06:00",
+    "subject": "fix(deps): update dependency ioredis to v5.9.1 (#3676) fixes #3667",
+    "body": "",
+    "issueRefs": [
+      "#3676",
+      "fixes #3667"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cc74805d5eda14ed684e2111c91de8890e752768",
+    "authorDate": "2025-12-27T16:29:36-05:00",
+    "subject": "fix(flow): remove debounce option from flow producer (#3646)",
+    "body": "",
+    "issueRefs": [
+      "#3646"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/flows/readme.md",
+      "src/commands/addParentJob-6.lua",
+      "src/interfaces/flow-job.ts",
+      "tests/test_flow.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f60c172725ab29c0159b804ae0b9d691105689c4",
+    "authorDate": "2025-12-25T19:16:41-05:00",
+    "subject": "fix(flow): remove deduplication option from flow producer (#3637)",
+    "body": "",
+    "issueRefs": [
+      "#3637"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/flows/readme.md",
+      "src/classes/lock-manager.ts",
+      "src/classes/worker.ts",
+      "src/commands/includes/removeDeduplicationKeyIfNeededOnRemoval.lua",
+      "src/commands/includes/removeJob.lua",
+      "src/commands/includes/removeJobWithChildren.lua",
+      "src/interfaces/flow-job.ts",
+      "src/interfaces/index.ts",
+      "src/interfaces/lock-manager-worker-context.ts",
+      "tests/test_lock_manager.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "706da0dc703d6be353d0140f1fd0de7683362e60",
+    "authorDate": "2025-12-25T09:55:04-05:00",
+    "subject": "fix(queue): convert boolean force parameter to string in obliterate method [python] (#3642) fixes #3640",
+    "body": "",
+    "issueRefs": [
+      "#3642",
+      "fixes #3640"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/queues/removing-jobs.md",
+      "elixir/test/bullmq/worker_cancellation_test.exs",
+      "python/bullmq/scripts.py",
+      "python/bullmq/types/deduplication_options.py",
+      "python/bullmq/worker.py",
+      "python/tests/bulk_test.py",
+      "python/tests/deduplication_test.py",
+      "python/tests/delay_test.py",
+      "python/tests/flow_test.py",
+      "python/tests/job_test.py",
+      "python/tests/queue_test.py",
+      "python/tests/worker_test.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7f602e1c6e31070f02c5ee5babbff33f55193551",
+    "authorDate": "2025-12-24T12:53:03-05:00",
+    "subject": "fix(flow): resolve KeyError when child job fails with failParentOnFailure option [python] (#3639) fixes #3638",
+    "body": "",
+    "issueRefs": [
+      "#3639",
+      "fixes #3638"
+    ],
+    "touchedFiles": [
+      "python/bullmq/worker.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3c7c1674787ec9da3766aad3ebf665fff3cf6500",
+    "authorDate": "2025-12-22T23:53:14+05:45",
+    "subject": "docs: fix invalid TypeScript destructuring in QueueEvents examples (#3627)",
+    "body": "",
+    "issueRefs": [
+      "#3627"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/events/readme.md",
+      "docs/gitbook/guide/returning-job-data.md",
+      "docs/gitbook/guide/workers.md",
+      "docs/gitbook/guide/workers/readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9c533c0347865445b7f7df6b1c6e0923d25b4a8f",
+    "authorDate": "2025-12-20T12:21:46-05:00",
+    "subject": "fix(flow): support failParentOnFailure and related dependency options with validation [python] (#3621) fixes #3620",
+    "body": "",
+    "issueRefs": [
+      "#3621",
+      "fixes #3620"
+    ],
+    "touchedFiles": [
+      "python/bullmq/job.py",
+      "python/bullmq/scripts.py",
+      "python/bullmq/types/job_options.py",
+      "python/tests/flow_test.py",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7ac421cb2e754ba262a18bb17d47f15fb22a6962",
+    "authorDate": "2025-12-20T00:08:19+01:00",
+    "subject": "fix(release): correct php release condition check [php] (#3617)",
+    "body": "",
+    "issueRefs": [
+      "#3617"
+    ],
+    "touchedFiles": [
+      ".github/workflows/release.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1380a16fa45c70f0bc5b938efdf178b33a19cac1",
+    "authorDate": "2025-12-19T14:00:59-05:00",
+    "subject": "fix(telemetry): send most updated attemptsMade value when finishing (#3623)",
+    "body": "",
+    "issueRefs": [
+      "#3623"
+    ],
+    "touchedFiles": [
+      "src/classes/worker.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c06077d427752f2ffb98b024bcadfcf84e8ecebe",
+    "authorDate": "2025-12-19T09:45:09-06:00",
+    "subject": "docs: fix misleading example in getJobCountByTypes comment (#3622)",
+    "body": "",
+    "issueRefs": [
+      "#3622"
+    ],
+    "touchedFiles": [
+      "src/classes/queue-getters.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5fbf778f0b8f58b90e82f9020c041f3248b0b269",
+    "authorDate": "2025-12-16T21:52:30-06:00",
+    "subject": "fix(deps): pin dependencies (#3609)",
+    "body": "",
+    "issueRefs": [
+      "#3609"
+    ],
+    "touchedFiles": [
+      ".github/workflows/release.yml",
+      "elixir/package.json",
+      "elixir/yarn.lock",
+      "package.json",
+      "php/package.json",
+      "php/yarn.lock",
+      "python/package.json",
+      "python/pyproject.toml",
+      "python/yarn.lock",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "84e8745e87dea9a7748852ccd281b728e6d0545e",
+    "authorDate": "2025-12-11T07:04:38-06:00",
+    "subject": "fix(scheduler): add generated delayed job before processing current job [elixir] (#3598)",
+    "body": "",
+    "issueRefs": [
+      "#3598"
+    ],
+    "touchedFiles": [
+      "elixir/lib/bullmq/job.ex",
+      "elixir/lib/bullmq/worker.ex"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "796d7aaafe3b972e486e0fd2165a0b911972b902",
+    "authorDate": "2025-12-07T23:04:24+01:00",
+    "subject": "ci: fix elixir release",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "elixir/readme.md",
+      "elixir/guides/getting_started.md",
+      "elixir/guides/introduction.md",
+      "elixir/guides/telemetry.md",
+      "elixir/guides/workers.md",
+      "elixir/lib/bullmq/queue.ex",
+      "elixir/lib/bullmq/version.ex",
+      "elixir/mix.exs",
+      "elixir/package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c385b520b9fbe3dd58cdaead79c258835cab4361",
+    "authorDate": "2025-12-01T18:17:37-06:00",
+    "subject": "fix(worker): add retryIfFailed method fixes #3517 [python] (#3521)",
+    "body": "",
+    "issueRefs": [
+      "fixes #3517",
+      "#3521"
+    ],
+    "touchedFiles": [
+      "python/bullmq/worker.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a8b9d76496afa5e913f823cf8c68eb428f6dd757",
+    "authorDate": "2025-12-01T09:00:54-06:00",
+    "subject": "fix(stalled): prevent lock errors while job is not longer in active state (#3579)",
+    "body": "",
+    "issueRefs": [
+      "#3579"
+    ],
+    "touchedFiles": [
+      "src/classes/lock-manager.ts",
+      "src/classes/scripts.ts",
+      "src/classes/worker.ts",
+      "src/commands/extendLocks-1.lua"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "17004b71766e5f70410ba2c58385b37015394272",
+    "authorDate": "2025-11-26T19:08:50-05:00",
+    "subject": "docs: fix unit time in retrying failing jobs documentation (#3582)",
+    "body": "",
+    "issueRefs": [
+      "#3582"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/retrying-failing-jobs.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "045f3e7a5d8edb85e1adbe82eb9e20ef33ad491b",
+    "authorDate": "2025-11-14T18:59:11-06:00",
+    "subject": "fix(connection): consider error code when checking connection error (#3537)",
+    "body": "",
+    "issueRefs": [
+      "#3537"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "src/utils/index.ts",
+      "tests/test_connection.ts",
+      "tests/test_queue.ts",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b4c7c6579b430b53d135b7a21d20d01d14c1814e",
+    "authorDate": "2025-11-13T04:10:36+01:00",
+    "subject": "fix(job-scheduler): changing every in upsert resets the iterations (#3551)",
+    "body": "",
+    "issueRefs": [
+      "#3551"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "src/commands/addJobScheduler-11.lua",
+      "tests/test_job_scheduler.ts",
+      "yarn.lock"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "d1a340ffbf6f537be2754ed36174c15076bd6c09",
+    "authorDate": "2025-11-09T12:06:12+08:00",
+    "subject": "docs(guide): fix small typos (#3549)",
+    "body": "",
+    "issueRefs": [
+      "#3549"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/flows/remove-child-dependency.md",
+      "docs/gitbook/guide/troubleshooting.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "86881c496e19ed96e64539dbe4513b5394bcaffa",
+    "authorDate": "2025-11-05T01:44:17-03:00",
+    "subject": "docs: fix typo in repeat strategies documentation (#3536)",
+    "body": "",
+    "issueRefs": [
+      "#3536"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/job-schedulers/repeat-strategies.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c82df834dc83b3cf889b6a1aba9d18ec8b5eaf70",
+    "authorDate": "2025-10-30T21:14:19-06:00",
+    "subject": "fix(queue): emit progress event when calling updateJobProgress (#3528)",
+    "body": "",
+    "issueRefs": [
+      "#3528"
+    ],
+    "touchedFiles": [
+      "src/classes/queue.ts",
+      "tests/test_job.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "98f73b3f33aa79cdd67d0c4090cc86a8e4cfeb4c",
+    "authorDate": "2025-10-30T15:11:27+01:00",
+    "subject": "fix: upsertJobScheduler does not apply change on existing scheduled job (#3524)",
+    "body": "Fixes #3500",
+    "issueRefs": [
+      "#3524",
+      "Fixes #3500"
+    ],
+    "touchedFiles": [
+      "src/commands/addJobScheduler-11.lua",
+      "tests/test_job_scheduler.ts"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "0aa7cc57db27a4e7b9fe3c5f52600abba749b053",
+    "authorDate": "2025-10-17T23:19:33-06:00",
+    "subject": "fix(worker): only emit error when moveToActive failed",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/classes/worker.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "02a42c9acf3b5e9c6d5ef01a97e153af94ddd4c2",
+    "authorDate": "2025-10-21T03:48:18+02:00",
+    "subject": "ci: fix semantic release to use OIDC (#3507)",
+    "body": "",
+    "issueRefs": [
+      "#3507"
+    ],
+    "touchedFiles": [
+      ".github/workflows/release.yml",
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fe716a74177cb2ca4175a7c47e898513a62061b9",
+    "authorDate": "2025-10-19T16:07:20+02:00",
+    "subject": "ci: fix semantic release to use OIDC (#3506)",
+    "body": "",
+    "issueRefs": [
+      "#3506"
+    ],
+    "touchedFiles": [
+      ".github/workflows/release.yml",
+      "package.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b5676af969e808136280d477c185dd79b9372f5b",
+    "authorDate": "2025-10-18T02:48:33+02:00",
+    "subject": "ci: attempt to fix release action (#3503)",
+    "body": "",
+    "issueRefs": [
+      "#3503"
+    ],
+    "touchedFiles": [
+      ".github/workflows/release.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "da1be06d1b288bb2a926fc3aa2b4e8b225273783",
+    "authorDate": "2025-10-17T02:11:17+02:00",
+    "subject": "ci: fix release action (#3501)",
+    "body": "",
+    "issueRefs": [
+      "#3501"
+    ],
+    "touchedFiles": [
+      ".github/workflows/release.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7a3f2fa131e20de80c45877a1018e1ccdf8a6506",
+    "authorDate": "2025-10-15T18:17:23-06:00",
+    "subject": "fix(queue): emit removed event when calling remove method (#3492) fixes #2668",
+    "body": "",
+    "issueRefs": [
+      "#3492",
+      "fixes #2668"
+    ],
+    "touchedFiles": [
+      "src/classes/queue.ts",
+      "tests/test_queue.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4b4bd97ee78af861121e2ccb90f210e4a74fbd26",
+    "authorDate": "2025-10-15T18:16:31-06:00",
+    "subject": "fix(worker): emit error once when failure happens in moveToFinished (#3498)",
+    "body": "",
+    "issueRefs": [
+      "#3498"
+    ],
+    "touchedFiles": [
+      "src/classes/worker.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3a17fbf634f78c5340086d72a60b5be44d1a812c",
+    "authorDate": "2025-10-15T18:12:41-06:00",
+    "subject": "docs: correct tsdoc comments for retry and reprocessJob methods (#3493) fixes #3483",
+    "body": "",
+    "issueRefs": [
+      "#3493",
+      "fixes #3483"
+    ],
+    "touchedFiles": [
+      "src/classes/job.ts",
+      "src/classes/scripts.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f1573b3023807aab9a68ea6b2ce16a58afe4402b",
+    "authorDate": "2025-10-06T08:07:58-06:00",
+    "subject": "fix(worker): do not retry processor when connection errors happen (#3482)",
+    "body": "",
+    "issueRefs": [
+      "#3482"
+    ],
+    "touchedFiles": [
+      "src/classes/worker.ts",
+      "tests/test_job_scheduler.ts",
+      "tests/test_obliterate.ts",
+      "tests/test_worker.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "22411010beca628d172790cfbac45e3cd3d102ed",
+    "authorDate": "2025-09-25T08:54:57+02:00",
+    "subject": "fix(job-scheduler): fix unstable upsert (#3446)",
+    "body": "",
+    "issueRefs": [
+      "#3446"
+    ],
+    "touchedFiles": [
+      "src/classes/job-scheduler.ts",
+      "src/classes/job.ts",
+      "src/classes/scripts.ts",
+      "src/classes/worker.ts",
+      "src/commands/addJobScheduler-11.lua",
+      "src/commands/addRepeatableJob-2.lua",
+      "src/commands/includes/addJobFromScheduler.lua",
+      "src/commands/includes/getJobSchedulerEveryNextMillis.lua",
+      "src/commands/includes/storeJobScheduler.lua",
+      "src/commands/moveStalledJobsToWait-8.lua",
+      "src/commands/updateJobScheduler-12.lua",
+      "src/enums/error-code.ts",
+      "src/interfaces/job-scheduler-json.ts",
+      "src/interfaces/repeatable-options.ts",
+      "tests/test_job_scheduler.ts",
+      "tests/test_job_scheduler_stress.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a8d82e6b556c2f242ee266413bcef3482aab1e9e",
+    "authorDate": "2025-09-19T22:51:55-05:00",
+    "subject": "docs(obliterate): fix typo in tsdoc comment (#3458)",
+    "body": "",
+    "issueRefs": [
+      "#3458"
+    ],
+    "touchedFiles": [
+      "src/classes/queue.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "845a6f5fdede9ecf4050e8b5617feb56dbb3c9a1",
+    "authorDate": "2025-09-19T08:58:53-06:00",
+    "subject": "fix(job): add custom jobId validation to prevent : inclusion (#3384) fixes #3382",
+    "body": "",
+    "issueRefs": [
+      "#3384",
+      "fixes #3382"
+    ],
+    "touchedFiles": [
+      "src/classes/job.ts",
+      "tests/test_queue.ts",
+      "tests/test_telemetry_interface.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "acdbd8bddb7a6f08bc3e508e2bd7e67abcba7121",
+    "authorDate": "2025-09-19T08:57:20-06:00",
+    "subject": "ci(deps): fix semantic-release format using conventionalcommits (#3455)",
+    "body": "",
+    "issueRefs": [
+      "#3455"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/SUMMARY.md",
+      "docs/gitbook/bullmq-pro/changelog.md",
+      "docs/gitbook/changelog.md",
+      "docs/gitbook/python/changelog.md",
+      "docs/gitbook/python/changelogs/changelog-v0.md",
+      "docs/gitbook/python/changelogs/changelog-v1.md",
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bd8fbc164caaa01f665d0c7e94177d0584d04f8c",
+    "authorDate": "2025-09-18T19:12:23-06:00",
+    "subject": "fix(deps): upgrade uuid to v11 (#3452)",
+    "body": "",
+    "issueRefs": [
+      "#3452"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e0ebd15e47b95f9300d6683475ec5d2176f07c95",
+    "authorDate": "2025-09-18T19:12:12-06:00",
+    "subject": "fix(events): set prev param as active when calling retryJob script (#3426)",
+    "body": "",
+    "issueRefs": [
+      "#3426"
+    ],
+    "touchedFiles": [
+      "src/commands/retryJob-11.lua",
+      "tests/test_events.ts",
+      "tests/test_pause.ts",
+      "tests/test_queue.ts",
+      "tests/test_worker.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "533b84461a908a3d0182002f16e9c0c0a0260014",
+    "authorDate": "2025-09-18T19:11:55-06:00",
+    "subject": "fix(deduplication): validate id option is provided (#3443) fixes #3432",
+    "body": "",
+    "issueRefs": [
+      "#3443",
+      "fixes #3432"
+    ],
+    "touchedFiles": [
+      "src/classes/job.ts",
+      "tests/test_deduplication.ts",
+      "tests/test_job.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "61f625f4d383d6d572c69610d7842e514d69e0e9",
+    "authorDate": "2025-09-11T12:51:56+00:00",
+    "subject": "docs(guide): fix jitter link format (#3445)",
+    "body": "",
+    "issueRefs": [
+      "#3445"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/retrying-failing-jobs.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7dfd2510a7bb03301365a2c24f045a0cd20580ef",
+    "authorDate": "2025-09-08T15:28:20+02:00",
+    "subject": "fix(deps): upgrade semver to v3 [python] (#3414)",
+    "body": "",
+    "issueRefs": [
+      "#3414"
+    ],
+    "touchedFiles": [
+      "python/bullmq/utils.py",
+      "python/pyproject.toml",
+      "python/requirements.txt"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ab7cfe0fe43da22b8175d65152471eb736e0c700",
+    "authorDate": "2025-09-07T22:46:37+10:00",
+    "subject": "docs(guide): fix typo in parallelism-and-concurrency (#3435)",
+    "body": "",
+    "issueRefs": [
+      "#3435"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/guide/parallelism-and-concurrency.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f6428188f39f054e8b94579435b16e260aff27cd",
+    "authorDate": "2025-09-04T10:48:25+07:00",
+    "subject": "fix(queue): preserve Job type inference when no explicit type for JobBase (#3423) fixes #3421",
+    "body": "",
+    "issueRefs": [
+      "#3423",
+      "fixes #3421"
+    ],
+    "touchedFiles": [
+      "src/classes/queue.ts",
+      "tests/test_queue.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "70e8a3f91595dcdc2d21122170ef4af1f53972ad",
+    "authorDate": "2025-08-30T06:36:16-06:00",
+    "subject": "fix(types): export Processor type (#3418)",
+    "body": "",
+    "issueRefs": [
+      "#3418"
+    ],
+    "touchedFiles": [
+      ".husky/pre-commit",
+      "package.json",
+      "src/index.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ffc6e26eb66533fc6eae4c406bb4b9a9f7590d9b",
+    "authorDate": "2025-08-29T08:35:08-06:00",
+    "subject": "fix(job-scheduler): consider undefined type in getJobScheduler return type (#3412)",
+    "body": "",
+    "issueRefs": [
+      "#3412"
+    ],
+    "touchedFiles": [
+      "src/classes/job-scheduler.ts",
+      "src/classes/queue.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "316d1ed32680e690b1d2ab92c79a53e0d4c00c2d",
+    "authorDate": "2025-08-25T19:29:10-06:00",
+    "subject": "fix(job): consider parent update when retrying (#3402) (python) fixes #3320",
+    "body": "",
+    "issueRefs": [
+      "#3402",
+      "fixes #3320"
+    ],
+    "touchedFiles": [
+      "src/commands/reprocessJob-8.lua",
+      "tests/test_flow.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d71b87245c8196d19dfeaf82e6ef14c91fb9a7c5",
+    "authorDate": "2025-08-23T12:02:44-06:00",
+    "subject": "fix(job): prevent unnecessary tryCatch calls in getTraces (#3400)",
+    "body": "",
+    "issueRefs": [
+      "#3400"
+    ],
+    "touchedFiles": [
+      "src/classes/job.ts",
+      "src/interfaces/job-json.ts",
+      "tests/test_job.ts"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "0be5721626e340f76407f7dcca297e37fe8d96da",
+    "authorDate": "2025-08-23T11:59:58-06:00",
+    "subject": "docs(bullmq-pro): fix broken link references (#3404)",
+    "body": "",
+    "issueRefs": [
+      "#3404"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/README (1).md",
+      "docs/gitbook/bullmq-pro/groups/getters.md",
+      "docs/gitbook/bullmq-pro/groups/local-group-concurrency.md",
+      "docs/gitbook/bullmq-pro/groups/local-group-rate-limit.md",
+      "docs/gitbook/bullmq-pro/groups/pausing-groups.md",
+      "docs/gitbook/bullmq-pro/groups/prioritized.md",
+      "docs/gitbook/bullmq-pro/groups/rate-limiting.md",
+      "docs/gitbook/bullmq-pro/nestjs/producers.md",
+      "docs/gitbook/bullmq-pro/nestjs/queue-events-listeners.md",
+      "docs/gitbook/guide/flows/readme.md",
+      "docs/gitbook/guide/flows/adding-bulks.md",
+      "docs/gitbook/guide/flows/get-flow-tree.md",
+      "docs/gitbook/guide/job-schedulers/readme.md",
+      "docs/gitbook/guide/job-schedulers/manage-job-schedulers.md",
+      "docs/gitbook/guide/jobs/deduplication.md",
+      "docs/gitbook/guide/jobs/delayed.md",
+      "docs/gitbook/guide/jobs/getters.md",
+      "docs/gitbook/guide/jobs/job-data.md",
+      "docs/gitbook/guide/jobs/prioritized.md",
+      "docs/gitbook/guide/jobs/repeatable.md",
+      "docs/gitbook/guide/jobs/stalled.md",
+      "docs/gitbook/guide/metrics/readme.md",
+      "docs/gitbook/guide/metrics/prometheus.md",
+      "docs/gitbook/guide/queues/adding-bulks.md",
+      "docs/gitbook/guide/queues/auto-removal-of-jobs.md",
+      "docs/gitbook/guide/queues/global-concurrency.md",
+      "docs/gitbook/guide/rate-limiting.md",
+      "docs/gitbook/guide/workers/auto-removal-of-jobs.md",
+      "docs/gitbook/patterns/adding-bulks.md",
+      "docs/gitbook/patterns/manual-retrying.md",
+      "docs/gitbook/patterns/manually-fetching-jobs.md",
+      "docs/gitbook/patterns/process-step-jobs.md",
+      "docs/gitbook/patterns/stop-retrying-jobs.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "53754fb239cf1b021ffc55391990d879d363dcf7",
+    "authorDate": "2025-08-10T09:57:09-06:00",
+    "subject": "fix(scheduler): consider startDate to generate nextMillis when using pattern (#3385) fixes #3378",
+    "body": "",
+    "issueRefs": [
+      "#3385",
+      "fixes #3378"
+    ],
+    "touchedFiles": [
+      "src/classes/job-scheduler.ts",
+      "tests/test_job_scheduler.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "93df852f97f04023d791546d30a6af24fbca6114",
+    "authorDate": "2025-07-31T00:23:41-07:00",
+    "subject": "fix(worker): emit failed event when children are failed in moveToWaitingChildren (#3346)",
+    "body": "",
+    "issueRefs": [
+      "#3346"
+    ],
+    "touchedFiles": [
+      "python/bullmq/error_code.py",
+      "python/bullmq/scripts.py",
+      "src/classes/scripts.ts",
+      "src/commands/includes/moveJobToWait.lua",
+      "src/commands/moveStalledJobsToWait-8.lua",
+      "src/commands/moveToWaitingChildren-7.lua",
+      "src/enums/error-code.ts",
+      "tests/test_flow.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "aead5d02693ccf9c20a098ba6f4e4e8e212da516",
+    "authorDate": "2025-07-30T18:46:24-07:00",
+    "subject": "ci(deps): remove brace-expansion resolution in favor of upgrades (#3356)",
+    "body": "",
+    "issueRefs": [
+      "#3356"
+    ],
+    "touchedFiles": [
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "edb714764066b06c068c8c8a5140b010f27c3b9a",
+    "authorDate": "2025-07-27T09:31:49+05:30",
+    "subject": "fix(queue): add support for 'waiting' parameter in clean method (#3338) fixes #3125",
+    "body": "",
+    "issueRefs": [
+      "#3338",
+      "fixes #3125"
+    ],
+    "touchedFiles": [
+      "src/classes/queue.ts",
+      "tests/test_clean.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "34ee33955a660b0696f4b6cff6d8d39fdcd160db",
+    "authorDate": "2025-07-25T05:44:18-06:00",
+    "subject": "fix(flow): remove parent from active when there are unsuccessful children (#3348)",
+    "body": "",
+    "issueRefs": [
+      "#3348"
+    ],
+    "touchedFiles": [
+      "src/commands/moveToWaitingChildren-8.lua",
+      "tests/test_flow.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "424d15508172a028479059920ed6bfcf1c54a389",
+    "authorDate": "2025-07-25T05:43:21-06:00",
+    "subject": "fix(worker): do not keep active jobs when pausing or closing (#3350) fixes #3349",
+    "body": "",
+    "issueRefs": [
+      "#3350",
+      "fixes #3349"
+    ],
+    "touchedFiles": [
+      "src/classes/worker.ts",
+      "tests/test_worker.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1e221d5404dcea750a08342c832a682e454135a3",
+    "authorDate": "2025-07-24T18:06:01-06:00",
+    "subject": "fix(repeat): use legacy updateRepeatableJob script when old format is present (#3364) fixes #3275",
+    "body": "",
+    "issueRefs": [
+      "#3364",
+      "fixes #3275"
+    ],
+    "touchedFiles": [
+      "src/classes/worker.ts",
+      "tests/test_repeat.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "83d969541f19fa9703eb73ff0006cd29a358c1e7",
+    "authorDate": "2025-07-19T14:22:29-06:00",
+    "subject": "fix(rate-limit): throw right error message if job does not exist (#3354)",
+    "body": "",
+    "issueRefs": [
+      "#3354"
+    ],
+    "touchedFiles": [
+      "src/commands/moveJobFromActiveToWait-9.lua",
+      "tests/test_rate_limiter.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b94d7ed5602e366b4401051b236f31ac2dd2a90d",
+    "authorDate": "2025-07-11T06:37:05-06:00",
+    "subject": "fix(connection): ignore info command when skipVersionCheck is provided as true (#3342) fixes #3341",
+    "body": "",
+    "issueRefs": [
+      "#3342",
+      "fixes #3341"
+    ],
+    "touchedFiles": [
+      "src/classes/redis-connection.ts",
+      "tests/test_connection.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1e3f3c507a7ceb8d8147941adc9de69367947a5e",
+    "authorDate": "2025-07-10T03:25:41+02:00",
+    "subject": "fix(scheduler): take offset into the startMillis calculation (#2944) fixes #247",
+    "body": "",
+    "issueRefs": [
+      "#2944",
+      "fixes #247"
+    ],
+    "touchedFiles": [
+      "src/classes/job-scheduler.ts",
+      "tests/test_job_scheduler.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e687d7cf86108138bbd5e911b11ab3c5717fc23c",
+    "authorDate": "2025-07-07T19:10:19-06:00",
+    "subject": "perf(woker): keep lower blockTimeout when consuming delayed markers (#3333)",
+    "body": "",
+    "issueRefs": [
+      "#3333"
+    ],
+    "touchedFiles": [
+      "src/classes/worker.ts"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "db089d78db98b287595995adf13f5f75ca8200b2",
+    "authorDate": "2025-06-20T04:39:08+02:00",
+    "subject": "ci: fix release so that it runs checks (#3313)",
+    "body": "",
+    "issueRefs": [
+      "#3313"
+    ],
+    "touchedFiles": [
+      ".github/workflows/release.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "588719ee49c7615affeb69d3a431025757115c10",
+    "authorDate": "2025-06-18T07:58:57-06:00",
+    "subject": "fix(scheduler): fix slot calculation when using every (#3307)",
+    "body": "",
+    "issueRefs": [
+      "#3307"
+    ],
+    "touchedFiles": [
+      "src/classes/job-scheduler.ts",
+      "tests/test_job_scheduler_stress.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fb65677f2d636e1aca3cc75cb3b740b8729b3358",
+    "authorDate": "2025-06-17T07:37:55-06:00",
+    "subject": "fix: avoid circular reference between scripts and queue (#3301)",
+    "body": "",
+    "issueRefs": [
+      "#3301"
+    ],
+    "touchedFiles": [
+      "src/classes/job.ts",
+      "src/classes/queue-base.ts",
+      "src/classes/scripts.ts",
+      "src/classes/worker.ts",
+      "src/types/index.ts",
+      "src/types/script-queue-context.ts",
+      "src/utils.ts",
+      "tests/test_events.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4f7c54f5609382d30c69c4b6ec04e257ba817088",
+    "authorDate": "2025-06-13T10:08:11+02:00",
+    "subject": "chore: fix brace-expansion vulnerability (#3300)",
+    "body": "",
+    "issueRefs": [
+      "#3300"
+    ],
+    "touchedFiles": [
+      ".husky/pre-commit",
+      "package.json",
+      "yarn.lock"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "97b215d5a7aeaf4dceb4543bef1a00e463f12197",
+    "authorDate": "2025-06-11T07:15:31-06:00",
+    "subject": "fix(job): pass stacktrace into scripts on failures [python] (#3294)",
+    "body": "",
+    "issueRefs": [
+      "#3294"
+    ],
+    "touchedFiles": [
+      "python/bullmq/error_code.py",
+      "python/bullmq/job.py",
+      "python/bullmq/scripts.py",
+      "python/bullmq/utils.py",
+      "python/tests/job_test.py",
+      "python/tests/queue_test.py"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "263d33d536a92daf578c56cbb58765917046e052",
+    "authorDate": "2025-06-11T15:13:09+02:00",
+    "subject": "fix(worker): avoid dangling jobs to hang the queue with rate limit fixes #3289 (#3297)",
+    "body": "",
+    "issueRefs": [
+      "fixes #3289",
+      "#3297"
+    ],
+    "touchedFiles": [
+      "src/classes/worker.ts",
+      "tests/test_delay.ts",
+      "tests/test_getters.ts",
+      "tests/test_job_scheduler.ts",
+      "tests/test_rate_limiter.ts"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "46f4bcc77b8f458c8c31b45351ce4e7d60f2c96c",
+    "authorDate": "2025-06-02T23:00:21+00:00",
+    "subject": "chore(release): 5.53.2 [skip ci]",
+    "body": "## [5.53.2](https://github.com/taskforcesh/bullmq/compare/v5.53.1...v5.53.2) (2025-06-02)\n\n### Performance Improvements\n\n* **stalled:** fail stalled jobs in a lazy way ([#3266](https://github.com/taskforcesh/bullmq/issues/3266)) ([5cbf064](https://github.com/taskforcesh/bullmq/commit/5cbf0647e106d45d78318a5e5e9fb017261374c9))",
+    "issueRefs": [
+      "#3266"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "483c9325597c21a9e7bb881d34e7f38615a87c43",
+    "authorDate": "2025-05-30T07:16:59+00:00",
+    "subject": "chore(release): 5.53.1 [skip ci]",
+    "body": "## [5.53.1](https://github.com/taskforcesh/bullmq/compare/v5.53.0...v5.53.1) (2025-05-30)\n\n### Bug Fixes\n\n* **job:** do not parse ignored failures in getDependencies ([#3284](https://github.com/taskforcesh/bullmq/issues/3284)) fixes [#3283](https://github.com/taskforcesh/bullmq/issues/3283) ([04ca6b5](https://github.com/taskforcesh/bullmq/commit/04ca6b55c15698aab3ceaf72bd2ed9c589d76197))\n* **scheduler:** remove current job when it is in delayed state ([#3269](https://github.com/taskforcesh/bullmq/issues/3269)) fixes [#3262](https://github.com/taskforcesh/bullmq/issues/3262) [#3272](https://github.com/taskforcesh/bullmq/issues/3272) ([1ca4cbd](https://github.com/taskforcesh/bullmq/commit/1ca4cbd17a58c7eba83030bd6440d0f5e5d69633))",
+    "issueRefs": [
+      "#3284",
+      "#3283",
+      "#3269",
+      "#3262",
+      "#3272"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "04ca6b55c15698aab3ceaf72bd2ed9c589d76197",
+    "authorDate": "2025-05-30T01:10:52-06:00",
+    "subject": "fix(job): do not parse ignored failures in getDependencies (#3284) fixes #3283",
+    "body": "",
+    "issueRefs": [
+      "#3284",
+      "fixes #3283"
+    ],
+    "touchedFiles": [
+      "src/classes/job.ts",
+      "tests/test_flow.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1ca4cbd17a58c7eba83030bd6440d0f5e5d69633",
+    "authorDate": "2025-05-30T01:10:10-06:00",
+    "subject": "fix(scheduler): remove current job when it is in delayed state (#3269) fixes #3262 #3272",
+    "body": "",
+    "issueRefs": [
+      "#3269",
+      "fixes #3262",
+      "#3272"
+    ],
+    "touchedFiles": [
+      "src/commands/addJobScheduler-11.lua",
+      "src/commands/includes/storeJobScheduler.lua",
+      "tests/test_job_scheduler_stress.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5252f22546370f80531e48199ca74e902d8804e7",
+    "authorDate": "2025-05-21T04:24:51+00:00",
+    "subject": "chore(release): 5.53.0 [skip ci]",
+    "body": "# [5.53.0](https://github.com/taskforcesh/bullmq/compare/v5.52.3...v5.53.0) (2025-05-21)\n\n### Features\n\n* **sandbox:** add getIgnoredChildrenFailures method in job's wrapper ([#3263](https://github.com/taskforcesh/bullmq/issues/3263)) ([5d2723d](https://github.com/taskforcesh/bullmq/commit/5d2723dd82e636846e2ff886abb4c0161c15a441))",
+    "issueRefs": [
+      "#3263"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "529f14b01cbd092800d32fd4af5d8fe615f70cb2",
+    "authorDate": "2025-05-19T13:46:09+00:00",
+    "subject": "chore(release): 5.52.3 [skip ci]",
+    "body": "## [5.52.3](https://github.com/taskforcesh/bullmq/compare/v5.52.2...v5.52.3) (2025-05-19)\n\n### Bug Fixes\n\n* **flow:** add new error code when parent has failed children ([#3268](https://github.com/taskforcesh/bullmq/issues/3268)) ([b8fba5e](https://github.com/taskforcesh/bullmq/commit/b8fba5e937a41d0c7ddc97443e9fa8d0f0de566b))\n\n### Features\n\n* **job:** add moveToCompleted method [python] ([#3251](https://github.com/taskforcesh/bullmq/issues/3251)) ([6a8e3e2](https://github.com/taskforcesh/bullmq/commit/6a8e3e206384b56063c6f5a46ca030d2b330c712))",
+    "issueRefs": [
+      "#3268",
+      "#3251"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b8fba5e937a41d0c7ddc97443e9fa8d0f0de566b",
+    "authorDate": "2025-05-19T07:44:41-06:00",
+    "subject": "fix(flow): add new error code when parent has failed children (#3268)",
+    "body": "",
+    "issueRefs": [
+      "#3268"
+    ],
+    "touchedFiles": [
+      "src/classes/scripts.ts",
+      "src/commands/includes/moveChildFromDependenciesIfNeeded.lua",
+      "src/commands/includes/moveParentToWait.lua",
+      "src/commands/moveToFinished-14.lua",
+      "src/enums/error-code.ts",
+      "tests/test_flow.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3f1aab12c37ef979eabce76878131b07bd0c8824",
+    "authorDate": "2025-05-13T05:52:31-06:00",
+    "subject": "ci: apply timeout when using pytest (#3257)",
+    "body": "",
+    "issueRefs": [
+      "#3257"
+    ],
+    "touchedFiles": [
+      ".github/workflows/test.yml",
+      "python/pytest.ini",
+      "python/requirements.txt",
+      "python/tests/worker_test.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "1bad54a2c1ac2094a475eaa14af701693047ab3f",
+    "authorDate": "2025-05-10T23:38:29+03:00",
+    "subject": "docs(manually-fetching): fix typo (#3258)",
+    "body": "",
+    "issueRefs": [
+      "#3258"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/patterns/manually-fetching-jobs.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a0381ddef2fbfb37c2e879e7a0f12e4c0ed95542",
+    "authorDate": "2025-05-08T01:25:01+00:00",
+    "subject": "chore(release): 5.52.2 [skip ci]",
+    "body": "## [5.52.2](https://github.com/taskforcesh/bullmq/compare/v5.52.1...v5.52.2) (2025-05-08)\n\n### Bug Fixes\n\n* **worker:** maxStalledCount no less  than 0 ([#3249](https://github.com/taskforcesh/bullmq/issues/3249)) fixes [#3248](https://github.com/taskforcesh/bullmq/issues/3248) ([34dcb8c](https://github.com/taskforcesh/bullmq/commit/34dcb8c3d01a822b07852bc928d882bd6e4049d2))",
+    "issueRefs": [
+      "#3249",
+      "#3248"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "34dcb8c3d01a822b07852bc928d882bd6e4049d2",
+    "authorDate": "2025-05-07T19:23:39-06:00",
+    "subject": "fix(worker): maxStalledCount no less  than 0 (#3249) fixes #3248",
+    "body": "",
+    "issueRefs": [
+      "#3249",
+      "fixes #3248"
+    ],
+    "touchedFiles": [
+      "src/classes/worker.ts",
+      "tests/test_worker.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0c8aa4b5ceb83f168c8fc9b1e38546d2f1ef9cf4",
+    "authorDate": "2025-05-02T05:49:49+00:00",
+    "subject": "chore(release): 5.52.1 [skip ci]",
+    "body": "## [5.52.1](https://github.com/taskforcesh/bullmq/compare/v5.52.0...v5.52.1) (2025-05-02)\n\n### Bug Fixes\n\n* **remove:** pass correct children meta references ([#3245](https://github.com/taskforcesh/bullmq/issues/3245)) ([01c62ad](https://github.com/taskforcesh/bullmq/commit/01c62ada0cea80c73ba28d79fd14ea5ba78fdc7d))",
+    "issueRefs": [
+      "#3245"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "01c62ada0cea80c73ba28d79fd14ea5ba78fdc7d",
+    "authorDate": "2025-05-01T23:48:23-06:00",
+    "subject": "fix(remove): pass correct children meta references (#3245)",
+    "body": "",
+    "issueRefs": [
+      "#3245"
+    ],
+    "touchedFiles": [
+      "python/bullmq/scripts.py",
+      "src/classes/scripts.ts",
+      "src/commands/includes/removeJobWithChildren.lua",
+      "src/commands/removeJob-2.lua",
+      "src/commands/removeUnprocessedChildren-2.lua"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "581420bbd709c742da7404153c521d91b5e0a54c",
+    "authorDate": "2025-05-01T01:51:38+00:00",
+    "subject": "chore(release): 5.52.0 [skip ci]",
+    "body": "# [5.52.0](https://github.com/taskforcesh/bullmq/compare/v5.51.1...v5.52.0) (2025-05-01)\n\n### Bug Fixes\n\n* **connection:** add str type in connection option [python] ([#3212](https://github.com/taskforcesh/bullmq/issues/3212)) ([72fac42](https://github.com/taskforcesh/bullmq/commit/72fac4297f5a60e0c2ae0831507cb16ce8baed5f))\n\n### Features\n\n* **flow:** support failed children in getFlow and getDependencies methods ([#3243](https://github.com/taskforcesh/bullmq/issues/3243)) ([d3b1cff](https://github.com/taskforcesh/bullmq/commit/d3b1cff4cf02aad8ae0812b1d465316a067118d0))",
+    "issueRefs": [
+      "#3212",
+      "#3243"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "72fac4297f5a60e0c2ae0831507cb16ce8baed5f",
+    "authorDate": "2025-04-30T19:50:16-06:00",
+    "subject": "fix(connection): add str type in connection option [python] (#3212)",
+    "body": "",
+    "issueRefs": [
+      "#3212"
+    ],
+    "touchedFiles": [
+      "python/bullmq/types/queue_options.py",
+      "python/bullmq/types/worker_options.py",
+      "python/tests/queue_test.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c8eaefa04a3d09800e17857cc508a5cd2e282f87",
+    "authorDate": "2025-04-26T21:57:49+00:00",
+    "subject": "chore(release): 5.51.1 [skip ci]",
+    "body": "## [5.51.1](https://github.com/taskforcesh/bullmq/compare/v5.51.0...v5.51.1) (2025-04-26)\n\n### Bug Fixes\n\n* **queue-events:** omit telemetry options ([#3239](https://github.com/taskforcesh/bullmq/issues/3239)) ([e4dac2c](https://github.com/taskforcesh/bullmq/commit/e4dac2c39fac0c8cce34fbcb98a0c72c1619ed4e))",
+    "issueRefs": [
+      "#3239"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e4dac2c39fac0c8cce34fbcb98a0c72c1619ed4e",
+    "authorDate": "2025-04-26T23:56:23+02:00",
+    "subject": "fix(queue-events): omit telemetry options (#3239)",
+    "body": "",
+    "issueRefs": [
+      "#3239"
+    ],
+    "touchedFiles": [
+      "src/classes/queue-events-producer.ts",
+      "src/interfaces/queue-options.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3a00cda1777b0fdfa5df3aa4770cf21e984ec5ed",
+    "authorDate": "2025-04-25T05:31:27+00:00",
+    "subject": "chore(release): 5.51.0 [skip ci]",
+    "body": "# [5.51.0](https://github.com/taskforcesh/bullmq/compare/v5.50.0...v5.51.0) (2025-04-25)\n\n### Bug Fixes\n\n* **job-scheduler:** remove next delayed job if present even if scheduler does not exist ([#3203](https://github.com/taskforcesh/bullmq/issues/3203)) ref [#3197](https://github.com/taskforcesh/bullmq/issues/3197) ([61395bf](https://github.com/taskforcesh/bullmq/commit/61395bf0b2fc656d1cdaf094fc62a03920ebe07d))\n\n### Features\n\n* **flow:** support ignored children in getFlow and getDependencies methods ([#3238](https://github.com/taskforcesh/bullmq/issues/3238)) ref [#3213](https://github.com/taskforcesh/bullmq/issues/3213) ([2927803](https://github.com/taskforcesh/bullmq/commit/2927803b4b1eaddb77d3690634beb9c071b5adf7))",
+    "issueRefs": [
+      "#3203",
+      "#3197",
+      "#3238",
+      "#3213"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "61395bf0b2fc656d1cdaf094fc62a03920ebe07d",
+    "authorDate": "2025-04-24T23:30:06-06:00",
+    "subject": "fix(job-scheduler): remove next delayed job if present even if scheduler does not exist (#3203) ref #3197",
+    "body": "",
+    "issueRefs": [
+      "#3203",
+      "#3197"
+    ],
+    "touchedFiles": [
+      "src/commands/addJobScheduler-11.lua",
+      "src/commands/includes/storeJob.lua",
+      "src/commands/updateJobScheduler-12.lua",
+      "tests/test_job_scheduler.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "962f5a9798b916088bc39043267132041af146bc",
+    "authorDate": "2025-04-25T02:03:14+00:00",
+    "subject": "chore(release): 5.50.0 [skip ci]",
+    "body": "# [5.50.0](https://github.com/taskforcesh/bullmq/compare/v5.49.2...v5.50.0) (2025-04-25)\n\n### Bug Fixes\n\n* **deduplication:** remove deduplication key only when jobId matches with the last one being saved ([#3236](https://github.com/taskforcesh/bullmq/issues/3236)) ([192e82c](https://github.com/taskforcesh/bullmq/commit/192e82caa0f7f530ed495740ec2ade37fe89b43b))\n\n### Features\n\n* **queue:** add getIgnoredChildrenFailures method ([#3194](https://github.com/taskforcesh/bullmq/issues/3194)) ([4affb11](https://github.com/taskforcesh/bullmq/commit/4affb11be26afad9f867db19a210c361ba64dd4b))",
+    "issueRefs": [
+      "#3236",
+      "#3194"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "192e82caa0f7f530ed495740ec2ade37fe89b43b",
+    "authorDate": "2025-04-24T20:01:52-06:00",
+    "subject": "fix(deduplication): remove deduplication key only when jobId matches with the last one being saved (#3236)",
+    "body": "",
+    "issueRefs": [
+      "#3236"
+    ],
+    "touchedFiles": [
+      "src/commands/includes/moveChildFromDependenciesIfNeeded.lua",
+      "src/commands/includes/removeDeduplicationKey.lua",
+      "src/commands/includes/removeDeduplicationKeyIfNeeded.lua",
+      "src/commands/includes/removeDeduplicationKeyIfNeededOnFinalization.lua",
+      "src/commands/includes/removeDeduplicationKeyIfNeededOnRemoval.lua",
+      "src/commands/includes/removeJob.lua",
+      "src/commands/includes/removeJobWithChildren.lua",
+      "src/commands/moveStalledJobsToWait-9.lua",
+      "src/commands/moveToFinished-14.lua",
+      "src/commands/moveToWaitingChildren-8.lua",
+      "tests/test_events.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b4e27383e9f4f60b0355abb54efa807e357a5683",
+    "authorDate": "2025-04-21T13:11:35+00:00",
+    "subject": "chore(release): 5.49.2 [skip ci]",
+    "body": "## [5.49.2](https://github.com/taskforcesh/bullmq/compare/v5.49.1...v5.49.2) (2025-04-21)\n\n### Performance Improvements\n\n* **flow:** change parent failure in a lazy way ([#3228](https://github.com/taskforcesh/bullmq/issues/3228)) ([6b37a37](https://github.com/taskforcesh/bullmq/commit/6b37a379cc65abe7b4c60ba427065957c9080a08))",
+    "issueRefs": [
+      "#3228"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "4dfa32a8c66cf0f6baaa9002a8a89343dee940d5",
+    "authorDate": "2025-04-17T09:29:59-06:00",
+    "subject": "test(clean): fix flaky test when checking keys quantity (#3225)",
+    "body": "",
+    "issueRefs": [
+      "#3225"
+    ],
+    "touchedFiles": [
+      "tests/test_clean.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a085c825bac8da263809f3a32db7937de38ad7e3",
+    "authorDate": "2025-04-17T13:43:46+00:00",
+    "subject": "chore(release): 5.49.1 [skip ci]",
+    "body": "## [5.49.1](https://github.com/taskforcesh/bullmq/compare/v5.49.0...v5.49.1) (2025-04-17)\n\n### Bug Fixes\n\n* **flow-producer:** use FlowProducer prefix by defualt when calling getFlow ([#3224](https://github.com/taskforcesh/bullmq/issues/3224)) ([bd17aad](https://github.com/taskforcesh/bullmq/commit/bd17aad64ec73917548e1bb45ee611b799363cc0))",
+    "issueRefs": [
+      "#3224"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bd17aad64ec73917548e1bb45ee611b799363cc0",
+    "authorDate": "2025-04-17T07:42:19-06:00",
+    "subject": "fix(flow-producer): use FlowProducer prefix by defualt when calling getFlow (#3224)",
+    "body": "",
+    "issueRefs": [
+      "#3224"
+    ],
+    "touchedFiles": [
+      "src/classes/flow-producer.ts",
+      "tests/test_flow.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bfb9685ccf3c5e160bdfdf50d7642e4ee4e6c955",
+    "authorDate": "2025-04-17T07:41:42-06:00",
+    "subject": "test: fix flaky test where worker should start after job addintions (#3226)",
+    "body": "",
+    "issueRefs": [
+      "#3226"
+    ],
+    "touchedFiles": [
+      "tests/test_worker.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9be6cbb3c4733139db3b0a6b9cefc742a2cf911f",
+    "authorDate": "2025-04-16T23:59:40-04:00",
+    "subject": "docs(readme): fix typo for Job.fromId text (#3223)",
+    "body": "",
+    "issueRefs": [
+      "#3223"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/README (1).md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b79df00bfca5c65827668159f8eed2221253322d",
+    "authorDate": "2025-04-16T01:37:59+00:00",
+    "subject": "chore(release): 5.49.0 [skip ci]",
+    "body": "# [5.49.0](https://github.com/taskforcesh/bullmq/compare/v5.48.1...v5.49.0) (2025-04-16)\n\n### Features\n\n* **job:** expose stalledCounter attribute ([#3218](https://github.com/taskforcesh/bullmq/issues/3218)) ([9456472](https://github.com/taskforcesh/bullmq/commit/94564724593699d13bc0ac238e23c13737edbbf2))",
+    "issueRefs": [
+      "#3218"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "75d88780aec86465efd4ed5ad54f4c6b5afe0b49",
+    "authorDate": "2025-04-10T04:54:56-06:00",
+    "subject": "chore: fix lint error in script file (#3207)",
+    "body": "",
+    "issueRefs": [
+      "#3207"
+    ],
+    "touchedFiles": [
+      "src/commands/includes/removeJobWithChildren.lua"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b00731469ebbc65d35003c48da093e48c0ccc6ed",
+    "authorDate": "2025-04-10T07:37:13+00:00",
+    "subject": "chore(release): 5.48.1 [skip ci]",
+    "body": "## [5.48.1](https://github.com/taskforcesh/bullmq/compare/v5.48.0...v5.48.1) (2025-04-10)\n\n### Bug Fixes\n\n* made line split more compatible ([#3208](https://github.com/taskforcesh/bullmq/issues/3208)) ([3c2349a](https://github.com/taskforcesh/bullmq/commit/3c2349a2936d0c59cfa8d136585a0c0156de3212)), closes [#3204](https://github.com/taskforcesh/bullmq/issues/3204)",
+    "issueRefs": [
+      "#3208",
+      "#3204"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3c2349a2936d0c59cfa8d136585a0c0156de3212",
+    "authorDate": "2025-04-10T15:35:52+08:00",
+    "subject": "fix: made line split more compatible (#3208)",
+    "body": "normalize line splitting for cross-platform compatibility\n\n#3204\n\nCo-authored-by: yasuo <xianzhengquan@tinman.cn>",
+    "issueRefs": [
+      "#3208",
+      "#3204"
+    ],
+    "touchedFiles": [
+      "src/classes/queue-getters.ts",
+      "src/classes/redis-connection.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "165b6a1fb9873c86e9455922ecc507bd736408e8",
+    "authorDate": "2025-04-09T15:20:29+02:00",
+    "subject": "ci: fix broken eslint (#3205)",
+    "body": "",
+    "issueRefs": [
+      "#3205"
+    ],
+    "touchedFiles": [
+      ".eslintignore",
+      ".eslintrc.json",
+      ".github/workflows/test.yml",
+      "eslint.config.mjs",
+      "package.json",
+      "src/classes/job.ts",
+      "src/classes/queue-base.ts",
+      "src/classes/queue-events.ts",
+      "src/classes/queue-getters.ts",
+      "src/classes/queue.ts",
+      "src/classes/scripts.ts",
+      "src/interfaces/sandboxed-options.ts",
+      "src/interfaces/telemetry.ts",
+      "src/interfaces/worker-options.ts",
+      "src/types/job-options.ts",
+      "src/utils.ts",
+      "tests/test_events.ts",
+      "tests/test_pause.ts",
+      "tests/test_worker.ts",
+      "yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7caa9d729f885861c3153a8d195857bc80b92279",
+    "authorDate": "2025-04-08T13:09:25+00:00",
+    "subject": "chore(release): 5.48.0 [skip ci]",
+    "body": "# [5.48.0](https://github.com/taskforcesh/bullmq/compare/v5.47.3...v5.48.0) (2025-04-08)\n\n### Features\n\n* add removeUnprocessedChildren ([#3190](https://github.com/taskforcesh/bullmq/issues/3190)) ([4b96266](https://github.com/taskforcesh/bullmq/commit/4b96266d4a7e2fe4b1b3eba12e9e7cc5a64fc044))",
+    "issueRefs": [
+      "#3190"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4805e43ba7c28d1dbea2c70f5313298f8fd2243d",
+    "authorDate": "2025-04-08T00:52:50+00:00",
+    "subject": "chore(release): 5.47.3 [skip ci]",
+    "body": "## [5.47.3](https://github.com/taskforcesh/bullmq/compare/v5.47.2...v5.47.3) (2025-04-08)\n\n### Bug Fixes\n\n* **job-scheduler:** fix endDate presence validation ([#3195](https://github.com/taskforcesh/bullmq/issues/3195)) ([339f13e](https://github.com/taskforcesh/bullmq/commit/339f13e277c7c087adc9023f5a433d9a21c661a2))",
+    "issueRefs": [
+      "#3195"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "339f13e277c7c087adc9023f5a433d9a21c661a2",
+    "authorDate": "2025-04-07T18:51:35-06:00",
+    "subject": "fix(job-scheduler): fix endDate presence validation (#3195)",
+    "body": "",
+    "issueRefs": [
+      "#3195"
+    ],
+    "touchedFiles": [
+      "src/classes/async-fifo-queue.ts",
+      "src/classes/child.ts",
+      "src/classes/job-scheduler.ts",
+      "src/classes/queue-base.ts",
+      "src/classes/queue-keys.ts",
+      "src/classes/repeat.ts",
+      "src/classes/worker.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d2f9b2f3530f78c121e50606334449914943fff3",
+    "authorDate": "2025-04-06T17:06:28+00:00",
+    "subject": "chore(release): 5.47.2 [skip ci]",
+    "body": "## [5.47.2](https://github.com/taskforcesh/bullmq/compare/v5.47.1...v5.47.2) (2025-04-06)\n\n### Bug Fixes\n\n* **flow:** remove job from dependencies when failParentOnFailure or continueParentOnFailure ([#3201](https://github.com/taskforcesh/bullmq/issues/3201)) ([1fbcbec](https://github.com/taskforcesh/bullmq/commit/1fbcbec56969fc4aa628f77e4b05d2c6844894ae))",
+    "issueRefs": [
+      "#3201"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1fbcbec56969fc4aa628f77e4b05d2c6844894ae",
+    "authorDate": "2025-04-06T11:05:12-06:00",
+    "subject": "fix(flow): remove job from dependencies when failParentOnFailure or continueParentOnFailure (#3201)",
+    "body": "",
+    "issueRefs": [
+      "#3201"
+    ],
+    "touchedFiles": [
+      "src/classes/scripts.ts",
+      "src/commands/includes/moveChildFromDependenciesIfNeeded.lua",
+      "src/commands/includes/moveParentToWaitIfNeeded.lua",
+      "src/commands/moveStalledJobsToWait-9.lua",
+      "src/commands/moveToFinished-14.lua",
+      "src/commands/moveToWaitingChildren-8.lua",
+      "tests/test_flow.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f11db049652535d61bc70c0e7d214449de6650fa",
+    "authorDate": "2025-04-05T06:52:23+00:00",
+    "subject": "chore(release): 5.47.1 [skip ci]",
+    "body": "## [5.47.1](https://github.com/taskforcesh/bullmq/compare/v5.47.0...v5.47.1) (2025-04-05)\n\n### Bug Fixes\n\n* **flow-producer:** fix queueName otel attribute when passing it to addNode ([#3198](https://github.com/taskforcesh/bullmq/issues/3198)) ([758ea26](https://github.com/taskforcesh/bullmq/commit/758ea2647b3dad683796351919b0380172fa717f))",
+    "issueRefs": [
+      "#3198"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "758ea2647b3dad683796351919b0380172fa717f",
+    "authorDate": "2025-04-05T00:51:05-06:00",
+    "subject": "fix(flow-producer): fix queueName otel attribute when passing it to addNode (#3198)",
+    "body": "",
+    "issueRefs": [
+      "#3198"
+    ],
+    "touchedFiles": [
+      "src/classes/flow-producer.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "49ca650342888d4b887b7786f59929d3218a4610",
+    "authorDate": "2025-04-04T19:37:47+00:00",
+    "subject": "chore(release): 5.47.0 [skip ci]",
+    "body": "# [5.47.0](https://github.com/taskforcesh/bullmq/compare/v5.46.1...v5.47.0) (2025-04-04)\n\n### Features\n\n* **flows:** add continueParentOnFailure option ([#3181](https://github.com/taskforcesh/bullmq/issues/3181)) ([738d375](https://github.com/taskforcesh/bullmq/commit/738d3752934746a347fd04e59e9dcd4726777508))",
+    "issueRefs": [
+      "#3181"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1ba654aa0e65746a06b423fc0aa6123bf10f5cde",
+    "authorDate": "2025-04-03T03:53:28+00:00",
+    "subject": "chore(release): 5.46.1 [skip ci]",
+    "body": "## [5.46.1](https://github.com/taskforcesh/bullmq/compare/v5.46.0...v5.46.1) (2025-04-03)\n\n### Bug Fixes\n\n* **queue-events:** pass right path for JobProgress type ([#3192](https://github.com/taskforcesh/bullmq/issues/3192)) fixes [#3191](https://github.com/taskforcesh/bullmq/issues/3191) ([33c62e6](https://github.com/taskforcesh/bullmq/commit/33c62e67268daf24d92653abb5b857ac2241b3aa))",
+    "issueRefs": [
+      "#3192",
+      "#3191"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "33c62e67268daf24d92653abb5b857ac2241b3aa",
+    "authorDate": "2025-04-02T21:52:17-06:00",
+    "subject": "fix(queue-events): pass right path for JobProgress type (#3192) fixes #3191",
+    "body": "",
+    "issueRefs": [
+      "#3192",
+      "fixes #3191"
+    ],
+    "touchedFiles": [
+      "src/classes/queue-events.ts",
+      "tsconfig.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4999a5edca65e771551f93b310b0c58617421dab",
+    "authorDate": "2025-04-02T13:58:24+00:00",
+    "subject": "chore(release): 5.46.0 [skip ci]",
+    "body": "# [5.46.0](https://github.com/taskforcesh/bullmq/compare/v5.45.2...v5.46.0) (2025-04-02)\n\n### Features\n\n* **updateProgress:** allow more types to be used as progress ([#3187](https://github.com/taskforcesh/bullmq/issues/3187)) ([f16b748](https://github.com/taskforcesh/bullmq/commit/f16b748d7e3af2535ccdc54e12500af74874a235))",
+    "issueRefs": [
+      "#3187"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ea8f6d3cfe1def60aba3f44b37ba9df5ad7d5eb1",
+    "authorDate": "2025-03-29T23:25:35+00:00",
+    "subject": "chore(release): 5.45.2 [skip ci]",
+    "body": "## [5.45.2](https://github.com/taskforcesh/bullmq/compare/v5.45.1...v5.45.2) (2025-03-29)\n\n### Bug Fixes\n\n* **flow:** validate pending dependencies before removing lock ([#3182](https://github.com/taskforcesh/bullmq/issues/3182)) ([8d59e3b](https://github.com/taskforcesh/bullmq/commit/8d59e3b8084c60afad16372b4f7fc22f1b9d3f4e))",
+    "issueRefs": [
+      "#3182"
+    ],
+    "touchedFiles": [
+      "docs/gitbook/changelog.md",
+      "package.json",
+      "src/version.ts"
+    ],
+    "fixCategory": "other"
+  }
+]

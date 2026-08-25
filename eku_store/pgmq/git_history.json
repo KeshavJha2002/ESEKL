@@ -1,0 +1,2700 @@
+[
+  {
+    "commitHash": "c41b93adc4a93914339bde0ec3792311191f9e73",
+    "authorDate": "2026-08-21T09:27:00-05:00",
+    "subject": "Bump pytest from 8.4.2 to 9.0.3 in /pgmq-extension/client-tests (#552)",
+    "body": "Bumps [pytest](https://github.com/pytest-dev/pytest) from 8.4.2 to\n9.0.3.\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a\nhref=\"https://github.com/pytest-dev/pytest/releases\">pytest's\nreleases</a>.</em></p>\n<blockquote>\n<h2>9.0.3</h2>\n<h1>pytest 9.0.3 (2026-04-07)</h1>\n<h2>Bug fixes</h2>\n<ul>\n<li>\n<p><a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/12444\">#12444</a>:\nFixed <code>pytest.approx</code> which now correctly takes into account\n<code>~collections.abc.Mapping</code> keys order to compare them.</p>\n</li>\n<li>\n<p><a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/13634\">#13634</a>:\nBlocking a <code>conftest.py</code> file using the <code>-p no:</code>\noption is now explicitly disallowed.</p>\n<p>Previously this resulted in an internal assertion failure during\nplugin loading.</p>\n<p>Pytest now raises a clear <code>UsageError</code> explaining that\nconftest files are not plugins and cannot be disabled via\n<code>-p</code>.</p>\n</li>\n<li>\n<p><a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/13734\">#13734</a>:\nFixed crash when a test raises an exceptiongroup with\n<code>__tracebackhide__ = True</code>.</p>\n</li>\n<li>\n<p><a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14195\">#14195</a>:\nFixed an issue where non-string messages passed to <!-- raw HTML omitted\n-->unittest.TestCase.subTest()<!-- raw HTML omitted --> were not\nprinted.</p>\n</li>\n<li>\n<p><a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14343\">#14343</a>:\nFixed use of insecure temporary directory (CVE-2025-71176).</p>\n</li>\n</ul>\n<h2>Improved documentation</h2>\n<ul>\n<li><a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/13388\">#13388</a>:\nClarified documentation for <code>-p</code> vs\n<code>PYTEST_PLUGINS</code> plugin loading and fixed an incorrect\n<code>-p</code> example.</li>\n<li><a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/13731\">#13731</a>:\nClarified that capture fixtures (e.g. <code>capsys</code> and\n<code>capfd</code>) take precedence over the <code>-s</code> /\n<code>--capture=no</code> command-line options in <code>Accessing\ncaptured output from a test function\n&lt;accessing-captured-output&gt;</code>.</li>\n<li><a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14088\">#14088</a>:\nClarified that the default <code>pytest_collection</code> hook sets\n<code>session.items</code> before it calls\n<code>pytest_collection_finish</code>, not after.</li>\n<li><a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14255\">#14255</a>:\nTOML integer log levels must be quoted: Updating reference\ndocumentation.</li>\n</ul>\n<h2>Contributor-facing changes</h2>\n<ul>\n<li>\n<p><a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/12689\">#12689</a>:\nThe test reports are now published to Codecov from GitHub Actions.\nThe test statistics is visible <a\nhref=\"https://app.codecov.io/gh/pytest-dev/pytest/tests\">on the web\ninterface</a>.</p>\n<p>-- by <code>aleguy02</code></p>\n</li>\n</ul>\n<h2>9.0.2</h2>\n<h1>pytest 9.0.2 (2025-12-06)</h1>\n<h2>Bug fixes</h2>\n<ul>\n<li>\n<p><a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/13896\">#13896</a>:\nThe terminal progress feature added in pytest 9.0.0 has been disabled by\ndefault, except on Windows, due to compatibility issues with some\nterminal emulators.</p>\n<p>You may enable it again by passing <code>-p terminalprogress</code>.\nWe may enable it by default again once compatibility improves in the\nfuture.</p>\n<p>Additionally, when the environment variable <code>TERM</code> is\n<code>dumb</code>, the escape codes are no longer emitted, even if the\nplugin is enabled.</p>\n</li>\n<li>\n<p><a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/13904\">#13904</a>:\nFixed the TOML type of the <code>tmp_path_retention_count</code>\nsettings in the API reference from number to string.</p>\n</li>\n<li>\n<p><a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/13946\">#13946</a>:\nThe private <code>config.inicfg</code> attribute was changed in a\nbreaking manner in pytest 9.0.0.\nDue to its usage in the ecosystem, it is now restored to working order\nusing a compatibility shim.\nIt will be deprecated in pytest 9.1 and removed in pytest 10.</p>\n</li>\n</ul>\n<!-- raw HTML omitted -->\n</blockquote>\n<p>... (truncated)</p>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a\nhref=\"https://github.com/pytest-dev/pytest/commit/a7d58d7a21b78581e636bbbdea13c66ad1657c1e\"><code>a7d58d7</code></a>\nPrepare release version 9.0.3</li>\n<li><a\nhref=\"https://github.com/pytest-dev/pytest/commit/089d98199c253d8f89a040243bc4f2aa6cd5ab22\"><code>089d981</code></a>\nMerge pull request <a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14366\">#14366</a>\nfrom bluetech/revert-14193-backport</li>\n<li><a\nhref=\"https://github.com/pytest-dev/pytest/commit/8127eaf4ab7f6b2fdd0dc1b38343ec97aeef05ac\"><code>8127eaf</code></a>\nRevert &quot;Fix: assertrepr_compare respects dict insertion order (<a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14050\">#14050</a>)\n(<a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14193\">#14193</a>)&quot;</li>\n<li><a\nhref=\"https://github.com/pytest-dev/pytest/commit/99a7e6029e7a6e8d53e5df114b1346e035370241\"><code>99a7e60</code></a>\nMerge pull request <a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14363\">#14363</a>\nfrom pytest-dev/patchback/backports/9.0.x/95d8423bd...</li>\n<li><a\nhref=\"https://github.com/pytest-dev/pytest/commit/ddee02a578da30dd43aedc39c1c1f1aaadfcee95\"><code>ddee02a</code></a>\nMerge pull request <a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14343\">#14343</a>\nfrom bluetech/cve-2025-71176-simple</li>\n<li><a\nhref=\"https://github.com/pytest-dev/pytest/commit/74eac6916fee34726cb194f16c516e96fbd29619\"><code>74eac69</code></a>\ndoc: Update training info (<a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14298\">#14298</a>)\n(<a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14301\">#14301</a>)</li>\n<li><a\nhref=\"https://github.com/pytest-dev/pytest/commit/f92dee777cfdb77d1c43633d02766ddf1f07c869\"><code>f92dee7</code></a>\nMerge pull request <a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14267\">#14267</a>\nfrom pytest-dev/patchback/backports/9.0.x/d6fa26c62...</li>\n<li><a\nhref=\"https://github.com/pytest-dev/pytest/commit/7ee58acc8777c31ac6cf388d01addf5a414a7439\"><code>7ee58ac</code></a>\nMerge pull request <a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/12378\">#12378</a>\nfrom Pierre-Sassoulas/fix-implicit-str-concat-and-d...</li>\n<li><a\nhref=\"https://github.com/pytest-dev/pytest/commit/37da870d37e3a2f5177cae075c7b9ae279432bf8\"><code>37da870</code></a>\nMerge pull request <a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14259\">#14259</a>\nfrom mitre88/patch-4 (<a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14268\">#14268</a>)</li>\n<li><a\nhref=\"https://github.com/pytest-dev/pytest/commit/c34bfa3b7acb65b594707c714f1d8461b0304eed\"><code>c34bfa3</code></a>\nAdd explanation for string context diffs (<a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14257\">#14257</a>)\n(<a\nhref=\"https://redirect.github.com/pytest-dev/pytest/issues/14266\">#14266</a>)</li>\n<li>Additional commits viewable in <a\nhref=\"https://github.com/pytest-dev/pytest/compare/8.4.2...9.0.3\">compare\nview</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility\nscore](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=pytest&package-manager=uv&previous-version=8.4.2&new-version=9.0.3)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nYou can trigger a rebase of this PR by commenting `@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits\nthat have been made to it\n- `@dependabot show <dependency name> ignore conditions` will show all\nof the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop\nDependabot creating any more for this major version (unless you reopen\nthe PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop\nDependabot creating any more for this minor version (unless you reopen\nthe PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop\nDependabot creating any more for this dependency (unless you reopen the\nPR or upgrade to it yourself)\nYou can disable automated security fix PRs for this repo from the\n[Security Alerts page](https://github.com/pgmq/pgmq/network/alerts).\n\n</details>\n\n> **Note**\n> Automatic rebases have been disabled on this pull request as it has\nbeen open for over 30 days.\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\nCo-authored-by: Ali Tavallaie <a.tavallaie@gmail.com>",
+    "issueRefs": [
+      "#552",
+      "#12444",
+      "#13634",
+      "#13734",
+      "#14195",
+      "#14343",
+      "#13388",
+      "#13731",
+      "#14088",
+      "#14255",
+      "#12689",
+      "#13896",
+      "#13904",
+      "#13946",
+      "#14366",
+      "#14050",
+      "#14193",
+      "#14363",
+      "#14298",
+      "#14301",
+      "#14267",
+      "#12378",
+      "#14259",
+      "#14268",
+      "#14257",
+      "#14266"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/client-tests/pyproject.toml",
+      "pgmq-extension/client-tests/uv.lock"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "162701525589e85c3a207ecdd5b80628ad0512e8",
+    "authorDate": "2026-08-21T09:22:09-05:00",
+    "subject": "Bump pygments from 2.19.2 to 2.20.0 in /pgmq-extension/client-tests (#553)",
+    "body": "Bumps [pygments](https://github.com/pygments/pygments) from 2.19.2 to\n2.20.0.\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a\nhref=\"https://github.com/pygments/pygments/releases\">pygments's\nreleases</a>.</em></p>\n<blockquote>\n<h2>2.20.0</h2>\n<ul>\n<li>\n<p>New lexers:</p>\n<ul>\n<li>Rell (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2914\">#2914</a>)</li>\n</ul>\n</li>\n<li>\n<p>Updated lexers:</p>\n<ul>\n<li>archetype: Fix catastrophic backtracking in GUID and ID patterns (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3064\">#3064</a>)</li>\n<li>ASN.1: Recognize minus sign and fix range operator (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3014\">#3014</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3060\">#3060</a>)</li>\n<li>C++: Add C++26 keywords (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2955\">#2955</a>),\nadd integer literal suffixes (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2966\">#2966</a>)</li>\n<li>ComponentPascal: Fix <code>analyse_text</code> (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3028\">#3028</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3032\">#3032</a>)</li>\n<li>Coq renamed to Rocq (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2883\">#2883</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2908\">#2908</a>)</li>\n<li>Cython: Various improvements (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2932\">#2932</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2933\">#2933</a>)</li>\n<li>Debian control: Improve architecture parsing (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3052\">#3052</a>)</li>\n<li>Devicetree: Add support for overlay/fragments (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3021\">#3021</a>),\nadd bytestring support (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3022\">#3022</a>),\nfix catastrophic backtracking (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3057\">#3057</a>)</li>\n<li>Fennel: Various improvements (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2911\">#2911</a>)</li>\n<li>Haskell: Handle escape sequences in character literals (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3069\">#3069</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/1795\">#1795</a>)</li>\n<li>Java: Add module keywords (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2955\">#2955</a>)</li>\n<li>Lean4: Add operators <code>]'</code>, <code>]?</code>,\n<code>]!</code> (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2946\">#2946</a>)</li>\n<li>LESS: Support single-line comments (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3005\">#3005</a>)</li>\n<li>LilyPond: Update to 2.25.29 (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2974\">#2974</a>)</li>\n<li>LLVM: Support C-style comments (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3023\">#3023</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2978\">#2978</a>)</li>\n<li>Lua(u): Fix catastrophic backtracking (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3047\">#3047</a>)</li>\n<li>Macaulay2: Update to 1.25.05 (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2893\">#2893</a>),\n1.25.11 (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2988\">#2988</a>)</li>\n<li>Mathematica: Various improvements (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2957\">#2957</a>)</li>\n<li>meson: Add additional operators (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2919\">#2919</a>)</li>\n<li>MySQL: Update keywords (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2970\">#2970</a>)</li>\n<li>org-Mode: Support both schedule and deadline (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2899\">#2899</a>)</li>\n<li>PHP: Add <code>__PROPERTY__</code> magic constant (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2924\">#2924</a>),\nadd reserved keywords (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3002\">#3002</a>)</li>\n<li>PostgreSQL: Add more keywords (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2985\">#2985</a>)</li>\n<li>protobuf: Fix namespace tokenization (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2929\">#2929</a>)</li>\n<li>Python: Add <code>t</code>-string support (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2973\">#2973</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3009\">#3009</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3010\">#3010</a>)</li>\n<li>Tablegen: Fix infinite loop (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2972\">#2972</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2940\">#2940</a>)</li>\n<li>Tera Term macro: Add commands introduced in v5.3 through v5.6 (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2951\">#2951</a>)</li>\n<li>TOML: Support TOML 1.1.0 (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3026\">#3026</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3027\">#3027</a>)</li>\n<li>Turtle: Allow empty comment lines (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2980\">#2980</a>)</li>\n<li>XML: Added <code>.xbrl</code> as file ending (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2890\">#2890</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2891\">#2891</a>)</li>\n</ul>\n</li>\n<li>\n<p>Drop Python 3.8, and add Python 3.14 as a supported version (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2987\">#2987</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3012\">#3012</a>)</p>\n</li>\n<li>\n<p>Various improvements to <code>autopygmentize</code> (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2894\">#2894</a>)</p>\n</li>\n<li>\n<p>Update <code>onedark</code> style to support more token types (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2977\">#2977</a>)</p>\n</li>\n<li>\n<p>Update <code>rtt</code> style to support more token types (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2895\">#2895</a>)</p>\n</li>\n<li>\n<p>Cache entry points to improve performance (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2979\">#2979</a>)</p>\n</li>\n<li>\n<p>Fix <code>xterm-256</code> color table (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3043\">#3043</a>)</p>\n</li>\n<li>\n<p>Fix <code>kwargs</code> dictionary getting mutated on each call (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3044\">#3044</a>)</p>\n</li>\n</ul>\n</blockquote>\n</details>\n<details>\n<summary>Changelog</summary>\n<p><em>Sourced from <a\nhref=\"https://github.com/pygments/pygments/blob/master/CHANGES\">pygments's\nchangelog</a>.</em></p>\n<blockquote>\n<h2>Version 2.20.0</h2>\n<p>(released March 29th, 2026)</p>\n<ul>\n<li>\n<p>New lexers:</p>\n<ul>\n<li>Rell (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2914\">#2914</a>)</li>\n</ul>\n</li>\n<li>\n<p>Updated lexers:</p>\n<ul>\n<li>archetype: Fix catastrophic backtracking in GUID and ID patterns (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3064\">#3064</a>)</li>\n<li>ASN.1: Recognize minus sign and fix range operator (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3014\">#3014</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3060\">#3060</a>)</li>\n<li>C++: Add C++26 keywords (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2955\">#2955</a>),\nadd integer literal suffixes (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2966\">#2966</a>)</li>\n<li>ComponentPascal: Fix <code>analyse_text</code> (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3028\">#3028</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3032\">#3032</a>)</li>\n<li>Coq renamed to Rocq (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2883\">#2883</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2908\">#2908</a>)</li>\n<li>Cython: Various improvements (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2932\">#2932</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2933\">#2933</a>)</li>\n<li>Debian control: Improve architecture parsing (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3052\">#3052</a>)</li>\n<li>Devicetree: Add support for overlay/fragments (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3021\">#3021</a>),\nadd bytestring support (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3022\">#3022</a>),\nfix catastrophic backtracking (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3057\">#3057</a>)</li>\n<li>Fennel: Various improvements (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2911\">#2911</a>)</li>\n<li>Haskell: Handle escape sequences in character literals (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3069\">#3069</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/1795\">#1795</a>)</li>\n<li>Java: Add module keywords (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2955\">#2955</a>)</li>\n<li>Lean4: Add operators <code>]'</code>, <code>]?</code>,\n<code>]!</code> (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2946\">#2946</a>)</li>\n<li>LESS: Support single-line comments (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3005\">#3005</a>)</li>\n<li>LilyPond: Update to 2.25.29 (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2974\">#2974</a>)</li>\n<li>LLVM: Support C-style comments (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3023\">#3023</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2978\">#2978</a>)</li>\n<li>Lua(u): Fix catastrophic backtracking (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3047\">#3047</a>)</li>\n<li>Macaulay2: Update to 1.25.05 (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2893\">#2893</a>),\n1.25.11 (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2988\">#2988</a>)</li>\n<li>Mathematica: Various improvements (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2957\">#2957</a>)</li>\n<li>meson: Add additional operators (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2919\">#2919</a>)</li>\n<li>MySQL: Update keywords (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2970\">#2970</a>)</li>\n<li>org-Mode: Support both schedule and deadline (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2899\">#2899</a>)</li>\n<li>PHP: Add <code>__PROPERTY__</code> magic constant (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2924\">#2924</a>),\nadd reserved keywords (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3002\">#3002</a>)</li>\n<li>PostgreSQL: Add more keywords (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2985\">#2985</a>)</li>\n<li>protobuf: Fix namespace tokenization (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2929\">#2929</a>)</li>\n<li>Python: Add <code>t</code>-string support (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2973\">#2973</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3009\">#3009</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3010\">#3010</a>)</li>\n<li>Tablegen: Fix infinite loop (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2972\">#2972</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2940\">#2940</a>)</li>\n<li>Tera Term macro: Add commands introduced in v5.3 through v5.6 (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2951\">#2951</a>)</li>\n<li>TOML: Support TOML 1.1.0 (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3026\">#3026</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3027\">#3027</a>)</li>\n<li>Turtle: Allow empty comment lines (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2980\">#2980</a>)</li>\n<li>XML: Added <code>.xbrl</code> as file ending (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2890\">#2890</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2891\">#2891</a>)</li>\n</ul>\n</li>\n<li>\n<p>Drop Python 3.8, and add Python 3.14 as a supported version (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2987\">#2987</a>,\n<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3012\">#3012</a>)</p>\n</li>\n<li>\n<p>Various improvements to <code>autopygmentize</code> (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2894\">#2894</a>)</p>\n</li>\n<li>\n<p>Update <code>onedark</code> style to support more token types (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2977\">#2977</a>)</p>\n</li>\n<li>\n<p>Update <code>rtt</code> style to support more token types (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2895\">#2895</a>)</p>\n</li>\n<li>\n<p>Cache entry points to improve performance (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/2979\">#2979</a>)</p>\n</li>\n<li>\n<p>Fix <code>xterm-256</code> color table (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3043\">#3043</a>)</p>\n</li>\n<li>\n<p>Fix <code>kwargs</code> dictionary getting mutated on each call (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3044\">#3044</a>)</p>\n</li>\n</ul>\n</blockquote>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a\nhref=\"https://github.com/pygments/pygments/commit/708197d82827ba2d5ca78bcbb653c7102ce86dcd\"><code>708197d</code></a>\nFix underline length.</li>\n<li><a\nhref=\"https://github.com/pygments/pygments/commit/1d4538ae8621d766ecc91ff59caf76ab75983abc\"><code>1d4538a</code></a>\nPrepare 2.20 release.</li>\n<li><a\nhref=\"https://github.com/pygments/pygments/commit/2ceaee4e634eebae2d10a47fd05406871f6bac8f\"><code>2ceaee4</code></a>\nUpdate CHANGES.</li>\n<li><a\nhref=\"https://github.com/pygments/pygments/commit/e3a3c54b58c7f80bc4db887e471d4f91c77844ed\"><code>e3a3c54</code></a>\nFix Haskell lexer: handle escape sequences in character literals (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3069\">#3069</a>)</li>\n<li><a\nhref=\"https://github.com/pygments/pygments/commit/d7c3453e342dac319f58e4091f4ef183cc49d802\"><code>d7c3453</code></a>\nMerge pull request <a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3071\">#3071</a>\nfrom pygments/harden-html-formatter</li>\n<li><a\nhref=\"https://github.com/pygments/pygments/commit/0f97e7c37d44abfa4ddfddf44a3290fdad586034\"><code>0f97e7c</code></a>\nHarden the HTML formatter against CSS.</li>\n<li><a\nhref=\"https://github.com/pygments/pygments/commit/9f981b2ba42b88ca5bdcebf12cd01efd7cd80aec\"><code>9f981b2</code></a>\nUpdate CHANGES.</li>\n<li><a\nhref=\"https://github.com/pygments/pygments/commit/1d889151024e9a53f3702a60558b29b070306e9e\"><code>1d88915</code></a>\nUpdate CHANGES.</li>\n<li><a\nhref=\"https://github.com/pygments/pygments/commit/c3d93adb9827fc054c3c12b47bde31c781a36a93\"><code>c3d93ad</code></a>\nFix ASN.1 lexer: recognize minus sign and fix range operator (<a\nhref=\"https://redirect.github.com/pygments/pygments/issues/3060\">#3060</a>)</li>\n<li><a\nhref=\"https://github.com/pygments/pygments/commit/4f06bcf8a5ba3f2b5bda24a26ccf041a1a65d91e\"><code>4f06bcf</code></a>\nfix bad behaving backtracking regex in CommonLispLexer</li>\n<li>Additional commits viewable in <a\nhref=\"https://github.com/pygments/pygments/compare/2.19.2...2.20.0\">compare\nview</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility\nscore](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=pygments&package-manager=uv&previous-version=2.19.2&new-version=2.20.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nDependabot will resolve any conflicts with this PR as long as you don't\nalter it yourself. You can also trigger a rebase manually by commenting\n`@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits\nthat have been made to it\n- `@dependabot show <dependency name> ignore conditions` will show all\nof the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop\nDependabot creating any more for this major version (unless you reopen\nthe PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop\nDependabot creating any more for this minor version (unless you reopen\nthe PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop\nDependabot creating any more for this dependency (unless you reopen the\nPR or upgrade to it yourself)\nYou can disable automated security fix PRs for this repo from the\n[Security Alerts page](https://github.com/pgmq/pgmq/network/alerts).\n\n</details>\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\nCo-authored-by: Ali Tavallaie <a.tavallaie@gmail.com>",
+    "issueRefs": [
+      "#553",
+      "#2914",
+      "#3064",
+      "#3014",
+      "#3060",
+      "#2955",
+      "#2966",
+      "#3028",
+      "#3032",
+      "#2883",
+      "#2908",
+      "#2932",
+      "#2933",
+      "#3052",
+      "#3021",
+      "#3022",
+      "#3057",
+      "#2911",
+      "#3069",
+      "#1795",
+      "#2946",
+      "#3005",
+      "#2974",
+      "#3023",
+      "#2978",
+      "#3047",
+      "#2893",
+      "#2988",
+      "#2957",
+      "#2919",
+      "#2970",
+      "#2899",
+      "#2924",
+      "#3002",
+      "#2985",
+      "#2929",
+      "#2973",
+      "#3009",
+      "#3010",
+      "#2972",
+      "#2940",
+      "#2951",
+      "#3026",
+      "#3027",
+      "#2980",
+      "#2890",
+      "#2891",
+      "#2987",
+      "#3012",
+      "#2894",
+      "#2977",
+      "#2895",
+      "#2979",
+      "#3043",
+      "#3044",
+      "#3071"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/client-tests/uv.lock"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "49500c9abea6ec3fa72bd88c3ed5c6c108a75e05",
+    "authorDate": "2026-08-20T09:00:35-07:00",
+    "subject": "feat: Add insert notification methods and impl for all sql drivers (#578)",
+    "body": "This PR adds `enable_notify_insert`, `update_notify_insert`,\n`disable_notify_insert`, and `list_notify_insert_throttles` methods to\nthe `Queue` trait and adds implementations for all the sql drivers we\nsupport (sqlx, diesel, rust-postgres).\n\nThis PR also\n- Replaces the `VisibilityTimeoutOffset` type with a new general\n`Duration` type that can be used for both visibility timeout and insert\nnotification throttle interval parameters\n- Changes the visibility of the SQL strings in `queue/sql` module to be\ncrate-private so we can change them if needed without breaking semver\n- Uses `query_as` instead of `query` in the `sqlx` implementation where\npossible (for methods with concrete, non-generic return types)\n- Updates the relevant methods in `PGMQueueExt` to use the sqlx\nimplementation of `Queue`\n\nThe new tests in `tests/queue.rs` were copied from the existing tests in\n`pg_ext_integration_test.rs` and translated to use the `Queue` trait\nmethods.\n\nRelates to https://github.com/pgmq/pgmq/issues/425",
+    "issueRefs": [
+      "#578"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/queue/diesel/mod.rs",
+      "pgmq-rs/src/queue/diesel/query.rs",
+      "pgmq-rs/src/queue/diesel/sql.rs",
+      "pgmq-rs/src/queue/macros.rs",
+      "pgmq-rs/src/queue/mod.rs",
+      "pgmq-rs/src/queue/rust_postgres/mod.rs",
+      "pgmq-rs/src/queue/sql.rs",
+      "pgmq-rs/src/queue/sqlx/mod.rs",
+      "pgmq-rs/src/types/duration.rs",
+      "pgmq-rs/src/types/mod.rs",
+      "pgmq-rs/src/types/visibility_timeout_offset.rs",
+      "pgmq-rs/src/util.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs",
+      "pgmq-rs/tests/queue.rs"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "bfa0540d7fb175cd861ad0abf048844fe1e2d887",
+    "authorDate": "2026-08-15T08:52:03-07:00",
+    "subject": "feat: Add topic-based routing methods and impl for all sql drivers (#577)",
+    "body": "This PR adds `bind_topic`, `unbind_topic`, `list_topic_bindings`,\n`list_topic_bindings_all`, `send_topic`, and `send_batch_topic` methods\nto the `Queue` trait and adds implementations for all the sql drivers we\nsupport (sqlx, diesel, rust-postgres). This PR also updates the relevant\nmethods in `PGMQueueExt` to use the sqlx implementation of `Queue`.\n\nThe new tests in `tests/queue.rs` were copied from the existing tests in\n`pg_ext_integration_test.rs` and translated to use the `Queue` trait\nmethods.\n\nRelates to https://github.com/pgmq/pgmq/issues/425",
+    "issueRefs": [
+      "#577"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/queue/diesel/mod.rs",
+      "pgmq-rs/src/queue/diesel/query.rs",
+      "pgmq-rs/src/queue/diesel/sql.rs",
+      "pgmq-rs/src/queue/macros.rs",
+      "pgmq-rs/src/queue/mod.rs",
+      "pgmq-rs/src/queue/rust_postgres/mod.rs",
+      "pgmq-rs/src/queue/sql.rs",
+      "pgmq-rs/src/queue/sqlx/mod.rs",
+      "pgmq-rs/tests/queue.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c5935fe84914614a8f81ccc69730dd8887a0aa6e",
+    "authorDate": "2026-08-09T21:25:57-07:00",
+    "subject": "feat: Add \"read grouped\" methods to `Queue` and impl for all sql drivers (#576)",
+    "body": "This PR adds `read_grouped`, `read_grouped_head`, and `read_grouped_rr`\nmethods to the `Queue` trait and adds implementations for all the sql\ndrivers we support (sqlx, diesel, rust-postgres). This PR also updates\n`PGMQueueExt#read_grouped*` to use the sqlx implementation of `Queue`.\n\nThe new tests in `tests/queue.rs` were copied from the existing tests in\n`pg_ext_integration_test.rs` and translated to use the `Queue` trait\nmethods.\n\nRelates to https://github.com/pgmq/pgmq/issues/425",
+    "issueRefs": [
+      "#576"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/queue/diesel/mod.rs",
+      "pgmq-rs/src/queue/diesel/query.rs",
+      "pgmq-rs/src/queue/diesel/sql.rs",
+      "pgmq-rs/src/queue/macros.rs",
+      "pgmq-rs/src/queue/mod.rs",
+      "pgmq-rs/src/queue/rust_postgres/mod.rs",
+      "pgmq-rs/src/queue/sql.rs",
+      "pgmq-rs/src/queue/sqlx/mod.rs",
+      "pgmq-rs/tests/queue.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c211fd7dab08fc778ad228d42410b739c59b04fe",
+    "authorDate": "2026-07-31T11:34:26-07:00",
+    "subject": "feat: Add fifo index methods to `Queue` and impl for all sql drivers (#574)",
+    "body": "This PR adds `create_fifo_index` and `create_fifo_indexes_all` methods\nto the `Queue` trait and adds implementations for all the sql drivers we\nsupport (sqlx, diesel, rust-postgres). This PR also updates\n`PGMQueueExt#create_fifo_index` and\n`PGMQueueExt#create_fifo_indexes_all` to use the sqlx implementation of\n`Queue`.\n\nRelates to https://github.com/pgmq/pgmq/issues/425",
+    "issueRefs": [
+      "#574"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/queue/diesel/mod.rs",
+      "pgmq-rs/src/queue/diesel/query.rs",
+      "pgmq-rs/src/queue/diesel/sql.rs",
+      "pgmq-rs/src/queue/macros.rs",
+      "pgmq-rs/src/queue/mod.rs",
+      "pgmq-rs/src/queue/rust_postgres/mod.rs",
+      "pgmq-rs/src/queue/sql.rs",
+      "pgmq-rs/src/queue/sqlx/mod.rs",
+      "pgmq-rs/tests/queue.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "de57aedfe2a363c498cb1cb756cad7e016c87350",
+    "authorDate": "2026-07-30T08:52:22-07:00",
+    "subject": "feat!: Add `Queue#pop` method and implement for all sql drivers (#573)",
+    "body": "This PR adds the `pop` method to the `Queue` trait and adds\nimplementations for all the sql drivers we support (sqlx, diesel,\nrust-postgres).\n\nThis PR also:\n\n- Updates `PGMQueueExt#pop` to use the sqlx implementation of `Queue`.\n- Changes the bounds of the `QE` type parameters to be\n`Into<QueueNameError>`. This is because the previous bounds and\nconversion method resulted in always returning `QueueNameError#Other`,\neven if the actual error was `QueueNameError#InvalidLength` or\n`QueueNameError#InvalidCharacter`. Tests were added to the `queue`\nintegration tests to confirm that the correct error is returned.\n\nRelates to https://github.com/pgmq/pgmq/issues/425",
+    "issueRefs": [
+      "#573"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.lock",
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/queue/diesel/mod.rs",
+      "pgmq-rs/src/queue/diesel/query.rs",
+      "pgmq-rs/src/queue/diesel/sql.rs",
+      "pgmq-rs/src/queue/macros.rs",
+      "pgmq-rs/src/queue/mod.rs",
+      "pgmq-rs/src/queue/rust_postgres/mod.rs",
+      "pgmq-rs/src/queue/sql.rs",
+      "pgmq-rs/src/queue/sqlx/mod.rs",
+      "pgmq-rs/src/types/queue_name.rs",
+      "pgmq-rs/tests/queue.rs"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "fde87d8fb83f0d57fa28aedc2b24e60e064add39",
+    "authorDate": "2026-07-24T10:06:31-07:00",
+    "subject": "feat: Add `Queue#send_batch` method and implement for all sql drivers (#569)",
+    "body": "This PR adds the `send_batch` method to the `Queue` trait and adds\nimplementations for all the sql drivers we support (sqlx, diesel,\nrust-postgres). This PR also updates `PGMQueueExt#send_batch` to use the\nsqlx implementation of `Queue`.\n\nRelates to https://github.com/pgmq/pgmq/issues/425",
+    "issueRefs": [
+      "#569"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/queue/diesel/mod.rs",
+      "pgmq-rs/src/queue/diesel/query.rs",
+      "pgmq-rs/src/queue/diesel/sql.rs",
+      "pgmq-rs/src/queue/macros.rs",
+      "pgmq-rs/src/queue/mod.rs",
+      "pgmq-rs/src/queue/rust_postgres/mod.rs",
+      "pgmq-rs/src/queue/sql.rs",
+      "pgmq-rs/src/queue/sqlx/mod.rs",
+      "pgmq-rs/src/util.rs",
+      "pgmq-rs/tests/queue.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6d1c4320e7cd680d1fb7b119b3d163d6d506a1fe",
+    "authorDate": "2026-07-19T18:18:01-07:00",
+    "subject": "feat: Add `Queue#set_vt` method and implement for all sql drivers (#568)",
+    "body": "This PR adds the `set_vt` method to the `Queue` trait and adds\nimplementations for all the sql drivers we support (sqlx, diesel,\nrust-postgres).\n\nThis PR also updates `PGMQueueExt#set_vt` to use the sqlx implementation\nof `Queue`. This required changing the return type to `Option<Message<T,\nH>>` instead of `Message<T, H>`. If we don't want to change this return\ntype, I can undo this part of the change.\n\nRelates to https://github.com/pgmq/pgmq/issues/425",
+    "issueRefs": [
+      "#568"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/queue/diesel/mod.rs",
+      "pgmq-rs/src/queue/diesel/query.rs",
+      "pgmq-rs/src/queue/diesel/sql.rs",
+      "pgmq-rs/src/queue/macros.rs",
+      "pgmq-rs/src/queue/mod.rs",
+      "pgmq-rs/src/queue/rust_postgres/mod.rs",
+      "pgmq-rs/src/queue/sql.rs",
+      "pgmq-rs/src/queue/sqlx/mod.rs",
+      "pgmq-rs/tests/queue.rs"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "ff84fc9cf10cd3e7c20fad1990bccd325842409c",
+    "authorDate": "2026-07-14T19:46:55-07:00",
+    "subject": "feat: Add `Queue#delete` method and implement for all sql drivers (#567)",
+    "body": "This PR adds the `archive` method to the `Queue` trait and adds\nimplementations for all the sql drivers we support (sqlx, diesel,\nrust-postgres). Use the sqlx implementation to implement\n`PGMQueueExt#delete_batch`.\n\nRelates to https://github.com/pgmq/pgmq/issues/425",
+    "issueRefs": [
+      "#567"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/queue/diesel/mod.rs",
+      "pgmq-rs/src/queue/diesel/query.rs",
+      "pgmq-rs/src/queue/diesel/sql.rs",
+      "pgmq-rs/src/queue/macros.rs",
+      "pgmq-rs/src/queue/mod.rs",
+      "pgmq-rs/src/queue/rust_postgres/mod.rs",
+      "pgmq-rs/src/queue/sql.rs",
+      "pgmq-rs/src/queue/sqlx/mod.rs",
+      "pgmq-rs/tests/queue.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "08ace4087dbf00e51704c5a3d9df2e15fd566127",
+    "authorDate": "2026-07-14T07:16:13-05:00",
+    "subject": "prepare extension v1.12.0 (#566)",
+    "body": "This will prepare to release v1.12.0 which contains\n`read_grouped_head_with_poll()`. This was previously staged for v1.11.2,\nbut following semver this is better suited for a 1.12 release.\n\ncloses https://github.com/pgmq/pgmq/issues/564",
+    "issueRefs": [
+      "#566"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/pgmq.control",
+      "pgmq-extension/sql/pgmq--1.11.1--1.12.0.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ac5538dc05efcb5afa20a3237d8161d06dc4abc9",
+    "authorDate": "2026-07-13T17:18:53-07:00",
+    "subject": "feat!: Add `Queue#archive` method and implement for all sql drivers (#565)",
+    "body": "This PR adds the `archive` method to the `Queue` trait and adds\nimplementations for all the sql drivers we support (sqlx, diesel,\nrust-postgres).\n\nThe PR also\n- Modifies `PGMQueueExt#archive_batch` to return `Vec<i64>` instead of\n`i64` -- this aligns with the same change that was recently committed\nfor the `PGMQueueExt#delete_batch` method (#557).\n- Uses the `sqlx` implementation of `archive` to implement\n`PGMQueueExt#archive` and `PGMQueueExt#archive_batch`\n- This PR also does some minor cleanup of imports and fully-qualified\ntype references to use shorter re-exports when possible (e.g.,\n`crate::PgmqError` instead of `crate::errors::PgmqError`).\n\nRelates to https://github.com/pgmq/pgmq/issues/425",
+    "issueRefs": [
+      "#565",
+      "#557"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/queue/diesel/mod.rs",
+      "pgmq-rs/src/queue/diesel/query.rs",
+      "pgmq-rs/src/queue/diesel/sql.rs",
+      "pgmq-rs/src/queue/macros.rs",
+      "pgmq-rs/src/queue/mod.rs",
+      "pgmq-rs/src/queue/rust_postgres/mod.rs",
+      "pgmq-rs/src/queue/sql.rs",
+      "pgmq-rs/src/queue/sqlx/mod.rs",
+      "pgmq-rs/src/queue/sqlx/util.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs",
+      "pgmq-rs/tests/queue.rs"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "21da8994c034f8d668d3fec79222873879e95e94",
+    "authorDate": "2026-07-06T12:32:16-07:00",
+    "subject": "feat: Add rust-postgres implementations of the `Queue` trait (#562)",
+    "body": "This PR adds implementations of the `Queue` trait for the `postgres` and\n`tokio-postgres` crates. `postgres` is simply a synchronous wrapper\naround the async `tokio-postgres` methods, so they can share a lot of\ntheir functionality. In fact, the only differences are which connection\ntrait is used, one needs the connection/executor to be `&mut C` and one\ncan be `&C`, and one requires `await`-ing DB results. A custom macro is\nused in order to generate the required code from the same shared logic.\n\nAlso:\n- Because `sqlx` and the rust-postgres implementations use plain strings\nfor their queries, I pulled the strings out into shared constants.\n- Add missing header type parameter for `Queue#read` method and\nimplementations\n\nRelates to https://github.com/pgmq/pgmq/issues/425",
+    "issueRefs": [
+      "#562"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.lock",
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/Makefile",
+      "pgmq-rs/pgmq_test_macro/src/lib.rs",
+      "pgmq-rs/src/errors.rs",
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/private/mod.rs",
+      "pgmq-rs/src/queue/macros.rs",
+      "pgmq-rs/src/queue/mod.rs",
+      "pgmq-rs/src/queue/rust_postgres/mod.rs",
+      "pgmq-rs/src/queue/rust_postgres/postgres.rs",
+      "pgmq-rs/src/queue/rust_postgres/tokio_postgres.rs",
+      "pgmq-rs/src/queue/sql.rs",
+      "pgmq-rs/src/queue/sqlx/mod.rs",
+      "pgmq-rs/src/queue/sqlx/util.rs",
+      "pgmq-rs/tests/queue.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "80d273a399631f37a6a2b136a615dd673cd4e90a",
+    "authorDate": "2026-07-05T10:17:08-07:00",
+    "subject": "feat!: Initial `Queue` trait and `sqlx` implementation (#549)",
+    "body": "Initial commit to add a new `Queue` trait to allow supporting multiple\ndifferent SQL clients (this PR only adds the `sqlx` implementation).\n\nSome high-level details:\n\n- The new `Queue` trait and implementations are in the `queue` mod\n- Only three key methods are added initially: `create`, `send`, and\n`read`\n- Common implementation details exist in a macro, and individual\nimplementations are generated by invoking the macro with the relevant\nparameters\n- Added a `sqlx` feature flag for the `PGMQueueExt` client and the\n`sqlx` implementation of the `Queue` trait\n- Tests for all the implementations of the `Queue` trait are in the new\n`queue` integration test file. Each implementation has a separate test\nmethod generated for it using a new custom test macro.\n\nImplementations for other clients (diesel/rust-postgres) will be added\nin a separate followup PR.\n\nRelates to https://github.com/pgmq/pgmq/issues/425",
+    "issueRefs": [
+      "#549"
+    ],
+    "touchedFiles": [
+      ".github/workflows/crate_ci.yml",
+      "pgmq-rs/Cargo.lock",
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/Makefile",
+      "pgmq-rs/readme.md",
+      "pgmq-rs/examples/basic.rs",
+      "pgmq-rs/examples/install.rs",
+      "pgmq-rs/examples/transactions.rs",
+      "pgmq-rs/pgmq_test_macro/Cargo.toml",
+      "pgmq-rs/pgmq_test_macro/src/lib.rs",
+      "pgmq-rs/src/errors.rs",
+      "pgmq-rs/src/lib.rs",
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/private/mod.rs",
+      "pgmq-rs/src/private/util.rs",
+      "pgmq-rs/src/queue/macros.rs",
+      "pgmq-rs/src/queue/mod.rs",
+      "pgmq-rs/src/queue/sqlx.rs",
+      "pgmq-rs/src/types/mod.rs",
+      "pgmq-rs/src/types/queue_name.rs",
+      "pgmq-rs/src/types/visibility_timeout_offset.rs",
+      "pgmq-rs/src/util.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs",
+      "pgmq-rs/tests/queue.rs",
+      "pgmq-rs/tests/test_sql.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d99b8a2fbac33ae8ef871cd2fb096ef4d9d5f650",
+    "authorDate": "2026-07-01T13:52:32-07:00",
+    "subject": "docs: Update Rust crate `lib.rs` doc comment and synchronize `readme.md` (#559)",
+    "body": "The Rust crate's `readme.md` should be kept in sync with the `lib.rs`\ndoc comment using `make update.readme`. However, this was not enforced\nby CI, so they have become out of sync.\n\nThis PR updates the crate's `lib.rs` doc comment, pulling in relevant\nupdates from both the crate's and the repo's top-level `readme.md`\nfiles, then updates the crate's `readme.md` using `make update.readme`.\n\nThis PR also adds a check to CI to ensure the `readme.md` stays in sync\nwith the `lib.rs` doc comment.\n\nResolves: https://github.com/pgmq/pgmq/issues/516",
+    "issueRefs": [
+      "#559"
+    ],
+    "touchedFiles": [
+      ".github/workflows/crate_ci.yml",
+      "pgmq-rs/Cargo.lock",
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/readme.md",
+      "pgmq-rs/src/bin/pgmq-cli.rs",
+      "pgmq-rs/src/install/embedded/install_sql_embedded.md",
+      "pgmq-rs/src/install/github/install_sql_github.md",
+      "pgmq-rs/src/install/init_migrations_table.md",
+      "pgmq-rs/src/install/installed_version.md",
+      "pgmq-rs/src/lib.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b2f95898fe32b704be7baf198429bb3769f811ec",
+    "authorDate": "2026-06-26T08:24:36-07:00",
+    "subject": "feat!: Add `headers` and `last_read_at` fields to `Message` struct (#556)",
+    "body": "Also:\n- Mark `Message` and all other structs with only public fields as\n`#[non_exhaustive]` so additional fields can be added in the future as a\nnon-semver breaking change\n- Consolidate `PGMQMetadata` structs and add `sqlx::FromRow` derive to\nsimplify deserializing it from a `PgRow`.\n\nResolves: https://github.com/pgmq/pgmq/issues/548",
+    "issueRefs": [
+      "#556"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/src/install/applied.rs",
+      "pgmq-rs/src/install/script.rs",
+      "pgmq-rs/src/install/version.rs",
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/types.rs"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "1896703c480160423c5c1e3d40a8cdc517f103c1",
+    "authorDate": "2026-06-25T08:52:23-07:00",
+    "subject": "chore!: Upgrade `sqlx` to `0.9.0` (#555)",
+    "body": "Also bump the patch version of a few packages to satisfy the `Check\ndependency minimal versions` check.\n\nResolves: https://github.com/pgmq/pgmq/issues/547",
+    "issueRefs": [
+      "#555"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/src/install/script.rs",
+      "pgmq-rs/src/install/version.rs",
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs",
+      "pgmq-rs/tests/test_sql.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f4e162614d18a6762e2cb83befdcce59458c7cad",
+    "authorDate": "2026-05-20T12:04:41-05:00",
+    "subject": "feat: Add `convert_archive_partitioned` and `metrics` to `PGMQueueExt` (#543)",
+    "body": "Adds support for the following extension methods to `PGMQueueExt`:\n\n- `pgmq.convert_archive_partitioned`\n- `pgmq.metrics`\n- `pgmq.metrics_all`\n\nRelates to https://github.com/pgmq/pgmq/issues/494",
+    "issueRefs": [
+      "#543"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/types.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2acc3fd92e58b41266765e2b5aeead92315de1a3",
+    "authorDate": "2026-05-08T21:09:54+04:00",
+    "subject": "Fix Python client library link and add documentation (#539)",
+    "body": "Updated Python client library link and added documentation reference.",
+    "issueRefs": [
+      "#539"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d445fca8b3cc9aa72412ab6805b7de096dd5e66d",
+    "authorDate": "2026-05-07T08:15:01-07:00",
+    "subject": "feat: Add `read_grouped*` & `send*with_headers` methods to `PGMQueueExt` (#538)",
+    "body": "This PR adds the following `read_grouped*` (FIFO) methods to\n`PGMQueueExt`:\n\n- `read_grouped_with_cxn`\n- `read_grouped`\n- `read_grouped_with_poll_with_cxn`\n- `read_grouped_with_poll`\n- `read_grouped_head_with_cxn`\n- `read_grouped_head`\n- `read_grouped_rr_with_cxn`\n- `read_grouped_rr`\n- `read_grouped_rr_with_poll_with_cxn`\n- `read_grouped_rr_with_poll`\n\nAlso, in for these methods to be useful (and in order to test them), we\nneed to be able to set the `x-pgmq-group` header on the messages, so I\nadded the following methods to allow setting headers when enqueuing\nmessages:\n\n- `send_delay_with_headers_cxn`\n- `send_delay_with_headers`\n- `send_batch_with_delay_with_headers_with_cxn`\n- `send_batch_with_delay_with_headers`\n\nAlso, when writing all of these new `read*` messages, I noticed they\nwere all duplicates of each other except for the query, so I added two\nnew helper methods to contain the common logic:\n\n- `read_batch_common`\n- `read_batch_with_poll_common`\n\nRelates to https://github.com/pgmq/pgmq/issues/494",
+    "issueRefs": [
+      "#538"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "69d2dd9c56e2165d0f8960ba6e854e3b00343e48",
+    "authorDate": "2026-04-26T22:17:42-07:00",
+    "subject": "feat: Add `PGMQueueExt#acquire_queue_lock*` methods (#534)",
+    "body": "Also:\n- Switch how we get a sqlx executor from a transaction from\n`tx.acquire().await?` to a simple dereference of the transaction (e.g.\n`&mut *tx`).\n- Bump the crate version\n\nRelates to https://github.com/pgmq/pgmq/issues/494",
+    "issueRefs": [
+      "#534"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/src/install/applied.rs",
+      "pgmq-rs/src/install/mod.rs",
+      "pgmq-rs/src/install/script.rs",
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/util.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "498f1bf13a092a68aeb8b20724356d70091ab312",
+    "authorDate": "2026-04-20T18:17:18-04:00",
+    "subject": "fix: Update pgmq.send examples to avoid \"function ... is not unique\" error (#532)",
+    "body": "Disambiguates to avoid:\n```\n[42725] ERROR: function pgmq.send(unknown, unknown, unknown) is not unique\nHint: Could not choose a best candidate function. You might need to add explicit type casts.\nPosition: 8\n```",
+    "issueRefs": [
+      "#532"
+    ],
+    "touchedFiles": [
+      "docs/fifo-queues.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f850479df900645e176bd8050b5a521324b96097",
+    "authorDate": "2026-04-18T15:06:34-07:00",
+    "subject": "feat: Add methods to create FIFO indexes (#531)",
+    "body": "This PR adds methods to `PGMQueueExt` for the `pgmq.create_fifo_index`\nand `pgmq.create_fifo_indexes_all` SQL methods, including tests in\n`pg_ext_integration_test.rs`.\n\nRelates to https://github.com/pgmq/pgmq/issues/494",
+    "issueRefs": [
+      "#531"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0a154c6b327c3b5d677deb8d84539ec8c7961821",
+    "authorDate": "2026-04-15T23:48:15-04:00",
+    "subject": "Fix README typo (#529)",
+    "body": "The table was not rendering in Github preview due to column count\nmismatch",
+    "issueRefs": [
+      "#529"
+    ],
+    "touchedFiles": [
+      "INSTALLATION.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "885251cf4dcb4853d7fa253f56e382d84d5f0821",
+    "authorDate": "2026-04-12T10:10:33-07:00",
+    "subject": "chore: Check that upgrade scripts do not diverge from a fresh install (#525)",
+    "body": "## Problem\nAs seen in https://github.com/pgmq/pgmq/issues/521, it's easy for the\nupgrade scripts to diverge from a fresh installation.\n\n## Solution\nThis PR adds a check to verify that the upgrade scripts do not diverge\nfrom a fresh installation. The check uses the output of `pg_dump` as\nwell as a manual query of the extensions functions (these are not\nincluded in `pg_dump`).\n\nThis PR also adds a new migration script (`pgmq--1.11.0--1.11.1.sql`) to\nresolve the existing differences between the upgrade scripts and a fresh\ninstallation.\n\n### Summary of differences and how they were resolved\n#### `pgmq.read_grouped_head`\n\nThis function only existed in the fresh install (`pgmq.sql`), so this PR\nadds it via a migration file as well.\n\n#### `pgmq._ensure_pg_partman_installed`\nThis method exists for both fresh installs and upgrades, but the\nimplementations are different. This PR updates the version in the\nupgrade path to match the fresh installation.\n\n#### `enable_notify_insert`\n\nThis function ([added\nhere](https://github.com/pgmq/pgmq/blob/66349cfee14ab75827eb541d36b2c84cbbb68dab/pgmq-extension/sql/pgmq--1.6.1--1.7.0.sql#L9))\noriginally had a single parameter but was [updated to have two\nparameters](https://github.com/pgmq/pgmq/blob/66349cfee14ab75827eb541d36b2c84cbbb68dab/pgmq-extension/sql/pgmq--1.7.1--1.8.0.sql#L45)\n-- the single-parameter version does not exist in fresh installs. I'm\nguessing that the upgrade script was intending to replace the\nsingle-parameter version with the two-parameter version, but `CREATE OR\nREPLACE FUNCTION` does not replace an existing function if the parameter\ntypes are different, even if the function names match, so the\nsingle-parameter version was not removed.\n\nThis PR removes the single parameter version. This should not be a\nbreaking change as the two-parameter version has a default value for the\nsecond parameter, so it can be called in the same way as the old\nsingle-parameter version.\n\n#### `pg_dump` output\nFirst, there was a missing `PERFORM\npg_catalog.pg_extension_config_dump('pgmq.topic_bindings', '');` call\nfor the migration path. This PR adds the missing call.\n\nSecond, in the migration path, the `pgmq.notify_insert_throttle` and\n`pgmq.topic_bindings` tables are created after the blanket `GRANT`s from\nthe fresh installation script, so they each have an extra `GRANT SELECT\nON TABLE ... TO pg_monitor;` line in the `pg_dump` output. The fresh\ninstallation script was updated to move the blanket `GRANT`s to be\nbefore the creation of these tables as well.\n\nCloses https://github.com/pgmq/pgmq/issues/521",
+    "issueRefs": [
+      "#525"
+    ],
+    "touchedFiles": [
+      ".github/workflows/extension_upgrade.yml",
+      "pgmq-extension/Makefile",
+      "pgmq-extension/pgmq.control",
+      "pgmq-extension/sql/pgmq--1.11.0--1.11.1.sql",
+      "pgmq-extension/sql/pgmq.sql"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "66349cfee14ab75827eb541d36b2c84cbbb68dab",
+    "authorDate": "2026-04-09T14:30:43-07:00",
+    "subject": "feat: Add \"read batch\" functionality to `PGMQueueExt` (#524)",
+    "body": "This PR adds support for reading batches of messages from `PGMQueueExt`\nrust client. This PR also updates the existing single-message read\nfunctions to use the batch method with a `qty` of one.\n\nRelates to https://github.com/pgmq/pgmq/issues/494",
+    "issueRefs": [
+      "#524"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0895628b8265ecb58af3d8bbd90982976852284f",
+    "authorDate": "2026-04-08T09:35:17-07:00",
+    "subject": "feat: Add \"send batch\" functionality to `PGMQueueExt` (#523)",
+    "body": "This PR adds support for batch enqueueing messages from the\n`PGMQueueExt` rust client.\n\nThis PR also updates the `make check.clippy` command to disallow clippy\nwarnings instead of just errors. This will cause clippy to emit an error\nfor unused imports and any other warning-level lint.\n\nRelates to https://github.com/pgmq/pgmq/issues/494",
+    "issueRefs": [
+      "#523"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Makefile",
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/util.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "196482b797a1a7d6c68db03af25fc98c812a1677",
+    "authorDate": "2026-04-04T16:56:14-07:00",
+    "subject": "fix: Race condition in `PGMQueueExt#create` (#520)",
+    "body": "Problem\n-------\n`PGMQueueExt#create` is supposed to return `Ok(false)` if the queue was\nnot created (e.g., it already exists). However, the check for whether\nthe queue exists is performed without any locking. This means it's\npossible for two processes to call `PGMQueueExt#create` at the same time\nand both get an `Ok(true)` response. This can (usually) be seen in the\nnegative test case added in this PR -- it may not always happen due to\nthe non-deterministic nature of race conditions.\n\nSolution\n--------\nCreate a transaction to perform all DB operations in, and call\n`pgmq.acquire_queue_lock` for the queue before checking if it exists.\nThis is the same function called by `pgmq.create` before it creates the\nqueue (we don't need to worry about lock contention for the same\ntransaction).\n\nHere’s an example of the test failing (the commit tested here did not\nhave the fix):\nhttps://github.com/pgmq/pgmq/actions/runs/23983765959/job/69952299454?pr=520#step:7:880",
+    "issueRefs": [
+      "#520"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "142c7f8491f64cb87baa6bfa1f2d9b4d09dbd0f7",
+    "authorDate": "2026-04-04T09:25:16-07:00",
+    "subject": "fix: Race condition in `PGMQueueExt#init` (#519)",
+    "body": "Problem\n-------\nWhen multiple processes attempt to run\n`PGMQueueExt#init`/`PGMQueueExt#init_with_cxn` at the same time, the\nfollowing error is seen:\n\n```\nfailed to init pgmq: DatabaseError(Database(PgDatabaseError { severity: Error, code: \"23505\", message: \"duplicate key value violates unique constraint \\\"pg_namespace_nspname_index\\\"\", detail: Some(\"Key (nspname)=(pgmq) already exists.\"), hint: None, position: None, where: None, schema: Some(\"pg_catalog\"), table: Some(\"pg_namespace\"), column: None, data_type: None, constraint: Some(\"pg_namespace_nspname_index\"), file: Some(\"nbtinsert.c\"), line: Some(666), routine: Some(\"_bt_check_unique\") }))\n```\n\nThis can be easily reproduced by running `pg_ext_integration_test`\nwithout the initialization steps provided in `make test`:\n\n```shell\nmake run.postgres && sleep 2 && cargo test --test pg_ext_integration_test\n```\n\nSolution\n--------\nThis PR resolves the race condition by acquiring a transaction-level\nadvisory lock before attempting to create the extension. This is the\nsame approach used by the SQL-only installation method.\n\nThis PR also adds a check to CI to run the extension tests without\ninitializing the extension first to confirm that the race condition does\nnot exist and is not re-introduced later. Here's an example failure (the\ncommit tested here did not acquire the lock):\nhttps://github.com/pgmq/pgmq/actions/runs/23958025280/job/69881120612?pr=519#step:6:498",
+    "issueRefs": [
+      "#519"
+    ],
+    "touchedFiles": [
+      ".github/workflows/crate_ci.yml",
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/src/install/applied.rs",
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/util.rs"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "903cd9a01ecfe8b26e09d73480e5e35f4decefe6",
+    "authorDate": "2026-03-31T13:50:34-07:00",
+    "subject": "chore: Add docs check and minimal versions check (#518)",
+    "body": "This PR adds the following checks to the crate's `Makefile` and CI:\n\n1. `check.docs` -- Checks that the docs build without any\nerrors/warnings.\n2. `check.minimal-versions` -- Checks that our dependencies are declared\nas the correct minimal versions. For example, if we depend on a crate\nwith version \"1.0.0\", ensure we don’t accidentally depend on a feature\nadded in version \"1.5.0\".\n\nThis PR also fixes the errors raised by these checks.",
+    "issueRefs": [
+      "#518"
+    ],
+    "touchedFiles": [
+      ".github/workflows/crate_ci.yml",
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/Makefile",
+      "pgmq-rs/src/lib.rs",
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/pg_ext/visibility_timeout_offest.rs",
+      "pgmq-rs/src/util.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d5bc999eb4a077e2cb8c9d7f94e62a146030ba87",
+    "authorDate": "2026-03-29T14:21:27-07:00",
+    "subject": "feat!: Improve sql-only installation from the Rust client (#508)",
+    "body": "## Problem\nAs described in https://github.com/pgmq/pgmq/issues/504, the current\nSQL-only installation method is not ideal for production use because\n\n1. It fetches the installation script from GitHub, which can introduce\ninstability into a service that runs the installation during boot along\nwith its other migrations.\n2. There's no guarantee that the installed version is compatible with\nthe current version of the `pgmq` client.\n3. The installation is not versioned, making it difficult to upgrade\n`pgmq` to a new version.\n4. There is no locking mechanism, so if multiple processes attempt to\ninstall `pgmq` at the same time, they may conflict and fail to install\n\n\n## Solution\nThis PR solves the above problems for the Rust client. It does so by:\n\n1. Adding a new installation method that uses SQL scripts that are\nembedded into the `pgmq` crate, eliminating the need to download the\nscripts from GitHub at runtime. This also means that the Rust client\nwill always install the latest version of `pgmq` that it's compatible\nwith.\n2. Tracking which migration scripts were run in a table managed by the\nRust client, along with the version associated with each script. This\nallows upgrading `pgmq` by running all migrations greater than the last\nrun migration.\n3. Using locks to ensure that only a single process can run the SQL-only\ninstallation at once. This approach will work across different client\nimplementations as long as they use the same locks (one advisory lock\nand one table-level lock).\n\nAll of the above is implemented with pure-PostgreSQL functionality, so\nit should be easy to implement in other clients.\n\nThis PR also:\n1. Updates the `crate_ci.yml` and `extension_upgrade.yml` workflows to\nensure the SQL-only installation is tested just as thoroughly as the\nextension installation.\n2. Adds a utility method to initialize the \"applied migrations\" table to\nenable switching from the previous unversioned SQL-only installation\nmethod to the new versioned method(s). This is required for the use case\ndescribed in https://github.com/pgmq/pgmq/issues/514)\n3. Adds a utility method to fetch the currently installed version of\nPGMQ (assuming it was installed with the new versioned SQL-only method).\n\nCloses https://github.com/pgmq/pgmq/issues/504\nCloses https://github.com/pgmq/pgmq/issues/417",
+    "issueRefs": [
+      "#508"
+    ],
+    "touchedFiles": [
+      ".github/workflows/crate_ci.yml",
+      ".github/workflows/extension_upgrade.yml",
+      "INSTALLATION.md",
+      "pgmq-extension/client-tests/pyproject.toml",
+      "pgmq-extension/client-tests/upgrade_test.py",
+      "pgmq-extension/client-tests/uv.lock",
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/Makefile",
+      "pgmq-rs/readme.md",
+      "pgmq-rs/build.rs",
+      "pgmq-rs/examples/install.rs",
+      "pgmq-rs/src/bin/pgmq-cli.rs",
+      "pgmq-rs/src/errors.rs",
+      "pgmq-rs/src/install/applied.rs",
+      "pgmq-rs/src/install/embedded/install_sql_embedded.md",
+      "pgmq-rs/src/install/embedded/mod.rs",
+      "pgmq-rs/src/install/embedded/pgmq.control",
+      "pgmq-rs/src/install/embedded/snapshots/pgmq__install__embedded__tests__migrations_script__get_scripts.snap",
+      "pgmq-rs/src/install/embedded/snapshots/pgmq__install__embedded__tests__migrations_script__get_scripts_from_dir.snap",
+      "pgmq-rs/src/install/embedded/snapshots/pgmq__install__embedded__tests__migrations_script__get_scripts_from_dir_not_found.snap",
+      "pgmq-rs/src/install/embedded/sql",
+      "pgmq-rs/src/install/embedded/test_migrations/different-name-pattern.sql",
+      "pgmq-rs/src/install/embedded/test_migrations/invalid.extension",
+      "pgmq-rs/src/install/embedded/test_migrations/pgmq--0.9.0--0.10.0.sql",
+      "pgmq-rs/src/install/embedded/test_migrations/pgmq--1.10.1--1.11.0.sql",
+      "pgmq-rs/src/install/embedded/test_migrations/pgmq--1.11.0--1.11.1.sql",
+      "pgmq-rs/src/install/embedded/test_migrations/pgmq--1.11.1--1.11.2.sql",
+      "pgmq-rs/src/install/embedded/test_migrations/pgmq--1.11.2--2.0.0.sql",
+      "pgmq-rs/src/install/embedded/test_migrations/pgmq.sql",
+      "pgmq-rs/src/install/github/install_sql_github.md",
+      "pgmq-rs/src/install/github/mod.rs",
+      "pgmq-rs/src/install/init_migrations_table.md",
+      "pgmq-rs/src/install/installed_version.md",
+      "pgmq-rs/src/install/mod.rs",
+      "pgmq-rs/src/install/script.rs",
+      "pgmq-rs/src/install/snapshots/pgmq__install__script__tests__parsed_script_name__from_static_str.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__script__tests__parsed_script_name__from_static_str_err_first_version_invalid.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__script__tests__parsed_script_name__from_static_str_err_missing_both_versions.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__script__tests__parsed_script_name__from_static_str_err_missing_first_version.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__script__tests__parsed_script_name__from_static_str_err_missing_second_version.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__script__tests__parsed_script_name__from_static_str_err_second_version_invalid.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__script__tests__parsed_script_name__from_static_str_err_wrong_extension.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__script__tests__parsed_script_name__from_static_str_err_wrong_number_of_dashes.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__script__tests__parsed_script_name__init_script.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__tests__install_err.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__version__tests__from_str_err_invalid_segment_values.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__version__tests__from_str_err_not_enough_segments.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__version__tests__get_pgmq_version.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__version__tests__get_pgmq_version_err_invalid_version.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__version__tests__get_pgmq_version_err_missing_quotes.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__version__tests__get_pgmq_version_err_version_not_present.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__version__tests__get_pgmq_version_extra_whitespace.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__version__tests__get_pgmq_version_no_whitespace.snap",
+      "pgmq-rs/src/install/snapshots/pgmq__install__version__tests__sort_and_unique.snap",
+      "pgmq-rs/src/install/version.rs",
+      "pgmq-rs/src/lib.rs",
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/util.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs",
+      "pgmq-rs/tests/test_sql.rs",
+      "pyproject.toml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c2199700cd45164b157d54fc899661584f7a510c",
+    "authorDate": "2026-03-21T12:52:34-07:00",
+    "subject": "feat!: Allow using more Rust types for `delay`/`vt` in `PGMQueueExt` (#515)",
+    "body": "Problem\n-------\nCurrently, `PGMQueueExt` only accepts integer types for the `vt`/`delay`\nparameters of its methods. This is inconvenient, particularly because\nthe `std::time::Duration#as_secs` method returns a `u64`, so a cast is\nrequired in order to call these methods. It's also slightly unclear\nwhether the `vt` parameter refers to a delay or a timestamp (as an epoch\ntimestamp).\n\nSolution\n--------\nCreate a `VisibilityTimeoutOffset` \"new type\" to wrap the offset value\nin seconds as an `i32`. Provide default implementations from various\ninteger types, `std::time::Duration`, and `chrono::Duration`, and cap\nthe value to `i32::MIN`/`i32::MIN` if an overflow would occur during\nconversion.\n\nNote:\n- I think this is technically a semver breaking change. While most\nusages shouldn't break, it would probably break if someone was using\nimplicit type detection with a `try_into()` call.",
+    "issueRefs": [
+      "#515"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/src/pg_ext/mod.rs",
+      "pgmq-rs/src/pg_ext/visibility_timeout_offest.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "6331a0ef0716e891a13289ee541dfe3586397acd",
+    "authorDate": "2026-02-25T11:48:41+01:00",
+    "subject": "feat: read only head for N groups (#481)",
+    "body": "I would like to propose a implementation to address issue\nhttps://github.com/pgmq/pgmq/issues/478\n\nI suggest introducing a new dedicated function. I think this approach is\nmore efficient as it specifically targets the head of each group.\nPlease let me know if this aligns with the project's direction or if you\nwould prefer a different approach.\n\nI am also considering adding a \"polling\" version, which I can implement\nlater once we agree on this initial implementation.\n\nMaybe I should add a \"polling\" version, but it can come next if we are\nOK on this first draft.\n\nNote: I've included some tests (heavily inspired those of other\nfunctions) to document and verify the implementation, but I haven't\ncreated the upgrade sql file. I wasn't sure if that was my\nresponsibility, so please let me know if I should include that as well.",
+    "issueRefs": [
+      "#481"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/client-tests/read_grouped_head_test.py",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/fifo_per_group_tests.out",
+      "pgmq-extension/test/sql/fifo_per_group_tests.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9e75580538987d6788c66abf9c501d9785a597e8",
+    "authorDate": "2026-02-18T08:21:54-06:00",
+    "subject": "Improve Extension Upgrade Tests (#501)",
+    "body": "1. Extension Upgrade refactor: changed the minimum version in the\nupgrade tests to\n[1.5.0](https://github.com/pgmq/pgmq/releases/tag/v1.5.0) (Dec 2024).\nEarlier versions have Rust dependencies which significantly increased\nthe complexity of the test suite and were also significantly slower. The\nexisting upgrade tests were also missing some critical tests paths. New\ntests should do a much better job validating functionality across\nupgrades.\n\n2. Bug fix: explicitly selecting each return column (`returning\nm.msg_id, m.read_ct...`) in all functions that return the message record\n(read, pop, set_vt), rather than blindly returning them all. This way we\ncan more tightly control the ordering of the columns returned. I think\nhaving this in place will make future changes to to the message record\nmore robust and prevent issues like\nhttps://github.com/pgmq/pgmq/issues/487\n\n3. Update control file in prep for v1.11.0 release",
+    "issueRefs": [
+      "#501"
+    ],
+    "touchedFiles": [
+      ".github/workflows/extension_upgrade.yml",
+      "pgmq-extension/client-tests/upgrade_test.py",
+      "pgmq-extension/pgmq.control",
+      "pgmq-extension/sql/pgmq--1.10.1--1.11.0.sql",
+      "pgmq-extension/sql/pgmq.sql"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "ce0a4a6c6be7db51b6509b93272ababbc0fdd3f3",
+    "authorDate": "2026-02-16T18:39:40-05:00",
+    "subject": "Add functions for accessing insert throttles and topic bindings without querying internal tables (#493)",
+    "body": "As discussed in issue #491, this PR adds a new `bound_at` field to the\nunderlying `topic_bindings` table, but it also makes a few other\nadditions in the spirit of keeping internal tables internal:\n1. Adds a function for listing notification throttles\n2. Adds a function for updating a notification throttle\n3. Adds functions for listing topic bindings (one for all bindings and\none for the bindings for a single queue)\n\n---------\n\nCo-authored-by: Adam Hendel <adam@hendel.dev>",
+    "issueRefs": [
+      "#493",
+      "#491"
+    ],
+    "touchedFiles": [
+      "docs/api/sql/functions.md",
+      "docs/topics.md",
+      "pgmq-extension/sql/pgmq--1.10.1--1.11.0.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/base.out",
+      "pgmq-extension/test/expected/topic_tests.out",
+      "pgmq-extension/test/sql/base.sql",
+      "pgmq-extension/test/sql/topic_tests.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6e102ce3f450bf013b56b674121c179f1be42a89",
+    "authorDate": "2026-02-16T15:35:54+01:00",
+    "subject": "fix: limit fetching all messages of each groups during read_grouped (#497)",
+    "body": "Related to issue described here https://github.com/pgmq/pgmq/issues/496",
+    "issueRefs": [
+      "#497"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/sql/pgmq--1.10.1--1.11.0.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/fifo_tests.out",
+      "pgmq-extension/test/sql/fifo_tests.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "be32133dabb40b5ea2c58d1d37da9b357cae8f31",
+    "authorDate": "2026-02-16T07:07:00-06:00",
+    "subject": "update create queue for last_read_at (#499)",
+    "body": "Closes https://github.com/pgmq/pgmq/issues/498",
+    "issueRefs": [
+      "#499"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/pgmq.control",
+      "pgmq-extension/sql/pgmq--1.10.0--1.10.1.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "eb182e23d71543ba9f0a304fb2865f8b8cc18ae7",
+    "authorDate": "2026-02-14T11:54:55-06:00",
+    "subject": "deprecate Rust client-side SQL api, update Rust docs, examples (#495)",
+    "body": "- Deprecating the Rust API `pgmq::PGMQueue` in favor of\n`pgmq::PGMQueueExt`. The `PGMQueue` API implements just a small amount\nof PGMQ's features completely in the client as raw SQL rather than\ncalling pgmq's SQL functions. For example, pgmq.send executes `select\nfor update skip locked` rather than `select pgmq.read().`\n- Adds Rust an example for installing the SQL-only PGMQ package using\nthe Rust client.\n- Updates the Rust client's README\n\nThis should also provide more clarity around cases like\nhttps://github.com/pgmq/pgmq/pull/490, and close\nhttps://github.com/pgmq/pgmq/issues/439.\n\nI also noticed the Rust client has started to drift behind the SQL API,\nso I opened https://github.com/pgmq/pgmq/issues/494.",
+    "issueRefs": [
+      "#495"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/readme.md",
+      "pgmq-rs/examples/basic.rs",
+      "pgmq-rs/examples/install.rs",
+      "pgmq-rs/src/lib.rs",
+      "pgmq-rs/src/util.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8625be2fe0238162876cc386db68e0d3a0c0db90",
+    "authorDate": "2026-02-08T19:32:21+01:00",
+    "subject": "Support for AMQP like topics (#486)",
+    "body": "Please accept the PR that adds AMQP style topics to pgmq.\n\n### How it works\nThe implementation It's build around the `send` function.\nYou send a message to the `send_topic` and the message will be delivered\nto 0..N queues by matching the routing key.\nNo any other modifications added to the rest of the code.\n\nSee here also: issue https://github.com/pgmq/pgmq/issues/455\n\nIf you are OK with the implementation (design and API) I can proceed and\nwrite some tests also\n\n---------\n\nCo-authored-by: Adam Hendel <adam@hendel.dev>",
+    "issueRefs": [
+      "#486"
+    ],
+    "touchedFiles": [
+      "docs/topics.md",
+      "examples/topics.sql",
+      "pgmq-extension/client-tests/test.py",
+      "pgmq-extension/client-tests/topics_test.py",
+      "pgmq-extension/sql/pgmq--1.10.0--1.11.0.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/topic_tests.out",
+      "pgmq-extension/test/sql/topic_tests.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f396e65f8178be8b3a0d5c47ec04b33ffd04e018",
+    "authorDate": "2026-01-27T22:15:06-05:00",
+    "subject": "Update set_vt to accept timestamp (#484)",
+    "body": "Fixes #483 \n\nI just took a guess on the versioning (1.10.0) but let me know if you\nprefer 1.9.1 instead and I can update the PR.\n\nI tested locally and also ran `make installcheck` locally and the tests\nare passing.\n\nIs there anything I am missing in order to implement this change?\n\nI noticed that [Release\n1.5.0](https://github.com/pgmq/pgmq/releases/tag/v1.5.0), with a similar\nchange made for pgmq.send to support timestampz, has a warning that it\ncould break existing code if it relied on implicit casting. I wonder if\nthis change would need a similar warning for set_vt.",
+    "issueRefs": [
+      "#484",
+      "Fixes #483"
+    ],
+    "touchedFiles": [
+      "docs/api/sql/functions.md",
+      "pgmq-extension/pgmq.control",
+      "pgmq-extension/sql/pgmq--1.9.0--1.10.0.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/base.out",
+      "pgmq-extension/test/sql/base.sql"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "9bb5ba79b30195e91e676d53e914fdc618ee41cd",
+    "authorDate": "2026-01-18T10:17:57-06:00",
+    "subject": "Versioned docs (#482)",
+    "body": "closes https://github.com/pgmq/pgmq/issues/151",
+    "issueRefs": [
+      "#482"
+    ],
+    "touchedFiles": [
+      ".github/workflows/docs.yml",
+      ".github/workflows/release.yml",
+      ".gitignore",
+      "mkdocs.yml",
+      "pyproject.toml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9e9c3dcc4dabe57a27cfeff868d83a3b6d1d63d8",
+    "authorDate": "2026-01-17T18:33:25-06:00",
+    "subject": "Remove `conditional` param from FIFO (#480)",
+    "body": "- removes conditional parameter from FIFO functions\n- updates FIFO in docs for conditional parameter and corrects\ndescription of batch behavior\n\nCloses https://github.com/pgmq/pgmq/issues/476",
+    "issueRefs": [
+      "#480"
+    ],
+    "touchedFiles": [
+      "docs/api/sql/functions.md",
+      "docs/api/sql/types.md",
+      "docs/fifo-queues.md",
+      "examples/grouped_rr_example.sql",
+      "pgmq-extension/sql/pgmq--1.8.1--1.9.0.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/fifo_tests.out",
+      "pgmq-extension/test/sql/fifo_tests.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2129a38119afa29a5d302fea48cfe28e442984ff",
+    "authorDate": "2026-01-17T09:06:17-06:00",
+    "subject": "fix message ordering in `read_grouped_rr` (#477)",
+    "body": "Addresses the FIFO ordering bug raised in #476",
+    "issueRefs": [
+      "#477",
+      "#476"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/fifo_rr_tests.out",
+      "pgmq-extension/test/sql/fifo_rr_tests.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "730f6798610f1dd2ac11f393ddd4994f090f31a0",
+    "authorDate": "2025-12-29T12:40:58-07:00",
+    "subject": "Consider supporting FIFO + message keys (#442)",
+    "body": "based on @tazmaniax [PR](https://github.com/pgmq/pgmq/pull/406) \n\nFixes https://github.com/pgmq/pgmq/issues/294\n\nThat is highly needed to make [outbox\npattern](https://microservices.io/patterns/data/transactional-outbox.html)\nin many postgres related projects\n\n---------\n\nCo-authored-by: Chris Webb <chris@spinthewebb.com>",
+    "issueRefs": [
+      "#442"
+    ],
+    "touchedFiles": [
+      "docs/api/sql/functions.md",
+      "docs/fifo-queues.md",
+      "examples/grouped_rr_example.sql",
+      "examples/grouped_sqs_style_comparison.sql",
+      "pgmq-extension/readme.md",
+      "pgmq-extension/sql/pgmq--1.7.1--1.7.2.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/fifo_rr_tests.out",
+      "pgmq-extension/test/expected/fifo_tests.out",
+      "pgmq-extension/test/sql/fifo_rr_tests.sql",
+      "pgmq-extension/test/sql/fifo_tests.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b8058b267cd548553b07ae22be6f8162ad21b3d0",
+    "authorDate": "2025-12-20T16:48:06+01:00",
+    "subject": "create_with_cxn now returns Ok(false) if queue already exists, as pro… (#465)",
+    "body": "Method `create` for `PGMQueueExt` doc comment asserts that method should\nreturn Ok(false) if the queue already exists. Previous implementation\ncreated discrepancy between expected behavior and actual behavior as\nOk(true) was returned for all cases except errors.\n\nSimplified the `create` method to just pass through the\n`create_with_cxn` method instead. Added check to see if queue exists in\n`create_with_cxn`, added Copy trait to method to allow for use of\nexecutor twice. Tried to keep fix similar to existing methods such as\n`create_partitioned_with_cxn`.\n\n---------\n\nCo-authored-by: Adam Hendel <ChuckHend@users.noreply.github.com>",
+    "issueRefs": [
+      "#465"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/src/pg_ext.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0f7466a587b09c1e004ae1a50e5f989830e6cfd3",
+    "authorDate": "2025-12-19T21:12:09-05:00",
+    "subject": "Support time-based partitioning when converting archive (#470)",
+    "body": "See issue #469",
+    "issueRefs": [
+      "#470",
+      "#469"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/sql/pgmq--1.8.0--1.8.1.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/base.out",
+      "pgmq-extension/test/sql/base.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b6a0a5e619d82dd19e07322d2e764f2d10ea1d29",
+    "authorDate": "2025-12-05T18:28:14+01:00",
+    "subject": "Fix a typo in the SQL query of set_vt (single) example (#464)",
+    "body": "",
+    "issueRefs": [
+      "#464"
+    ],
+    "touchedFiles": [
+      "docs/api/sql/functions.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "36af5a98fbdc2e10dbd1fa1315f68f0dbb8f5ab8",
+    "authorDate": "2025-11-30T13:58:47-06:00",
+    "subject": "add notify and throttle doc (#459)",
+    "body": "@smyrgeorge , @chrisprobst can you take a look at what I have written in\nthese docs and make some more suggestions if necessary?\n\nOnce this merges I will work on getting v1.8.0 released and close\nhttps://github.com/pgmq/pgmq/issues/431",
+    "issueRefs": [
+      "#459"
+    ],
+    "touchedFiles": [
+      "docs/api/sql/functions.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fffbea23836ab7c77701ed45cd1dfb9df2f57942",
+    "authorDate": "2025-11-28T20:25:28+07:00",
+    "subject": "Fix couple of typos (#458)",
+    "body": "",
+    "issueRefs": [
+      "#458"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b19033d2b602cba37ca609c5cb3f11b7195d1be0",
+    "authorDate": "2025-11-18T10:22:58-05:00",
+    "subject": "Add support for batch visibility timeout updates (#452)",
+    "body": "Implements feature requested in #451\n\n---------\n\nCo-authored-by: Adam Hendel <ChuckHend@users.noreply.github.com>",
+    "issueRefs": [
+      "#452",
+      "#451"
+    ],
+    "touchedFiles": [
+      "docs/api/sql/functions.md",
+      "pgmq-extension/sql/pgmq--1.7.1--1.8.0.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/base.out",
+      "pgmq-extension/test/sql/base.sql"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "a3ab7a0f1670671fa5877d7bdfc22d2d777972bd",
+    "authorDate": "2025-11-04T01:20:56+01:00",
+    "subject": "Add Java (JDBC) link to README (#449)",
+    "body": "* Add Java (JDBC) link to README\n\nCurrent Java support is limited to Spring Boot, I submit this library which is based on the more foundational JDBC driver.\r\n\r\nFor future: I am thinking to write a JMS adapter, at least for the queues. \r\nAt best of your knowledge, has it ever gather some interest around that?\n\n* Fix Java JDBC link in readme.md\n\n---------\n\nCo-authored-by: Adam Hendel <ChuckHend@users.noreply.github.com>",
+    "issueRefs": [
+      "#449"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "11bc0202183cd981e07ffb5c63303235ad55625e",
+    "authorDate": "2025-11-04T00:03:34+01:00",
+    "subject": "Sync documentation with source + add sync command (#448)",
+    "body": "* docs: Sync SQL API documentation with pgmq.sql source code\n\nComprehensive update to bring SQL API documentation into complete alignment\nwith the actual implementation in pgmq-extension/sql/pgmq.sql. This addresses\n29 distinct documentation issues including missing functions, incorrect\nsignatures, missing type definitions, and outdated examples.\n\n## Type Definitions (types.md)\n\n### Added Missing Fields\n- Added `headers` (jsonb) field to `message_record` type\n- Updated example output to include headers column\n\n### Type Corrections\n- Fixed `read_ct` type from `bigint` to `integer` in `message_record`\n\n### New Type Documentation\n- Added complete `queue_record` type documentation\n  - Fields: queue_name, is_partitioned, is_unlogged, created_at\n- Added complete `metrics_result` type documentation\n  - All 7 fields including previously undocumented `queue_visible_length`\n\n## Function Signatures (functions.md)\n\n### Message Operations - Function Overloads\n- **send()**: Documented all 6 overloads (previously only 1)\n  - Added support for headers parameter\n  - Documented both integer and timestamp delay variants\n  - Added 5 comprehensive examples showing all combinations\n\n- **send_batch()**: Documented all 6 overloads (previously only 1)\n  - Added support for headers[] array parameter\n  - Documented both integer and timestamp delay variants\n  - Added 4 comprehensive examples including headers usage\n\n### Parameter Corrections\n- **pop()**: Added missing `qty` parameter (DEFAULT 1)\n- **set_vt()**: Fixed parameter name from `vt_offset` to `vt`\n- **set_vt()**: Fixed return type to `RETURNS SETOF pgmq.message_record`\n- **read()**: Removed incorrect \"Defaults to 1\" for required `qty` parameter\n- **read_with_poll()**: Removed incorrect \"Defaults to 1\" for required `qty` parameter\n\n### Metrics Functions\n- **metrics()**: Added missing `queue_visible_length` field to return documentation\n- **metrics()**: Changed return type to `pgmq.metrics_result` for consistency\n- **metrics_all()**: Added missing `queue_visible_length` field\n- **metrics_all()**: Changed return type to `SETOF pgmq.metrics_result`\n\n### Queue Management Functions\n- **list_queues()**: Changed return type to `SETOF pgmq.queue_record` for consistency\n- **create_partitioned()**: Fixed typo \"queue-ue_name\" → \"queue_name\"\n- **create_partitioned()**: Fixed all parameter descriptions (were all \"The name of the queue\")\n- **create_partitioned()**: Explained partition_interval behavior (numeric vs time-based)\n- **create()**: Added queue name length limit (47 chars)\n- **purge_queue()**: Fixed SQL syntax typo \"RETURN\" → \"RETURNS\"\n\n### Deprecation Warnings\n- **detach_archive()**: Added deprecation notice (no-op, will be removed in v2.0)\n- **drop_queue()**: Added note about deprecated 2-parameter variant\n\n## New Function Documentation\n\n### Queue Creation\n- **create_non_partitioned()**: Complete documentation added\n  - Explicit alternative to `create()` for non-partitioned queues\n\n### Archive Management\n- **convert_archive_partitioned()**: Complete documentation added\n  - All 4 parameters documented with defaults\n  - Explained migration process (renames old table to `_old`)\n  - Requires pg_partman extension\n\n### Notification Triggers\n- **enable_notify_insert()**: Complete documentation added\n  - Enables PostgreSQL NOTIFY on message inserts\n  - Documented channel naming format: `pgmq.q_<queue_name>.INSERT`\n  - Added LISTEN example\n\n- **disable_notify_insert()**: Complete documentation added\n  - Disables notification triggers\n\n## Example Updates\n\nUpdated all example outputs to include `headers` column:\n- read() examples (2 examples updated)\n- read_with_poll() example\n- pop() example\n- set_vt() example\n- types.md message_record example\n\nAdded new examples demonstrating headers usage:\n- send() with headers\n- send() with headers and delay\n- send_batch() with headers array\n\n## Important User-Facing Notes Added\n\n### Queue Constraints\n- Queue name maximum length: 47 characters\n  - Added to create(), create_non_partitioned(), create_partitioned()\n  - Explained rationale (PostgreSQL identifier limit of 63 chars with prefix)\n\n### Dependencies\n- pg_partman extension requirement for partitioned queues\n  - Added to create_partitioned() and convert_archive_partitioned()\n\n### Data Structure Details\n- Archive table includes `archived_at` timestamp field\n  - Documented in archive() function\n\n- Partition interval behavior explained\n  - Numeric values (e.g., '10000') = msg_id-based partitioning\n  - Time intervals (e.g., '1 day') = timestamp-based partitioning\n\n## Impact\n\nThis update ensures developers have accurate, complete documentation matching\nthe actual SQL API implementation. All 29 identified discrepancies have been\nresolved, including:\n- 4 type definition issues\n- 13 function signature corrections\n- 4 missing functions documented\n- 5 example outputs updated\n- 3 important user-facing constraints/behaviors documented\n\nThe documentation now accurately represents all public API functions, types,\nparameters, return values, and behaviors as implemented in pgmq.sql.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\n\n* docs: Fix README examples and defaults to match source code\n\nUpdates readme.md examples and documentation to align with the actual\nimplementation in pgmq.sql and the updated API documentation.\n\n## Example Output Corrections\n\nAdded missing `headers` column to all message output examples:\n- Read messages example (pgmq.read output)\n- Empty read example output\n- Pop message example (pgmq.pop output)\n- Archive table inspection example (pgmq.a_* table)\n\nThe `headers` field is part of the message_record type (pgmq.sql:49) and\narchive table structure (pgmq.sql:749) and was previously missing from all\nREADME examples.\n\n## Partitioned Queues - Default Value Corrections\n\nFixed incorrect default values in create_partitioned() documentation:\n- partition_interval: Changed from 'daily' to '10000' (actual default)\n- retention_interval: Changed from '5 days' to '100000' (actual default)\n\nThese defaults match the source code (pgmq.sql:893-894) and are numeric\nvalues for msg_id-based partitioning, not time-based as previously documented.\n\n## Impact\n\nREADME examples now accurately reflect the actual table structure and default\nparameter values, ensuring developers see correct output when following the\nexamples and understand the true default behavior of partitioned queues.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\n\n* chore: Add AI-agnostic documentation sync guide\n\nAdds a comprehensive, AI-agnostic guide for syncing documentation with\nsource code, usable with Claude Code, ChatGPT, Copilot, or any AI assistant.\n\nProvides step-by-step guidance for keeping docs in sync with pgmq.sql:\n- Systematic analysis approach (source → docs → comparison)\n- Phase-based organization strategy\n- Ultra-verification techniques for accuracy\n- Category-based issue organization\n- Examples from 29-issue sync\n- Post-sync verification checklist\n- Common pitfalls and solutions\n- Emphasized manual review and re-verification\n\nAdded new \"Documentation\" section that:\n- References the sync guide for both Claude Code and other AI assistants\n- Lists documentation files that need syncing\n- Notes the readme.md symlink structure\n- Emphasizes manual review and re-verification\n- Clarifies the guide is AI-agnostic and portable\n\n- **AI-Agnostic Design**: No tool-specific references, works with any AI\n- **Portable**: Copy-paste to ChatGPT, Copilot, or other assistants\n- **Claude Code Integration**: Available as /sync-docs-and-readme command\n- **Comprehensive**: Covers all aspects of doc sync from analysis to commit\n\nRun /sync-docs-and-readme (or copy-paste guide to AI) whenever:\n- pgmq.sql functions are added/modified\n- Function signatures change\n- New types are added\n- Parameters or defaults change\n- Documentation appears outdated\n\nEnsures types.md, functions.md, and readme.md remain accurate.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\n\n* chore: Rename documentation sync command to pgmq:update-docs\n\nMoved `.claude/commands/sync-docs-and-readme.md` to\n`.claude/commands/pgmq/update-docs.md` to follow namespace convention\nand updated all references in CONTRIBUTING.md.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude <noreply@anthropic.com>",
+    "issueRefs": [
+      "#448"
+    ],
+    "touchedFiles": [
+      ".claude/commands/pgmq/update-docs.md",
+      "CONTRIBUTING.md",
+      "docs/api/sql/functions.md",
+      "docs/api/sql/types.md",
+      "pgmq-extension/readme.md"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "41433689d5a3f017789787e9632431f634e43573",
+    "authorDate": "2025-10-09T14:55:39+02:00",
+    "subject": "Fix missing _extension_exists helper function in upgrade script (#443)",
+    "body": "The `_extension_exists` function was introduced in version 1.5.1 (commit https://github.com/pgmq/pgmq/commit/87530eda15c53448dc1e0f222dac67ea4731ff4c#diff-2bf86380a35983f84400ffd9a037ccc4f6ceac31f3744edb8b1c1df866ecaaadR871).\nHowever, it was not included in the upgrade script from 1.5.0 to 1.5.1. This commit adds the missing function to the upgrade script to ensure that it is available after upgrading.",
+    "issueRefs": [
+      "#443"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/sql/pgmq--1.5.1--1.5.2.sql",
+      "pgmq-extension/sql/pgmq--1.5.2--1.6.0.sql",
+      "pgmq-extension/sql/pgmq--1.7.0--1.7.1.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e7c5c9349e3bee19bbb1df6c915b575660716d7a",
+    "authorDate": "2025-09-10T10:24:01-04:00",
+    "subject": "added pop many and added migration (#433)",
+    "body": "* added pop many and added migration\n\n* changed pgmq.pop to use default of 1\n\n* added tests\n\n* only msg_id\n\n* only msg_id\n\n* order\n\n* Fixing SQL Test (#1)\n\n* hope this works!\n\n* extra space\n\n* extra space ???\n\n* added migration on multi value pop",
+    "issueRefs": [
+      "#433",
+      "#1"
+    ],
+    "touchedFiles": [
+      ".gitignore",
+      "pgmq-extension/sql/pgmq--1.6.1--1.7.0.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/base.out",
+      "pgmq-extension/test/sql/base.sql"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "0f00a446b3447852dace3792c3cfc814c299ec8e",
+    "authorDate": "2025-09-09T21:54:43-05:00",
+    "subject": "Fix failing upgrade test (#436)",
+    "body": "Seems like the SQL-only tests are colliding with these upgrade tests. It has been really hard to reproduce, but I think this is resolving it.",
+    "issueRefs": [
+      "#436"
+    ],
+    "touchedFiles": [
+      ".github/workflows/extension_upgrade.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ec67095513f5730f5c5cc00c738e1529bed74556",
+    "authorDate": "2025-07-20T21:13:59-04:00",
+    "subject": "Fix `make dist`",
+    "body": "Properly archive from the parent directory and omit `META.json.in`.",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".gitattributes",
+      "pgmq-extension/.gitattributes",
+      "pgmq-extension/Makefile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "85793670ef2b1f9a6bb140be5e33562eae2df1a7",
+    "authorDate": "2025-07-18T22:03:57-05:00",
+    "subject": "fix rust crate ci (#419)",
+    "body": "* simplify crate workflow\n\n* use stable for lint",
+    "issueRefs": [
+      "#419"
+    ],
+    "touchedFiles": [
+      ".github/actions/find-changed-directories/action.yml",
+      ".github/actions/publish-crate/action.yml",
+      ".github/workflows/cargo_publish.yml",
+      ".github/workflows/crate_ci.yml",
+      "pgmq-rs/Makefile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0ad05d9bed59291814076aa05ac876d5fb10496b",
+    "authorDate": "2025-07-18T16:51:51-05:00",
+    "subject": "patch extension config dump (#418)",
+    "body": "* fix check on extension installation\n\n* add migration sql",
+    "issueRefs": [
+      "#418"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/pgmq.control",
+      "pgmq-extension/sql/pgmq--1.6.0--1.6.1.sql",
+      "pgmq-extension/sql/pgmq.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f9631898304edddf3b66daa56a1f0e06a67b5839",
+    "authorDate": "2025-05-23T14:42:42-07:00",
+    "subject": "fix: Override types of timestamp columns to avoid `time` conflict (#401)",
+    "body": "* fix: Override types of timestamp columns to avoid `time` conflict\n\nProblem\n-------\nIf a consumer has both the `time` and `chrono` features of `sqlx`\nenabled, `sqlx` will default to using `OffsetDateTime` (from `time`)\nfor timestamp fields instead of `DateTime<Utc>` (from `chrono`).\nIt's easy to accidentally encounter this situation, either by directly\nenabling `time`, e.g., if the consumer prefers `time` over `chrono`, or\nif the `time` feature is enabled by a transitive dependency. When this\nsituation occurs, the `pg_ext::PGMQueueMeta` struct can not be built\nfrom the sqlx query because an `OffsetDateTime` was returned instead of\na `DateTime<Utc>`, causing a compile error.\n\nSolution\n--------\n`sqlx` provides a way to override the type of an output column:\nhttps://docs.rs/sqlx/latest/sqlx/macro.query.html#force-a-differentcustom-type.\nUpdate the failing queries in the `pg_ext` to use this approach.\nUnfortunately, I think this requires using the more verbose approach of\nnaming each column to be returned instead of using `*`.\n\nTesting\n-------\n- I ran the examples and they appeared to run successfully\n- I enabled the `time` feature of `sqlx` in the `dev-dependencies` to\n  ensure this case of enabling `chrono` and `time` is supported, which\n  can be confirmed by compiling examples/tests.\n\nOther\n-----\nI also updated the sqlx query caches. I noticed there was an unused\ncolumn called `headers` in some of the queries that used a `*` selector.\nI can add the column back, but it didn't appear to be used, so I left it\nout.\n\n* Update code comment for why `time` feature is added in dev deps\n\n* bump patch version",
+    "issueRefs": [
+      "#401"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/.sqlx/query-4f4d42f44b0731d55ed5cbcd391fdda0f900b95c9ceacc2356d27e746ba7fb62.json",
+      "pgmq-rs/.sqlx/query-b46b05578c075ecc8fb9c561a6d0be974810f4c2047b388832ef14f20a61996c.json",
+      "pgmq-rs/.sqlx/query-de9ca57e75bfddcf8516ee5f7e65a0e5a1c90ccf1984d6f5d30cb27f9a282c45.json",
+      "pgmq-rs/.sqlx/query-e4ae7d7a07b82942bedfd633a555e7eeca38781a82d78096a9a388f74d42e96e.json",
+      "pgmq-rs/.sqlx/query-f9b9885aac1d19e2a06b147d3a4f9a4f7a43c1d27be38adfb188aa4b7805b80d.json",
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/src/pg_ext.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "95b41f955c559bf5cf99dc44007e5063c04cfb74",
+    "authorDate": "2025-04-17T19:03:03-05:00",
+    "subject": "resolve race condition on pgmq.create (#393)",
+    "body": "* resolve race condition on pgmq.create\n\n* update ci\n\n* Update pgmq-extension/sql/pgmq.sql\n\nCo-authored-by: felipe stival <14948182+v0idpwn@users.noreply.github.com>\n\n* Update pgmq-extension/sql/pgmq--1.5.1--1.5.2.sql\n\nCo-authored-by: felipe stival <14948182+v0idpwn@users.noreply.github.com>\n\n* fix test\n\n* advisory lock on drop.queue too\n\n* consistent lock key in all queue locks\n\n* use exclusive session level advisory lock\n\n* Revert \"use exclusive session level advisory lock\"\n\nThis reverts commit 25f4b03c9acbd2e13325e7bfcfa94f1710e881a5.\n\n* add comment\n\n* Update pgmq-extension/sql/pgmq.sql\n\n---------\n\nCo-authored-by: felipe stival <14948182+v0idpwn@users.noreply.github.com>",
+    "issueRefs": [
+      "#393"
+    ],
+    "touchedFiles": [
+      ".github/workflows/cargo_publish.yml",
+      "pgmq-extension/sql/pgmq--1.5.1--1.5.2.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/base.out"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "6add733db226a83450990fa24864faa8c5fc5cbe",
+    "authorDate": "2025-04-11T15:27:00+02:00",
+    "subject": "fix link to pgmq-js (#391)",
+    "body": "",
+    "issueRefs": [
+      "#391"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4dae05c90cf5e4fceefe9972299c3870b97dd8a6",
+    "authorDate": "2025-04-10T19:56:20+08:00",
+    "subject": "doc fix for functions.md (#390)",
+    "body": "",
+    "issueRefs": [
+      "#390"
+    ],
+    "touchedFiles": [
+      "docs/api/sql/functions.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e35c9c66dd9750fa26807f52d446da45504ee4a8",
+    "authorDate": "2025-04-04T12:15:59-05:00",
+    "subject": "fix extension release (#389)",
+    "body": "* move all releases to same workflow\n\n* image release\n\n* update workdir on step",
+    "issueRefs": [
+      "#389"
+    ],
+    "touchedFiles": [
+      ".github/workflows/extension_ci.yml",
+      ".github/workflows/pgxn-release.yml",
+      ".github/workflows/release.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2471e1761a4c24d4748b42a79bd07a6c9dea8ee3",
+    "authorDate": "2025-03-27T15:21:05-05:00",
+    "subject": "fix queue name length check (#386)",
+    "body": "",
+    "issueRefs": [
+      "#386"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/sql/pgmq--1.5.1--1.5.2.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/base.out",
+      "pgmq-extension/test/sql/base.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e4d4b84bf302df77be2d1f877c5cf8ef8861bfc7",
+    "authorDate": "2025-01-28T21:01:25+08:00",
+    "subject": "feat(#375): add send_batch_delay support (#376)",
+    "body": "* feat(#375): add send_batch_delay support\n\n* Fix the example in the send_batch_delay doc\n\n* update version to 0.30.0",
+    "issueRefs": [
+      "#375",
+      "#376"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/src/lib.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "aa531ff012755c5e5fdc240893b7902874df8cf6",
+    "authorDate": "2024-12-16T05:59:25+09:00",
+    "subject": "Add created sequence object to the extension (#352)",
+    "body": "Without adding the sequence pg_dump crashes. This happens because\r\nthesequence's table is ignored during dumping objects, unlike the\r\nsequence.It leads to inconsistency in pg_dump's metadata of objects.",
+    "issueRefs": [
+      "#352"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/sql/pgmq--1.4.5--1.5.0.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/base.out"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "fccdd7b5922a4ca18aaaaceb7f99704a723bd546",
+    "authorDate": "2024-12-13T22:23:52+08:00",
+    "subject": "fix: python logging (#360)",
+    "body": "* fix: python logging\r\n\r\n* Update pyproject.toml",
+    "issueRefs": [
+      "#360"
+    ],
+    "touchedFiles": [
+      "tembo-pgmq-python/pyproject.toml",
+      "tembo-pgmq-python/tembo_pgmq_python/async_queue.py",
+      "tembo-pgmq-python/tembo_pgmq_python/queue.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6826e182ae1ca913fefe10aba44c5fd0ea070bec",
+    "authorDate": "2024-12-13T10:37:53+08:00",
+    "subject": "doc fix (#358)",
+    "body": "",
+    "issueRefs": [
+      "#358"
+    ],
+    "touchedFiles": [
+      "tembo-pgmq-python/readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f5c04a4f20305cba66907c6d7fafa7672d960b8b",
+    "authorDate": "2024-12-10T14:19:45-03:00",
+    "subject": "Implement message headers (#338)",
+    "body": "* Implement headers\n\nImplement message headers\n\n* refactoring\n\n* test fixes\n\n* Archive headers\n\n* Migration\n\n* Fixes and upgrade script\n\n* Use header in misc test\n\n* More tests and bugfix",
+    "issueRefs": [
+      "#338"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/sql/pgmq--1.4.4--1.5.0.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/base.out",
+      "pgmq-extension/test/sql/base.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "19cda4c7d912cb728c68e2b9927d676fe88f8a78",
+    "authorDate": "2024-11-17T12:59:48-05:00",
+    "subject": "[chore] don't publish from forks (#346)",
+    "body": "fixes #345",
+    "issueRefs": [
+      "#346",
+      "fixes #345"
+    ],
+    "touchedFiles": [
+      ".github/workflows/cargo_publish.yml",
+      ".github/workflows/docs.yml",
+      ".github/workflows/extension_ci.yml",
+      ".github/workflows/pgmq_python.yml",
+      ".github/workflows/pgxn-release.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "897f666c7aab27ab221a03b5365cb95c2e977b51",
+    "authorDate": "2024-11-15T01:37:56-03:00",
+    "subject": "Fix regression: not respecting interval in read_with_poll (#343)",
+    "body": "* Fix regression: not respecting interval in read_with_poll\n\nThe regression happened in the port to PL/pgSQL.\n\nDivision of integers on postgres yields integer results. Our unit conversion from\nmilliseconds to seconds didn't consider that, then returning wrong results.\nThis caused `pgmq.read_with_poll` to sleep 0s instead of `poll_interval_ms`\nif `poll_interval_ms` was under 1000, using 100% of CPU.\n\nThe fix is simply converting `poll_interval_ms` to `numeric` before doing the\ndivision, which produces a `numeric` result as originally intended.\n\n* Fix tests",
+    "issueRefs": [
+      "#343"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/sql/pgmq--1.4.4--1.5.0.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/base.out",
+      "pgmq-extension/test/sql/base.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "aed73881153bab459d9cc1e63536b775533e10a7",
+    "authorDate": "2024-10-31T18:21:27-03:00",
+    "subject": "Fix error when PG_CONFIG not explicitly defined, plus support development pg versions (#337)",
+    "body": "",
+    "issueRefs": [
+      "#337"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/Makefile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "de3be54705598d07b4b2f7ae49b8ed866ebc8a4d",
+    "authorDate": "2024-10-25T15:22:22-03:00",
+    "subject": "Fix gitignore for SQL extension files (#331)",
+    "body": "",
+    "issueRefs": [
+      "#331"
+    ],
+    "touchedFiles": [
+      ".gitignore"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6a9984ed7856459b82417659effa9ec3553a556b",
+    "authorDate": "2024-10-23T14:40:11-05:00",
+    "subject": "Add new conditional parameter for read (#322)",
+    "body": "* Add new conditional parameter for read\r\n\r\n* Add docs for new read parameter\r\n\r\n* Fix cases where message is NULL when reading with conditional\r\n\r\n* Add missing function ending\r\n\r\n* Fix tests",
+    "issueRefs": [
+      "#322"
+    ],
+    "touchedFiles": [
+      "docs/api/sql/functions.md",
+      "pgmq-extension/sql/pgmq--1.4.4--1.5.0.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/base.out",
+      "pgmq-extension/test/sql/base.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "be39b7381dfbb0541f1d88de3d7b319b159f841c",
+    "authorDate": "2024-10-22T17:27:06-05:00",
+    "subject": "Make drop queue infer queue type (#319)",
+    "body": "* Make drop queue infer queue type\r\n\r\n* Overload function to not break backwards compatibility\r\n\r\n* Add migration file for drop_queue changes\r\n\r\n* Add test for automatic is_partitioned check\r\n\r\n* Drop function in migration script\r\n\r\n* Avoid code duplication in drop_queue\r\n\r\n* Refactor, add deprecation warning\r\n\r\n* fix\r\n\r\n* Include deprecation warnings in tests\r\n\r\n---------\r\n\r\nCo-authored-by: Adam Hendel <ChuckHend@users.noreply.github.com>\r\nCo-authored-by: v0idpwn <v0idpwn@gmail.com>",
+    "issueRefs": [
+      "#319"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/pgmq.control",
+      "pgmq-extension/sql/pgmq--1.4.4--1.5.0.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/base.out",
+      "pgmq-extension/test/sql/base.sql"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "1e953efe654882f87cc1f47d0ec20374650ab76f",
+    "authorDate": "2024-09-28T20:31:51+03:30",
+    "subject": "pgmq-python: adding support for Transaction (#268)",
+    "body": "* feat: adding transaction as decorator\r\n\r\n* feat: test for transactions\r\n\r\n* add logger\r\n\r\n* chore: linting\r\n\r\n* feat: successfull transaction operation\r\n\r\n* chore: linting and formatting\r\n\r\n* feat: adding better logger and optional for verbose\r\n\r\n* feat: update readme for transaction\r\n\r\n* feat: support for transaction:\r\n- adding support for logging in sync and async functions\r\n- adding support for transaction in sync and asyns operations\r\n- adding uint tests\r\n- separated module for transaction decorators to avoid conflicts in unit tests\r\n- updating readme\r\n\r\n* feat:remove perform_transaction\r\n\r\n* feat: adding example for transaction\r\n\r\n* feat: update readme for using transactions\r\n\r\n* chore: linting\r\n\r\n* chore: remove unused tnx variable\r\n\r\n* feat: update examples for non-db and non-pgmq\r\n\r\n* chore: remove extra space in README\r\n\r\n* feat: complete async example app\r\n\r\n* chore: fixing some python code intention within README",
+    "issueRefs": [
+      "#268"
+    ],
+    "touchedFiles": [
+      "tembo-pgmq-python/readme.md",
+      "tembo-pgmq-python/example/example_app_async.py",
+      "tembo-pgmq-python/example/example_app_sync.py",
+      "tembo-pgmq-python/tembo_pgmq_python/__init__.py",
+      "tembo-pgmq-python/tembo_pgmq_python/async_queue.py",
+      "tembo-pgmq-python/tembo_pgmq_python/decorators.py",
+      "tembo-pgmq-python/tembo_pgmq_python/queue.py",
+      "tembo-pgmq-python/tests/test_async_integration.py",
+      "tembo-pgmq-python/tests/test_integration.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6fada6be5e730cc2cf43853963e1350f3a7c507a",
+    "authorDate": "2024-09-13T15:29:38-05:00",
+    "subject": "pg_partman 5 and pg17 tests for extension ci (#308)",
+    "body": "* pg_partman 5 tests for extension ci\r\n\r\n* install partman with git\r\n\r\n* fix workflow fmt\r\n\r\n* exclude pg partman tests on pg12, 13\r\n\r\n* add test for pg17\r\n\r\n* put partman and pg ver in test name",
+    "issueRefs": [
+      "#308"
+    ],
+    "touchedFiles": [
+      ".github/workflows/extension_ci.yml",
+      "pgmq-extension/Makefile",
+      "pgmq-extension/test/expected/base.out",
+      "pgmq-extension/test/sql/base.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7a9bc887d9fb926bebb5c0b0e40355cfe413d9cd",
+    "authorDate": "2024-08-24T15:04:32-05:00",
+    "subject": "Security Issue with SQLx 0.7.2 (#303)",
+    "body": "* Update Security Issue with SQLX\r\n\r\n* Cargo Version Bump",
+    "issueRefs": [
+      "#303"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.toml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0b737d6e0b0c2890ebdd8437b602571cddebc9ad",
+    "authorDate": "2024-08-15T16:39:36-05:00",
+    "subject": "Handle special characters in queue names (#299)",
+    "body": "* fix typo in part config assignment\r\n\r\n* handle special characters in queue names\r\n\r\n* migration for 1.4.2\r\n\r\n* add comment re partman reqs",
+    "issueRefs": [
+      "#299"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/pgmq.control",
+      "pgmq-extension/sql/pgmq--1.4.1--1.4.2.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/base.out",
+      "pgmq-extension/test/sql/base.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "78a766bd750b5985ac590ac384b8d294601fe544",
+    "authorDate": "2024-08-15T08:45:48-05:00",
+    "subject": "fix typo in part config assignment (#297)",
+    "body": "",
+    "issueRefs": [
+      "#297"
+    ],
+    "touchedFiles": [
+      "pgmq-extension/sql/pgmq--1.4.0--1.4.1.sql",
+      "pgmq-extension/sql/pgmq.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "04a06b694d228cf77f85a85fa01b2583e1752211",
+    "authorDate": "2024-08-14T22:18:47-05:00",
+    "subject": "use Identifier format instead of string format (#296)",
+    "body": "* use Identifier format instead of string format\r\n\r\n* fix formatter\r\n\r\n* inserts\r\n\r\n* handle upgrade sql\r\n\r\n* Update pgmq-extension/sql/pgmq.sql\r\n\r\nCo-authored-by: David E. Wheeler <46604+theory@users.noreply.github.com>\r\n\r\n* get pgrx pg_config from info\r\n\r\n* PERFORM over formatting\r\n\r\n* partition col\r\n\r\n* fix typo\r\n\r\n* update test and use helper format fn\r\n\r\n* simplify fn\r\n\r\n* create or replace\r\n\r\n* add test case\r\n\r\n* remove built sql\r\n\r\n---------\r\n\r\nCo-authored-by: David E. Wheeler <46604+theory@users.noreply.github.com>",
+    "issueRefs": [
+      "#296"
+    ],
+    "touchedFiles": [
+      ".github/workflows/extension_upgrade.yml",
+      "pgmq-extension/pgmq.control",
+      "pgmq-extension/sql/pgmq--1.4.0--1.4.1.sql",
+      "pgmq-extension/sql/pgmq.sql",
+      "pgmq-extension/test/expected/base.out",
+      "pgmq-extension/test/sql/base.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "676fc0af3aed30730f827a01f01af98876274ffe",
+    "authorDate": "2024-06-18T07:07:00-05:00",
+    "subject": "move extension to ./pgmq-extension (#266)",
+    "body": "* move extension to ./extension\r\n\r\n* fix working dir\r\n\r\n* fix path to pgmq-rs\r\n\r\n* fix image builds\r\n\r\n* update path and install cmd in pg dockerfile\r\n\r\n* try other wd for pg-start\r\n\r\n* rename to pgmq-extension\r\n\r\n* fix paths\r\n\r\n* remove rust test dir",
+    "issueRefs": [
+      "#266"
+    ],
+    "touchedFiles": [
+      ".github/workflows/extension_ci.yml",
+      ".github/workflows/extension_upgrade.yml",
+      "UPDATING.md",
+      "images/pgmq-pg/Dockerfile.in",
+      "pgmq-extension/META.json.in",
+      "pgmq-extension/Makefile",
+      "pgmq-extension/Trunk.toml.in",
+      "pgmq-extension/pgmq.control",
+      "pgmq-extension/sql/pgmq--0.10.2--0.11.1.sql",
+      "pgmq-extension/sql/pgmq--0.11.1--0.11.2.sql",
+      "pgmq-extension/sql/pgmq--0.11.2--0.12.0.sql",
+      "pgmq-extension/sql/pgmq--0.12.0--0.12.1.sql",
+      "pgmq-extension/sql/pgmq--0.12.1--0.13.0.sql",
+      "pgmq-extension/sql/pgmq--0.13.0--0.13.1.sql",
+      "pgmq-extension/sql/pgmq--0.13.1--0.14.0.sql",
+      "pgmq-extension/sql/pgmq--0.14.0--0.14.1.sql",
+      "pgmq-extension/sql/pgmq--0.14.1--0.14.2.sql",
+      "pgmq-extension/sql/pgmq--0.14.2--0.14.3.sql",
+      "pgmq-extension/sql/pgmq--0.14.3--0.15.0.sql",
+      "pgmq-extension/sql/pgmq--0.15.0--0.15.1.sql",
+      "pgmq-extension/sql/pgmq--0.15.1--0.16.0.sql",
+      "pgmq-extension/sql/pgmq--0.16.0--0.17.0.sql",
+      "pgmq-extension/sql/pgmq--0.17.0--0.18.0.sql",
+      "pgmq-extension/sql/pgmq--0.18.0--0.19.0.sql",
+      "pgmq-extension/sql/pgmq--0.19.0--0.20.0.sql",
+      "pgmq-extension/sql/pgmq--0.20.0--0.21.0.sql",
+      "pgmq-extension/sql/pgmq--0.21.0--0.22.0.sql",
+      "pgmq-extension/sql/pgmq--0.22.0--0.23.0.sql",
+      "pgmq-extension/sql/pgmq--0.23.0--0.24.0.sql",
+      "pgmq-extension/sql/pgmq--0.24.0--0.25.0.sql",
+      "pgmq-extension/sql/pgmq--0.25.0--0.26.0.sql",
+      "pgmq-extension/sql/pgmq--0.26.0--0.27.0.sql",
+      "pgmq-extension/sql/pgmq--0.27.0--0.28.0.sql",
+      "pgmq-extension/sql/pgmq--0.28.0--0.29.0.sql",
+      "pgmq-extension/sql/pgmq--0.29.0--0.30.0.sql",
+      "pgmq-extension/sql/pgmq--0.30.0--0.31.0.sql",
+      "pgmq-extension/sql/pgmq--0.31.0--0.31.1.sql",
+      "pgmq-extension/sql/pgmq--0.31.1--0.32.0.sql",
+      "pgmq-extension/sql/pgmq--0.32.0--0.32.1.sql",
+      "pgmq-extension/sql/pgmq--0.32.1--0.32.2.sql",
+      "pgmq-extension/sql/pgmq--0.32.2--0.32.3.sql",
+      "pgmq-extension/sql/pgmq--0.32.3--0.33.0.sql",
+      "pgmq-extension/sql/pgmq--0.33.0--0.33.1.sql",
+      "pgmq-extension/sql/pgmq--0.33.1--0.33.2.sql",
+      "pgmq-extension/sql/pgmq--0.33.2--0.33.3.sql",
+      "pgmq-extension/sql/pgmq--0.33.3--1.0.0.sql",
+      "pgmq-extension/sql/pgmq--0.7.3--0.7.4.sql",
+      "pgmq-extension/sql/pgmq--0.7.4--0.7.5.sql",
+      "pgmq-extension/sql/pgmq--0.7.5--0.8.0.sql",
+      "pgmq-extension/sql/pgmq--0.8.0--0.8.1.sql",
+      "pgmq-extension/sql/pgmq--0.8.1--0.9.0.sql",
+      "pgmq-extension/sql/pgmq--0.9.0--0.10.2.sql",
+      "pgmq-extension/sql/pgmq--1.0.0--1.1.0.sql",
+      "pgmq-extension/sql/pgmq--1.1.0--1.1.1.sql",
+      "pgmq-extension/sql/pgmq--1.1.1--1.2.0.sql",
+      "pgmq-extension/sql/pgmq--1.2.0--1.2.1.sql",
+      "pgmq-extension/sql/pgmq--1.2.1--1.3.0.sql",
+      "pgmq-extension/sql/pgmq--1.3.0--1.3.1.sql",
+      "pgmq-extension/sql/pgmq--1.3.1--1.3.2.sql",
+      "pgmq-extension/sql/pgmq--1.3.2--1.3.3.sql",
+      "pgmq-extension/sql/pgmq.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dba914db3ab1ccc5f6b382964f90b73c23d9e9cb",
+    "authorDate": "2024-06-15T21:20:23+03:30",
+    "subject": "Support all the extension functions in the python client (#265)",
+    "body": "* feat(queue): Add missing queue functionalities and address deprecation warnings\r\n\r\n- Added new methods: read_with_poll, archive_batch, delete_batch, set_vt, list_queues, detach_archive, drop_queue, validate_queue_name.\r\n- Addressed datetime deprecation warning by using timezone-aware datetime objects.\r\n- Set explicit  parameter in ConnectionPool to resolve psycopg_pool deprecation warning.\r\n\r\n* test(queue): Update test suite to cover new queue functionalities\r\n\r\n- Added tests for read_with_poll, archive_batch, delete_batch, set_vt, list_queues, detach_archive, drop_queue, validate_queue_name.\r\n- Ensured tests run successfully with the updated PGMQueue methods.\r\n- Improved coverage and reliability of the queue operations.\r\n\r\n* chore(makefile): Simplify targets and update Docker image\r\n\r\n- Simplified targets for formatting, linting, clearing, and running PostgreSQL.\r\n- Added a check to ensure Poetry version is >= 1.7.1.\r\n- Updated Docker image to .\r\n- Improved comments for better clarity and maintainability.\r\n- Ensured proper execution flow and environment setup for reliable testing.\r\n\r\n* chore: fix typo\r\n\r\n* feat: update readme for changes",
+    "issueRefs": [
+      "#265"
+    ],
+    "touchedFiles": [
+      "tembo-pgmq-python/Makefile",
+      "tembo-pgmq-python/readme.md",
+      "tembo-pgmq-python/tembo_pgmq_python/queue.py",
+      "tembo-pgmq-python/tests/test_integration.py"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "37c77f2e4fdba359242ed360f920ff4c20ee036c",
+    "authorDate": "2024-06-14T12:36:31-05:00",
+    "subject": "update license (#264)",
+    "body": "* update license\r\n\r\ncloses https://github.com/tembo-io/pgmq/issues/250\r\n\r\nThis `Cargo.toml` will probably be gone after @theory finishes porting these tests/\r\n\r\n* remove pgrx action\r\n\r\n* rework the action",
+    "issueRefs": [
+      "#264"
+    ],
+    "touchedFiles": [
+      ".github/actions/pgx-init/action.yml",
+      ".github/workflows/extension_upgrade.yml",
+      "integration_test/Cargo.toml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "895884c9d84f69996300aa3bec7c19af08c19af2",
+    "authorDate": "2024-06-13T17:21:29+03:30",
+    "subject": "fix LICENSE in README (#259)",
+    "body": "* fix LICENSE in README\r\n\r\n* typo in README\r\n\r\n* fix LICENSE in Cargo.toml\r\n\r\n* Update Cargo.toml\r\n\r\n---------\r\n\r\nCo-authored-by: Adam Hendel <ChuckHend@users.noreply.github.com>",
+    "issueRefs": [
+      "#259"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e3ef81d6e6f1bac65c809bd43380557702b2fd6e",
+    "authorDate": "2024-06-11T08:14:05-05:00",
+    "subject": "fix pgmq python ci (#256)",
+    "body": "",
+    "issueRefs": [
+      "#256"
+    ],
+    "touchedFiles": [
+      ".github/workflows/pgmq_python.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "88a136308946866a72452238c6b241f89c21510c",
+    "authorDate": "2024-06-09T16:30:07-05:00",
+    "subject": "update extension contributing guide (#253)",
+    "body": "* update extension contributing guide\r\n\r\n* add note about version bump and pgxn CI\r\n\r\n* Update CONTRIBUTING.md\r\n\r\nCo-authored-by: felipe stival <14948182+v0idpwn@users.noreply.github.com>\r\n\r\n* Update CONTRIBUTING.md\r\n\r\nCo-authored-by: felipe stival <14948182+v0idpwn@users.noreply.github.com>\r\n\r\n* fix db string env var in makefile\r\n\r\n* add create extension for partman\r\n\r\n* dont set DATABASE_URL\r\n\r\n---------\r\n\r\nCo-authored-by: felipe stival <14948182+v0idpwn@users.noreply.github.com>",
+    "issueRefs": [
+      "#253"
+    ],
+    "touchedFiles": [
+      "CONTRIBUTING.md",
+      "Makefile",
+      "integration_test/Cargo.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c01dd3450d0a51ee5dd45b840db361ddcbc3b7b9",
+    "authorDate": "2024-06-08T01:31:30+03:30",
+    "subject": "Fix docker image name in README (#252)",
+    "body": "update \"Start a Postgres Instance with the Tembo extension installed\" same as main readme of PGMQ",
+    "issueRefs": [
+      "#252"
+    ],
+    "touchedFiles": [
+      "tembo-pgmq-python/readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9066da119807eb7272c82bc6ee0ecf3ae1674777",
+    "authorDate": "2024-06-04T18:59:48-03:00",
+    "subject": "Release fixes (#248)",
+    "body": "* Release fixes\r\n\r\n* Do trunk publish outside release\r\n\r\nWe need to test\r\n\r\n* attempt\r\n\r\n* cat github output for test\r\n\r\n* Get tag from git\r\n\r\n* Remove debug statements\r\n\r\n* attempt\r\n\r\n* remove debug statement",
+    "issueRefs": [
+      "#248"
+    ],
+    "touchedFiles": [
+      ".github/workflows/extension_ci.yml",
+      "pgmq.control",
+      "sql/pgmq--1.3.1--1.3.2.sql",
+      "sql/pgmq--1.3.2--1.3.3.sql"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b151fa90222f68dac7cdd168f7c0521285f4ff47",
+    "authorDate": "2024-06-04T09:06:18-03:00",
+    "subject": "fix(pgmq-rs): make Message public from the `pgmq` module (#247)",
+    "body": "Fix regression from #245",
+    "issueRefs": [
+      "#247",
+      "#245"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/src/lib.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bf10c00bded09947ad11aa40d0559c8f9b058d13",
+    "authorDate": "2024-06-04T05:54:14-03:00",
+    "subject": "Move core to pgmq-rs (#245)",
+    "body": "* Move core into pgmq-rs\r\n\r\n* clippy\r\n\r\n* Remove dead code\r\n\r\n* Merge core_query and query\r\n\r\n* Move core_types -> types; core_errors -> errors\r\n\r\n* Move core_util -> util\r\n\r\n* fix tests post rename\r\n\r\n* Format\r\n\r\n* Bump pgmq-rs\r\n\r\n* Fix dependencies for integration test\r\n\r\n* fix doctests\r\n\r\n* Remove core workflow\r\n\r\n* Fix potentially flaky test",
+    "issueRefs": [
+      "#245"
+    ],
+    "touchedFiles": [
+      ".github/workflows/core.yml",
+      "core/.gitignore",
+      "core/Cargo.toml",
+      "core/LICENSE",
+      "core/Makefile",
+      "core/readme.md",
+      "core/benches/parsing.rs",
+      "core/sqlx-data.json",
+      "core/src/lib.rs",
+      "core/src/query.rs",
+      "integration_test/Cargo.lock",
+      "integration_test/Cargo.toml",
+      "integration_test/tests/integration_tests.rs",
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/src/errors.rs",
+      "pgmq-rs/src/lib.rs",
+      "pgmq-rs/src/pg_ext.rs",
+      "pgmq-rs/src/query.rs",
+      "pgmq-rs/src/types.rs",
+      "pgmq-rs/src/util.rs",
+      "pgmq-rs/tests/integration_test.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d393a74824a20f39522f63659caa2a9186fd5370",
+    "authorDate": "2024-05-30T16:29:17-07:00",
+    "subject": "fix: deprecated `node12` usage in `checkout@v2` (#242)",
+    "body": "* chore: changes from formatting on save\r\n\r\n* fix: deprecated `node12` usage in `checkout@v2`",
+    "issueRefs": [
+      "#242"
+    ],
+    "touchedFiles": [
+      ".github/workflows/core.yml",
+      ".github/workflows/crate_ci.yml",
+      ".github/workflows/extension_ci.yml",
+      ".github/workflows/extension_upgrade.yml",
+      ".github/workflows/pgmq_python.yml"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "0ed3ed3e873c59183c0a283d295248e722a4a9f6",
+    "authorDate": "2024-05-29T16:17:36-07:00",
+    "subject": "fix: deprecated Node.js usage in `checkout@v3` (#240)",
+    "body": "* chore: changes from formatting on save\r\n\r\n* fix: deprecated Node.js usage in `checkout@v3`",
+    "issueRefs": [
+      "#240"
+    ],
+    "touchedFiles": [
+      ".github/workflows/cargo_publish.yml",
+      ".github/workflows/core.yml",
+      ".github/workflows/crate_ci.yml",
+      ".github/workflows/extension_ci.yml"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "1f55f73cfeaf78d5b9857c656657c3c20a3d44ef",
+    "authorDate": "2024-05-29T14:00:08-03:00",
+    "subject": "Release with pgxs (#237)",
+    "body": "* Release with pgxs\r\n\r\n* Move tests to a new crate\r\n\r\n* Add Docker images for different postgres versions\r\n\r\n* Fix extension upgrade test fixes after pgrx removal\r\n\r\n* Remove dead (pgrx related) code\r\n\r\n* Remove more dead (rust) code\r\n\r\n* Fix reference\r\n\r\n* Template Trunk.toml and META.json\r\n\r\n* Remove DISTVERSION\r\n\r\n* Make the Makefile work with BSD grep\r\n\r\n* Update building instructions, remove old dockerfile\r\n\r\n* Fix categories in Trunk.toml.in\r\n\r\n* Remove build extension deb workflow\r\n\r\n* Test: run pgxn release from this branch\r\n\r\n* Add Makefile in dist\r\n\r\n* Make dist in pgxn release\r\n\r\n* META.json fix\r\n\r\n* Remove Trunk.toml from versioning\r\n\r\n* Ignore Trunk.toml and META.json\r\n\r\n* Fixes and 1.3.1\r\n\r\n* Add META.json and Trunk.toml to zip\r\n\r\n* Fix trunk publish job\r\n\r\n* 1.3.2\r\n\r\n* Update CONTRIBUTING.md\r\n\r\nCo-authored-by: Adam Hendel <ChuckHend@users.noreply.github.com>\r\n\r\n---------\r\n\r\nCo-authored-by: Adam Hendel <ChuckHend@users.noreply.github.com>",
+    "issueRefs": [
+      "#237"
+    ],
+    "touchedFiles": [
+      ".github/workflows/build_extension_deb.yml",
+      ".github/workflows/extension_ci.yml",
+      ".github/workflows/extension_upgrade.yml",
+      ".github/workflows/pgxn-release.yml",
+      ".gitignore",
+      "CONTRIBUTING.md",
+      "Dockerfile.build",
+      "META.json.in",
+      "Makefile",
+      "Trunk.toml.in",
+      "UPDATING.md",
+      "images/pgmq-pg/Dockerfile",
+      "images/pgmq-pg/Dockerfile.in",
+      "images/pgmq-pg/replace-pg-version.sh",
+      "integration_test/Cargo.lock",
+      "integration_test/Cargo.toml",
+      "integration_test/tests/integration_tests.rs",
+      "pgmq.control",
+      "sql/pgmq--1.2.1--1.3.0.sql",
+      "sql/pgmq--1.3.0--1.3.1.sql",
+      "sql/pgmq.sql",
+      "src/lib.rs",
+      "src/removed_functions.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "98040e8d79b01611ea904556fc1ee3df30d5dec5",
+    "authorDate": "2024-05-23T23:37:36+03:30",
+    "subject": "feat: Add environment variable support to PGMQueue and update tests (#222)",
+    "body": "* feat: Enhance PGMQueue with environment variable support\r\n\r\n- Added  class method to PGMQueue to initialize settings from .env file.\r\n\r\n* refactor(tests): Clean up and consolidate test files\r\n\r\n- Deleted unnecessary test setup file:\r\n- Removed redundant test file:\r\n- Modified and updated integration tests in  to consolidate test cases.\r\n\r\n* chore: Update pyproject.toml for dependencies and cleanup\r\n\r\n- Removed unused dependencies to streamline the configuration.\r\n- Added `python-dotenv` dependency for environment variable support.\r\n- Cleaned up and consolidated dev dependencies.\r\n- Ensured consistency and clarity in the configuration file.\r\n\r\n* feat: Enhance PGMQueue with environment variable support\r\n\r\n- Added from_env class method to PGMQueue to initialize settings from .env file.\r\n\r\n* feat(readme): add support for env\r\n\r\n* core(queue): linting\r\n\r\n* feat(MakeFile): using python unittest framework\r\n\r\n* Delete tembo-pgmq-python/tests/.env\r\n\r\n* feat(gitignore): ignore env\r\n\r\n* fix(queue): bring back partitioned queue docstring\r\n\r\n* chore: linting and formatting\r\n\r\n* Update pyproject.toml to add bench group\r\n\r\n- Added a new bench group in pyproject.toml\r\n- Included dependencies for benchmarking\r\n- Updated dependencies for main, dev, and bench groups\r\n\r\nThis change helps to manage dependencies better.\r\n\r\n* chore: linting and formatting\r\n\r\n* chore: linting and formatting\r\n\r\n* feat: Update __post_init__ method to pull in values from environment variables\r\n\r\n- Updated __post_init__ method to pull in values from environment variables, with support for default values.\r\n\r\n* adding support for env file\r\n\r\n* moving dotenv from main to dev\r\n\r\n* update(README): update for supporting env file\r\n\r\n* chore: linting and formatting\r\n\r\n* Update readme.md\r\n\r\n* remove dotenv dependency",
+    "issueRefs": [
+      "#222"
+    ],
+    "touchedFiles": [
+      "tembo-pgmq-python/.gitignore",
+      "tembo-pgmq-python/Makefile",
+      "tembo-pgmq-python/readme.md",
+      "tembo-pgmq-python/benches/bench.py",
+      "tembo-pgmq-python/benches/locustfile.py",
+      "tembo-pgmq-python/benches/log.py",
+      "tembo-pgmq-python/benches/ops.py",
+      "tembo-pgmq-python/benches/runner.py",
+      "tembo-pgmq-python/benches/stats.py",
+      "tembo-pgmq-python/pyproject.toml",
+      "tembo-pgmq-python/tembo_pgmq_python/queue.py",
+      "tembo-pgmq-python/tests/conftest.py",
+      "tembo-pgmq-python/tests/test_integration.py",
+      "tembo-pgmq-python/tests/test_queue.py"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "46446995a3ec32bf9f7949ebd83cdb10c3a307a1",
+    "authorDate": "2024-05-21T19:59:45-05:00",
+    "subject": "Fix deb builds (#220)",
+    "body": "* force build\r\n\r\n* list files\r\n\r\n* fix path\r\n\r\n* for\r\n\r\n* rel\r\n\r\n* change runner\r\n\r\n* run on branch\r\n\r\n* change runner\r\n\r\n* run release\r\n\r\n* arm only\r\n\r\n* only on release",
+    "issueRefs": [
+      "#220"
+    ],
+    "touchedFiles": [
+      ".github/workflows/build_extension_deb.yml"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "b214772c22f69411fd672ba9e13fd256f56142ee",
+    "authorDate": "2024-05-16T19:52:22+03:30",
+    "subject": "Update readme.md (#213)",
+    "body": "fix typo for vt",
+    "issueRefs": [
+      "#213"
+    ],
+    "touchedFiles": [
+      "tembo-pgmq-python/readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "408c318a87ff859cc740c103ca815b3fcf006e7e",
+    "authorDate": "2024-05-14T08:26:43-05:00",
+    "subject": "Update CONTRIBUTING.md (#211)",
+    "body": "Remove packaging from the contrib guide. \r\n\r\nCloses https://github.com/tembo-io/pgmq/issues/208",
+    "issueRefs": [
+      "#211"
+    ],
+    "touchedFiles": [
+      "CONTRIBUTING.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e00e716b1a79ec330de2060720cee8425c5c4355",
+    "authorDate": "2024-02-22T20:21:42-03:00",
+    "subject": "actions: build & publish for Pg14 and 16 (#197)",
+    "body": "* actions: build & publish for Pg14 and 16\r\n\r\n* bump postgres version in ci\r\n\r\n* debug\r\n\r\n* dont overwrite\r\n\r\n---------\r\n\r\nCo-authored-by: Adam Hendel <hendel.adam@gmail.com>",
+    "issueRefs": [
+      "#197"
+    ],
+    "touchedFiles": [
+      ".github/workflows/extension_ci.yml",
+      ".github/workflows/extension_upgrade.yml",
+      "Cargo.lock",
+      "Makefile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2387720339fddb16e20d8ce9bec3525b8767853d",
+    "authorDate": "2024-01-28T18:01:25-06:00",
+    "subject": "fix license (#193)",
+    "body": "roll back to hyphen. linter yelled about the hyphen earlier, but apparently its wrong",
+    "issueRefs": [
+      "#193"
+    ],
+    "touchedFiles": [
+      "pgmq-rs/Cargo.toml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8ab3d80695feefc32c4fbbcc59ef6a6c5221714a",
+    "authorDate": "2023-11-18T16:51:06-06:00",
+    "subject": "upgrade to pgrx 0.11.0 (#163)",
+    "body": "* upgrade to pgrx 0.11.0\r\n\r\n* fix pgrx version",
+    "issueRefs": [
+      "#163"
+    ],
+    "touchedFiles": [
+      ".github/workflows/extension_ci.yml",
+      "Cargo.lock",
+      "Cargo.toml",
+      "images/pgmq-pg/Dockerfile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c18e4ee5e7e8107be89d71d7c99d8b2efc3589b7",
+    "authorDate": "2023-11-13T17:42:18-06:00",
+    "subject": "build linux/amd64, linux/arm64 images (#160)",
+    "body": "* build linux/amd64, linux/arm64 images\r\n\r\n* debug dir\r\n\r\n* refactor build\r\n\r\n* remove conditional\r\n\r\n* refactor\r\n\r\n---------\r\n\r\nCo-authored-by: Adam Hendel <15756360+ChuckHend@users.noreply.github.com>",
+    "issueRefs": [
+      "#160"
+    ],
+    "touchedFiles": [
+      ".github/workflows/extension_ci.yml",
+      ".github/workflows/image.yml",
+      "images/pgmq-pg/Dockerfile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bc534923bcfd7c46736c1749a776e59108925517",
+    "authorDate": "2023-11-12T07:00:29-06:00",
+    "subject": "more efficient metrics_get_all() (#159)",
+    "body": "* Add migration\r\n\r\n* pgsql for metrics all\r\n\r\n* bump toml\r\n\r\n* wrong fn name\r\n\r\n* single metric\r\n\r\n* update to pg 15.5\r\n\r\n* cleaner pg_partman install\r\n\r\n* no sudo\r\n\r\n* 4.7.4 does not allow plugging pg_config\r\n\r\n* forgot &&\r\n\r\n* change name of remove fns\r\n\r\n* rename\r\n\r\n* fix migration script\r\n\r\n* ls\r\n\r\n* debug\r\n\r\n* dont cache\r\n\r\n* update gh action\r\n\r\n---------\r\n\r\nCo-authored-by: Adam Hendel <15756360+ChuckHend@users.noreply.github.com>",
+    "issueRefs": [
+      "#159"
+    ],
+    "touchedFiles": [
+      ".github/actions/pgx-init/action.yml",
+      ".github/workflows/extension_ci.yml",
+      ".github/workflows/extension_upgrade.yml",
+      "Cargo.lock",
+      "Cargo.toml",
+      "sql/pgmq--0.33.1--0.33.2.sql",
+      "src/lib.rs",
+      "src/metrics.rs",
+      "src/removed_functions.rs",
+      "src/sql_src.sql"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "381b507e963e59a82da948cc548ae9f913a27df9",
+    "authorDate": "2023-11-07T01:55:30+02:00",
+    "subject": "Fix off by one in metrics (again) (#156)",
+    "body": "* Fix off by one in metrics (again)\r\n\r\nThe fix on commit 6d5d695ccba0687839624a41f1878465e6ac7fdf was naive.\r\n\r\nWhen the seq wasn't used, `last_value` is 1, and `is_called` is false.\r\nWhen the seq was used once, `last_value` is 1, and `is_called` is true.\r\nWhen the seq was used more than once, `last_value` is N, and `is_called`\r\nis true.\r\n\r\n* Bump extension",
+    "issueRefs": [
+      "#156"
+    ],
+    "touchedFiles": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "src/metrics.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "31437fda487428e5048ca77bbcae541060a45197",
+    "authorDate": "2023-11-05T18:51:12-06:00",
+    "subject": "capture and write pg_stat_statements, pg_settings from benches, and other benchmarking improvements (#154)",
+    "body": "* add batch mode\r\n\r\n* bump toml\r\n\r\n* record number in each batch\r\n\r\n* add unlogged to sdk\r\n\r\n* fmt\r\n\r\n* format\r\n\r\n* add usage\r\n\r\n* missing import\r\n\r\n* refactor bench\r\n\r\n* ignore bench files\r\n\r\n* summary\r\n\r\n* format\r\n\r\n* increase timeout on read\r\n\r\n* add typer",
+    "issueRefs": [
+      "#154"
+    ],
+    "touchedFiles": [
+      "tembo-pgmq-python/.gitignore",
+      "tembo-pgmq-python/benches/bench.py",
+      "tembo-pgmq-python/benches/log.py",
+      "tembo-pgmq-python/benches/ops.py",
+      "tembo-pgmq-python/benches/payloads/10KB.json",
+      "tembo-pgmq-python/benches/payloads/1KB.json",
+      "tembo-pgmq-python/benches/payloads/22B.json",
+      "tembo-pgmq-python/benches/runner.py",
+      "tembo-pgmq-python/benches/stats.py",
+      "tembo-pgmq-python/pyproject.toml"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "ecbc2f7427318e0fbddc4945155d72989be3e20e",
+    "authorDate": "2023-11-02T13:03:02-05:00",
+    "subject": "separate param names for overloaded batch functions (#152)",
+    "body": "* change param name on overloaded archive/delete\r\n\r\n* add to src\r\n\r\n* update docs\r\n\r\n* update toml ver\r\n\r\n* fix param\r\n\r\n---------\r\n\r\nCo-authored-by: Adam Hendel <15756360+ChuckHend@users.noreply.github.com>",
+    "issueRefs": [
+      "#152"
+    ],
+    "touchedFiles": [
+      "Cargo.toml",
+      "docs/api/sql/functions.md",
+      "sql/pgmq--0.32.3--0.33.0.sql",
+      "src/sql_src.sql"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "22c1dca2844d8677f3f981519afab82232416135",
+    "authorDate": "2023-10-26T09:21:53+03:00",
+    "subject": "Fix timezone error in metrics (#148)",
+    "body": "* Fix timezone error in metrics\r\n\r\nThe interval was being calculated from 2 timestamps in different\r\ntimezones. By shifting them both to UTC, the calculation yields\r\nthe correct result.\r\n\r\nCloses https://github.com/tembo-io/pgmq/issues/147\r\n\r\n* Bump pgmq extension",
+    "issueRefs": [
+      "#148"
+    ],
+    "touchedFiles": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "sql/pgmq--0.32.1--0.32.2.sql",
+      "src/metrics.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6d5d695ccba0687839624a41f1878465e6ac7fdf",
+    "authorDate": "2023-10-22T18:33:29+03:00",
+    "subject": "Fix off-by-one in metrics (#144)",
+    "body": "",
+    "issueRefs": [
+      "#144"
+    ],
+    "touchedFiles": [
+      "src/metrics.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "94835f08aaa7a7c2ed721146f835b08c099836d3",
+    "authorDate": "2023-10-18T16:59:12+02:00",
+    "subject": "Fix reading archive example in README (#143)",
+    "body": "Co-authored-by: Evan Stanton <evanstanton@Evans-MBP.fritz.box>",
+    "issueRefs": [
+      "#143"
+    ],
+    "touchedFiles": [
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4edb78240462cac3c242f3c226ab611718ba5f67",
+    "authorDate": "2023-10-17T23:14:55+03:00",
+    "subject": "Fix calculation for maximum queue name len (#141)",
+    "body": "* Fix calculation for maximum queue name len\r\n\r\n* Bump pgmq core\r\n\r\n* Bump extension",
+    "issueRefs": [
+      "#141"
+    ],
+    "touchedFiles": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "core/Cargo.toml",
+      "core/src/query.rs",
+      "core/src/util.rs",
+      "sql/pgmq--0.31.0--0.31.1.sql",
+      "tests/integration_tests.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3c0da6488d67199f232fecd5bc6152dd898680fc",
+    "authorDate": "2023-10-13T15:43:37+03:00",
+    "subject": "fix: desimplify pgmon permissions for extensionless client (#139)",
+    "body": "* fix: desimplify pgmon permissions for extensionless client\r\n\r\n* fix test",
+    "issueRefs": [
+      "#139"
+    ],
+    "touchedFiles": [
+      "Cargo.lock",
+      "core/Cargo.toml",
+      "core/src/query.rs",
+      "pgmq-rs/Cargo.toml",
+      "src/partition.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fea375d86f095b4e46d93e7036cd2f9c26889229",
+    "authorDate": "2023-10-06T18:00:52+03:00",
+    "subject": "Add a test matrix on CI for postgres versions (#135)",
+    "body": "* Add a test matrix on CI for postgres versions\r\n\r\n* Fixes/improvements\r\n\r\n* Remove pg16 feature\r\n\r\nRequires bumping pgrx\r\n\r\n* Add pg12 and pg13 in test matrix\r\n\r\n* make test should accept pgrx pg version\r\n\r\n* Set feature when running tests",
+    "issueRefs": [
+      "#135"
+    ],
+    "touchedFiles": [
+      ".github/actions/pgx-init/action.yml",
+      ".github/workflows/extension_ci.yml",
+      "Makefile",
+      "tests/integration_tests.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "710a9c8c1631496ae7c3f91e497f81a24c268b8c",
+    "authorDate": "2023-09-27T20:55:53+03:00",
+    "subject": "Add unlogged queues support in pgmq-rs, support newer ext versions on ext client (#125)",
+    "body": "* Bump pgmq-rs\r\n\r\n* Depend on core 0.6.1 on extension\r\n\r\n* Depend on core 0.6.1\r\n\r\n* Add create_unlogged on pg_ext, support newer ext versions\r\n\r\n* Add create_unlogged to extension-less client\r\n\r\n* pgmq-rs: make archive/delete batch return number of affected messages\r\n\r\n* Fix rebase mistake\r\n\r\n* Test fixes",
+    "issueRefs": [
+      "#125"
+    ],
+    "touchedFiles": [
+      "Cargo.lock",
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/sqlx-data.json",
+      "pgmq-rs/src/lib.rs",
+      "pgmq-rs/src/pg_ext.rs",
+      "pgmq-rs/src/query.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e5874b47e03cd4f101396bb7ef0f90249c8d0ea7",
+    "authorDate": "2023-09-27T15:44:01+03:00",
+    "subject": "Fix pgmq.meta not having is_unlogged for extensionless (#126)",
+    "body": "",
+    "issueRefs": [
+      "#126"
+    ],
+    "touchedFiles": [
+      "core/Cargo.toml",
+      "core/src/query.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dd9374a98d10b08f0735595494ddbc97a7996ec4",
+    "authorDate": "2023-09-25T22:12:41+03:00",
+    "subject": "Rewrite some core APIs in PL/pgSQL (#112)",
+    "body": "* Rewrite pgmq.read and pgmq.read_with_poll in PL/pgSQL\r\n\r\n* Fix regression\r\n\r\n* Add archive functions in PL/pgSQL\r\n\r\nThis is a BREAKING CHANGE as the archive batch function now returns\r\na set of message ids instead of a set of booleans.\r\n\r\n* Add archive and archive batch in update script\r\n\r\n* Drop archive\r\n\r\n* Fix\r\n\r\n* Fix bug on PL/pgSQL implementation of reads\r\n\r\n* Fix warnings, remove dead tests\r\n\r\n* Add integration test for archive, refactor integration tests for ext\r\n\r\n* Make integration tests run sequentially\r\n\r\n* Improvements, integration tests\r\n\r\n* Add delete in migration\r\n\r\n* Format\r\n\r\n* Add pgmq_delete and pgmq_delete_batch to removed funs\r\n\r\n* Potential CI fix\r\n\r\n* Potential CI fix (2)\r\n\r\n* Drop delete on upgrade script\r\n\r\n* Ignore integration tests by default\r\n\r\n* Check that exists in list queues\r\n\r\n---------\r\n\r\nCo-authored-by: Adam Hendel <ChuckHend@users.noreply.github.com>",
+    "issueRefs": [
+      "#112"
+    ],
+    "touchedFiles": [
+      ".github/workflows/extension_ci.yml",
+      ".github/workflows/extension_upgrade.yml",
+      "Cargo.lock",
+      "Cargo.toml",
+      "Makefile",
+      "sql/pgmq--0.25.0--0.26.0.sql",
+      "src/api.rs",
+      "src/lib.rs",
+      "src/removed_functions.rs",
+      "src/sql_src.sql",
+      "tests/integration_tests.rs"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "dfe9931cbc68dceece67670fad0aa6911f4c8452",
+    "authorDate": "2023-09-25T10:50:55-05:00",
+    "subject": "pgmq-py 0.4 client release (#121)",
+    "body": "* bump\r\n\r\n* py ver\r\n\r\n* fix dev deps\r\n\r\n---------\r\n\r\nCo-authored-by: Adam Hendel <15756360+ChuckHend@users.noreply.github.com>",
+    "issueRefs": [
+      "#121"
+    ],
+    "touchedFiles": [
+      "tembo-pgmq-python/pyproject.toml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0fad4dc1c03ffa5e7d79cc42e6ec0c6063d24ae7",
+    "authorDate": "2023-09-16T17:41:51+03:00",
+    "subject": "Fix README mentions to queue prefix/postfix (#118)",
+    "body": "",
+    "issueRefs": [
+      "#118"
+    ],
+    "touchedFiles": [
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "110e01f3f307f312dd5a14643a53ecf31306e5f2",
+    "authorDate": "2023-09-15T23:29:00+03:00",
+    "subject": "Fix find-and-replace bug in python bench (#116)",
+    "body": "* Fix find-and-replace bug in python bench\r\n\r\n* no lint on benches\r\n\r\n---------\r\n\r\nCo-authored-by: Adam Hendel <15756360+ChuckHend@users.noreply.github.com>",
+    "issueRefs": [
+      "#116"
+    ],
+    "touchedFiles": [
+      "tembo-pgmq-python/Makefile",
+      "tembo-pgmq-python/benches/bench.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7db90ee06ad072b706b8792d22ecc65c48c2a764",
+    "authorDate": "2023-09-15T20:52:19+03:00",
+    "subject": "Migrate schemas (#115)",
+    "body": "* Fix not creating is_partitioned column on extensionless\r\n\r\n* Migrate everything to the pgmq schema\r\n\r\n* Update python client for extension 0.25\r\n\r\n* Update ruby example for pgmq 0.25\r\n\r\n* Update README for 0.25\r\n\r\n* Change prefixes/sufixes to q_ and a_ prefixes\r\n\r\n* Rename TABLE_PREFIX constant to QUEUE_PREFIX",
+    "issueRefs": [
+      "#115"
+    ],
+    "touchedFiles": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "readme.md",
+      "core/Cargo.toml",
+      "core/src/query.rs",
+      "core/src/types.rs",
+      "core/src/util.rs",
+      "examples/ruby.rb",
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/sqlx-data.json",
+      "pgmq-rs/src/pg_ext.rs",
+      "pgmq-rs/src/query.rs",
+      "pgmq-rs/tests/integration_test.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs",
+      "pgmq.control",
+      "sql/pgmq--0.24.0--0.25.0.sql",
+      "src/api.rs",
+      "src/lib.rs",
+      "src/metrics.rs",
+      "src/partition.rs",
+      "src/sql_src.sql",
+      "tembo-pgmq-python/benches/bench.py",
+      "tembo-pgmq-python/tembo_pgmq_python/queue.py",
+      "tests/integration_tests.rs"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "9f4d0cd333a632271bb841fc361b94cdf9fbec19",
+    "authorDate": "2023-09-05T00:25:32+03:00",
+    "subject": "Add CI job that checks if extension is properly updated (#104)",
+    "body": "* Recreate all functions in update path\r\n\r\nPreviously, functions were added in the extension schema, but weren't\r\nadded in update paths. This means that if the extension was installed in\r\na previous version and updated with `ALTER EXTENSION`, it wouldn't\r\ninclude the new functions. This commit CREATES or REPLACES all\r\nfunctions exported by pgmq, to guarantee that users updating to pgmq\r\n0.22 will have all functions currently exported.\r\n\r\nAdd 0.20.0 -> 0.21.0 update path\r\n\r\nFix for signature change in 0.13\r\n\r\n* Attempt to make it work\r\n\r\n* Use CI user\r\n\r\n* Change strategy for branch name\r\n\r\n* Fix migrations to make them compatible with no pgmq_meta\r\n\r\nThis scenario can happen if you installed an old version and never created a queue\r\n\r\n* Query fixes\r\n\r\n* Fix sql\r\n\r\n* Remove TODO comment\r\n\r\n* Fix 0.23 migration\r\n\r\n* )\r\n\r\n* Create queues before updating\r\n\r\n* Add client tests\r\n\r\n* Alter deleted_at index if exists\r\n\r\n* Change strategy for database url\r\n\r\n* Fix database url\r\n\r\n* Update extension_upgrade.yml\r\n\r\n* Update extension_upgrade.yml\r\n\r\n* Update extension_upgrade.yml\r\n\r\n* Install pg partman\r\n\r\n* explicit signature on pgmq-rs send\r\n\r\n* drop old send\r\n\r\n* test sdk in other workflow\r\n\r\n* run pgmq-rs migrate on test db\r\n\r\n---------\r\n\r\nCo-authored-by: Adam Hendel <ChuckHend@users.noreply.github.com>\r\nCo-authored-by: Adam Hendel <adam@tembo.io>",
+    "issueRefs": [
+      "#104"
+    ],
+    "touchedFiles": [
+      ".github/workflows/extension_ci.yml",
+      ".github/workflows/extension_upgrade.yml",
+      "Cargo.lock",
+      "Cargo.toml",
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/Makefile",
+      "pgmq-rs/sqlx-data.json",
+      "pgmq-rs/src/pg_ext.rs",
+      "sql/pgmq--0.11.1--0.11.2.sql",
+      "sql/pgmq--0.13.0--0.13.1.sql",
+      "sql/pgmq--0.14.3--0.15.0.sql",
+      "sql/pgmq--0.17.0--0.18.0.sql",
+      "sql/pgmq--0.19.0--0.20.0.sql",
+      "sql/pgmq--0.21.0--0.22.0.sql",
+      "sql/pgmq--0.22.0--0.23.0.sql",
+      "sql/pgmq--0.23.0--0.24.0.sql"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "a4bd31c4dc47b324345aa1ef0d3d806248fdc84d",
+    "authorDate": "2023-09-03T14:51:55-07:00",
+    "subject": "Return bools from archive/delete_batch (#95)",
+    "body": "* Return booleans from archive/delete_batch\r\n\r\n* add archive_batch test\r\n\r\n* Refactor archive in terms of archive_batch\r\n\r\n* fix table names\r\n\r\n* Remove obsolete test\r\n\r\n* fix typo\r\n\r\n* lint\r\n\r\n* Replace IN with = ANY\r\n\r\n* bump versions and add migration scripts\r\n\r\n* try\r\n\r\n* add archive\r\n\r\n* in prep for rebase\r\n\r\n---------\r\n\r\nCo-authored-by: Adam Hendel <ChuckHend@users.noreply.github.com>",
+    "issueRefs": [
+      "#95"
+    ],
+    "touchedFiles": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "core/Cargo.toml",
+      "core/src/query.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs",
+      "sql/pgmq--0.22.0--0.23.0.sql",
+      "src/lib.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "553d8ba365f57790783890d717b29fd366d11e10",
+    "authorDate": "2023-09-03T14:29:07-07:00",
+    "subject": "Fix small typo from #97 (#103)",
+    "body": "",
+    "issueRefs": [
+      "#97",
+      "#103"
+    ],
+    "touchedFiles": [
+      "core/src/query.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0c52bc6a8c405f0ed65a753d7bacecde0dcbac99",
+    "authorDate": "2023-08-28T07:50:48-05:00",
+    "subject": "Move Rust SDK to their own crate (#83)",
+    "body": "* move client code to pgmq-rs\r\n\r\n* shared lives in core\r\n\r\n* update license\r\n\r\n* fix references in extension\r\n\r\n* move code\r\n\r\n* update workflows\r\n\r\n* Delete util.rs\r\n\r\n* bump minor on pgmq-rs\r\n\r\n* bump core\r\n\r\n* specify version in pgmq-rs\r\n\r\n* fix imports\r\n\r\n* ref\r\n\r\n* cleanup makefile\r\n\r\n* update link in readme",
+    "issueRefs": [
+      "#83"
+    ],
+    "touchedFiles": [
+      ".github/workflows/core.yml",
+      ".github/workflows/crate_ci.yml",
+      "Cargo.lock",
+      "Cargo.toml",
+      "readme.md",
+      "core/Cargo.toml",
+      "core/LICENSE",
+      "core/Makefile",
+      "core/readme.md",
+      "core/benches/parsing.rs",
+      "core/src/lib.rs",
+      "core/src/query.rs",
+      "core/src/types.rs",
+      "core/src/util.rs",
+      "pgmq-rs/.gitignore",
+      "pgmq-rs/Cargo.toml",
+      "pgmq-rs/LICENSE",
+      "pgmq-rs/Makefile",
+      "pgmq-rs/readme.md",
+      "pgmq-rs/examples/basic/.gitignore",
+      "pgmq-rs/examples/basic/Cargo.toml",
+      "pgmq-rs/examples/basic/src/main.rs",
+      "pgmq-rs/migrations/20230809222001_dev.sql",
+      "pgmq-rs/sqlx-data.json",
+      "pgmq-rs/src/lib.rs",
+      "pgmq-rs/src/pg_ext.rs",
+      "pgmq-rs/src/query.rs",
+      "pgmq-rs/tests/integration_test.rs",
+      "pgmq-rs/tests/pg_ext_integration_test.rs",
+      "src/api.rs",
+      "src/errors.rs",
+      "src/lib.rs",
+      "src/metrics.rs",
+      "src/partition.rs",
+      "tests/integration_tests.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7b081bb2eb33245a898361a305c9d44dd2235ece",
+    "authorDate": "2023-08-25T19:08:05+03:00",
+    "subject": "Split/improve extension client tests (#81)",
+    "body": "* Split/improve extension client tests\r\n\r\n* Split files\r\n\r\n* Potential fix for CI",
+    "issueRefs": [
+      "#81"
+    ],
+    "touchedFiles": [
+      "core/src/query.rs",
+      "core/tests/integration_test.rs",
+      "core/tests/pg_ext_integration_test.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fb0dd3d21f27239988571c4c605104c42d972337",
+    "authorDate": "2023-08-23T22:21:36-05:00",
+    "subject": "Update bench script (#75)",
+    "body": "* update bench script\r\n\r\n* plot over time\r\n\r\n* run for fixed duration\r\n\r\n* minor cleanup",
+    "issueRefs": [
+      "#75"
+    ],
+    "touchedFiles": [
+      "tembo-pgmq-python/benches/bench.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "24900297114be515f399345b8ec1d6a65e300f06",
+    "authorDate": "2023-08-23T11:39:32-05:00",
+    "subject": "grant usage on queue sequence (#74)",
+    "body": "* grant usage on queue sequence\r\n\r\n* change to select\r\n\r\n* no seq on pgmq_meta\r\n\r\n* fmt\r\n\r\n* fix match\r\n\r\n* bump crate toml",
+    "issueRefs": [
+      "#74"
+    ],
+    "touchedFiles": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "core/Cargo.toml",
+      "core/src/query.rs"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "c4716c7d1a6bf2454475ce0583cc399a6bec4dc1",
+    "authorDate": "2023-08-23T02:05:00+02:00",
+    "subject": "Primary keys on msg_id, separate index on vt, migration, use pgmq_test for tests, etc (#67)",
+    "body": "* Add example to compile `pg_partman`.\r\n\r\n* Create and use `pgmq_test` database for testing.\r\n\r\n* Migration for using new index & primary-keys on non-partitioned tables.\r\n\r\n* For non-partitioned tables:\r\nAdd primary key on (msg_id).\r\nAdd primary_key(msg_id) on archive tables.\r\nRemove `delete_queue_index()` because indexes are dropped together with the table.\r\nAdd index `vt ASC` on non-partitioned table (with nicer name).\r\n\r\n* fix lint and bumpver\r\n\r\n* update migrate script vers\r\n\r\n---------\r\n\r\nCo-authored-by: Adam Hendel <ChuckHend@users.noreply.github.com>\r\nCo-authored-by: Vinícius Miguel <36349314+vrmiguel@users.noreply.github.com>\r\nCo-authored-by: Adam Hendel <adam@tembo.io>",
+    "issueRefs": [
+      "#67"
+    ],
+    "touchedFiles": [
+      "CONTRIBUTING.md",
+      "Cargo.lock",
+      "Cargo.toml",
+      "core/Cargo.toml",
+      "core/src/query.rs",
+      "sql/pgmq--0.14.2--0.14.3.sql",
+      "sql/pgmq--0.14.3--0.15.0.sql",
+      "tests/integration_tests.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0f7846279251656d7aeef9cc27aa1c3080dc4da8",
+    "authorDate": "2023-08-21T16:55:47-05:00",
+    "subject": "Patch assignment (#69)",
+    "body": "* fix assignment\r\n\r\n* remove erroneous semicolon\r\n\r\n* add sql",
+    "issueRefs": [
+      "#69"
+    ],
+    "touchedFiles": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "core/Cargo.toml",
+      "core/src/query.rs",
+      "sql/pgmq--0.14.1--0.14.2.sql",
+      "tests/integration_tests.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4ef04f2e9ea0263e613c1decedf9a409a8cf92bd",
+    "authorDate": "2023-08-18T17:02:58+02:00",
+    "subject": "Add pgmq_read_with_poll (#64)",
+    "body": "* Add pgmq_read_with_poll\r\n\r\nFor feature parity with SQS. The implementation is a bit naive: it\r\nsimply will retry querying for messages on a small interval until\r\nthe timeout is reached.\r\n\r\n* improvement\r\n\r\n* Add test, fix bug\r\n\r\n* Add poll_timeout_s and poll_interval_ms arguments to read_with_poll\r\n\r\n* Add read_batch_with_poll to client crate\r\n\r\n* Code quality\r\n\r\n* Test/improve read_batch_with_poll\r\n\r\n* Add read_batch_with_queue to queueext\r\n\r\n* Add test for ext api read batch with poll, should return a vec\r\n\r\n* fmt\r\n\r\n* sqlx data\r\n\r\n* Fix bug\r\n\r\n* Bump version",
+    "issueRefs": [
+      "#64"
+    ],
+    "touchedFiles": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "core/Cargo.toml",
+      "core/sqlx-data.json",
+      "core/src/lib.rs",
+      "core/src/pg_ext.rs",
+      "core/src/query.rs",
+      "core/tests/integration_test.rs",
+      "src/lib.rs",
+      "tests/integration_tests.rs"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "5b5aa849db98106f6675596977ba7b5dae01d459",
+    "authorDate": "2023-08-16T06:42:32-06:00",
+    "subject": "Fix the order of the columns returned by pgmq_read() and pgmq_pop(). (#56)",
+    "body": "The order now matches that of the underlying queue table.",
+    "issueRefs": [
+      "#56"
+    ],
+    "touchedFiles": [
+      "src/lib.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "977d9248b106d247bc43b2b8bf0f5fa0002c667c",
+    "authorDate": "2023-08-14T21:59:28+09:00",
+    "subject": "Remove unnecessary references (#45)",
+    "body": "* Remove unnecessary references\r\n\r\n* Remove reference from outer crate\r\n\r\n* Remove unnecessary references\r\n\r\n* Fix tests and outer crate\r\n\r\n* Fix doctests\r\n\r\n* Update version",
+    "issueRefs": [
+      "#45"
+    ],
+    "touchedFiles": [
+      "Cargo.toml",
+      "core/Cargo.toml",
+      "core/src/lib.rs",
+      "core/src/query.rs",
+      "core/tests/integration_test.rs",
+      "src/lib.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7ad7418d62c5f1b10f8b98a8900644a40ed6b3e7",
+    "authorDate": "2023-08-08T18:02:59-07:00",
+    "subject": "Fix some typos in the README (#26)",
+    "body": "",
+    "issueRefs": [
+      "#26"
+    ],
+    "touchedFiles": [
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2f0fe412bcf558f74530129325aa45ecc7cda78a",
+    "authorDate": "2023-08-08T18:39:47-05:00",
+    "subject": "pg_partman as optional dependency (#18)",
+    "body": "* bring your own pg connection\r\n\r\n* bump ver\r\n\r\n* pg_partman is optional\r\n\r\n* update err statement\r\n\r\n* update readme\r\n\r\n* Update integration_test.rs\r\n\r\n* fix test\r\n\r\n* fix some clippy warnings",
+    "issueRefs": [
+      "#18"
+    ],
+    "touchedFiles": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "readme.md",
+      "pgmq.control",
+      "src/api.rs",
+      "src/lib.rs",
+      "src/metrics.rs",
+      "src/partition.rs",
+      "tests/integration_tests.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2c2d807933c59a2979b29eb8740799638f1668f8",
+    "authorDate": "2023-08-07T09:50:00-07:00",
+    "subject": "Add build from source instructions (#19)",
+    "body": "* Add instructions to install against existing Postgres setup\r\n\r\n* Fix link\r\n\r\n* Formatting fixes\r\n\r\n* More formatting fixes\r\n\r\n---------\r\n\r\nCo-authored-by: Samay Sharma <samay@tembo.io>",
+    "issueRefs": [
+      "#19"
+    ],
+    "touchedFiles": [
+      "CONTRIBUTING.md",
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "19114265ed6e119499c031cd08ed98ccade1f8fd",
+    "authorDate": "2023-08-01T06:21:15-05:00",
+    "subject": "update readme (#15)",
+    "body": "* update readme\r\n\r\nUpdate docs for usage of partitioned queues.\r\n\r\n* fix readme formatting",
+    "issueRefs": [
+      "#15"
+    ],
+    "touchedFiles": [
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "78756df25fbd05da7c70fcc034c267492a4f1bbe",
+    "authorDate": "2023-07-31T15:55:03-05:00",
+    "subject": "Image refs (#14)",
+    "body": "* update image refs to tembo\r\n\r\n* bump versions\r\n\r\n* fix create partitioned api\r\n\r\n* pin sqlx and update cache",
+    "issueRefs": [
+      "#14"
+    ],
+    "touchedFiles": [
+      ".github/workflows/extension_ci.yml",
+      "CONTRIBUTING.md",
+      "Cargo.lock",
+      "Cargo.toml",
+      "Makefile",
+      "readme.md",
+      "core/Cargo.toml",
+      "core/Makefile",
+      "core/sqlx-data.json",
+      "core/src/lib.rs",
+      "core/src/pg_ext.rs",
+      "core/tests/integration_test.rs",
+      "examples/ruby.rb",
+      "tembo-pgmq-python/Makefile",
+      "tembo-pgmq-python/pyproject.toml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0af6233b4b1bcb42c7352f6bdef516aa581303e4",
+    "authorDate": "2023-07-25T13:34:27+02:00",
+    "subject": "Fixing links in README for client libraries (#9)",
+    "body": "",
+    "issueRefs": [
+      "#9"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6a30cd9b50525fe378441ff915cc8081dca5b418",
+    "authorDate": "2023-07-24T12:18:44-05:00",
+    "subject": "fix working directory in ci (#4)",
+    "body": "",
+    "issueRefs": [
+      "#4"
+    ],
+    "touchedFiles": [
+      ".github/workflows/extension_ci.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "45a7cfd954dd88909c5525f68ab79136d4acfbf0",
+    "authorDate": "2023-07-24T11:22:33-05:00",
+    "subject": "Ci (#2)",
+    "body": "* add python ci\r\n\r\n* add ci\r\n\r\n* fix wd",
+    "issueRefs": [
+      "#2"
+    ],
+    "touchedFiles": [
+      ".github/actions/build-and-push-to-quay/action.yml",
+      ".github/actions/find-changed-directories/action.yml",
+      ".github/actions/pgx-init/action.yml",
+      ".github/actions/publish-crate/action.yml",
+      ".github/workflows/crate_ci.yml",
+      ".github/workflows/extension_ci.yml",
+      ".github/workflows/pgmq_python.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b9679fe98eabd5b33bdd3d51e2d3d0c13da33a41",
+    "authorDate": "2023-05-07T14:07:59-05:00",
+    "subject": "fix pgmq lockfile (#306)",
+    "body": "",
+    "issueRefs": [
+      "#306"
+    ],
+    "touchedFiles": [
+      "extension/Cargo.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "825eb9037ed5117b8381cff0c4f2a533fcc1cb5c",
+    "authorDate": "2023-04-24T10:34:04-05:00",
+    "subject": "fix lint",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "extension/tests/integration_tests.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e089bc1af7c5aabc47ec156889d83398abdbb202",
+    "authorDate": "2023-04-11T09:05:25+08:00",
+    "subject": "Fix typos (#218)",
+    "body": "",
+    "issueRefs": [
+      "#218"
+    ],
+    "touchedFiles": [
+      "crates/pgmq/Cargo.toml",
+      "crates/pgmq/src/lib.rs",
+      "crates/pgmq/src/query.rs",
+      "crates/pgmq/tests/integration_test.rs",
+      "extensions/pgmq/examples/ruby.rb",
+      "extensions/pgmq/src/lib.rs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3d829652e1dad6aa22dcba253fb6ce66477a5308",
+    "authorDate": "2023-04-10T08:12:12-05:00",
+    "subject": "[pgmq] set visibility timeout (#219)",
+    "body": "",
+    "issueRefs": [
+      "#219"
+    ],
+    "touchedFiles": [
+      "crates/pgmq/Cargo.toml",
+      "crates/pgmq/Makefile",
+      "crates/pgmq/src/lib.rs",
+      "crates/pgmq/src/query.rs",
+      "crates/pgmq/tests/integration_test.rs"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "63d2e94cb054450160af960ff601d38cc4755f48",
+    "authorDate": "2023-02-06T21:40:58-05:00",
+    "subject": "[COR-145] Log SQL Statements at Debug Level (#84)",
+    "body": "",
+    "issueRefs": [
+      "#84"
+    ],
+    "touchedFiles": [
+      "crates/pgmq/Cargo.toml",
+      "crates/pgmq/src/errors.rs",
+      "crates/pgmq/src/lib.rs",
+      "crates/pgmq/tests/integration_test.rs"
+    ],
+    "fixCategory": "other"
+  }
+]

@@ -1,0 +1,5784 @@
+{
+  "project": {
+    "name": "bullmq",
+    "repoPath": "factory/bullmq",
+    "analyzedAt": "2026-08-22T15:05:59.849Z",
+    "fileStats": {
+      "totalFiles": 998,
+      "codeFiles": 338,
+      "testFiles": 129,
+      "docFiles": 194
+    },
+    "languages": [
+      ".js",
+      ".ts",
+      ".php",
+      ".py",
+      ".rs"
+    ]
+  },
+  "readmeSnippet": "<div align=\"center\">\n  <br/>\n  <img src=\"https://user-images.githubusercontent.com/95200/143832033-32e868df-f3b0-4251-97fb-c64809a43d36.png\" width=\"800\" />\n  <br/>\n  <br/>\n  <p>\n    The fastest, most reliable, Redis-based distributed queue for Node.js, Python, Elixir, .NET, Rust, PHP, and more. <br/>\n    Carefully written for rock solid stability and atomicity.\n  </p>\n  Read the <a href=\"https://docs.bullmq.io\">documentation</a>\n  <br/>\n  <br/>\n  <p>\n    <a href=\"https://join.slack.com/t/bullmq/shared_invite/zt-1nbtpk6mv-TItWpF9jf3k4yrCaS0PPZA\">\n      <img src=\"https://img.shields.io/badge/Slack-4A154B\"/>\n    </a>    \n    <a href=\"https://badge.fury.io/js/bullmq\">\n      <img src=\"https://badge.fury.io/js/bullmq.svg\"/>\n    </a>\n    <a href=\"https://coveralls.io/github/taskforcesh/bullmq?branch=master\">\n      <img src=\"https://coveralls.io/repos/github/taskforcesh/bullmq/badge.svg?branch=master\"/>\n    </a>\n    <a href=\"https://github.com/semantic-release/semantic-release\">\n      <img src=\"https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg\"/>\n    </a>\n    <a href=\"https://github.com/sponsors/taskforcesh\">\n      <img src=\"https://img.shields.io/badge/sponsor-30363D?style=flat&logo=GitHub-Sponsors&logoColor=EA4AAA\"/>\n    </a>\n  </p>\n  <p>\n    <em><a href=\"https://x.com/bullmqhq\">Follow Us</a> for *important* Bull/BullMQ/BullMQ-Pro news and updates!</em>\n  </p>\n</div>\n\n# 🛠 Tutorials\n\nYou can find tutorials and news in this blog: https://blog.taskforce.sh/\n\n# News 🚀\n\n## 🌐 Language agnostic BullMQ\n\nBullMQ is available natively in multiple languages:\n\n- **Node.js / Bun** — This repository (`npm install bullmq`)\n- **Python** — [`python/`](./python) directory (`pip install bullmq`)\n- **Rust** — [`rust/`](./rust) directory (`cargo add bullmq-official --rename bullmq`)\n- **Elixir** — [`elixir/`](./elixir) directory (`{:bullmq, \"~> x.x\"}`)\n- **.Net** — [`dotnet/`](./dotnet) directory (`dotnet add package BullMQ`)\n- **PHP** — [`php/`](./php) directory\n\nFor other platforms, check out the [BullMQ Proxy](https://github.com/taskforcesh/bullmq-proxy).\n\n# Official FrontEnd\n\n[<img src=\"https://taskforce.sh/assets/logo_square.png\" width=\"150\" alt=\"Taskforce.sh, Inc\" style=\"padding: 200px\"/>](https://taskforce.sh)\n\nSupercharge your queues with a professional front end:\n\n- Get a complete overview of all your queues.\n- Inspect jobs, search, retry, or promote delayed jobs.\n- Metrics and statistics.\n- and many more features.\n\nSign up at [Taskforce.sh](https://taskforce.sh)\n\n# 🚀 Sponsors 🚀\n\n<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n  <tr>\n    <td>\n      <a href=\"https://www.dragonflydb.io/\">\n        <img src=\"https://raw.githubusercontent.com/dragonflydb/dragonfly/main/.github/images/logo-full.svg\" width=550 alt=\"Dragonfly\" />\n      </a>\n    </td>\n    <td>\n      Dragonfly is a new Redis™ drop-in replacement that is fully compatible with BullMQ and brings some important advantages over Redis™ such as massive\n      better performance by utilizing all CPU cores available and faster and more memory efficient data structures. Read more <a href=\"https://www.dragonflydb.io/docs/integrations/bullmq\">here</a> on how to use it with BullMQ.\n    </td>\n  </tr>\n</table>\n\n# Used by\n\nSome notable organizations using BullMQ:\n\n<table cellspacing=\"0\" cellpadding=\"0\">\n  <tr>\n    <td valign=\"center\">\n       <a href=\"https://github.com/microsoft/lage\">\n        <img\n          src=\"https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F-LUuDmt_xXMfG66Rn1GA%2Fuploads%2FUvwInTAmk7hxAViDwJzU%2Fclipart1565701.png?alt=media\"\n          width=\"150\"\n          alt=\"Microsoft\"\n        />\n       </a>\n    </td>\n    <td valign=\"center\">\n       <a href=\"https://github.com/vendure-ecommerce/vendure\">\n        <img\n          src=\"https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F-LUuDmt_xXMfG66Rn1GA%2Fuploads%2FvT30DUqsi61gL8edn3R2%2Fwordmark-logo.png?alt=media\"\n          width=\"150\"\n          alt=\"Vendure\"\n    ",
+  "codeInventory": [
+    {
+      "path": ".mocharc.js",
+      "sizeBytes": 140,
+      "isTest": false
+    },
+    {
+      "path": ".prettierrc.js",
+      "sizeBytes": 138,
+      "isTest": false
+    },
+    {
+      "path": "commitlint.config.js",
+      "sizeBytes": 92,
+      "isTest": false
+    },
+    {
+      "path": "docs/.vitepress/gitbook.ts",
+      "sizeBytes": 2715,
+      "isTest": false
+    },
+    {
+      "path": "docs/.vitepress/sidebar.ts",
+      "sizeBytes": 4708,
+      "isTest": false
+    },
+    {
+      "path": "elixir/scripts/updateVersion.js",
+      "sizeBytes": 892,
+      "isTest": false
+    },
+    {
+      "path": "mocha.setup.ts",
+      "sizeBytes": 109,
+      "isTest": false
+    },
+    {
+      "path": "php/scripts/updateVersion.js",
+      "sizeBytes": 886,
+      "isTest": false
+    },
+    {
+      "path": "php/src/Job.php",
+      "sizeBytes": 6584,
+      "isTest": false
+    },
+    {
+      "path": "php/src/JobOptions.php",
+      "sizeBytes": 7041,
+      "isTest": false
+    },
+    {
+      "path": "php/src/Queue.php",
+      "sizeBytes": 16482,
+      "isTest": false
+    },
+    {
+      "path": "php/src/QueueKeys.php",
+      "sizeBytes": 1723,
+      "isTest": false
+    },
+    {
+      "path": "php/src/RedisConnection.php",
+      "sizeBytes": 2688,
+      "isTest": false
+    },
+    {
+      "path": "php/src/Scripts.php",
+      "sizeBytes": 16798,
+      "isTest": false
+    },
+    {
+      "path": "php/tests/JobOptionsTest.php",
+      "sizeBytes": 3047,
+      "isTest": false
+    },
+    {
+      "path": "php/tests/JobTest.php",
+      "sizeBytes": 2018,
+      "isTest": false
+    },
+    {
+      "path": "php/tests/QueueTest.php",
+      "sizeBytes": 13962,
+      "isTest": false
+    },
+    {
+      "path": "python/benchmark_backends.py",
+      "sizeBytes": 5900,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/__init__.py",
+      "sizeBytes": 661,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/abort_controller.py",
+      "sizeBytes": 2964,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/backend.py",
+      "sizeBytes": 15569,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/backends/__init__.py",
+      "sizeBytes": 1416,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/backends/postgres_backend.py",
+      "sizeBytes": 38670,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/backends/postgres_connection.py",
+      "sizeBytes": 11172,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/backends/redis_backend.py",
+      "sizeBytes": 19547,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/backoffs.py",
+      "sizeBytes": 1553,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/custom_errors/__init__.py",
+      "sizeBytes": 149,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/custom_errors/unrecoverable_error.py",
+      "sizeBytes": 107,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/custom_errors/waiting_children_error.py",
+      "sizeBytes": 99,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/error_code.py",
+      "sizeBytes": 331,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/event_emitter.py",
+      "sizeBytes": 654,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/flow_producer.py",
+      "sizeBytes": 11923,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/job.py",
+      "sizeBytes": 13183,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/job_scheduler.py",
+      "sizeBytes": 15983,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/lock_manager.py",
+      "sizeBytes": 9941,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/postgres/__init__.py",
+      "sizeBytes": 275,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/postgres/sql_loader.py",
+      "sizeBytes": 3048,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/queue.py",
+      "sizeBytes": 18263,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/queue_events.py",
+      "sizeBytes": 9737,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/queue_events_producer.py",
+      "sizeBytes": 3831,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/queue_keys.py",
+      "sizeBytes": 785,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/redis_connection.py",
+      "sizeBytes": 6977,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/scripts.py",
+      "sizeBytes": 33996,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/timer.py",
+      "sizeBytes": 919,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/types/__init__.py",
+      "sizeBytes": 660,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/types/backoff_options.py",
+      "sizeBytes": 220,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/types/deduplication_options.py",
+      "sizeBytes": 1217,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/types/job_options.py",
+      "sizeBytes": 3160,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/types/keep_jobs.py",
+      "sizeBytes": 395,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/types/promote_jobs_options.py",
+      "sizeBytes": 209,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/types/queue_events_options.py",
+      "sizeBytes": 1636,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/types/queue_options.py",
+      "sizeBytes": 905,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/types/repeat_options.py",
+      "sizeBytes": 1825,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/types/retry_jobs_options.py",
+      "sizeBytes": 416,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/types/worker_options.py",
+      "sizeBytes": 1911,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/utils.py",
+      "sizeBytes": 2819,
+      "isTest": false
+    },
+    {
+      "path": "python/bullmq/worker.py",
+      "sizeBytes": 27112,
+      "isTest": false
+    },
+    {
+      "path": "python/flush_redis.py",
+      "sizeBytes": 273,
+      "isTest": false
+    },
+    {
+      "path": "python/setup.py",
+      "sizeBytes": 197,
+      "isTest": false
+    },
+    {
+      "path": "python/tests/__init__.py",
+      "sizeBytes": 0,
+      "isTest": false
+    },
+    {
+      "path": "python/tests/bulk_test.py",
+      "sizeBytes": 1975,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/conftest.py",
+      "sizeBytes": 3119,
+      "isTest": false
+    },
+    {
+      "path": "python/tests/deduplication_test.py",
+      "sizeBytes": 6144,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/delay_test.py",
+      "sizeBytes": 1702,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/flow_producer_test.py",
+      "sizeBytes": 3746,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/flow_test.py",
+      "sizeBytes": 15451,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/global_rate_limit_concurrency_test.py",
+      "sizeBytes": 3719,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/job_cancellation_test.py",
+      "sizeBytes": 7685,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/job_scheduler_test.py",
+      "sizeBytes": 13964,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/job_test.py",
+      "sizeBytes": 7388,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/lock_manager_test.py",
+      "sizeBytes": 4596,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/postgres_backend_test.py",
+      "sizeBytes": 11977,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/priority_test.py",
+      "sizeBytes": 3378,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/queue_events_test.py",
+      "sizeBytes": 6645,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/queue_getters_cluster_test.py",
+      "sizeBytes": 3948,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/queue_job_types_test.py",
+      "sizeBytes": 656,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/queue_test.py",
+      "sizeBytes": 25618,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/redis_connection_cluster_test.py",
+      "sizeBytes": 1804,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/redis_connection_test.py",
+      "sizeBytes": 5024,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/sql_loader_test.py",
+      "sizeBytes": 1746,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/test_imports.py",
+      "sizeBytes": 777,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/worker_disconnect_test.py",
+      "sizeBytes": 16754,
+      "isTest": true
+    },
+    {
+      "path": "python/tests/worker_test.py",
+      "sizeBytes": 28585,
+      "isTest": true
+    },
+    {
+      "path": "rust/examples/benchmark.rs",
+      "sizeBytes": 8639,
+      "isTest": false
+    },
+    {
+      "path": "rust/src/error.rs",
+      "sizeBytes": 5626,
+      "isTest": false
+    },
+    {
+      "path": "rust/src/flow_producer.rs",
+      "sizeBytes": 48393,
+      "isTest": false
+    },
+    {
+      "path": "rust/src/job.rs",
+      "sizeBytes": 53628,
+      "isTest": false
+    },
+    {
+      "path": "rust/src/job_scheduler.rs",
+      "sizeBytes": 12687,
+      "isTest": false
+    },
+    {
+      "path": "rust/src/keys.rs",
+      "sizeBytes": 8821,
+      "isTest": false
+    },
+    {
+      "path": "rust/src/lib.rs",
+      "sizeBytes": 2642,
+      "isTest": false
+    },
+    {
+      "path": "rust/src/options.rs",
+      "sizeBytes": 30615,
+      "isTest": false
+    },
+    {
+      "path": "rust/src/queue.rs",
+      "sizeBytes": 108810,
+      "isTest": false
+    },
+    {
+      "path": "rust/src/queue_events.rs",
+      "sizeBytes": 27795,
+      "isTest": false
+    },
+    {
+      "path": "rust/src/redis_connection.rs",
+      "sizeBytes": 9447,
+      "isTest": false
+    },
+    {
+      "path": "rust/src/scripts.rs",
+      "sizeBytes": 12839,
+      "isTest": false
+    },
+    {
+      "path": "rust/src/types.rs",
+      "sizeBytes": 10733,
+      "isTest": false
+    },
+    {
+      "path": "rust/src/worker.rs",
+      "sizeBytes": 89250,
+      "isTest": false
+    },
+    {
+      "path": "rust/tests/common/mod.rs",
+      "sizeBytes": 832,
+      "isTest": false
+    },
+    {
+      "path": "rust/tests/connection_test.rs",
+      "sizeBytes": 7982,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/convenience_methods_test.rs",
+      "sizeBytes": 8423,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/deduplication_test.rs",
+      "sizeBytes": 15628,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/delay_test.rs",
+      "sizeBytes": 4109,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/flow_test.rs",
+      "sizeBytes": 343995,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/global_concurrency_test.rs",
+      "sizeBytes": 7910,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/job_options_test.rs",
+      "sizeBytes": 6100,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/job_scheduler_test.rs",
+      "sizeBytes": 130570,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/job_test.rs",
+      "sizeBytes": 3321,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/meta_test.rs",
+      "sizeBytes": 3980,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/metrics_test.rs",
+      "sizeBytes": 5463,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/prometheus_test.rs",
+      "sizeBytes": 5590,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/queue_events_test.rs",
+      "sizeBytes": 26072,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/queue_test.rs",
+      "sizeBytes": 38195,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/rate_limit_test.rs",
+      "sizeBytes": 11665,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/stalled_jobs_test.rs",
+      "sizeBytes": 9897,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/worker_options_test.rs",
+      "sizeBytes": 8420,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/worker_test.rs",
+      "sizeBytes": 356329,
+      "isTest": true
+    },
+    {
+      "path": "rust/tests/workers_test.rs",
+      "sizeBytes": 5348,
+      "isTest": true
+    },
+    {
+      "path": "scripts/commandTransform.js",
+      "sizeBytes": 1789,
+      "isTest": false
+    },
+    {
+      "path": "scripts/generateRawScripts.ts",
+      "sizeBytes": 1305,
+      "isTest": false
+    },
+    {
+      "path": "scripts/updateVersion.js",
+      "sizeBytes": 338,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/abort-controller.ts",
+      "sizeBytes": 510,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/async-fifo-queue.ts",
+      "sizeBytes": 4632,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/backoffs.ts",
+      "sizeBytes": 2272,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/bun-redis-client.ts",
+      "sizeBytes": 40436,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/child-pool.ts",
+      "sizeBytes": 3652,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/child-processor.ts",
+      "sizeBytes": 10202,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/child.ts",
+      "sizeBytes": 7228,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/errors/connection-closed-error.ts",
+      "sizeBytes": 950,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/errors/delayed-error.ts",
+      "sizeBytes": 382,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/errors/index.ts",
+      "sizeBytes": 226,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/errors/rate-limit-error.ts",
+      "sizeBytes": 364,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/errors/unrecoverable-error.ts",
+      "sizeBytes": 415,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/errors/waiting-children-error.ts",
+      "sizeBytes": 433,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/errors/waiting-error.ts",
+      "sizeBytes": 388,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/finished-errors.ts",
+      "sizeBytes": 2570,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/flow-producer.ts",
+      "sizeBytes": 18778,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/index.ts",
+      "sizeBytes": 889,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/ioredis-client.ts",
+      "sizeBytes": 15376,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/job-scheduler.ts",
+      "sizeBytes": 15297,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/job.ts",
+      "sizeBytes": 38803,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/lock-manager.ts",
+      "sizeBytes": 5889,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/main-base.ts",
+      "sizeBytes": 1422,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/main-worker.ts",
+      "sizeBytes": 204,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/main.ts",
+      "sizeBytes": 185,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/node-redis-client.ts",
+      "sizeBytes": 32221,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/queue-base.ts",
+      "sizeBytes": 5783,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/queue-events-producer.ts",
+      "sizeBytes": 1282,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/queue-events.ts",
+      "sizeBytes": 14030,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/queue-getters.ts",
+      "sizeBytes": 21495,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/queue-keys.ts",
+      "sizeBytes": 885,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/queue.ts",
+      "sizeBytes": 27381,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/redis-connection.ts",
+      "sizeBytes": 27530,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/redis-queue-backend.ts",
+      "sizeBytes": 84007,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/sandbox.ts",
+      "sizeBytes": 6404,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/valkey-glide-client.ts",
+      "sizeBytes": 34242,
+      "isTest": false
+    },
+    {
+      "path": "src/classes/worker.ts",
+      "sizeBytes": 43236,
+      "isTest": false
+    },
+    {
+      "path": "src/commands/index.ts",
+      "sizeBytes": 230,
+      "isTest": false
+    },
+    {
+      "path": "src/commands/script-loader.ts",
+      "sizeBytes": 18309,
+      "isTest": false
+    },
+    {
+      "path": "src/enums/child-command.ts",
+      "sizeBytes": 223,
+      "isTest": false
+    },
+    {
+      "path": "src/enums/error-code.ts",
+      "sizeBytes": 329,
+      "isTest": false
+    },
+    {
+      "path": "src/enums/index.ts",
+      "sizeBytes": 169,
+      "isTest": false
+    },
+    {
+      "path": "src/enums/metrics-time.ts",
+      "sizeBytes": 222,
+      "isTest": false
+    },
+    {
+      "path": "src/enums/parent-command.ts",
+      "sizeBytes": 272,
+      "isTest": false
+    },
+    {
+      "path": "src/enums/telemetry-attributes.ts",
+      "sizeBytes": 2175,
+      "isTest": false
+    },
+    {
+      "path": "src/index.ts",
+      "sizeBytes": 351,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/advanced-options.ts",
+      "sizeBytes": 530,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/backoff-options.ts",
+      "sizeBytes": 396,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/base-job-options.ts",
+      "sizeBytes": 3579,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/child-message.ts",
+      "sizeBytes": 180,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/connection.ts",
+      "sizeBytes": 252,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/flow-job.ts",
+      "sizeBytes": 1402,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/index.ts",
+      "sizeBytes": 1148,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/ioredis-events.ts",
+      "sizeBytes": 176,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/job-json.ts",
+      "sizeBytes": 693,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/job-scheduler-json.ts",
+      "sizeBytes": 521,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/lock-manager-worker-context.ts",
+      "sizeBytes": 804,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/metrics-options.ts",
+      "sizeBytes": 391,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/metrics.ts",
+      "sizeBytes": 141,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/minimal-job.ts",
+      "sizeBytes": 3778,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/minimal-queue.ts",
+      "sizeBytes": 1796,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/parent-message.ts",
+      "sizeBytes": 197,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/parent-options.ts",
+      "sizeBytes": 277,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/parent.ts",
+      "sizeBytes": 1709,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/queue-backend.ts",
+      "sizeBytes": 25146,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/queue-meta.ts",
+      "sizeBytes": 1597,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/queue-options.ts",
+      "sizeBytes": 3443,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/rate-limiter-options.ts",
+      "sizeBytes": 277,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/receiver.ts",
+      "sizeBytes": 143,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/redis-client.ts",
+      "sizeBytes": 9589,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/redis-options.ts",
+      "sizeBytes": 1282,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/redis-streams.ts",
+      "sizeBytes": 379,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/repeat-options.ts",
+      "sizeBytes": 1496,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/repeatable-options.ts",
+      "sizeBytes": 185,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/retry-options.ts",
+      "sizeBytes": 293,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/sandboxed-job-processor.ts",
+      "sizeBytes": 346,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/sandboxed-job.ts",
+      "sizeBytes": 1165,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/sandboxed-options.ts",
+      "sizeBytes": 1047,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/script-queue-context.ts",
+      "sizeBytes": 1017,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/telemetry.ts",
+      "sizeBytes": 7333,
+      "isTest": false
+    },
+    {
+      "path": "src/interfaces/worker-options.ts",
+      "sizeBytes": 4824,
+      "isTest": false
+    },
+    {
+      "path": "src/postgres/create-postgres-backend.ts",
+      "sizeBytes": 2467,
+      "isTest": false
+    },
+    {
+      "path": "src/postgres/index.ts",
+      "sizeBytes": 796,
+      "isTest": false
+    },
+    {
+      "path": "src/postgres/migrations/index.ts",
+      "sizeBytes": 1547,
+      "isTest": false
+    },
+    {
+      "path": "src/postgres/migrator.ts",
+      "sizeBytes": 13972,
+      "isTest": false
+    },
+    {
+      "path": "src/postgres/pg-types.ts",
+      "sizeBytes": 3736,
+      "isTest": false
+    },
+    {
+      "path": "src/postgres/postgres-connection.ts",
+      "sizeBytes": 12347,
+      "isTest": false
+    },
+    {
+      "path": "src/postgres/postgres-queue-backend.ts",
+      "sizeBytes": 69895,
+      "isTest": false
+    },
+    {
+      "path": "src/postgres/sql-loader.ts",
+      "sizeBytes": 2266,
+      "isTest": false
+    },
+    {
+      "path": "src/types/backoff-strategy.ts",
+      "sizeBytes": 196,
+      "isTest": false
+    },
+    {
+      "path": "src/types/database-type.ts",
+      "sizeBytes": 61,
+      "isTest": false
+    },
+    {
+      "path": "src/types/deduplication-options.ts",
+      "sizeBytes": 1066,
+      "isTest": false
+    },
+    {
+      "path": "src/types/finished-status.ts",
+      "sizeBytes": 125,
+      "isTest": false
+    },
+    {
+      "path": "src/types/index.ts",
+      "sizeBytes": 386,
+      "isTest": false
+    },
+    {
+      "path": "src/types/job-json-sandbox.ts",
+      "sizeBytes": 164,
+      "isTest": false
+    },
+    {
+      "path": "src/types/job-options.ts",
+      "sizeBytes": 1882,
+      "isTest": false
+    },
+    {
+      "path": "src/types/job-progress.ts",
+      "sizeBytes": 62,
+      "isTest": false
+    },
+    {
+      "path": "src/types/job-scheduler-template-options.ts",
+      "sizeBytes": 161,
+      "isTest": false
+    },
+    {
+      "path": "src/types/job-type.ts",
+      "sizeBytes": 231,
+      "isTest": false
+    },
+    {
+      "path": "src/types/keep-jobs.ts",
+      "sizeBytes": 1250,
+      "isTest": false
+    },
+    {
+      "path": "src/types/processor.ts",
+      "sizeBytes": 346,
+      "isTest": false
+    },
+    {
+      "path": "src/types/repeat-strategy.ts",
+      "sizeBytes": 207,
+      "isTest": false
+    },
+    {
+      "path": "src/utils/create-backend.ts",
+      "sizeBytes": 3814,
+      "isTest": false
+    },
+    {
+      "path": "src/utils/index.ts",
+      "sizeBytes": 12578,
+      "isTest": false
+    },
+    {
+      "path": "src/version.ts",
+      "sizeBytes": 32,
+      "isTest": false
+    },
+    {
+      "path": "tests/adapter-conformance.test.ts",
+      "sizeBytes": 29020,
+      "isTest": true
+    },
+    {
+      "path": "tests/async_fifo_queue.test.ts",
+      "sizeBytes": 4778,
+      "isTest": true
+    },
+    {
+      "path": "tests/bulk.test.ts",
+      "sizeBytes": 5870,
+      "isTest": true
+    },
+    {
+      "path": "tests/bun-adapter-suite.test.ts",
+      "sizeBytes": 8115,
+      "isTest": true
+    },
+    {
+      "path": "tests/bun-redis.test.ts",
+      "sizeBytes": 9023,
+      "isTest": true
+    },
+    {
+      "path": "tests/child-pool.test.ts",
+      "sizeBytes": 5073,
+      "isTest": true
+    },
+    {
+      "path": "tests/child_stdio_null.test.ts",
+      "sizeBytes": 4292,
+      "isTest": true
+    },
+    {
+      "path": "tests/clean.redis.test.ts",
+      "sizeBytes": 10081,
+      "isTest": true
+    },
+    {
+      "path": "tests/clean.test.ts",
+      "sizeBytes": 27794,
+      "isTest": true
+    },
+    {
+      "path": "tests/cluster.test.ts",
+      "sizeBytes": 32085,
+      "isTest": true
+    },
+    {
+      "path": "tests/concurrency.test.ts",
+      "sizeBytes": 18237,
+      "isTest": true
+    },
+    {
+      "path": "tests/connection-closed-error.test.ts",
+      "sizeBytes": 1381,
+      "isTest": true
+    },
+    {
+      "path": "tests/connection.test.ts",
+      "sizeBytes": 36231,
+      "isTest": true
+    },
+    {
+      "path": "tests/deduplication.test.ts",
+      "sizeBytes": 50665,
+      "isTest": true
+    },
+    {
+      "path": "tests/delay.redis.test.ts",
+      "sizeBytes": 3475,
+      "isTest": true
+    },
+    {
+      "path": "tests/delay.test.ts",
+      "sizeBytes": 15139,
+      "isTest": true
+    },
+    {
+      "path": "tests/events.redis.test.ts",
+      "sizeBytes": 13724,
+      "isTest": true
+    },
+    {
+      "path": "tests/events.test.ts",
+      "sizeBytes": 15217,
+      "isTest": true
+    },
+    {
+      "path": "tests/fixtures/delay.js",
+      "sizeBytes": 140,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_main_non_bullmq_messages.js",
+      "sizeBytes": 1746,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor.js",
+      "sizeBytes": 198,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_bar.js",
+      "sizeBytes": 200,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_broken.js",
+      "sizeBytes": 42,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_cancel.js",
+      "sizeBytes": 406,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_crash.js",
+      "sizeBytes": 314,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_env.js",
+      "sizeBytes": 310,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_esbuild.js",
+      "sizeBytes": 1827,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_exit.js",
+      "sizeBytes": 241,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_fail.js",
+      "sizeBytes": 296,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_fail_init_once.js",
+      "sizeBytes": 779,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_fail_with_circular_reference.js",
+      "sizeBytes": 338,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_foo.js",
+      "sizeBytes": 200,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_get_children_failures.js",
+      "sizeBytes": 184,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_get_children_failures_child.js",
+      "sizeBytes": 138,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_get_children_values.js",
+      "sizeBytes": 175,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_get_children_values_child.js",
+      "sizeBytes": 137,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_get_dependencies.js",
+      "sizeBytes": 169,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_get_dependencies_child.js",
+      "sizeBytes": 137,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_get_dependencies_count.js",
+      "sizeBytes": 176,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_get_dependencies_count_child.js",
+      "sizeBytes": 137,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_missing_function.js",
+      "sizeBytes": 21,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_move_to_delayed.js",
+      "sizeBytes": 439,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_move_to_wait.js",
+      "sizeBytes": 417,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_move_to_wait_for_children.js",
+      "sizeBytes": 1462,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_parent.js",
+      "sizeBytes": 201,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_queueName.js",
+      "sizeBytes": 204,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_simple.js",
+      "sizeBytes": 185,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_slow.js",
+      "sizeBytes": 198,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_stderr.js",
+      "sizeBytes": 232,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_stdout.js",
+      "sizeBytes": 224,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_steps.js",
+      "sizeBytes": 776,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_ttl.js",
+      "sizeBytes": 1070,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_unrecoverable.js",
+      "sizeBytes": 393,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_update_data.js",
+      "sizeBytes": 351,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_update_progress.js",
+      "sizeBytes": 507,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/fixture_processor_with_extra_param.js",
+      "sizeBytes": 212,
+      "isTest": false
+    },
+    {
+      "path": "tests/fixtures/scripts/dir-test/empty/test.js",
+      "sizeBytes": 0,
+      "isTest": false
+    },
+    {
+      "path": "tests/flow.redis.test.ts",
+      "sizeBytes": 2469,
+      "isTest": true
+    },
+    {
+      "path": "tests/flow.test.ts",
+      "sizeBytes": 189359,
+      "isTest": true
+    },
+    {
+      "path": "tests/getters.redis.test.ts",
+      "sizeBytes": 2558,
+      "isTest": true
+    },
+    {
+      "path": "tests/getters.test.ts",
+      "sizeBytes": 36958,
+      "isTest": true
+    },
+    {
+      "path": "tests/integration_dedicated_lock_thread.ts",
+      "sizeBytes": 1369,
+      "isTest": false
+    },
+    {
+      "path": "tests/ioredis-client.test.ts",
+      "sizeBytes": 7757,
+      "isTest": true
+    },
+    {
+      "path": "tests/job.redis.test.ts",
+      "sizeBytes": 6940,
+      "isTest": true
+    },
+    {
+      "path": "tests/job.test.ts",
+      "sizeBytes": 54472,
+      "isTest": true
+    },
+    {
+      "path": "tests/job_cancellation.test.ts",
+      "sizeBytes": 29328,
+      "isTest": true
+    },
+    {
+      "path": "tests/job_cancellation_advanced.test.ts",
+      "sizeBytes": 33660,
+      "isTest": true
+    },
+    {
+      "path": "tests/job_scheduler.redis.test.ts",
+      "sizeBytes": 18572,
+      "isTest": true
+    },
+    {
+      "path": "tests/job_scheduler.test.ts",
+      "sizeBytes": 106420,
+      "isTest": true
+    },
+    {
+      "path": "tests/job_scheduler_stress.test.ts",
+      "sizeBytes": 15426,
+      "isTest": true
+    },
+    {
+      "path": "tests/lock_manager.test.ts",
+      "sizeBytes": 17446,
+      "isTest": true
+    },
+    {
+      "path": "tests/metrics.test.ts",
+      "sizeBytes": 8381,
+      "isTest": true
+    },
+    {
+      "path": "tests/node-redis.test.ts",
+      "sizeBytes": 12354,
+      "isTest": true
+    },
+    {
+      "path": "tests/obliterate.redis.test.ts",
+      "sizeBytes": 13845,
+      "isTest": true
+    },
+    {
+      "path": "tests/obliterate.test.ts",
+      "sizeBytes": 2769,
+      "isTest": true
+    },
+    {
+      "path": "tests/pause.test.ts",
+      "sizeBytes": 13235,
+      "isTest": true
+    },
+    {
+      "path": "tests/postgres/migration.test.ts",
+      "sizeBytes": 12041,
+      "isTest": true
+    },
+    {
+      "path": "tests/postgres/operations.test.ts",
+      "sizeBytes": 10690,
+      "isTest": true
+    },
+    {
+      "path": "tests/postgres/sql_loader.test.ts",
+      "sizeBytes": 1168,
+      "isTest": true
+    },
+    {
+      "path": "tests/postgres/utils/postgres-url.ts",
+      "sizeBytes": 762,
+      "isTest": false
+    },
+    {
+      "path": "tests/postgres/worker.test.ts",
+      "sizeBytes": 7614,
+      "isTest": true
+    },
+    {
+      "path": "tests/postgres-queue-backend.test.ts",
+      "sizeBytes": 971,
+      "isTest": true
+    },
+    {
+      "path": "tests/queue.redis.test.ts",
+      "sizeBytes": 1974,
+      "isTest": true
+    },
+    {
+      "path": "tests/queue.test.ts",
+      "sizeBytes": 26543,
+      "isTest": true
+    },
+    {
+      "path": "tests/rate_limiter.test.ts",
+      "sizeBytes": 37034,
+      "isTest": true
+    },
+    {
+      "path": "tests/sandboxed_process.test.ts",
+      "sizeBytes": 67379,
+      "isTest": true
+    },
+    {
+      "path": "tests/script_loader.test.ts",
+      "sizeBytes": 14745,
+      "isTest": true
+    },
+    {
+      "path": "tests/scripts.test.ts",
+      "sizeBytes": 6736,
+      "isTest": true
+    },
+    {
+      "path": "tests/stalled_jobs.test.ts",
+      "sizeBytes": 33878,
+      "isTest": true
+    },
+    {
+      "path": "tests/telemetry_interface.test.ts",
+      "sizeBytes": 36724,
+      "isTest": true
+    },
+    {
+      "path": "tests/utils/cleanup-queue.ts",
+      "sizeBytes": 1125,
+      "isTest": false
+    },
+    {
+      "path": "tests/utils/connection-factory.ts",
+      "sizeBytes": 892,
+      "isTest": false
+    },
+    {
+      "path": "tests/utils/get-redis-client.ts",
+      "sizeBytes": 3428,
+      "isTest": false
+    },
+    {
+      "path": "tests/utils/lodash.ts",
+      "sizeBytes": 915,
+      "isTest": false
+    },
+    {
+      "path": "tests/utils/repeat_utils.ts",
+      "sizeBytes": 827,
+      "isTest": false
+    },
+    {
+      "path": "tests/utils/stream-events.ts",
+      "sizeBytes": 312,
+      "isTest": false
+    },
+    {
+      "path": "tests/valkey-glide-client.test.ts",
+      "sizeBytes": 25022,
+      "isTest": true
+    },
+    {
+      "path": "tests/worker.redis.test.ts",
+      "sizeBytes": 29156,
+      "isTest": true
+    },
+    {
+      "path": "tests/worker.test.ts",
+      "sizeBytes": 140605,
+      "isTest": true
+    },
+    {
+      "path": "vitest.adapter-conformance.config.ts",
+      "sizeBytes": 639,
+      "isTest": false
+    },
+    {
+      "path": "vitest.bun.config.ts",
+      "sizeBytes": 1499,
+      "isTest": false
+    },
+    {
+      "path": "vitest.bun.setup.ts",
+      "sizeBytes": 718,
+      "isTest": false
+    },
+    {
+      "path": "vitest.config.ts",
+      "sizeBytes": 2521,
+      "isTest": false
+    },
+    {
+      "path": "vitest.coverage.config.ts",
+      "sizeBytes": 2491,
+      "isTest": false
+    },
+    {
+      "path": "vitest.ioredis.config.ts",
+      "sizeBytes": 690,
+      "isTest": false
+    },
+    {
+      "path": "vitest.node-redis.config.ts",
+      "sizeBytes": 1260,
+      "isTest": false
+    },
+    {
+      "path": "vitest.node-redis.setup.ts",
+      "sizeBytes": 658,
+      "isTest": false
+    },
+    {
+      "path": "vitest.postgres.config.ts",
+      "sizeBytes": 470,
+      "isTest": false
+    },
+    {
+      "path": "vitest.postgres.global-setup.ts",
+      "sizeBytes": 902,
+      "isTest": false
+    },
+    {
+      "path": "vitest.postgres.setup.ts",
+      "sizeBytes": 3227,
+      "isTest": false
+    },
+    {
+      "path": "vitest.postgres.smoke.config.ts",
+      "sizeBytes": 618,
+      "isTest": false
+    },
+    {
+      "path": "vitest.setup.ts",
+      "sizeBytes": 893,
+      "isTest": false
+    },
+    {
+      "path": "vitest.valkey-glide.config.ts",
+      "sizeBytes": 728,
+      "isTest": false
+    },
+    {
+      "path": "vitest.valkey-glide.setup.ts",
+      "sizeBytes": 500,
+      "isTest": false
+    }
+  ],
+  "testScenariosSummary": [
+    {
+      "filePath": "python/tests/job_scheduler_test.py",
+      "testFunction": "test_invalid_cron_pattern_raises",
+      "subScenarioName": "invalid cron pattern raises",
+      "line": 323,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_invalid_cron_pattern_raises"
+    },
+    {
+      "filePath": "python/tests/job_scheduler_test.py",
+      "testFunction": "test_unknown_timezone_raises",
+      "subScenarioName": "unknown timezone raises",
+      "line": 327,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_unknown_timezone_raises"
+    },
+    {
+      "filePath": "python/tests/job_scheduler_test.py",
+      "testFunction": "test_immediately_returns_now",
+      "subScenarioName": "immediately returns now",
+      "line": 333,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_immediately_returns_now"
+    },
+    {
+      "filePath": "python/tests/job_scheduler_test.py",
+      "testFunction": "test_legacy_repeatable_key_decoded",
+      "subScenarioName": "legacy repeatable key decoded",
+      "line": 345,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_legacy_repeatable_key_decoded"
+    },
+    {
+      "filePath": "python/tests/job_scheduler_test.py",
+      "testFunction": "test_non_legacy_key_returns_none",
+      "subScenarioName": "non legacy key returns none",
+      "line": 356,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_non_legacy_key_returns_none"
+    },
+    {
+      "filePath": "python/tests/postgres_backend_test.py",
+      "testFunction": "test_row_to_job_map_json_encodes_plain_strings",
+      "subScenarioName": "row to job map json encodes plain strings",
+      "line": 19,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_row_to_job_map_json_encodes_plain_strings"
+    },
+    {
+      "filePath": "python/tests/postgres_backend_test.py",
+      "testFunction": "test_job_from_json_round_trips_plain_string_fields",
+      "subScenarioName": "job from json round trips plain string fields",
+      "line": 40,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_job_from_json_round_trips_plain_string_fields"
+    },
+    {
+      "filePath": "python/tests/postgres_backend_test.py",
+      "testFunction": "test_client_name_includes_schema_namespace",
+      "subScenarioName": "client name includes schema namespace",
+      "line": 63,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_client_name_includes_schema_namespace"
+    },
+    {
+      "filePath": "python/tests/postgres_backend_test.py",
+      "testFunction": "test_quote_schema_name_error_message_mentions_dollar_signs",
+      "subScenarioName": "quote schema name error message mentions dollar signs",
+      "line": 128,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_quote_schema_name_error_message_mentions_dollar_signs"
+    },
+    {
+      "filePath": "python/tests/queue_job_types_test.py",
+      "testFunction": "test_sanitize_job_types_does_not_add_paused_for_waiting",
+      "subScenarioName": "sanitize job types does not add paused for waiting",
+      "line": 7,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_sanitize_job_types_does_not_add_paused_for_waiting"
+    },
+    {
+      "filePath": "python/tests/queue_job_types_test.py",
+      "testFunction": "test_sanitize_job_types_defaults_match_v6",
+      "subScenarioName": "sanitize job types defaults match v6",
+      "line": 13,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_sanitize_job_types_defaults_match_v6"
+    },
+    {
+      "filePath": "python/tests/redis_connection_test.py",
+      "testFunction": "test_dict_opts_uses_single_connection",
+      "subScenarioName": "dict opts uses single connection",
+      "line": 10,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_dict_opts_uses_single_connection"
+    },
+    {
+      "filePath": "python/tests/redis_connection_test.py",
+      "testFunction": "test_url_opts_uses_single_connection",
+      "subScenarioName": "url opts uses single connection",
+      "line": 15,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_url_opts_uses_single_connection"
+    },
+    {
+      "filePath": "python/tests/redis_connection_test.py",
+      "testFunction": "test_caller_single_connection_client_does_not_raise",
+      "subScenarioName": "caller single connection client does not raise",
+      "line": 20,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_caller_single_connection_client_does_not_raise"
+    },
+    {
+      "filePath": "python/tests/redis_connection_test.py",
+      "testFunction": "test_returns_false_when_current_version_is_none",
+      "subScenarioName": "returns false when current version is none",
+      "line": 64,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_returns_false_when_current_version_is_none"
+    },
+    {
+      "filePath": "python/tests/redis_connection_test.py",
+      "testFunction": "test_returns_true_when_current_below_minimum",
+      "subScenarioName": "returns true when current below minimum",
+      "line": 69,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_returns_true_when_current_below_minimum"
+    },
+    {
+      "filePath": "python/tests/redis_connection_test.py",
+      "testFunction": "test_returns_false_when_current_at_or_above_minimum",
+      "subScenarioName": "returns false when current at or above minimum",
+      "line": 72,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_returns_false_when_current_at_or_above_minimum"
+    },
+    {
+      "filePath": "python/tests/redis_connection_test.py",
+      "testFunction": "test_default_skip_flags_are_false",
+      "subScenarioName": "default skip flags are false",
+      "line": 78,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_default_skip_flags_are_false"
+    },
+    {
+      "filePath": "python/tests/redis_connection_test.py",
+      "testFunction": "test_skip_flags_persist_when_set",
+      "subScenarioName": "skip flags persist when set",
+      "line": 83,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_skip_flags_persist_when_set"
+    },
+    {
+      "filePath": "python/tests/sql_loader_test.py",
+      "testFunction": "test_resolve_sql_root_uses_repo_src_postgres_in_repo_layout",
+      "subScenarioName": "resolve sql root uses repo src postgres in repo layout",
+      "line": 10,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_resolve_sql_root_uses_repo_src_postgres_in_repo_layout"
+    },
+    {
+      "filePath": "python/tests/sql_loader_test.py",
+      "testFunction": "test_resolve_sql_root_ignores_unrelated_ancestor_src_postgres",
+      "subScenarioName": "resolve sql root ignores unrelated ancestor src postgres",
+      "line": 25,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_resolve_sql_root_ignores_unrelated_ancestor_src_postgres"
+    },
+    {
+      "filePath": "python/tests/test_imports.py",
+      "testFunction": "test_unrecoverable_error_importable_from_package_root",
+      "subScenarioName": "unrecoverable error importable from package root",
+      "line": 12,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_unrecoverable_error_importable_from_package_root"
+    },
+    {
+      "filePath": "python/tests/test_imports.py",
+      "testFunction": "test_waiting_children_error_importable_from_package_root",
+      "subScenarioName": "waiting children error importable from package root",
+      "line": 17,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_waiting_children_error_importable_from_package_root"
+    },
+    {
+      "filePath": "python/tests/worker_disconnect_test.py",
+      "testFunction": "test_redis_connection_error_is_transient",
+      "subScenarioName": "redis connection error is transient",
+      "line": 84,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_redis_connection_error_is_transient"
+    },
+    {
+      "filePath": "python/tests/worker_disconnect_test.py",
+      "testFunction": "test_redis_timeout_error_is_transient",
+      "subScenarioName": "redis timeout error is transient",
+      "line": 88,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_redis_timeout_error_is_transient"
+    },
+    {
+      "filePath": "python/tests/worker_disconnect_test.py",
+      "testFunction": "test_redis_busy_loading_error_is_transient",
+      "subScenarioName": "redis busy loading error is transient",
+      "line": 92,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_redis_busy_loading_error_is_transient"
+    },
+    {
+      "filePath": "python/tests/worker_disconnect_test.py",
+      "testFunction": "test_builtin_connection_refused_error_is_transient",
+      "subScenarioName": "builtin connection refused error is transient",
+      "line": 96,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_builtin_connection_refused_error_is_transient"
+    },
+    {
+      "filePath": "python/tests/worker_disconnect_test.py",
+      "testFunction": "test_asyncio_timeout_is_transient",
+      "subScenarioName": "asyncio timeout is transient",
+      "line": 100,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_asyncio_timeout_is_transient"
+    },
+    {
+      "filePath": "python/tests/worker_disconnect_test.py",
+      "testFunction": "test_postgres_disconnect_errors_are_transient_when_postgres_backend_is_enabled",
+      "subScenarioName": "postgres disconnect errors are transient when postgres backend is enabled",
+      "line": 103,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_postgres_disconnect_errors_are_transient_when_postgres_backend_is_enabled"
+    },
+    {
+      "filePath": "python/tests/worker_disconnect_test.py",
+      "testFunction": "test_os_error_with_aggregated_errno_message_is_transient",
+      "subScenarioName": "os error with aggregated errno message is transient",
+      "line": 125,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_os_error_with_aggregated_errno_message_is_transient"
+    },
+    {
+      "filePath": "python/tests/worker_disconnect_test.py",
+      "testFunction": "test_os_error_with_errno_attribute_is_transient",
+      "subScenarioName": "os error with errno attribute is transient",
+      "line": 137,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_os_error_with_errno_attribute_is_transient"
+    },
+    {
+      "filePath": "python/tests/worker_disconnect_test.py",
+      "testFunction": "test_os_error_with_mnemonic_message_is_transient",
+      "subScenarioName": "os error with mnemonic message is transient",
+      "line": 142,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_os_error_with_mnemonic_message_is_transient"
+    },
+    {
+      "filePath": "python/tests/worker_disconnect_test.py",
+      "testFunction": "test_plain_value_error_is_not_transient",
+      "subScenarioName": "plain value error is not transient",
+      "line": 162,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_plain_value_error_is_not_transient"
+    },
+    {
+      "filePath": "python/tests/worker_disconnect_test.py",
+      "testFunction": "test_worker_accepts_none_opts",
+      "subScenarioName": "worker accepts none opts",
+      "line": 168,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_worker_accepts_none_opts"
+    },
+    {
+      "filePath": "python/tests/worker_disconnect_test.py",
+      "testFunction": "test_worker_uses_backend_client_name_convention",
+      "subScenarioName": "worker uses backend client name convention",
+      "line": 177,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_worker_uses_backend_client_name_convention"
+    },
+    {
+      "filePath": "python/tests/worker_disconnect_test.py",
+      "testFunction": "test_worker_redis_compatibility_handles_are_none_for_non_redis_backends",
+      "subScenarioName": "worker redis compatibility handles are none for non redis backends",
+      "line": 197,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_worker_redis_compatibility_handles_are_none_for_non_redis_backends"
+    },
+    {
+      "filePath": "python/tests/worker_disconnect_test.py",
+      "testFunction": "test_worker_uses_backend_minimum_block_timeout",
+      "subScenarioName": "worker uses backend minimum block timeout",
+      "line": 220,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_worker_uses_backend_minimum_block_timeout"
+    },
+    {
+      "filePath": "python/tests/worker_disconnect_test.py",
+      "testFunction": "test_queue_redis_compatibility_handle_is_none_for_non_redis_backends",
+      "subScenarioName": "queue redis compatibility handle is none for non redis backends",
+      "line": 243,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_queue_redis_compatibility_handle_is_none_for_non_redis_backends"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Connection Lifecycle",
+      "subScenarioName": "should report status ",
+      "line": 66,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Connection Lifecycle -> should report status "
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Connection Lifecycle",
+      "subScenarioName": "should create a duplicate that connects independently",
+      "line": 70,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Connection Lifecycle -> should create a duplicate that connects independently"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Connection Lifecycle",
+      "subScenarioName": "should handle connectionName in duplicate options",
+      "line": 80,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Connection Lifecycle -> should handle connectionName in duplicate options"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Connection Lifecycle",
+      "subScenarioName": "should transition to ",
+      "line": 92,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Connection Lifecycle -> should transition to "
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Connection Lifecycle",
+      "subScenarioName": "should emit ",
+      "line": 99,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Connection Lifecycle -> should emit "
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Connection Lifecycle",
+      "subScenarioName": "should support setMaxListeners/getMaxListeners",
+      "line": 109,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Connection Lifecycle -> should support setMaxListeners/getMaxListeners"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "String Commands",
+      "subScenarioName": "should set and get a string value",
+      "line": 121,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: String Commands -> should set and get a string value"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "String Commands",
+      "subScenarioName": "should set with PX option (millisecond expiry)",
+      "line": 127,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: String Commands -> should set with PX option (millisecond expiry)"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "String Commands",
+      "subScenarioName": "should return null for non-existent key",
+      "line": 133,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: String Commands -> should return null for non-existent key"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "String Commands",
+      "subScenarioName": "should delete keys and return count",
+      "line": 138,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: String Commands -> should delete keys and return count"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "String Commands",
+      "subScenarioName": "should handle del with no keys gracefully",
+      "line": 145,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: String Commands -> should handle del with no keys gracefully"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Hash Commands",
+      "subScenarioName": "should hset and hgetall",
+      "line": 160,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Hash Commands -> should hset and hgetall"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Hash Commands",
+      "subScenarioName": "should hset numeric values as strings",
+      "line": 166,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Hash Commands -> should hset numeric values as strings"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Hash Commands",
+      "subScenarioName": "should hget a single field",
+      "line": 173,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Hash Commands -> should hget a single field"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Hash Commands",
+      "subScenarioName": "should hget return null for missing field",
+      "line": 179,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Hash Commands -> should hget return null for missing field"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Hash Commands",
+      "subScenarioName": "should hmget multiple fields",
+      "line": 185,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Hash Commands -> should hmget multiple fields"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Hash Commands",
+      "subScenarioName": "should hdel fields and return count",
+      "line": 191,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Hash Commands -> should hdel fields and return count"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Hash Commands",
+      "subScenarioName": "should hexists return 1/0",
+      "line": 199,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Hash Commands -> should hexists return 1/0"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Hash Commands",
+      "subScenarioName": "should return empty object for hgetall on non-existent key",
+      "line": 207,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Hash Commands -> should return empty object for hgetall on non-existent key"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Sorted Set Commands",
+      "subScenarioName": "should zrange return members in order",
+      "line": 221,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Sorted Set Commands -> should zrange return members in order"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Sorted Set Commands",
+      "subScenarioName": "should zrange with WITHSCORES return [member, score, ...]",
+      "line": 233,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Sorted Set Commands -> should zrange with WITHSCORES return [member, score, ...]"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Sorted Set Commands",
+      "subScenarioName": "should zrevrange return members in reverse order",
+      "line": 244,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Sorted Set Commands -> should zrevrange return members in reverse order"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Sorted Set Commands",
+      "subScenarioName": "should zcard return cardinality",
+      "line": 253,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Sorted Set Commands -> should zcard return cardinality"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Sorted Set Commands",
+      "subScenarioName": "should zscore return score as string",
+      "line": 260,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Sorted Set Commands -> should zscore return score as string"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Sorted Set Commands",
+      "subScenarioName": "should zscore return null for missing member",
+      "line": 266,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Sorted Set Commands -> should zscore return null for missing member"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "List Commands",
+      "subScenarioName": "should lrange return elements",
+      "line": 280,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: List Commands -> should lrange return elements"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "List Commands",
+      "subScenarioName": "should llen return length",
+      "line": 286,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: List Commands -> should llen return length"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "List Commands",
+      "subScenarioName": "should ltrim truncate list",
+      "line": 292,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: List Commands -> should ltrim truncate list"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "List Commands",
+      "subScenarioName": "should lpos find element position",
+      "line": 299,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: List Commands -> should lpos find element position"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "List Commands",
+      "subScenarioName": "should lpos return null for missing element",
+      "line": 305,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: List Commands -> should lpos return null for missing element"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Set Commands",
+      "subScenarioName": "should smembers return all members",
+      "line": 320,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Set Commands -> should smembers return all members"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Set Commands",
+      "subScenarioName": "should return empty array for smembers on non-existent key",
+      "line": 326,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Set Commands -> should return empty array for smembers on non-existent key"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Stream Commands",
+      "subScenarioName": "should xadd entries and return an ID",
+      "line": 340,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Stream Commands -> should xadd entries and return an ID"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Stream Commands",
+      "subScenarioName": "should xadd with numeric field values (stringified)",
+      "line": 349,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Stream Commands -> should xadd with numeric field values (stringified)"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Stream Commands",
+      "subScenarioName": "should xadd with MAXLEN option",
+      "line": 358,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Stream Commands -> should xadd with MAXLEN option"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Stream Commands",
+      "subScenarioName": "should xread entries from a stream",
+      "line": 371,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Stream Commands -> should xread entries from a stream"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Stream Commands",
+      "subScenarioName": "should xtrim a stream",
+      "line": 382,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Stream Commands -> should xtrim a stream"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Scan Commands",
+      "subScenarioName": "should scan return [cursor, keys] tuple",
+      "line": 403,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Scan Commands -> should scan return [cursor, keys] tuple"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Scan Commands",
+      "subScenarioName": "should scan with string cursor",
+      "line": 419,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Scan Commands -> should scan with string cursor"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Scan Commands",
+      "subScenarioName": "should scanStream return a Readable",
+      "line": 428,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Scan Commands -> should scanStream return a Readable"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Lua Script Engine",
+      "subScenarioName": "should defineCommand and runCommand execute a script",
+      "line": 449,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Lua Script Engine -> should defineCommand and runCommand execute a script"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Lua Script Engine",
+      "subScenarioName": "should make defined command accessible as a property",
+      "line": 458,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Lua Script Engine -> should make defined command accessible as a property"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Lua Script Engine",
+      "subScenarioName": "should execute defined command properties with ioredis-style args arrays",
+      "line": 467,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Lua Script Engine -> should execute defined command properties with ioredis-style args arrays"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Lua Script Engine",
+      "subScenarioName": "should keep defined command properties on duplicates",
+      "line": 481,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Lua Script Engine -> should keep defined command properties on duplicates"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Lua Script Engine",
+      "subScenarioName": "should handle numeric arguments (stringify)",
+      "line": 499,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Lua Script Engine -> should handle numeric arguments (stringify)"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Lua Script Engine",
+      "subScenarioName": "should handle undefined/null arguments as empty string",
+      "line": 508,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Lua Script Engine -> should handle undefined/null arguments as empty string"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Lua Script Engine",
+      "subScenarioName": "should preserve Buffer arguments",
+      "line": 521,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Lua Script Engine -> should preserve Buffer arguments"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Lua Script Engine",
+      "subScenarioName": "should handle NOSCRIPT by falling back to EVAL",
+      "line": 532,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Lua Script Engine -> should handle NOSCRIPT by falling back to EVAL"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Transaction (multi)",
+      "subScenarioName": "should return results in ioredis format: [Error|null, value][]",
+      "line": 569,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Transaction (multi) -> should return results in ioredis format: [Error|null, value][]"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Transaction (multi)",
+      "subScenarioName": "should hscan return ioredis format: [cursor, [field, value, ...]]",
+      "line": 598,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Transaction (multi) -> should hscan return ioredis format: [cursor, [field, value, ...]]"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Transaction (multi)",
+      "subScenarioName": "should sscan return ioredis format: [cursor, [member, ...]]",
+      "line": 620,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Transaction (multi) -> should sscan return ioredis format: [cursor, [member, ...]]"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Transaction (multi)",
+      "subScenarioName": "should hscan accept string cursor",
+      "line": 640,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Transaction (multi) -> should hscan accept string cursor"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Transaction (multi)",
+      "subScenarioName": "should sscan accept string cursor",
+      "line": 651,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Transaction (multi) -> should sscan accept string cursor"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Transaction (multi)",
+      "subScenarioName": "should del with zero keys not add a command to the pipeline",
+      "line": 662,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Transaction (multi) -> should del with zero keys not add a command to the pipeline"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Transaction (multi)",
+      "subScenarioName": "should support runCommand (Lua scripts) in transaction",
+      "line": 674,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Transaction (multi) -> should support runCommand (Lua scripts) in transaction"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Blocking Commands",
+      "subScenarioName": "should bzpopmin return null on timeout",
+      "line": 702,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Blocking Commands -> should bzpopmin return null on timeout"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Blocking Commands",
+      "subScenarioName": "should bzpopmin return element when available",
+      "line": 707,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Blocking Commands -> should bzpopmin return element when available"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Server Commands",
+      "subScenarioName": "should info return a string with redis_version",
+      "line": 720,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Server Commands -> should info return a string with redis_version"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Server Commands",
+      "subScenarioName": "should clientSetName set the connection name",
+      "line": 726,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Server Commands -> should clientSetName set the connection name"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "Server Commands",
+      "subScenarioName": "should clientList return a string with client info",
+      "line": 735,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Server Commands -> should clientList return a string with client info"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "BullMQ-specific Edge Cases",
+      "subScenarioName": "should hset accept both Record<string, string> and Record<string, number>",
+      "line": 746,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: BullMQ-specific Edge Cases -> should hset accept both Record<string, string> and Record<string, number>"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "BullMQ-specific Edge Cases",
+      "subScenarioName": "should handle large scan results correctly",
+      "line": 760,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: BullMQ-specific Edge Cases -> should handle large scan results correctly"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "BullMQ-specific Edge Cases",
+      "subScenarioName": "should xadd handle all field types BullMQ uses",
+      "line": 779,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: BullMQ-specific Edge Cases -> should xadd handle all field types BullMQ uses"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "BullMQ-specific Edge Cases",
+      "subScenarioName": "should zrange WITHSCORES return scores as strings",
+      "line": 791,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: BullMQ-specific Edge Cases -> should zrange WITHSCORES return scores as strings"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "BullMQ-specific Edge Cases",
+      "subScenarioName": "should pipeline preserve command order",
+      "line": 802,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: BullMQ-specific Edge Cases -> should pipeline preserve command order"
+    },
+    {
+      "filePath": "tests/adapter-conformance.test.ts",
+      "testFunction": "BullMQ-specific Edge Cases",
+      "subScenarioName": "should handle concurrent operations without interference",
+      "line": 816,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: BullMQ-specific Edge Cases -> should handle concurrent operations without interference"
+    },
+    {
+      "filePath": "tests/async_fifo_queue.test.ts",
+      "testFunction": "AsyncFIFOQueue",
+      "subScenarioName": "empty queue",
+      "line": 5,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: AsyncFIFOQueue -> empty queue"
+    },
+    {
+      "filePath": "tests/async_fifo_queue.test.ts",
+      "testFunction": "AsyncFIFOQueue",
+      "subScenarioName": "handles a promise that rejects",
+      "line": 16,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: AsyncFIFOQueue -> handles a promise that rejects"
+    },
+    {
+      "filePath": "tests/async_fifo_queue.test.ts",
+      "testFunction": "AsyncFIFOQueue",
+      "subScenarioName": "add several promises and wait for them to complete",
+      "line": 35,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: AsyncFIFOQueue -> add several promises and wait for them to complete"
+    },
+    {
+      "filePath": "tests/async_fifo_queue.test.ts",
+      "testFunction": "AsyncFIFOQueue",
+      "subScenarioName": "add several promises and wait for them to complete in order",
+      "line": 55,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: AsyncFIFOQueue -> add several promises and wait for them to complete in order"
+    },
+    {
+      "filePath": "tests/async_fifo_queue.test.ts",
+      "testFunction": "AsyncFIFOQueue",
+      "subScenarioName": "add several promises with random delays and wait for them to complete in order",
+      "line": 77,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: AsyncFIFOQueue -> add several promises with random delays and wait for them to complete in order"
+    },
+    {
+      "filePath": "tests/async_fifo_queue.test.ts",
+      "testFunction": "AsyncFIFOQueue",
+      "subScenarioName": "add several promises while fetching them concurrently",
+      "line": 102,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: AsyncFIFOQueue -> add several promises while fetching them concurrently"
+    },
+    {
+      "filePath": "tests/async_fifo_queue.test.ts",
+      "testFunction": "AsyncFIFOQueue",
+      "subScenarioName": "should handle promises that get rejected and don",
+      "line": 131,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: AsyncFIFOQueue -> should handle promises that get rejected and don"
+    },
+    {
+      "filePath": "tests/bulk.test.ts",
+      "testFunction": "bulk jobs",
+      "subScenarioName": "should process jobs",
+      "line": 56,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: bulk jobs -> should process jobs"
+    },
+    {
+      "filePath": "tests/bulk.test.ts",
+      "testFunction": "bulk jobs",
+      "subScenarioName": "should allow to pass parent option",
+      "line": 89,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: bulk jobs -> should allow to pass parent option"
+    },
+    {
+      "filePath": "tests/bulk.test.ts",
+      "testFunction": "bulk jobs",
+      "subScenarioName": "should keep workers busy",
+      "line": 144,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: bulk jobs -> should keep workers busy"
+    },
+    {
+      "filePath": "tests/bulk.test.ts",
+      "testFunction": "bulk jobs",
+      "subScenarioName": "should process jobs with custom ids",
+      "line": 189,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: bulk jobs -> should process jobs with custom ids"
+    },
+    {
+      "filePath": "tests/bun-adapter-suite.test.ts",
+      "testFunction": "bun adapter extended suite",
+      "subScenarioName": "supports bulk add and wait counts",
+      "line": 67,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: bun adapter extended suite -> supports bulk add and wait counts"
+    },
+    {
+      "filePath": "tests/bun-adapter-suite.test.ts",
+      "testFunction": "bun adapter extended suite",
+      "subScenarioName": "supports pause and resume",
+      "line": 86,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: bun adapter extended suite -> supports pause and resume"
+    },
+    {
+      "filePath": "tests/bun-adapter-suite.test.ts",
+      "testFunction": "bun adapter extended suite",
+      "subScenarioName": "handles failed jobs",
+      "line": 101,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: bun adapter extended suite -> handles failed jobs"
+    },
+    {
+      "filePath": "tests/bun-adapter-suite.test.ts",
+      "testFunction": "bun adapter extended suite",
+      "subScenarioName": "processes jobs with concurrency",
+      "line": 137,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: bun adapter extended suite -> processes jobs with concurrency"
+    },
+    {
+      "filePath": "tests/bun-adapter-suite.test.ts",
+      "testFunction": "bun adapter extended suite",
+      "subScenarioName": "processes delayed jobs",
+      "line": 193,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: bun adapter extended suite -> processes delayed jobs"
+    },
+    {
+      "filePath": "tests/bun-adapter-suite.test.ts",
+      "testFunction": "bun adapter extended suite",
+      "subScenarioName": "processes a flow end-to-end",
+      "line": 232,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: bun adapter extended suite -> processes a flow end-to-end"
+    },
+    {
+      "filePath": "tests/bun-redis.test.ts",
+      "testFunction": "basic IRedisClient operations",
+      "subScenarioName": "should report ready status",
+      "line": 88,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: basic IRedisClient operations -> should report ready status"
+    },
+    {
+      "filePath": "tests/bun-redis.test.ts",
+      "testFunction": "basic IRedisClient operations",
+      "subScenarioName": "should get/set string values",
+      "line": 92,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: basic IRedisClient operations -> should get/set string values"
+    },
+    {
+      "filePath": "tests/bun-redis.test.ts",
+      "testFunction": "basic IRedisClient operations",
+      "subScenarioName": "should hset/hget/hgetall",
+      "line": 100,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: basic IRedisClient operations -> should hset/hget/hgetall"
+    },
+    {
+      "filePath": "tests/bun-redis.test.ts",
+      "testFunction": "basic IRedisClient operations",
+      "subScenarioName": "should zrange with WITHSCORES",
+      "line": 108,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: basic IRedisClient operations -> should zrange with WITHSCORES"
+    },
+    {
+      "filePath": "tests/bun-redis.test.ts",
+      "testFunction": "basic IRedisClient operations",
+      "subScenarioName": "should duplicate",
+      "line": 121,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: basic IRedisClient operations -> should duplicate"
+    },
+    {
+      "filePath": "tests/bun-redis.test.ts",
+      "testFunction": "basic IRedisClient operations",
+      "subScenarioName": "should explicitly reconnect while an automatic reconnect is pending",
+      "line": 131,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: basic IRedisClient operations -> should explicitly reconnect while an automatic reconnect is pending"
+    },
+    {
+      "filePath": "tests/bun-redis.test.ts",
+      "testFunction": "Queue operations via bun adapter",
+      "subScenarioName": "should add and retrieve a job",
+      "line": 163,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Queue operations via bun adapter -> should add and retrieve a job"
+    },
+    {
+      "filePath": "tests/bun-redis.test.ts",
+      "testFunction": "Worker processing via bun adapter",
+      "subScenarioName": "should process a job to completion",
+      "line": 174,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Worker processing via bun adapter -> should process a job to completion"
+    },
+    {
+      "filePath": "tests/bun-redis.test.ts",
+      "testFunction": "FlowProducer via bun adapter",
+      "subScenarioName": "should create a parent-child flow",
+      "line": 216,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: FlowProducer via bun adapter -> should create a parent-child flow"
+    },
+    {
+      "filePath": "tests/bun-redis.test.ts",
+      "testFunction": "shared connection teardown via bun adapter",
+      "subScenarioName": "should not flood ConnectionClosedError when the shared connection is closed via the adapter",
+      "line": 246,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: shared connection teardown via bun adapter -> should not flood ConnectionClosedError when the shared connection is closed via the adapter"
+    },
+    {
+      "filePath": "tests/child-pool.test.ts",
+      "testFunction": "Child pool",
+      "subScenarioName": "should return same child if free",
+      "line": 34,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Child pool -> should return same child if free"
+    },
+    {
+      "filePath": "tests/child-pool.test.ts",
+      "testFunction": "Child pool",
+      "subScenarioName": "should return a new child if reused the last free one",
+      "line": 44,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Child pool -> should return a new child if reused the last free one"
+    },
+    {
+      "filePath": "tests/child-pool.test.ts",
+      "testFunction": "Child pool",
+      "subScenarioName": "should return a new child if none free",
+      "line": 57,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Child pool -> should return a new child if none free"
+    },
+    {
+      "filePath": "tests/child-pool.test.ts",
+      "testFunction": "Child pool",
+      "subScenarioName": "should return a new child if killed",
+      "line": 66,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Child pool -> should return a new child if killed"
+    },
+    {
+      "filePath": "tests/child-pool.test.ts",
+      "testFunction": "Child pool",
+      "subScenarioName": "should return a new child if many retained and none free",
+      "line": 76,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Child pool -> should return a new child if many retained and none free"
+    },
+    {
+      "filePath": "tests/child-pool.test.ts",
+      "testFunction": "Child pool",
+      "subScenarioName": "should return an old child if many retained and one free",
+      "line": 91,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Child pool -> should return an old child if many retained and one free"
+    },
+    {
+      "filePath": "tests/child-pool.test.ts",
+      "testFunction": "Child pool",
+      "subScenarioName": "should consume execArgv array from process",
+      "line": 108,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Child pool -> should consume execArgv array from process"
+    },
+    {
+      "filePath": "tests/child-pool.test.ts",
+      "testFunction": "Child pool",
+      "subScenarioName": "should preserve init errors when the child never creates a process",
+      "line": 119,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Child pool -> should preserve init errors when the child never creates a process"
+    },
+    {
+      "filePath": "tests/child_stdio_null.test.ts",
+      "testFunction": "anonymous_suite",
+      "subScenarioName": "message",
+      "line": 56,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: message"
+    },
+    {
+      "filePath": "tests/child_stdio_null.test.ts",
+      "testFunction": "anonymous_suite",
+      "subScenarioName": "exit",
+      "line": 68,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: exit"
+    },
+    {
+      "filePath": "tests/child_stdio_null.test.ts",
+      "testFunction": "Child.init with null stdout/stderr",
+      "subScenarioName": "keeps the inlined enum values in the mock in sync with the real enums",
+      "line": 92,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Child.init with null stdout/stderr -> keeps the inlined enum values in the mock in sync with the real enums"
+    },
+    {
+      "filePath": "tests/child_stdio_null.test.ts",
+      "testFunction": "Child.init with null stdout/stderr",
+      "subScenarioName": "does not throw a TypeError when parent.stdout and parent.stderr are null",
+      "line": 99,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: Child.init with null stdout/stderr -> does not throw a TypeError when parent.stdout and parent.stderr are null"
+    },
+    {
+      "filePath": "tests/clean.redis.test.ts",
+      "testFunction": "removeOrphanedJobs",
+      "subScenarioName": "should remove orphaned job hashes with no sub-keys",
+      "line": 58,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: removeOrphanedJobs -> should remove orphaned job hashes with no sub-keys"
+    },
+    {
+      "filePath": "tests/clean.redis.test.ts",
+      "testFunction": "removeOrphanedJobs",
+      "subScenarioName": "should remove all sub-keys of orphaned jobs",
+      "line": 75,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: removeOrphanedJobs -> should remove all sub-keys of orphaned jobs"
+    },
+    {
+      "filePath": "tests/clean.redis.test.ts",
+      "testFunction": "removeOrphanedJobs",
+      "subScenarioName": "should distinguish orphaned jobs from legitimate jobs across all states",
+      "line": 112,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: removeOrphanedJobs -> should distinguish orphaned jobs from legitimate jobs across all states"
+    },
+    {
+      "filePath": "tests/clean.redis.test.ts",
+      "testFunction": "removeOrphanedJobs",
+      "subScenarioName": "should not remove infrastructure keys",
+      "line": 153,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: removeOrphanedJobs -> should not remove infrastructure keys"
+    },
+    {
+      "filePath": "tests/clean.redis.test.ts",
+      "testFunction": "removeOrphanedJobs",
+      "subScenarioName": "should not confuse repeat sub-keys with orphaned jobs",
+      "line": 170,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: removeOrphanedJobs -> should not confuse repeat sub-keys with orphaned jobs"
+    },
+    {
+      "filePath": "tests/clean.redis.test.ts",
+      "testFunction": "removeOrphanedJobs",
+      "subScenarioName": "should handle jobs with custom string IDs",
+      "line": 193,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: removeOrphanedJobs -> should handle jobs with custom string IDs"
+    },
+    {
+      "filePath": "tests/clean.redis.test.ts",
+      "testFunction": "removeOrphanedJobs",
+      "subScenarioName": "should detect orphans found only via sub-keys",
+      "line": 220,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: removeOrphanedJobs -> should detect orphans found only via sub-keys"
+    }
+  ],
+  "historicalFixesSummary": [
+    {
+      "commitHash": "c06b51cd3aacd0d9ee65e2544220c89f24d2479c",
+      "authorDate": "2026-08-21T01:14:23-04:00",
+      "subject": "feat(types): add generic ProgressType parameter to Job and Worker (#4529) fixes #3721",
+      "body": "",
+      "issueRefs": [
+        "#4529",
+        "fixes #3721"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/guide/workers/readme.md",
+        "src/classes/job.ts",
+        "src/classes/worker.ts",
+        "src/interfaces/minimal-job.ts",
+        "src/types/processor.ts",
+        "tests/worker.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "cb372332210af739efb159b6ac2ffc3fdd4d4d2d",
+      "authorDate": "2026-08-16T10:06:19+02:00",
+      "subject": "fix(deps): update security patches [security] (#4566)",
+      "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+      "issueRefs": [
+        "#4566"
+      ],
+      "touchedFiles": [
+        "package.json",
+        "rust/Cargo.lock",
+        "rust/Cargo.toml",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "d464a51781177cc7ec23b011355f1df54385dab0",
+      "authorDate": "2026-08-15T12:41:48-07:00",
+      "subject": "fix(queue-events): ignore late queue event task replies during close (#4572) [elixir]",
+      "body": "Co-authored-by: copilot-swe-agent[bot] <198982749+Copilot@users.noreply.github.com>\nCo-authored-by: manast <95200+manast@users.noreply.github.com>",
+      "issueRefs": [
+        "#4572"
+      ],
+      "touchedFiles": [
+        "elixir/lib/bullmq/queue_events.ex",
+        "elixir/test/bullmq/queue_events_integration_test.exs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "6df4589805aca2144eed9a9f24d4a9f52dcbbb7b",
+      "authorDate": "2026-08-14T21:23:08-07:00",
+      "subject": "perf: check script existence before loading [rust] [elixir] (#4563)",
+      "body": "* perf: optimize script loading with SCRIPT EXISTS in Rust and Elixir\n\n* refactor: align Rust and Elixir with lazy script loading\n\nCo-authored-by: manast <95200+manast@users.noreply.github.com>\n\n* rust: make script registry internal API\n\nCo-authored-by: manast <95200+manast@users.noreply.github.com>\n\n* fix(elixir): remove unused Scripts alias in RedisConnection\n\nCo-authored-by: manast <95200+manast@users.noreply.github.com>\n\n* fix(rust): avoid dead_code warnings in scripts registry\n\n---------\n\nCo-authored-by: copilot-swe-agent[bot] <198982749+Copilot@users.noreply.github.com>\nCo-authored-by: manast <95200+manast@users.noreply.github.com>",
+      "issueRefs": [
+        "#4563"
+      ],
+      "touchedFiles": [
+        "elixir/lib/bullmq/redis_connection.ex",
+        "elixir/test/bullmq/script_loading_integration_test.exs",
+        "rust/src/flow_producer.rs",
+        "rust/src/lib.rs",
+        "rust/src/redis_connection.rs",
+        "rust/src/scripts.rs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "ab7009da8a732d8d5e8f13228e1ef81806422128",
+      "authorDate": "2026-08-13T20:24:16-07:00",
+      "subject": "fix(flow): allow parent opts from root parent (#4548) fixes #4547",
+      "body": "",
+      "issueRefs": [
+        "#4548",
+        "fixes #4547"
+      ],
+      "touchedFiles": [
+        "src/interfaces/flow-job.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "beab7b54fb0d441808f1549fc399482b320bfe43",
+      "authorDate": "2026-08-12T21:40:04-07:00",
+      "subject": "fix(deps): upgrade futures to v0.3.34 [rust] (#4552)",
+      "body": "",
+      "issueRefs": [
+        "#4552"
+      ],
+      "touchedFiles": [
+        "package.json",
+        "rust/Cargo.lock",
+        "rust/Cargo.toml",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c6134469c7e8a4b93269c19a77c5a2905d17dfa8",
+      "authorDate": "2026-08-11T18:43:44+02:00",
+      "subject": "test(cancellation): fix flaky job cancellation tests due to active event race (#4551)",
+      "body": "",
+      "issueRefs": [
+        "#4551"
+      ],
+      "touchedFiles": [
+        "tests/job_cancellation_advanced.test.ts"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "48c54268642b724b8823086db2c6d1a61c10c3cf",
+      "authorDate": "2026-08-10T23:26:12+02:00",
+      "subject": "fix(deps): update security patches [security] (#4539)",
+      "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+      "issueRefs": [
+        "#4539"
+      ],
+      "touchedFiles": [
+        "package.json",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "30c2c7518a8a754d6f688de3373df8113f4df7b1",
+      "authorDate": "2026-08-10T13:54:46+02:00",
+      "subject": "fix: make ioredis optional (#4513)",
+      "body": "",
+      "issueRefs": [
+        "#4513"
+      ],
+      "touchedFiles": [
+        "src/classes/ioredis-client.ts",
+        "src/classes/redis-connection.ts",
+        "src/interfaces/redis-options.ts",
+        "tests/node-redis.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "7c941774ca9528bc25f628593cf1ccb2e92c261e",
+      "authorDate": "2026-08-08T15:57:02-07:00",
+      "subject": "fix(deps): update security patches [security] (#4530)",
+      "body": "",
+      "issueRefs": [
+        "#4530"
+      ],
+      "touchedFiles": [
+        "elixir/mix.exs",
+        "package.json",
+        "rust/Cargo.lock",
+        "rust/Cargo.toml",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "94d32867f9b4f439cd1fc57f9f8c3543dd913e42",
+      "authorDate": "2026-08-07T17:54:15+02:00",
+      "subject": "fix(worker): resolve worker delay in picking up new jobs [rust] fixes #4512  (#4523)",
+      "body": "",
+      "issueRefs": [
+        "fixes #4512",
+        "#4523"
+      ],
+      "touchedFiles": [
+        "rust/src/redis_connection.rs",
+        "rust/src/worker.rs",
+        "rust/tests/worker_test.rs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "5910cccfc8a773067621953087d0d055670e1e2a",
+      "authorDate": "2026-08-07T09:20:11+06:00",
+      "subject": "fix(events): type completed event returnvalue as deserialized value (#4441) fixes #4147",
+      "body": "",
+      "issueRefs": [
+        "#4441",
+        "fixes #4147"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/bullmq-pro/nestjs/queue-events-listeners.md",
+        "docs/gitbook/guide/nestjs/queue-events-listeners.md",
+        "src/classes/queue-events.ts",
+        "tests/events.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "9b1861e3f34eba38e9072df1738e07e6cf6c8710",
+      "authorDate": "2026-08-04T21:36:20-07:00",
+      "subject": "ci(docs): upgrade vitepress to fix docs",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "package.json",
+        "php/package.json",
+        "php/yarn.lock",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "5eb9dca3050b472cc0f72a1fc0cb491b32b705d3",
+      "authorDate": "2026-08-05T06:12:39+02:00",
+      "subject": "fix(scheduler): make job schedulers advance and support the postgres backend [python] fixes #4483 (#4498)",
+      "body": "",
+      "issueRefs": [
+        "fixes #4483",
+        "#4498"
+      ],
+      "touchedFiles": [
+        ".github/workflows/test.yml",
+        "python/bullmq/backend.py",
+        "python/bullmq/backends/postgres_backend.py",
+        "python/bullmq/backends/redis_backend.py",
+        "python/bullmq/job_scheduler.py",
+        "python/bullmq/queue.py",
+        "python/bullmq/worker.py",
+        "python/tests/job_scheduler_test.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "f3936a22fe564ddf3468ee8388e7024ad9a76265",
+      "authorDate": "2026-08-04T20:39:24-07:00",
+      "subject": "fix(postgres): fail fast when SQL loader directory cannot be resolved (#4482)",
+      "body": "",
+      "issueRefs": [
+        "#4482"
+      ],
+      "touchedFiles": [
+        "src/postgres/sql-loader.ts",
+        "tests/postgres/sql_loader.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "550e446db235be4bb9ee15d4d882632e139b3afb",
+      "authorDate": "2026-08-04T20:11:33-07:00",
+      "subject": "fix(deps): avoid deep ioredis import so postgres backend works without ioredis internals (#4437) fixes #4435",
+      "body": "",
+      "issueRefs": [
+        "#4437",
+        "fixes #4435"
+      ],
+      "touchedFiles": [
+        "src/classes/errors/connection-closed-error.ts",
+        "src/classes/redis-connection.ts",
+        "src/utils/index.ts",
+        "tests/connection-closed-error.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "6a166ea3f747f5dece935d206057d43c2febcde7",
+      "authorDate": "2026-08-04T18:27:30-07:00",
+      "subject": "fix(deps): upgrade predis to v3 (major) [php] (major) (#4489)",
+      "body": "",
+      "issueRefs": [
+        "#4489"
+      ],
+      "touchedFiles": [
+        "composer.json",
+        "php/composer.json"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "e7e9a6478d39d43406559b03410b2c5c28639e74",
+      "authorDate": "2026-08-04T09:05:47+02:00",
+      "subject": "fix(worker): recover blocking reads that never settle after a reconnect fixes #4479 (#4484)",
+      "body": "",
+      "issueRefs": [
+        "fixes #4479",
+        "#4484"
+      ],
+      "touchedFiles": [
+        "src/classes/redis-queue-backend.ts",
+        "tests/events.redis.test.ts",
+        "tests/worker.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "a514f2d3976848aa631de22bfa458b7e9f60b384",
+      "authorDate": "2026-08-02T18:40:51-07:00",
+      "subject": "fix(deps): update cron-parser to v5.7.0 (#4462)",
+      "body": "",
+      "issueRefs": [
+        "#4462"
+      ],
+      "touchedFiles": [
+        "package.json",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "740985ae2f67a9144e7787f89955bf8c7f9500e0",
+      "authorDate": "2026-08-02T20:19:48+02:00",
+      "subject": "fix(worker): fail jobs with deferred failure in task-based worker path [elixir] (#4458)",
+      "body": "",
+      "issueRefs": [
+        "#4458"
+      ],
+      "touchedFiles": [
+        "elixir/lib/bullmq/worker.ex",
+        "elixir/test/bullmq/backends/postgres_integration_test.exs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "e58f9e1892463da4ca411506d66ee01413e5daeb",
+      "authorDate": "2026-08-01T10:12:32+02:00",
+      "subject": "fix(deps): update python dependencies (python) (#4453)",
+      "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+      "issueRefs": [
+        "#4453"
+      ],
+      "touchedFiles": [
+        "python/pyproject.toml"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c1cf32881474f3f1e9b620e025abde07a359eb06",
+      "authorDate": "2026-08-01T09:38:23+02:00",
+      "subject": "fix(deps): update security patches [security] (#4444)",
+      "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+      "issueRefs": [
+        "#4444"
+      ],
+      "touchedFiles": [
+        "package.json",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "956e2d4b1cefd5b1e4da98d69013a2fa866e8d75",
+      "authorDate": "2026-07-31T19:27:02-07:00",
+      "subject": "fix(deps): update security patches [security] [rust] (#4404)",
+      "body": "",
+      "issueRefs": [
+        "#4404"
+      ],
+      "touchedFiles": [
+        "rust/Cargo.lock",
+        "rust/Cargo.toml"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "067a73f3666a493c36c03ec2cca8228ae149f043",
+      "authorDate": "2026-07-31T20:41:17+02:00",
+      "subject": "fix(postgres): drop redundant bullmq_ prefix from schema objects (#4436) (elixir) (python) (node)",
+      "body": "",
+      "issueRefs": [
+        "#4436"
+      ],
+      "touchedFiles": [
+        "elixir/docs/transactional-jobs-design.md",
+        "elixir/lib/bullmq/backends/postgres.ex",
+        "elixir/lib/bullmq/backends/postgres/migrator.ex",
+        "python/bullmq/backends/postgres_backend.py",
+        "python/bullmq/backends/postgres_connection.py",
+        "src/postgres/commands/add_flow.sql",
+        "src/postgres/commands/add_job.sql",
+        "src/postgres/commands/add_job_scheduler.sql",
+        "src/postgres/commands/add_jobs_bulk.sql",
+        "src/postgres/commands/add_log.sql",
+        "src/postgres/commands/change_delay.sql",
+        "src/postgres/commands/change_priority.sql",
+        "src/postgres/commands/clean.sql",
+        "src/postgres/commands/clear_logs.sql",
+        "src/postgres/commands/collect_metrics.sql",
+        "src/postgres/commands/delete_deduplication_key.sql",
+        "src/postgres/commands/drain.sql",
+        "src/postgres/commands/extend_lock.sql",
+        "src/postgres/commands/extend_locks.sql",
+        "src/postgres/commands/get_counts.sql",
+        "src/postgres/commands/get_counts_per_priority.sql",
+        "src/postgres/commands/get_deduplication_job_id.sql",
+        "src/postgres/commands/get_dependencies.sql",
+        "src/postgres/commands/get_dependencies_page.sql",
+        "src/postgres/commands/get_dependency_counts.sql",
+        "src/postgres/commands/get_ignored_children_failures.sql",
+        "src/postgres/commands/get_job_data.sql",
+        "src/postgres/commands/get_job_logs_asc.sql",
+        "src/postgres/commands/get_job_logs_count.sql",
+        "src/postgres/commands/get_job_logs_desc.sql",
+        "src/postgres/commands/get_job_scheduler.sql",
+        "src/postgres/commands/get_job_schedulers_count.sql",
+        "src/postgres/commands/get_job_schedulers_range.sql",
+        "src/postgres/commands/get_metrics.sql",
+        "src/postgres/commands/get_processed_children_values.sql",
+        "src/postgres/commands/get_queue_meta.sql",
+        "src/postgres/commands/get_queue_meta_field.sql",
+        "src/postgres/commands/get_queue_meta_fields.sql",
+        "src/postgres/commands/get_range.sql",
+        "src/postgres/commands/get_rate_limit_ttl.sql",
+        "src/postgres/commands/get_state.sql",
+        "src/postgres/commands/has_queue_meta_field.sql",
+        "src/postgres/commands/has_waiting_job.sql",
+        "src/postgres/commands/is_finished.sql",
+        "src/postgres/commands/is_job_in_state.sql",
+        "src/postgres/commands/is_job_in_wait.sql",
+        "src/postgres/commands/is_job_prioritized.sql",
+        "src/postgres/commands/is_job_scheduler.sql",
+        "src/postgres/commands/is_maxed.sql",
+        "src/postgres/commands/move_active_to_wait.sql",
+        "src/postgres/commands/move_stalled_jobs_to_wait.sql",
+        "src/postgres/commands/move_to_active.sql",
+        "src/postgres/commands/move_to_completed.sql",
+        "src/postgres/commands/move_to_completed_fetch.sql",
+        "src/postgres/commands/move_to_delayed.sql",
+        "src/postgres/commands/move_to_failed.sql",
+        "src/postgres/commands/move_to_failed_fetch.sql",
+        "src/postgres/commands/move_to_waiting_children.sql",
+        "src/postgres/commands/next_delay.sql",
+        "src/postgres/commands/next_signal.sql",
+        "src/postgres/commands/obliterate.sql",
+        "src/postgres/commands/paginate_dependencies.sql",
+        "src/postgres/commands/pause.sql",
+        "src/postgres/commands/promote.sql",
+        "src/postgres/commands/promote_jobs.sql",
+        "src/postgres/commands/publish_event.sql",
+        "src/postgres/commands/read_events.sql",
+        "src/postgres/commands/read_events_max.sql",
+        "src/postgres/commands/remove.sql",
+        "src/postgres/commands/remove_child_dependency.sql",
+        "src/postgres/commands/remove_deduplication_key.sql",
+        "src/postgres/commands/remove_job_scheduler.sql",
+        "src/postgres/commands/remove_queue_meta_fields.sql",
+        "src/postgres/commands/remove_rate_limit.sql",
+        "src/postgres/commands/remove_unprocessed_children.sql",
+        "src/postgres/commands/reprocess_job.sql",
+        "src/postgres/commands/retry_job.sql",
+        "src/postgres/commands/retry_jobs.sql",
+        "src/postgres/commands/set_queue_meta.sql",
+        "src/postgres/commands/set_rate_limit.sql",
+        "src/postgres/commands/trim_logs.sql",
+        "src/postgres/commands/update_data.sql",
+        "src/postgres/commands/update_job_scheduler.sql",
+        "src/postgres/commands/update_progress.sql",
+        "src/postgres/migrations/0001_schema.sql",
+        "src/postgres/migrations/0002_functions.sql",
+        "src/postgres/migrations/index.ts",
+        "src/postgres/migrator.ts",
+        "src/postgres/postgres-queue-backend.ts",
+        "tests/postgres/migration.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "a72dcfec62896013128fe1ac5ca21b08107e5412",
+      "authorDate": "2026-07-31T16:16:08+02:00",
+      "subject": "chore(deps): update dependency brace-expansion to v5.0.9 (#4425)",
+      "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+      "issueRefs": [
+        "#4425"
+      ],
+      "touchedFiles": [
+        "elixir/package.json",
+        "elixir/yarn.lock",
+        "package.json",
+        "php/package.json",
+        "php/yarn.lock",
+        "python/package.json",
+        "python/yarn.lock",
+        "yarn.lock"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "2ac754fd718927e2c0043d6d7787de32d0d196f7",
+      "authorDate": "2026-07-31T08:35:34+02:00",
+      "subject": "fix(deps): update dependency redis to v7.4.1 (#4426)",
+      "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+      "issueRefs": [
+        "#4426"
+      ],
+      "touchedFiles": [
+        "python/pyproject.toml"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "a1382307c1d0b8b185e16443daad6f221067f55d",
+      "authorDate": "2026-07-31T03:37:18+02:00",
+      "subject": "fix: add missing sql files to release packages (elixir) (python) (#4413)",
+      "body": "",
+      "issueRefs": [
+        "#4413"
+      ],
+      "touchedFiles": [
+        ".github/workflows/elixir-test.yml",
+        ".github/workflows/python-test.yml",
+        ".github/workflows/release.yml",
+        "elixir/.gitignore",
+        "package.json"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "eb956b07fde2ab3d43b41325a06a6b103610e3e3",
+      "authorDate": "2026-07-30T00:16:26-07:00",
+      "subject": "fix(deps): pin dependencies [rust] (#4402)",
+      "body": "",
+      "issueRefs": [
+        "#4402"
+      ],
+      "touchedFiles": [
+        ".github/workflows/api.yml",
+        ".github/workflows/codeql-analysis.yml",
+        ".github/workflows/codeql.yml",
+        ".github/workflows/docs.yml",
+        ".github/workflows/elixir-test.yml",
+        ".github/workflows/python-test.yml",
+        ".github/workflows/release.yml",
+        ".github/workflows/rust-test.yml",
+        ".github/workflows/test.yml",
+        ".github/workflows/valkey-glide-test.yml",
+        "rust/Cargo.toml"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "9e196bf005acb26e6189fd3714519c71e9cfaac3",
+      "authorDate": "2026-07-29T18:48:57-07:00",
+      "subject": "ci: fix renovate to run once per day instead of per week (#4390)",
+      "body": "",
+      "issueRefs": [
+        "#4390"
+      ],
+      "touchedFiles": [
+        "renovate.json"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "93649b8694a155a7c6fcd596f772e43b86285f1f",
+      "authorDate": "2026-07-29T18:17:16+02:00",
+      "subject": "fix(worker): recover blocking client after sentinel disconnect, fixes… (#4384)",
+      "body": "",
+      "issueRefs": [
+        "#4384"
+      ],
+      "touchedFiles": [
+        "src/classes/bun-redis-client.ts",
+        "src/classes/redis-connection.ts",
+        "src/classes/worker.ts",
+        "tests/bun-redis.test.ts",
+        "tests/connection.test.ts",
+        "tests/worker.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "6fccb59248c3d78e81ae09ad70b8cbea7ae48b87",
+      "authorDate": "2026-07-28T22:11:30-07:00",
+      "subject": "fix(deps): update dependency msgpackr to v2.0.5 [security] (#4387)",
+      "body": "",
+      "issueRefs": [
+        "#4387"
+      ],
+      "touchedFiles": [
+        "package.json",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "2a120dfea7324d7af67ad505c78f48571c74402b",
+      "authorDate": "2026-07-27T10:06:32+02:00",
+      "subject": "fix(deps): update dependency redis [security] (#4369)",
+      "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+      "issueRefs": [
+        "#4369"
+      ],
+      "touchedFiles": [
+        "package.json",
+        "rust/Cargo.lock",
+        "rust/Cargo.toml",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "968bdc21a98a0dea55691d833ba05c6fa0f9af37",
+      "authorDate": "2026-07-26T12:53:47-07:00",
+      "subject": "ci: deploy docs to gh-pages branch to fix Pages deployment (#4353)",
+      "body": "",
+      "issueRefs": [
+        "#4353"
+      ],
+      "touchedFiles": [
+        ".github/workflows/docs.yml"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "56cf3653f430e537c154c7288226395d143bb90a",
+      "authorDate": "2026-07-26T12:03:19-07:00",
+      "subject": "chore(deps): bump undici to patched versions to fix CVE-2026-9678/9679 (#4361)",
+      "body": "",
+      "issueRefs": [
+        "#4361"
+      ],
+      "touchedFiles": [
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "2664876092793ca2ba5e0eb080d99c3042ed136a",
+      "authorDate": "2026-07-25T22:22:35-07:00",
+      "subject": "feat: port JobScheduler, LockManager, AbortController, QueueEvents classes and global limits [python] fixes #2772 (#4336)",
+      "body": "",
+      "issueRefs": [
+        "fixes #2772",
+        "#4336"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/SUMMARY.md",
+        "docs/gitbook/python/flow-producer.md",
+        "docs/gitbook/python/global-concurrency-and-rate-limit.md",
+        "docs/gitbook/python/job-cancellation.md",
+        "docs/gitbook/python/job-scheduler.md",
+        "docs/gitbook/python/lock-manager.md",
+        "docs/gitbook/python/queue-events.md",
+        "python/readme.md",
+        "python/bullmq/__init__.py",
+        "python/bullmq/abort_controller.py",
+        "python/bullmq/error_code.py",
+        "python/bullmq/flow_producer.py",
+        "python/bullmq/job.py",
+        "python/bullmq/job_scheduler.py",
+        "python/bullmq/lock_manager.py",
+        "python/bullmq/queue.py",
+        "python/bullmq/queue_events.py",
+        "python/bullmq/queue_events_producer.py",
+        "python/bullmq/redis_connection.py",
+        "python/bullmq/scripts.py",
+        "python/bullmq/types/__init__.py",
+        "python/bullmq/types/job_options.py",
+        "python/bullmq/types/queue_events_options.py",
+        "python/bullmq/types/repeat_options.py",
+        "python/bullmq/types/worker_options.py",
+        "python/bullmq/worker.py",
+        "python/pyproject.toml",
+        "python/tests/flow_test.py",
+        "python/tests/global_rate_limit_concurrency_test.py",
+        "python/tests/job_cancellation_test.py",
+        "python/tests/job_scheduler_test.py",
+        "python/tests/lock_manager_test.py",
+        "python/tests/priority_test.py",
+        "python/tests/queue_events_test.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "16838aaed10fdbbad74035a38c48c21a69e9bf4a",
+      "authorDate": "2026-07-24T23:28:02-07:00",
+      "subject": "chore(deps): update dependency brace-expansion to v5.0.8 [security] (#4343)",
+      "body": "",
+      "issueRefs": [
+        "#4343"
+      ],
+      "touchedFiles": [
+        "yarn.lock"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "4085792106fd3d381ec7980a8ae3c65788dd2d70",
+      "authorDate": "2026-07-24T22:51:22-07:00",
+      "subject": "feat(connection): add support for Redis TLS certs option (#4334) fixes #4333 [rust]",
+      "body": "",
+      "issueRefs": [
+        "#4334",
+        "fixes #4333"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/rust/introduction.md",
+        "rust/src/options.rs",
+        "rust/src/redis_connection.rs",
+        "rust/tests/connection_test.rs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "65f1f0a73902df87a50d799d097450e2867eb9c3",
+      "authorDate": "2026-07-24T22:39:16-07:00",
+      "subject": "fix(flows): fix parent job stuck in waiting-children state (#4335) fixes #4332 [elixir]",
+      "body": "",
+      "issueRefs": [
+        "#4335",
+        "fixes #4332"
+      ],
+      "touchedFiles": [
+        "elixir/lib/bullmq/scripts.ex",
+        "elixir/lib/bullmq/worker.ex",
+        "elixir/test/bullmq/worker_integration_test.exs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "315ec3309a42ccf898b2b825e39c42292b7932e7",
+      "authorDate": "2026-07-24T22:38:05+02:00",
+      "subject": "fix: prevent unhandled rejection when a connection's init fails before an 'error' listener is attached (#4328)",
+      "body": "",
+      "issueRefs": [
+        "#4328"
+      ],
+      "touchedFiles": [
+        "src/classes/flow-producer.ts",
+        "src/classes/queue-base.ts",
+        "src/classes/worker.ts",
+        "src/utils/index.ts",
+        "tests/connection.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "36a3b2a4196b4611db89b1640a6315e26de37eb0",
+      "authorDate": "2026-07-24T08:47:31-07:00",
+      "subject": "fix(telemetry): emit job.state while preserving job.status compatibility (#4293)",
+      "body": "",
+      "issueRefs": [
+        "#4293"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/guide/telemetry/metrics.md",
+        "src/classes/job.ts",
+        "src/enums/telemetry-attributes.ts",
+        "tests/telemetry_interface.test.ts",
+        "tests/worker.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "8571503034a43c6d5882e290051957215fd20fee",
+      "authorDate": "2026-07-23T19:45:47-07:00",
+      "subject": "fix(queue): retrieve jobs in same transaction under getJobs (#4300) (python) (elixir) (php) (rust)",
+      "body": "",
+      "issueRefs": [
+        "#4300"
+      ],
+      "touchedFiles": [
+        "elixir/lib/bullmq/queue.ex",
+        "elixir/lib/bullmq/scripts.ex",
+        "elixir/test/bullmq/queue_getters_test.exs",
+        "elixir/test/bullmq/queue_integration_test.exs",
+        "elixir/test/bullmq/worker_integration_test.exs",
+        "php/src/Queue.php",
+        "php/src/Scripts.php",
+        "php/tests/QueueTest.php",
+        "python/bullmq/queue.py",
+        "python/bullmq/redis_connection.py",
+        "python/bullmq/scripts.py",
+        "python/tests/queue_test.py",
+        "rust/src/queue.rs",
+        "rust/src/scripts.rs",
+        "rust/tests/queue_test.rs",
+        "src/classes/queue-getters.ts",
+        "src/classes/scripts.ts",
+        "src/commands/getJobs-1.lua",
+        "tests/getters.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c7bd217ab0496fbdcbacd486b85cca8a825aa4d4",
+      "authorDate": "2026-07-23T04:35:48-07:00",
+      "subject": "fix(bun): match Bun RedisClient callback types and suppress teardown ConnectionClosedError (#4329) fixes #4212",
+      "body": "",
+      "issueRefs": [
+        "#4329",
+        "fixes #4212"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/guide/connections.md",
+        "src/classes/bun-redis-client.ts",
+        "tests/bun-redis.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "b002d4836f7819b995378112e0c40fbbbe694e4d",
+      "authorDate": "2026-07-23T06:13:07+02:00",
+      "subject": "fix(worker): emit active event for all jobs moved to active fixes #3911 (#4326)",
+      "body": "",
+      "issueRefs": [
+        "fixes #3911",
+        "#4326"
+      ],
+      "touchedFiles": [
+        "src/classes/worker.ts",
+        "tests/events.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "6320cf3d7955e291c1e626cd36bb21fcc9b409d6",
+      "authorDate": "2026-07-21T19:23:31-07:00",
+      "subject": "fix(deps): update rust crate sha1 to 0.11 [rust] (#4315)",
+      "body": "",
+      "issueRefs": [
+        "#4315"
+      ],
+      "touchedFiles": [
+        "rust/Cargo.lock",
+        "rust/Cargo.toml",
+        "rust/src/scripts.rs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "88730b08ecc18cd243dfeddaa80bd8b2d3a5151a",
+      "authorDate": "2026-07-21T17:54:02+02:00",
+      "subject": "fix(ci): remove stale OSV ignore (#4320)",
+      "body": "",
+      "issueRefs": [
+        "#4320"
+      ],
+      "touchedFiles": [
+        ".github/workflows/osv-scanner.yml",
+        "osv-scanner.toml"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "7603a785efca31e905afe7d32670ab1f875c7bd9",
+      "authorDate": "2026-07-20T22:21:38-07:00",
+      "subject": "chore(deps): update dependency brace-expansion to v5.0.7 [security] (#4318)",
+      "body": "",
+      "issueRefs": [
+        "#4318"
+      ],
+      "touchedFiles": [
+        "yarn.lock"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "4f4b574de507e56e1e3a7f359565eb359463710f",
+      "authorDate": "2026-07-19T01:50:04+02:00",
+      "subject": "perf(flow-producer): reuse queue's shared Scripts instance in jobs fixes #4263 (#4308)",
+      "body": "",
+      "issueRefs": [
+        "fixes #4263",
+        "#4308"
+      ],
+      "touchedFiles": [
+        "src/classes/flow-producer.ts",
+        "src/classes/job.ts",
+        "src/classes/queue-base.ts",
+        "src/interfaces/minimal-queue.ts",
+        "tests/job.test.ts",
+        "tests/job_cancellation_advanced.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "e8af56348a77677a4d802d2563e33b7313a79570",
+      "authorDate": "2026-07-17T21:06:32-07:00",
+      "subject": "fix(scheduler): walk past stale slots when re-upserting under same id (#4299)",
+      "body": "",
+      "issueRefs": [
+        "#4299"
+      ],
+      "touchedFiles": [
+        "src/commands/addJobScheduler-11.lua",
+        "tests/job_scheduler.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c4a0a4a90d48303b1b6b7c45f67898573a73c424",
+      "authorDate": "2026-07-17T08:40:00-07:00",
+      "subject": "fix(worker): move stalled job to failed when fetched manually (#4294)",
+      "body": "",
+      "issueRefs": [
+        "#4294"
+      ],
+      "touchedFiles": [
+        ".github/workflows/test.yml",
+        "src/classes/worker.ts",
+        "tests/telemetry_interface.test.ts",
+        "tests/worker.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "5044cf8fc17f0842655eda581b9e26b27f6abfe8",
+      "authorDate": "2026-07-16T19:36:12-07:00",
+      "subject": "fix(sandbox): preserve child_process exports in null-stdio (#4301)",
+      "body": "",
+      "issueRefs": [
+        "#4301"
+      ],
+      "touchedFiles": [
+        "src/classes/child.ts",
+        "tests/child_stdio_null.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "5c657627785662e0c8293655795acdaf3da46fd4",
+      "authorDate": "2026-07-16T00:31:36-07:00",
+      "subject": "ci: ignore changelog from auto styling and fix rust/elixir paths-filter permissions (#4210)",
+      "body": "",
+      "issueRefs": [
+        "#4210"
+      ],
+      "touchedFiles": [
+        ".github/workflows/elixir-test.yml",
+        ".github/workflows/rust-test.yml",
+        ".prettierignore",
+        "rust/.gitignore"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "7dd064ec794ff2f8f67a859caf11cd5554ad75e4",
+      "authorDate": "2026-07-16T03:49:31+02:00",
+      "subject": "fix(sandbox): kill children that fail init and surface refusal errors fixes #4283 (#4284)",
+      "body": "",
+      "issueRefs": [
+        "fixes #4283",
+        "#4284"
+      ],
+      "touchedFiles": [
+        "src/classes/child-pool.ts",
+        "src/classes/child-processor.ts",
+        "src/classes/sandbox.ts",
+        "tests/child-pool.test.ts",
+        "tests/fixtures/fixture_processor_fail_init_once.js",
+        "tests/sandboxed_process.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "d978d721995aa4d40aa93980866e2a6b02bcfed1",
+      "authorDate": "2026-07-15T08:22:51-07:00",
+      "subject": "fix(deps): update dependency ioredis to v5.11.1 [security] (#4282)",
+      "body": "",
+      "issueRefs": [
+        "#4282"
+      ],
+      "touchedFiles": [
+        ".github/workflows/test.yml",
+        "package.json",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "4e8b59592d1f285f2e9e3860f8ece8bc60769fe5",
+      "authorDate": "2026-07-15T11:40:42+02:00",
+      "subject": "fix: fix potential job id integer to string conversion (#4262)",
+      "body": "",
+      "issueRefs": [
+        "#4262"
+      ],
+      "touchedFiles": [
+        "rust/tests/job_scheduler_test.rs",
+        "src/classes/flow-producer.ts",
+        "src/commands/addDelayedJob-6.lua",
+        "src/commands/addParentJob-6.lua",
+        "src/commands/addPrioritizedJob-9.lua",
+        "src/commands/addStandardJob-9.lua",
+        "tests/connection.test.ts",
+        "tests/flow.test.ts",
+        "tests/job_cancellation_advanced.test.ts",
+        "tests/queue.test.ts",
+        "tests/telemetry_interface.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "78bbb253546b4c45f7e23ceccc31eb644651416c",
+      "authorDate": "2026-07-11T21:43:26+05:30",
+      "subject": "fix(job-scheduler): respect offset option in upsertJobScheduler (elixir) (rust) (#3993)",
+      "body": "",
+      "issueRefs": [
+        "#3993"
+      ],
+      "touchedFiles": [
+        "src/commands/includes/getJobSchedulerEveryNextMillis.lua",
+        "tests/job_scheduler.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "418de1e51db09ffc8e95bac35015a1057d8a7271",
+      "authorDate": "2026-07-10T08:02:42-07:00",
+      "subject": "fix(job): enforce priority max of 2^21-1 to preserve FIFO at the boundary (#4261)",
+      "body": "",
+      "issueRefs": [
+        "#4261"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/guide/jobs/prioritized.md",
+        "src/classes/job.ts",
+        "src/interfaces/base-job-options.ts",
+        "tests/job.test.ts",
+        "tests/worker.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "5a88614312243a12bb9e56b525c4deb60d76cf12",
+      "authorDate": "2026-07-09T20:11:07-07:00",
+      "subject": "fix(job-scheduler): coerce string offset in Lua helper (#4266) (python) (elixir)",
+      "body": "",
+      "issueRefs": [
+        "#4266"
+      ],
+      "touchedFiles": [
+        "elixir/test/bullmq/worker_integration_test.exs",
+        "src/commands/includes/getJobSchedulerEveryNextMillis.lua"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "6ffd88a0070b3ab84b77539dca7c35266716425e",
+      "authorDate": "2026-07-07T10:38:20+05:30",
+      "subject": "fix(queue-events): correct delay event number type and documentation (#3989)",
+      "body": "",
+      "issueRefs": [
+        "#3989"
+      ],
+      "touchedFiles": [
+        "src/classes/queue-events.ts",
+        "tests/flow.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "6f1b2e33b01c9f97dee6ff96bab782a8399c7ae5",
+      "authorDate": "2026-06-27T17:37:15+02:00",
+      "subject": "fix(flow): use correct data structure when retrying failed child using ignoreDependencyOnFailure fixes #4235 (#4236)",
+      "body": "",
+      "issueRefs": [
+        "fixes #4235",
+        "#4236"
+      ],
+      "touchedFiles": [
+        "src/commands/reprocessJob-8.lua",
+        "tests/flow.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1aefd5b80618a8a9080b98ca9e6e89463a98b713",
+      "authorDate": "2026-06-21T08:17:33-07:00",
+      "subject": "fix(node-redis): accept plain createClient result without cast (#4201) (#4209)",
+      "body": "",
+      "issueRefs": [
+        "#4201",
+        "#4209"
+      ],
+      "touchedFiles": [
+        "src/classes/node-redis-client.ts",
+        "tests/node-redis.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "d1fcda5f9c4f53b56846a73421d6eb9a32603aa4",
+      "authorDate": "2026-06-13T14:39:19-07:00",
+      "subject": "fix(scheduler): fail stalled jobs if scheduler does not longer exist (elixir) (rust) (#4222)",
+      "body": "",
+      "issueRefs": [
+        "#4222"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/rust/introduction.md",
+        "elixir/lib/bullmq/scripts.ex",
+        "python/bullmq/redis_connection.py",
+        "python/bullmq/scripts.py",
+        "rust/Cargo.toml",
+        "rust/src/scripts.rs",
+        "rust/src/worker.rs",
+        "src/classes/scripts.ts",
+        "src/commands/moveStalledJobsToWait-9.lua",
+        "tests/job_scheduler.test.ts",
+        "tests/repeat.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "cda941abf90f6064542a5542ea2efb97579d3078",
+      "authorDate": "2026-06-10T06:16:24-07:00",
+      "subject": "fix(release): include commands [rust] (#4208)",
+      "body": "",
+      "issueRefs": [
+        "#4208"
+      ],
+      "touchedFiles": [
+        ".github/workflows/elixir-test.yml",
+        "rust/Cargo.toml",
+        "rust/src/scripts.rs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "3fe7cb1a20b16247946c3e278a4abb4b999edc79",
+      "authorDate": "2026-06-02T01:47:05-07:00",
+      "subject": "fix(relase): copy lua scripts [rust] (#4206)",
+      "body": "",
+      "issueRefs": [
+        "#4206"
+      ],
+      "touchedFiles": [
+        ".github/pull_request_template.md",
+        ".github/workflows/elixir-test.yml",
+        ".github/workflows/release.yml",
+        ".github/workflows/test.yml",
+        "docs/gitbook/changelog.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "fbe04af1b3e9c7c9683229544914a54c5bb1f8d8",
+      "authorDate": "2026-06-01T09:58:56+02:00",
+      "subject": "fix(deps): update dependency msgpackr to v2.0.2 [security] (#4202)",
+      "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+      "issueRefs": [
+        "#4202"
+      ],
+      "touchedFiles": [
+        "package.json",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "81709e4abe71f4e7c05c748938ec004a50c1fd4b",
+      "authorDate": "2026-05-26T23:37:56-07:00",
+      "subject": "fix(types): change NodeRedisRawClient to be node-redis compliant (#4195)",
+      "body": "",
+      "issueRefs": [
+        "#4195"
+      ],
+      "touchedFiles": [
+        "src/classes/node-redis-client.ts"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "411690e9070ba0dda59a86628fc8b56ad9ebea04",
+      "authorDate": "2026-05-26T22:49:05-07:00",
+      "subject": "fix(connection): handle cluster reconnection with timeouts (#4186)",
+      "body": "",
+      "issueRefs": [
+        "#4186"
+      ],
+      "touchedFiles": [
+        "src/classes/redis-connection.ts",
+        "tests/connection.test.ts"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "6e4972e8fd721035d680ca291049134c3876f8ba",
+      "authorDate": "2026-05-26T08:12:41-07:00",
+      "subject": "fix(deduplication): preserve custom jobId when requeuing keepLastIfActive proto-jobs (#4190) fixes #4030",
+      "body": "",
+      "issueRefs": [
+        "#4190",
+        "fixes #4030"
+      ],
+      "touchedFiles": [
+        "src/commands/includes/requeueDeduplicatedJob.lua",
+        "src/commands/includes/storeDeduplicatedNextJob.lua",
+        "tests/deduplication.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "0feec14452865c419961edb9c733f9951b6a663f",
+      "authorDate": "2026-05-24T02:27:19-07:00",
+      "subject": "fix(connection): use more permissive typing on NodeRedisRawClient options (#4184) (#4187)",
+      "body": "Fixes #4170",
+      "issueRefs": [
+        "#4184",
+        "#4187",
+        "Fixes #4170"
+      ],
+      "touchedFiles": [
+        "src/classes/node-redis-client.ts",
+        "tests/bulk.test.ts",
+        "tests/clean.test.ts",
+        "tests/concurrency.test.ts",
+        "tests/deduplication.test.ts",
+        "tests/delay.test.ts",
+        "tests/events.test.ts",
+        "tests/flow.test.ts",
+        "tests/getters.test.ts",
+        "tests/job.test.ts",
+        "tests/job_cancellation.test.ts",
+        "tests/job_cancellation_advanced.test.ts",
+        "tests/job_scheduler.test.ts",
+        "tests/job_scheduler_stress.test.ts",
+        "tests/lock_manager.test.ts",
+        "tests/metrics.test.ts",
+        "tests/obliterate.test.ts",
+        "tests/pause.test.ts",
+        "tests/queue.test.ts",
+        "tests/rate_limiter.test.ts",
+        "tests/repeat.test.ts",
+        "tests/scripts.test.ts",
+        "tests/stalled_jobs.test.ts",
+        "tests/telemetry_interface.test.ts",
+        "tests/utils/connection-factory.ts",
+        "tests/worker.test.ts",
+        "vitest.bun.setup.ts",
+        "vitest.node-redis.setup.ts",
+        "vitest.setup.ts",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "75a66af36f7d56c149e070826a20116ea1ef5e7b",
+      "authorDate": "2026-05-23T04:08:35+02:00",
+      "subject": "fix(connections): make sure we do not mutate ioredis (#4182)",
+      "body": "",
+      "issueRefs": [
+        "#4182"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/guide/connections.md",
+        "src/classes/ioredis-client.ts",
+        "tests/cluster.test.ts",
+        "tests/repeat.test.ts",
+        "vitest.ioredis.config.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "7b9f7e0c81427fb9d936a6366c21ef2a96729335",
+      "authorDate": "2026-05-21T08:28:17-07:00",
+      "subject": "fix(worker): stop fetching next jobs when closing on manual job movement (#4178) fixes #4163",
+      "body": "",
+      "issueRefs": [
+        "#4178",
+        "fixes #4163"
+      ],
+      "touchedFiles": [
+        "elixir/yarn.lock",
+        "php/yarn.lock",
+        "python/yarn.lock",
+        "src/classes/worker.ts",
+        "tests/flow.test.ts",
+        "tests/worker.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "a345b1533be68a346d9f02f7b4693812b32bca05",
+      "authorDate": "2026-05-19T21:19:50-07:00",
+      "subject": "chore(deps): update dependency brace-expansion to v5.0.6 [security] (#4177)",
+      "body": "",
+      "issueRefs": [
+        "#4177"
+      ],
+      "touchedFiles": [
+        "yarn.lock"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "6396b4e2a146d733d01d8d9629cc8c8ffb8fac2d",
+      "authorDate": "2026-05-17T08:06:30-06:00",
+      "subject": "fix(flow): respect parent attribute deletion from child when calling removeChildDependency (#4169)",
+      "body": "",
+      "issueRefs": [
+        "#4169"
+      ],
+      "touchedFiles": [
+        "src/classes/job.ts",
+        "tests/flow.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "41713ca67f9a0d0c45c27bbccb7a79320204c3ac",
+      "authorDate": "2026-05-16T09:07:23-06:00",
+      "subject": "fix(build): remove source map generation (#4167)",
+      "body": "",
+      "issueRefs": [
+        "#4167"
+      ],
+      "touchedFiles": [
+        "tests/deduplication.test.ts",
+        "tests/events.test.ts",
+        "tests/stalled_jobs.test.ts",
+        "tsconfig.json"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1b8f9009bd8a59d3a82839e6732c6e7e87eb01d2",
+      "authorDate": "2026-05-12T11:07:46+05:30",
+      "subject": "fix(scheduler): align first 'every' job to the next offset slot (#4113) fixes #3705",
+      "body": "",
+      "issueRefs": [
+        "#4113",
+        "fixes #3705"
+      ],
+      "touchedFiles": [
+        "src/classes/job-scheduler.ts",
+        "src/commands/includes/getJobSchedulerEveryNextMillis.lua",
+        "tests/job_scheduler.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "093743a0d5b24f170280e0bd754ef5c378576846",
+      "authorDate": "2026-05-10T21:45:12-07:00",
+      "subject": "fix(deps): update dependency semver to v7.8.0 [security] (#4160)",
+      "body": "",
+      "issueRefs": [
+        "#4160"
+      ],
+      "touchedFiles": [
+        "package.json",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "51c935bdbf19744edccf1b39002585d81a014613",
+      "authorDate": "2026-05-11T02:40:19+05:30",
+      "subject": "fix(worker): [python] avoid tight error loop on Redis disconnect (#4102)",
+      "body": "",
+      "issueRefs": [
+        "#4102"
+      ],
+      "touchedFiles": [
+        "python/bullmq/worker.py",
+        "python/tests/worker_disconnect_test.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "16cb101f7b88aa1da893db5ca24eb20133ddf5c7",
+      "authorDate": "2026-05-10T13:39:02-07:00",
+      "subject": "docs: fix several typos (#4130) (#4153)",
+      "body": "",
+      "issueRefs": [
+        "#4130",
+        "#4153"
+      ],
+      "touchedFiles": [
+        "python/bullmq/flow_producer.py",
+        "src/classes/queue-events.ts",
+        "src/classes/queue-getters.ts",
+        "src/commands/addPrioritizedJob-9.lua",
+        "src/commands/extendLock-2.lua",
+        "src/commands/includes/collectMetrics.lua",
+        "src/commands/moveStalledJobsToWait-8.lua",
+        "src/commands/moveToFinished-14.lua",
+        "src/commands/obliterate-2.lua",
+        "src/commands/pause-7.lua",
+        "src/commands/releaseLock-1.lua"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "e94e8cdfadbea9508412bcfdc51dabb920d7692c",
+      "authorDate": "2026-05-06T17:26:25+02:00",
+      "subject": "fix(connection): reconnect wedged blocking cluster clients (#4151)",
+      "body": "",
+      "issueRefs": [
+        "#4151"
+      ],
+      "touchedFiles": [
+        "src/classes/redis-connection.ts",
+        "tests/connection.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c9c0c0a03218511deb73eac74c31ac50ba9c4f77",
+      "authorDate": "2026-05-04T07:48:09-07:00",
+      "subject": "fix(connection): deprecate skipWaitingForReady option as is not having any effect [python] (#4140)",
+      "body": "",
+      "issueRefs": [
+        "#4140"
+      ],
+      "touchedFiles": [
+        "python/bullmq/flow_producer.py",
+        "python/bullmq/queue.py",
+        "python/bullmq/redis_connection.py",
+        "python/bullmq/types/queue_options.py",
+        "python/bullmq/types/worker_options.py",
+        "python/bullmq/worker.py",
+        "python/tests/redis_connection_test.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "d0f9dda8237502821fb553b1eb7d112cb0f5692b",
+      "authorDate": "2026-05-03T07:18:49-07:00",
+      "subject": "test(stalled): address race condition (#4139)",
+      "body": "",
+      "issueRefs": [
+        "#4139"
+      ],
+      "touchedFiles": [
+        "tests/deduplication.test.ts",
+        "tests/events.test.ts",
+        "tests/stalled_jobs.test.ts"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "b47f00b9a2c5766ca92cebc867369f2c467a220d",
+      "authorDate": "2026-05-02T07:05:43-07:00",
+      "subject": "fix(deps): update dependency msgpackr to v1.11.12 (#3939)",
+      "body": "",
+      "issueRefs": [
+        "#3939"
+      ],
+      "touchedFiles": [
+        "package.json",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "7ed0eeca96a3c5168e822831b2f3d938ab37bb91",
+      "authorDate": "2026-04-29T15:28:01+05:30",
+      "subject": "fix(flow-producer): surface ParentJobNotExist errors from add() (#3264) (#4058)",
+      "body": "",
+      "issueRefs": [
+        "#3264",
+        "#4058"
+      ],
+      "touchedFiles": [
+        "src/classes/flow-producer.ts",
+        "tests/flow.test.ts",
+        "tests/telemetry_interface.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "0bf1b4d38475b320c89947b9779ec7301ec10117",
+      "authorDate": "2026-04-28T22:13:26+05:30",
+      "subject": "fix(metrics): add total counters to Prometheus export for accurate counts with auto-removal (#3967)",
+      "body": "",
+      "issueRefs": [
+        "#3967"
+      ],
+      "touchedFiles": [
+        "src/classes/queue-getters.ts",
+        "tests/getters.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "f4506b1b6aff7946399cb8010f3cef0be26ddf25",
+      "authorDate": "2026-04-28T19:50:04+05:30",
+      "subject": "docs(queue-events): fix typo markes -> marked in close() comment (#4122)",
+      "body": "",
+      "issueRefs": [
+        "#4122"
+      ],
+      "touchedFiles": [
+        "src/classes/queue-events.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "19b9ca08be6f6efbc58291fa55efd93a0663d536",
+      "authorDate": "2026-04-26T14:31:51-07:00",
+      "subject": "fix(queue): guard getCompleted against empty task set [python] (#3885)",
+      "body": "",
+      "issueRefs": [
+        "#3885"
+      ],
+      "touchedFiles": [
+        "python/bullmq/worker.py",
+        "python/tests/worker_test.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "0866f39123010c9664fe32c1066f5e075faa4e23",
+      "authorDate": "2026-04-25T01:51:26-07:00",
+      "subject": "docs(changelog): fix misleading descriptions (#4097)",
+      "body": "",
+      "issueRefs": [
+        "#4097"
+      ],
+      "touchedFiles": [
+        ".github/pull_request_template.md",
+        ".github/workflows/release.yml",
+        "docs/gitbook/changelog.md",
+        "python/package.json"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "f6ee978089bda7edaf0e07beef369a3f8ecb4c5f",
+      "authorDate": "2026-04-25T13:40:39+05:30",
+      "subject": "test(events): move timeout value to describe() options (#4100)",
+      "body": "",
+      "issueRefs": [
+        "#4100"
+      ],
+      "touchedFiles": [
+        "tests/events.test.ts"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "595016ef1d3a960ad83dfbbc189034561e099482",
+      "authorDate": "2026-04-24T18:19:10-07:00",
+      "subject": "fix(deps): replace uuid with crypto (#4099)",
+      "body": "",
+      "issueRefs": [
+        "#4099"
+      ],
+      "touchedFiles": [
+        "package.json",
+        "src/classes/flow-producer.ts",
+        "src/classes/queue.ts",
+        "src/classes/worker.ts",
+        "src/utils/index.ts",
+        "tests/bulk.test.ts",
+        "tests/clean.test.ts",
+        "tests/cluster.test.ts",
+        "tests/concurrency.test.ts",
+        "tests/connection.test.ts",
+        "tests/deduplication.test.ts",
+        "tests/delay.test.ts",
+        "tests/events.test.ts",
+        "tests/flow.test.ts",
+        "tests/getters.test.ts",
+        "tests/job.test.ts",
+        "tests/job_cancellation.test.ts",
+        "tests/job_cancellation_advanced.test.ts",
+        "tests/job_scheduler.test.ts",
+        "tests/job_scheduler_stress.test.ts",
+        "tests/lock_manager.test.ts",
+        "tests/metrics.test.ts",
+        "tests/obliterate.test.ts",
+        "tests/pause.test.ts",
+        "tests/queue.test.ts",
+        "tests/rate_limiter.test.ts",
+        "tests/repeat.test.ts",
+        "tests/sandboxed_process.test.ts",
+        "tests/scripts.test.ts",
+        "tests/stalled_jobs.test.ts",
+        "tests/telemetry_interface.test.ts",
+        "tests/worker.test.ts",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "e66d3d35134152679b6584dac4add4a4d3e64954",
+      "authorDate": "2026-04-24T13:03:54+05:30",
+      "subject": "test(flow): move timeout values to it() options (#4101)",
+      "body": "",
+      "issueRefs": [
+        "#4101"
+      ],
+      "touchedFiles": [
+        "tests/flow.test.ts"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "ea7705df6938cb432eceff242f6828054766f61a",
+      "authorDate": "2026-04-23T01:55:12+05:30",
+      "subject": "fix(worker): use scheduler registry to discriminate repeatable keys (#4007)",
+      "body": "",
+      "issueRefs": [
+        "#4007"
+      ],
+      "touchedFiles": [
+        "src/classes/job-scheduler.ts",
+        "src/classes/worker.ts",
+        "tests/job_scheduler.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "43a5e59b7f7c2d63692fd7f56f4cafc3c79697d5",
+      "authorDate": "2026-04-22T08:00:00+05:30",
+      "subject": "test(worker): move timeout values to it() options (#4078)",
+      "body": "",
+      "issueRefs": [
+        "#4078"
+      ],
+      "touchedFiles": [
+        "tests/worker.test.ts"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "4217f8756b3d58dfd92f55360d421c4ac0b2a219",
+      "authorDate": "2026-04-22T02:40:01+05:30",
+      "subject": "docs(worker-options): fix typos checkd and halv in JSDoc (#4080)",
+      "body": "",
+      "issueRefs": [
+        "#4080"
+      ],
+      "touchedFiles": [
+        "src/interfaces/worker-options.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "bdd28386ac3e59c5474b03a847c6b27a81ef4eea",
+      "authorDate": "2026-04-22T02:38:35+05:30",
+      "subject": "docs(lua): fix grammar in checkItemInList comment (#4081)",
+      "body": "",
+      "issueRefs": [
+        "#4081"
+      ],
+      "touchedFiles": [
+        "src/commands/includes/checkItemInList.lua"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "f77f249acb82daf331bd61e1f425780270888d8d",
+      "authorDate": "2026-04-20T15:21:57+05:30",
+      "subject": "fix(python): getFailed() incorrectly returns completed jobs (#3996) [python]",
+      "body": "",
+      "issueRefs": [
+        "#3996"
+      ],
+      "touchedFiles": [
+        "python/bullmq/queue.py",
+        "python/tests/queue_test.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "422e2d5091f2f318e0f6bd3e1872a71deee92aec",
+      "authorDate": "2026-04-20T15:20:07+05:30",
+      "subject": "fix: handle ioredis Cluster connect status in waitUntilReady (#2402) (#4055)",
+      "body": "",
+      "issueRefs": [
+        "#2402",
+        "#4055"
+      ],
+      "touchedFiles": [
+        "src/classes/redis-connection.ts",
+        "tests/connection.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1652435b06f583015055df4e74ee7dea203bdae4",
+      "authorDate": "2026-04-20T14:49:51+05:30",
+      "subject": "fix(python): use slice reversal instead of reverse() which returns None (#4022)",
+      "body": "",
+      "issueRefs": [
+        "#4022"
+      ],
+      "touchedFiles": [
+        "python/bullmq/scripts.py",
+        "python/tests/queue_test.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "37c4bb3725fe668fb4fbe27e3474b72eafa6a6fe",
+      "authorDate": "2026-04-15T08:03:52+05:30",
+      "subject": "fix(types): correct unsafe type cast in getJob to include undefined",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "src/classes/queue-getters.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "34efd39458dde0378202b661c37b03b283473b94",
+      "authorDate": "2026-04-20T10:57:11+05:30",
+      "subject": "chore(types): add null to stacktrace type annotation in Job class (#4002)",
+      "body": "",
+      "issueRefs": [
+        "#4002"
+      ],
+      "touchedFiles": [
+        "src/classes/job.ts",
+        "src/interfaces/minimal-job.ts"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "2149236cea413622ec654ce08ae547f23e8d2abe",
+      "authorDate": "2026-04-20T08:08:31+05:30",
+      "subject": "test(pause): move timeout value to it() options (#4066)",
+      "body": "",
+      "issueRefs": [
+        "#4066"
+      ],
+      "touchedFiles": [
+        "tests/pause.test.ts"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "ee246fb60d38f682be234b6221fcc0d99e0897cd",
+      "authorDate": "2026-04-20T03:20:38+05:30",
+      "subject": "test(rate-limiter): move timeout values to it() options (#4067)",
+      "body": "",
+      "issueRefs": [
+        "#4067"
+      ],
+      "touchedFiles": [
+        "tests/rate_limiter.test.ts"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "19181958e9d15cbda263a6925a4acc862df44db4",
+      "authorDate": "2026-04-19T13:43:12+05:30",
+      "subject": "test(lock-manager): move timeout values to it() and afterEach() options (#4053)",
+      "body": "",
+      "issueRefs": [
+        "#4053"
+      ],
+      "touchedFiles": [
+        "tests/lock_manager.test.ts"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "4f79475e2c0e7d9970f3404a77ae3d3c0173cd5d",
+      "authorDate": "2026-04-19T11:49:47+05:30",
+      "subject": "test(concurrency): move timeout values to it() options (#4061)",
+      "body": "",
+      "issueRefs": [
+        "#4061"
+      ],
+      "touchedFiles": [
+        "tests/concurrency.test.ts"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "be9f03246d1644f397d660fba91285604a824284",
+      "authorDate": "2026-04-17T11:25:57+05:30",
+      "subject": "fix(error): export UnrecoverableError from package root (#4047) [python]",
+      "body": "",
+      "issueRefs": [
+        "#4047"
+      ],
+      "touchedFiles": [
+        "python/bullmq/__init__.py",
+        "python/tests/test_imports.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "e9d0c2d50ac9cd3c91e5f7a9f8466ae9c98ff87d",
+      "authorDate": "2026-04-15T00:51:19-07:00",
+      "subject": "fix(sandbox): remove returnvalue from JobJsonSandbox interface (#3950)",
+      "body": "",
+      "issueRefs": [
+        "#3950"
+      ],
+      "touchedFiles": [
+        "src/interfaces/sandboxed-job.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1a3ca68252b745119c7ff9edd46c9f6115a2003c",
+      "authorDate": "2026-04-13T15:56:28+05:30",
+      "subject": "chore(redis-connection): fix typo custon -> custom in comment (#4001)",
+      "body": "",
+      "issueRefs": [
+        "#4001"
+      ],
+      "touchedFiles": [
+        "src/classes/redis-connection.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "d6477ee34417ebc86a8b2eb20dca78e30da050c2",
+      "authorDate": "2026-04-13T15:37:06+05:30",
+      "subject": "docs(job): fix typo occured -> occurred in JSDoc (#4018)",
+      "body": "",
+      "issueRefs": [
+        "#4018"
+      ],
+      "touchedFiles": [
+        "src/classes/job.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "8b8d46441f7af7f9bd75d81283a8804ff5fc4bc1",
+      "authorDate": "2026-04-12T13:11:31-07:00",
+      "subject": "fix(worker): resume processing after pause with doNotWaitActive (#3974) fixes #3971",
+      "body": "",
+      "issueRefs": [
+        "#3974",
+        "fixes #3971"
+      ],
+      "touchedFiles": [
+        "src/classes/worker.ts",
+        "tests/worker.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "d5eca5acff37b7a95f72c136685105504fc7f5be",
+      "authorDate": "2026-04-10T07:49:38-07:00",
+      "subject": "fix(worker): emit active event as soon as getting next job (elixir) (python) (#3936) ref #3911",
+      "body": "",
+      "issueRefs": [
+        "#3936",
+        "#3911"
+      ],
+      "touchedFiles": [
+        "elixir/lib/bullmq/worker.ex",
+        "elixir/test/bullmq/manual_processing_test.exs",
+        "elixir/test/bullmq/worker_integration_test.exs",
+        "python/bullmq/worker.py",
+        "python/tests/worker_test.py",
+        "src/classes/worker.ts",
+        "tests/job_cancellation.test.ts",
+        "tests/job_cancellation_advanced.test.ts",
+        "tests/sandboxed_process.test.ts",
+        "tests/stalled_jobs.test.ts",
+        "tests/worker.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "bf451868b932125d857280a5a21173bfafbc2801",
+      "authorDate": "2026-04-08T22:33:56-07:00",
+      "subject": "fix(connection): use single_connection_client as true (#3887) fixes #2243 [python]",
+      "body": "",
+      "issueRefs": [
+        "#3887",
+        "fixes #2243"
+      ],
+      "touchedFiles": [
+        "python/bullmq/redis_connection.py",
+        "python/tests/redis_connection_test.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "242f2648f6ba51f0023aa9a6688f0cd3e0ec2d70",
+      "authorDate": "2026-04-09T10:30:54+05:30",
+      "subject": "fix(flow): correctly propagate root jobId from pipeline results (#3905)",
+      "body": "",
+      "issueRefs": [
+        "#3905"
+      ],
+      "touchedFiles": [
+        "src/classes/flow-producer.ts",
+        "tests/flow.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "0449666746452e618131a6080908fb2dae8491a0",
+      "authorDate": "2026-04-08T11:34:25+05:30",
+      "subject": "docs(job): fix typos and add missing JSDoc descriptions (#3952)",
+      "body": "",
+      "issueRefs": [
+        "#3952"
+      ],
+      "touchedFiles": [
+        "src/classes/job.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "4c6b2b2d73b5053f3bd3bee2019533b6e7b5682b",
+      "authorDate": "2026-04-08T09:46:32+05:30",
+      "subject": "fix(sandbox): add missing type declarations to SandboxedJob interface (#3946) fixes #3925",
+      "body": "",
+      "issueRefs": [
+        "#3946",
+        "fixes #3925"
+      ],
+      "touchedFiles": [
+        "src/classes/child-processor.ts",
+        "src/interfaces/sandboxed-job.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "46880af9629e9aee9abbc2782074a3e76d17b924",
+      "authorDate": "2026-04-02T13:15:36+02:00",
+      "subject": "fix(cancellation): use native AbortController implementation if found (#3903)",
+      "body": "",
+      "issueRefs": [
+        "#3903"
+      ],
+      "touchedFiles": [
+        "src/classes/abort-controller.ts",
+        "src/classes/child-processor.ts",
+        "src/classes/lock-manager.ts",
+        "src/classes/worker.ts",
+        "src/utils/index.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "f6a44359e30754310fd4f94c37d9679b1012a281",
+      "authorDate": "2026-04-01T06:41:02-07:00",
+      "subject": "ci(renovate): support security vulnerability fixes (#3921)",
+      "body": "",
+      "issueRefs": [
+        "#3921"
+      ],
+      "touchedFiles": [
+        "renovate.json"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "60f645a472102336a6294e66f2b0a801a5a5207d",
+      "authorDate": "2026-03-24T23:17:09-07:00",
+      "subject": "fix(deps): update dependency ioredis to v5.10.1 (#3897)",
+      "body": "",
+      "issueRefs": [
+        "#3897"
+      ],
+      "touchedFiles": [
+        "package.json",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1e4b845927cecb72d55f026e37824bcae7ed0ffe",
+      "authorDate": "2026-03-23T04:11:52-07:00",
+      "subject": "chore(deps): fix undici and flatted vulnerabilities (#3883)",
+      "body": "",
+      "issueRefs": [
+        "#3883"
+      ],
+      "touchedFiles": [
+        "elixir/yarn.lock",
+        "php/yarn.lock",
+        "python/yarn.lock",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "3c118d11c8e6dc03e90548bc7efa5c5b5d0315c7",
+      "authorDate": "2026-03-18T20:53:25-07:00",
+      "subject": "fix(worker): make close method fault-tolerant (#3886) [python]",
+      "body": "",
+      "issueRefs": [
+        "#3886"
+      ],
+      "touchedFiles": [
+        "python/bullmq/worker.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "e5b7aff4edbe44983803cfa3fb3ea48f0b1b998e",
+      "authorDate": "2026-03-18T08:42:01-07:00",
+      "subject": "fix(worker): use discard instead of remove in processJob to prevent KeyError (#3884) [python]",
+      "body": "",
+      "issueRefs": [
+        "#3884"
+      ],
+      "touchedFiles": [
+        "python/bullmq/worker.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "ca538b70050d49accd1153087d18a22ce16c12b8",
+      "authorDate": "2026-03-18T04:45:03-03:00",
+      "subject": "docs: fix job data syntax in fail-fast strategy example (#3890)",
+      "body": "",
+      "issueRefs": [
+        "#3890"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/patterns/failing-fast-when-redis-is-down.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "0d1371ff624eab2f8998ce4ace4f6cd3c870d840",
+      "authorDate": "2026-03-11T14:23:17-07:00",
+      "subject": "docs(changelog): update missed fix ref (#3862)",
+      "body": "",
+      "issueRefs": [
+        "#3862"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/elixir/changelog.md",
+        "docs/gitbook/python/changelog.md"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "6cd60a79249a665270cf0723f43eb98f773f4b83",
+      "authorDate": "2026-03-05T18:43:43-06:00",
+      "subject": "fix(flow): allow deduplication from root parent (python) (elixir) (#3817) fixes #3761",
+      "body": "",
+      "issueRefs": [
+        "#3817",
+        "fixes #3761"
+      ],
+      "touchedFiles": [
+        "src/classes/job.ts",
+        "src/commands/addParentJob-6.lua",
+        "src/commands/includes/deduplicateJob.lua",
+        "src/commands/includes/deduplicateJobWithoutReplace.lua",
+        "src/interfaces/flow-job.ts",
+        "tests/flow.test.ts",
+        "tests/job.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "450253c3457f500d7f4e5aeebaa4ddfc937a1f39",
+      "authorDate": "2026-03-05T18:20:29-06:00",
+      "subject": "fix(otel): use job timestamps for process span attributes (#3832)",
+      "body": "",
+      "issueRefs": [
+        "#3832"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/SUMMARY.md",
+        "docs/gitbook/guide/telemetry/traces.md",
+        "src/classes/worker.ts",
+        "src/enums/telemetry-attributes.ts",
+        "tests/telemetry_interface.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "504b53689a29b3b4ddc902d25211a92da6a4d7af",
+      "authorDate": "2026-03-05T05:04:09+01:00",
+      "subject": "fix(auto-remove): remove orphaned jobs when auto-remove is enabled (#3853)",
+      "body": "",
+      "issueRefs": [
+        "#3853"
+      ],
+      "touchedFiles": [
+        "elixir/yarn.lock",
+        "php/yarn.lock",
+        "python/yarn.lock",
+        "src/classes/queue.ts",
+        "src/classes/scripts.ts",
+        "src/commands/includes/removeJobsByMaxAge.lua",
+        "src/commands/removeOrphanedJobs-1.lua",
+        "tests/clean.test.ts",
+        "tests/worker.test.ts",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "0fafcc0950698f6a8a55a2b77ef1b82af5d5712f",
+      "authorDate": "2026-02-22T19:25:41-06:00",
+      "subject": "fix(deps): update dependency ioredis to v5.9.3 (#3821) fixes #3793",
+      "body": "",
+      "issueRefs": [
+        "#3821",
+        "fixes #3793"
+      ],
+      "touchedFiles": [
+        "package.json",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1f67df99372205fd641102d57d1de6f7b7282eb3",
+      "authorDate": "2026-02-22T18:50:11-06:00",
+      "subject": "ci: fix husky warning (#3809)",
+      "body": "",
+      "issueRefs": [
+        "#3809"
+      ],
+      "touchedFiles": [
+        ".husky/commit-msg",
+        "package.json"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "9c722585bd9873561fae3f32971d65cf00a7d092",
+      "authorDate": "2026-02-21T00:37:27+00:00",
+      "subject": "fix(sandbox): ensure non-bullmq messages are ignored (#3704) fixes #3703",
+      "body": "",
+      "issueRefs": [
+        "#3704",
+        "fixes #3703"
+      ],
+      "touchedFiles": [
+        "src/classes/child.ts",
+        "tests/fixtures/fixture_main_non_bullmq_messages.js",
+        "tests/fixtures/fixture_processor_simple.js",
+        "tests/sandboxed_process.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "cce160d5e358b8590e9d7f5ee8db4438a699babb",
+      "authorDate": "2026-02-19T22:12:48-08:00",
+      "subject": "docs: fix deduplicated event parameter descriptions (#3747) ref #3523",
+      "body": "",
+      "issueRefs": [
+        "#3747",
+        "#3523"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/guide/jobs/deduplication.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "87386ca88e29755fc68e6cc8fcfebfb7f8f8237f",
+      "authorDate": "2026-02-16T12:30:33+06:30",
+      "subject": "fix(job-scheduler): handle empty scheduler hash fallback (#3797) fixes #3796",
+      "body": "",
+      "issueRefs": [
+        "#3797",
+        "fixes #3796"
+      ],
+      "touchedFiles": [
+        "src/classes/job-scheduler.ts",
+        "tests/job_scheduler.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "a62241f5831a1d3bb6c328a9037ea852be7832cd",
+      "authorDate": "2026-02-14T11:11:28+06:30",
+      "subject": "fix(queue): forward error from repeat or job-scheduler instances (#3775) fixes #3774",
+      "body": "",
+      "issueRefs": [
+        "#3775",
+        "fixes #3774"
+      ],
+      "touchedFiles": [
+        "src/classes/queue.ts",
+        "src/classes/worker.ts",
+        "tests/error-forwarding.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "d249301ddc9afc607c9e86a8a44312af682e6be0",
+      "authorDate": "2026-02-12T18:59:45-06:00",
+      "subject": "fix(utils): use exact import of DatabaseType (#3786)",
+      "body": "",
+      "issueRefs": [
+        "#3786"
+      ],
+      "touchedFiles": [
+        "eslint.config.mjs",
+        "src/utils/index.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "590542314f13590cf68330097f5bb09a96bb240c",
+      "authorDate": "2026-02-11T09:39:37+01:00",
+      "subject": "fix: important performance fixes and improvements [elixir] (#3749)",
+      "body": "",
+      "issueRefs": [
+        "#3749"
+      ],
+      "touchedFiles": [
+        "elixir/guides/benchmarks.md",
+        "elixir/guides/introduction.md",
+        "elixir/guides/job_options.md",
+        "elixir/guides/workers.md",
+        "elixir/lib/bullmq/job.ex",
+        "elixir/lib/bullmq/lock_manager.ex",
+        "elixir/lib/bullmq/queue.ex",
+        "elixir/lib/bullmq/redis_connection.ex",
+        "elixir/lib/bullmq/redis_connection/pool.ex",
+        "elixir/lib/bullmq/scripts.ex",
+        "elixir/lib/bullmq/worker.ex",
+        "elixir/test/bullmq/blocking_wait_test.exs",
+        "elixir/test/bullmq/concurrency_diagnostic_test.exs",
+        "elixir/test/bullmq/concurrency_scaling_test.exs",
+        "elixir/test/bullmq/concurrency_verification_test.exs",
+        "elixir/test/bullmq/high_concurrency_test.exs",
+        "elixir/test/bullmq/integration_test.exs",
+        "elixir/test/bullmq/job_scheduler_integration_test.exs",
+        "elixir/test/bullmq/job_scheduler_processing_test.exs",
+        "elixir/test/bullmq/job_scheduler_stress_test.exs",
+        "elixir/test/bullmq/manual_processing_test.exs",
+        "elixir/test/bullmq/multi_worker_test.exs",
+        "elixir/test/bullmq/queue_events_integration_test.exs",
+        "elixir/test/bullmq/queue_integration_test.exs",
+        "elixir/test/bullmq/rate_limiter_integration_test.exs",
+        "elixir/test/bullmq/redis_baseline_test.exs",
+        "elixir/test/bullmq/redis_connection_pool_integration_test.exs",
+        "elixir/test/bullmq/stress_test.exs",
+        "elixir/test/bullmq/version_test.exs",
+        "elixir/test/bullmq/worker_cancellation_test.exs",
+        "elixir/test/bullmq/worker_integration_test.exs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "afb878f97ebeaf89c1308b7dde0b5a440381d113",
+      "authorDate": "2026-02-05T08:37:33-06:00",
+      "subject": "fix(connection): merge redisOptions when duplicating cluster (#3759)",
+      "body": "",
+      "issueRefs": [
+        "#3759"
+      ],
+      "touchedFiles": [
+        "docker-compose.yml",
+        "src/classes/queue-events.ts",
+        "src/classes/worker.ts",
+        "tests/cluster.test.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "da198f97babfdb30b2e195e131a88d4c9eff001f",
+      "authorDate": "2026-02-05T08:35:49-06:00",
+      "subject": "chore(deps): bump @isaacs/brace-expansion to v5.0.1 (#3763)",
+      "body": "",
+      "issueRefs": [
+        "#3763"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/guide/flows/fail-parent.md",
+        "elixir/yarn.lock",
+        "php/yarn.lock",
+        "python/yarn.lock",
+        "tests/deduplication.test.ts",
+        "tests/events.test.ts",
+        "yarn.lock"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "de0fca894f47d8aa2b2c66ca9475e526ca477508",
+      "authorDate": "2026-01-27T20:17:13-06:00",
+      "subject": "fix(deps): use caret versioning for ioredis dependency (#3719) fixes #3718",
+      "body": "",
+      "issueRefs": [
+        "#3719",
+        "fixes #3718"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "f824c01c53d57e75d7b57efce7a124adffed9dfa",
+      "authorDate": "2026-01-27T18:51:43-06:00",
+      "subject": "fix: use prioritized key name instead of priority [python] (#3717) fixes #3716",
+      "body": "",
+      "issueRefs": [
+        "#3717",
+        "fixes #3716"
+      ],
+      "touchedFiles": [
+        "python/bullmq/scripts.py",
+        "python/tests/queue_test.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "3bd23d990c780ff0808d79499edd803084d2efe8",
+      "authorDate": "2026-01-27T11:55:21+01:00",
+      "subject": "fix(scheduler): fix job scheduler not creating subsequent iterations [elixir] (#3729)",
+      "body": "",
+      "issueRefs": [
+        "#3729"
+      ],
+      "touchedFiles": [
+        "elixir/lib/bullmq/job_scheduler.ex",
+        "elixir/lib/bullmq/telemetry/opentelemetry.ex",
+        "elixir/lib/bullmq/worker.ex",
+        "elixir/test/bullmq/job_scheduler_integration_test.exs",
+        "elixir/test/bullmq/job_scheduler_processing_test.exs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "fa22e844d29961db95df58f2ae63b440d71c11f6",
+      "authorDate": "2026-01-24T22:58:34+00:00",
+      "subject": "fix: fix worker connection name on cluster #3340 (#3660)",
+      "body": "* fix(worker): connection name on cluster\n\n* fix(queue-getters): get connection from all cluster nodes\n\n* fix(worker): connection type cast to cluster\n\n* fix(queue-getters): import Cluster as type\n\n* Update src/classes/queue-getters.ts\n\nCo-authored-by: Copilot <175728472+Copilot@users.noreply.github.com>\n\n* test(cluster): add tests covering get workers\n\n* feat(worker): add worker name cluster support [elixir]\n\n* feat: add worker naming support [python]\n\n* fix(worker): fix compiler error [elixir]\n\n* fix: fix formatting [elixir]\n\n* fix: fix osv vulnerabilities\n\n* chore(getters): use a better name for nodeWithTheMostClients\n\n---------\n\nCo-authored-by: Manuel Astudillo <manuel@optimalbits.com>",
+      "issueRefs": [
+        "#3340",
+        "#3660"
+      ],
+      "touchedFiles": [
+        "elixir/lib/bullmq/queue.ex",
+        "elixir/lib/bullmq/redis_connection.ex",
+        "elixir/lib/bullmq/worker.ex",
+        "elixir/package.json",
+        "elixir/test/bullmq/queue_getters_test.exs",
+        "elixir/yarn.lock",
+        "package.json",
+        "php/package.json",
+        "php/yarn.lock",
+        "python/bullmq/queue.py",
+        "python/bullmq/redis_connection.py",
+        "python/bullmq/types/worker_options.py",
+        "python/bullmq/utils.py",
+        "python/bullmq/worker.py",
+        "python/package.json",
+        "python/tests/queue_getters_cluster_test.py",
+        "python/tests/redis_connection_cluster_test.py",
+        "python/yarn.lock",
+        "src/classes/queue-getters.ts",
+        "src/classes/worker.ts",
+        "tests/test_cluster.ts",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "87e74b5713b5017c29789094d6ac6ff26bfe79c1",
+      "authorDate": "2026-01-22T19:00:37-06:00",
+      "subject": "fix(deps): update dependency ioredis to v5.9.2 (#3713)",
+      "body": "",
+      "issueRefs": [
+        "#3713"
+      ],
+      "touchedFiles": [
+        "package.json",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "61504f12fe591295fea5b087a6b7c533465e8653",
+      "authorDate": "2026-01-22T00:14:24-06:00",
+      "subject": "fix(queue): add missing defaultJobOptions field to QueueBaseOptions TypedDict [python] (#3702) fixes #3695",
+      "body": "",
+      "issueRefs": [
+        "#3702",
+        "fixes #3695"
+      ],
+      "touchedFiles": [
+        "python/bullmq/queue.py",
+        "python/bullmq/types/queue_options.py",
+        "python/tests/queue_test.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "a8fc316c0989bd3edb54577ceb02bff0c600aa93",
+      "authorDate": "2026-01-21T18:04:32-06:00",
+      "subject": "perf(job): apply limit when removing jobs by max age (python) (elixir) (#3694) fixes #3672",
+      "body": "",
+      "issueRefs": [
+        "#3694",
+        "fixes #3672"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/guide/workers/auto-removal-of-jobs.md",
+        "elixir/lib/bullmq/scripts.ex",
+        "elixir/lib/bullmq/worker.ex",
+        "elixir/test/bullmq/worker_integration_test.exs",
+        "python/bullmq/worker.py",
+        "python/tests/worker_test.py",
+        "src/classes/scripts.ts",
+        "src/commands/includes/removeJobsByMaxAge.lua",
+        "src/commands/includes/removeJobsOnFail.lua",
+        "src/commands/moveToFinished-14.lua",
+        "src/interfaces/base-job-options.ts",
+        "src/interfaces/index.ts",
+        "src/interfaces/keep-jobs.ts",
+        "src/interfaces/worker-options.ts",
+        "src/types/index.ts",
+        "src/types/keep-jobs.ts",
+        "tests/test_worker.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c2c6743428a306e39f74c86f63dc9122633040ea",
+      "authorDate": "2026-01-14T23:44:45+01:00",
+      "subject": "fix(scripts): add missing lua scripts in mix config [elixir] (#3697) fixes #3681",
+      "body": "",
+      "issueRefs": [
+        "#3697",
+        "fixes #3681"
+      ],
+      "touchedFiles": [
+        ".github/workflows/release.yml",
+        "elixir/mix.exs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "5bcd4fbe0eb725a95b878f97b95c74106e7dff0f",
+      "authorDate": "2026-01-13T18:09:19-06:00",
+      "subject": "fix(scripts): copy lua scripts before releasing [elixir] (#3685) fixes #3681",
+      "body": "",
+      "issueRefs": [
+        "#3685",
+        "fixes #3681"
+      ],
+      "touchedFiles": [
+        ".github/workflows/release.yml"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "661c581270186bc405967b91326daff061370d03",
+      "authorDate": "2026-01-11T22:21:23-06:00",
+      "subject": "fix(deps): update dependency ioredis to v5.9.1 (#3676) fixes #3667",
+      "body": "",
+      "issueRefs": [
+        "#3676",
+        "fixes #3667"
+      ],
+      "touchedFiles": [
+        "package.json",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "cc74805d5eda14ed684e2111c91de8890e752768",
+      "authorDate": "2025-12-27T16:29:36-05:00",
+      "subject": "fix(flow): remove debounce option from flow producer (#3646)",
+      "body": "",
+      "issueRefs": [
+        "#3646"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/guide/flows/readme.md",
+        "src/commands/addParentJob-6.lua",
+        "src/interfaces/flow-job.ts",
+        "tests/test_flow.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "f60c172725ab29c0159b804ae0b9d691105689c4",
+      "authorDate": "2025-12-25T19:16:41-05:00",
+      "subject": "fix(flow): remove deduplication option from flow producer (#3637)",
+      "body": "",
+      "issueRefs": [
+        "#3637"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/guide/flows/readme.md",
+        "src/classes/lock-manager.ts",
+        "src/classes/worker.ts",
+        "src/commands/includes/removeDeduplicationKeyIfNeededOnRemoval.lua",
+        "src/commands/includes/removeJob.lua",
+        "src/commands/includes/removeJobWithChildren.lua",
+        "src/interfaces/flow-job.ts",
+        "src/interfaces/index.ts",
+        "src/interfaces/lock-manager-worker-context.ts",
+        "tests/test_lock_manager.ts"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "706da0dc703d6be353d0140f1fd0de7683362e60",
+      "authorDate": "2025-12-25T09:55:04-05:00",
+      "subject": "fix(queue): convert boolean force parameter to string in obliterate method [python] (#3642) fixes #3640",
+      "body": "",
+      "issueRefs": [
+        "#3642",
+        "fixes #3640"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/guide/queues/removing-jobs.md",
+        "elixir/test/bullmq/worker_cancellation_test.exs",
+        "python/bullmq/scripts.py",
+        "python/bullmq/types/deduplication_options.py",
+        "python/bullmq/worker.py",
+        "python/tests/bulk_test.py",
+        "python/tests/deduplication_test.py",
+        "python/tests/delay_test.py",
+        "python/tests/flow_test.py",
+        "python/tests/job_test.py",
+        "python/tests/queue_test.py",
+        "python/tests/worker_test.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "7f602e1c6e31070f02c5ee5babbff33f55193551",
+      "authorDate": "2025-12-24T12:53:03-05:00",
+      "subject": "fix(flow): resolve KeyError when child job fails with failParentOnFailure option [python] (#3639) fixes #3638",
+      "body": "",
+      "issueRefs": [
+        "#3639",
+        "fixes #3638"
+      ],
+      "touchedFiles": [
+        "python/bullmq/worker.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "3c7c1674787ec9da3766aad3ebf665fff3cf6500",
+      "authorDate": "2025-12-22T23:53:14+05:45",
+      "subject": "docs: fix invalid TypeScript destructuring in QueueEvents examples (#3627)",
+      "body": "",
+      "issueRefs": [
+        "#3627"
+      ],
+      "touchedFiles": [
+        "docs/gitbook/guide/events/readme.md",
+        "docs/gitbook/guide/returning-job-data.md",
+        "docs/gitbook/guide/workers.md",
+        "docs/gitbook/guide/workers/readme.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "9c533c0347865445b7f7df6b1c6e0923d25b4a8f",
+      "authorDate": "2025-12-20T12:21:46-05:00",
+      "subject": "fix(flow): support failParentOnFailure and related dependency options with validation [python] (#3621) fixes #3620",
+      "body": "",
+      "issueRefs": [
+        "#3621",
+        "fixes #3620"
+      ],
+      "touchedFiles": [
+        "python/bullmq/job.py",
+        "python/bullmq/scripts.py",
+        "python/bullmq/types/job_options.py",
+        "python/tests/flow_test.py",
+        "yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "7ac421cb2e754ba262a18bb17d47f15fb22a6962",
+      "authorDate": "2025-12-20T00:08:19+01:00",
+      "subject": "fix(release): correct php release condition check [php] (#3617)",
+      "body": "",
+      "issueRefs": [
+        "#3617"
+      ],
+      "touchedFiles": [
+        ".github/workflows/release.yml"
+      ],
+      "fixCategory": "other"
+    }
+  ]
+}

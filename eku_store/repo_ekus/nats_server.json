@@ -1,0 +1,66 @@
+[
+  {
+    "id": "REKU-NATS-001",
+    "repository": "nats-server",
+    "domain": "Queue, Broker & Distributed Workflow Systems",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Client shutdown separates consumer protocol drain from TCP socket termination, allowing active deliveries in the client write loop to flush completely before closing connection descriptors.",
+    "mechanism": "Decoupled Client Drain & TCP Socket Teardown Protocol",
+    "applicabilityConditions": [
+      "Requires Go network server with concurrent client write loops and buffered flushes."
+    ],
+    "evidenceIds": [
+      "OBS-NATS-002"
+    ],
+    "commonKeywords": [
+      "graceful_drain",
+      "socket_decoupling",
+      "client_teardown",
+      "soft_stop"
+    ],
+    "uniqueKeywords": [
+      "nats_closeConnection",
+      "writeLoop_flush",
+      "client_drain_flag"
+    ],
+    "localContext": "In NATS Server, when a client initiates a drain or the server shuts down gracefully, closeConnection flushes pending outbound protocol frames to the client socket before signaling the underlying TCP file descriptor to close.",
+    "sourceProvenance": {
+      "filePath": "server/client.go",
+      "lineRange": [
+        450,
+        480
+      ],
+      "queryOrCodeSnippet": "c.flushAndCloseStream(); c.nc.Close()",
+      "symbol": "closeConnection"
+    },
+    "testProvenance": {
+      "filePath": "server/client_test.go",
+      "testName": "TestClientDrainFlushBeforeClose"
+    },
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "TEST_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "substrate": "memory",
+    "linkedDomainEkus": [
+      "EKU-QUEUE-001"
+    ],
+    "linkedClaims": [
+      "CLM-001"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [],
+      "stateStorage": [
+        "memory"
+      ],
+      "ownershipModel": [
+        "lease_based"
+      ],
+      "substrate": [
+        "memory"
+      ]
+    }
+  }
+]

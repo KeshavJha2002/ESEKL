@@ -1,0 +1,1492 @@
+{
+  "project": {
+    "name": "litequeue",
+    "repoPath": "factory/litequeue",
+    "analyzedAt": "2026-08-22T15:32:49.180Z",
+    "fileStats": {
+      "totalFiles": 43,
+      "codeFiles": 13,
+      "testFiles": 8,
+      "docFiles": 12
+    },
+    "languages": [
+      ".py"
+    ]
+  },
+  "readmeSnippet": "# litequeue\n\n> Queue implemented on top of SQLite\n\n## Why?\n\nYou can use this to implement a persistent queue. It also has extra timing\nmetrics for messages and tasks. The API lets you mark a current message claim\nas **done**.\n\nSince it's all based on SQLite / SQL, it is easily extendable.\n\nMessages are always passed as strings, so you can use json data as messages.\nMessages are interpreted as tasks, so after you `pop` a message, you need to\nmark its current claim as done when you finish processing it. When you run the\n`.prune()` method, it removes all finished tasks from the database.\n\nMessage IDs follow RFC 9562 UUIDv7. Optional idempotency keys make ambiguous\nproducer retries safe. Integer claim IDs prevent stale workers from changing\nnewer message claims.\n\n## Installation\n\nInstall the package with uv:\n\n```\nuv add litequeue\n```\n\nPython 3.12 or newer and SQLite 3 are required.\n\n## Quickstart\n\n```python\nfrom litequeue import LiteQueue\n\nq = LiteQueue(filename=\"tasks.sqlite3\")\n\nq.put(\"hello\", idempotency_key=\"greeting-1\")\nq.put(\"world\")\n\n# Message object used by LiteQueue\n# Message(\n#     data='hello',\n#     message_id='063e95f1-3d9f-7547-8000-c3eb531fff93',\n#     status=<MessageStatus.READY: 0>,\n#     in_time=1676238611851409010,\n#     lock_time=None,\n#     done_time=None,\n#     idempotency_key='greeting-1',\n#     claim_id=0,\n# )\n\ntask = q.pop()\nassert task is not None\n\nprint(task)\n# Message(\n#     data='hello',\n#     message_id='063e95f1-3d9f-7547-8000-c3eb531fff93',\n#     status=<MessageStatus.LOCKED: 1>,\n#     in_time=1676238611851409010,\n#     lock_time=1676238623180543854,\n#     done_time=None,\n#     idempotency_key='greeting-1',\n#     claim_id=1,\n# )\n\nupdated = q.done(\n    message_id=task.message_id,\n    claim_id=task.claim_id,\n)\nassert updated\n\n# Update methods return False for missing messages and stale claims.\nassert not q.done(\n    message_id=\"missing-message\",\n    claim_id=task.claim_id,\n)\n\nq.get(task.message_id)\n\n# Message(\n#     data='hello',\n#     message_id='063e95f1-3d9f-7547-8000-c3eb531fff93',\n#     status=<MessageStatus.DONE: 2>,\n#     in_time=1676238611851409010,\n#     lock_time=1676238623180543854,\n#     done_time=1676238641276753673,\n#     idempotency_key='greeting-1',\n#     claim_id=1,\n# )\n\n```\n\n## Idempotent submission\n\nPass an idempotency key when a producer must retry an ambiguous `put()`:\n\n```python\nmessage = q.put(\n    \"charge account A-123\",\n    idempotency_key=\"charge-2026-0001\",\n)\n```\n\nA replay with the same key and data returns the stored message. A replay with\ndifferent data raises `IdempotencyConflict`.\n\nThe key reservation exists until `prune()` deletes the message. See the\n[idempotency guide](docs/idempotency.md) for concurrency, pruning, and\ninbox/outbox examples.\n\n## Message claims\n\nEach `pop()` increments the selected message's integer `claim_id`. Pass that\nclaim ID to `done()`, `mark_failed()`, or `retry()`.\n\nEach transition requires its permitted source state and the current claim ID.\nThis rule prevents a stale worker from changing a newer delivery.\n\nMessage timestamps use integer Unix nanoseconds. Public threshold parameters\nuse seconds and include `_seconds` in their names.\n\nUse `retry_expired()` for atomic expired-claim recovery:\n\n```python\nretried_count = q.retry_expired(threshold_seconds=30)\n```\n\nSee the [message claim guide](docs/message_claim_ids.md) for the state machine,\nrace examples, and migration procedure.\n\n## Differences with a normal Python `queue.Queue`\n\n- Persistence\n- Optional idempotent message submission\n- Claim-aware completion, failure, and retry operations\n- Timing metrics. As long as tasks are still in the queue or not pruned, you can see how long they have been there or how long they took to finish.\n- Easy to extend using SQL\n\n## Queue size and capacity\n\n`qsize()`, `empty()`, `full()`, and `maxsize` all use the ready backlog: messages\nthat are waiting to be claimed. A message stops contributing to that backlog as\nsoon as `pop()` locks it for a worker.\n\nUse the ex",
+  "codeInventory": [
+    {
+      "path": "benchmark.py",
+      "sizeBytes": 5012,
+      "isTest": false
+    },
+    {
+      "path": "examples/consumer.py",
+      "sizeBytes": 2871,
+      "isTest": false
+    },
+    {
+      "path": "examples/producer.py",
+      "sizeBytes": 761,
+      "isTest": false
+    },
+    {
+      "path": "src/litequeue/__init__.py",
+      "sizeBytes": 35999,
+      "isTest": false
+    },
+    {
+      "path": "src/litequeue/migrations.py",
+      "sizeBytes": 4361,
+      "isTest": false
+    },
+    {
+      "path": "tests/test_idempotency.py",
+      "sizeBytes": 20822,
+      "isTest": true
+    },
+    {
+      "path": "tests/test_litequeue.py",
+      "sizeBytes": 32155,
+      "isTest": true
+    },
+    {
+      "path": "tests/test_message_claim_ids.py",
+      "sizeBytes": 16417,
+      "isTest": true
+    },
+    {
+      "path": "tests/test_migrations.py",
+      "sizeBytes": 11779,
+      "isTest": true
+    },
+    {
+      "path": "tests/test_release_migrations.py",
+      "sizeBytes": 20344,
+      "isTest": true
+    },
+    {
+      "path": "tests/test_size_semantics.py",
+      "sizeBytes": 1315,
+      "isTest": true
+    },
+    {
+      "path": "tests/test_sqlite_versions.py",
+      "sizeBytes": 3365,
+      "isTest": true
+    },
+    {
+      "path": "tests/test_threading.py",
+      "sizeBytes": 12275,
+      "isTest": true
+    }
+  ],
+  "testScenariosSummary": [
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_put_replay_returns_the_original_message",
+      "subScenarioName": "put replay returns the original message",
+      "line": 14,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_put_replay_returns_the_original_message"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_put_replay_returns_the_current_message_state",
+      "subScenarioName": "put replay returns the current message state",
+      "line": 26,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_put_replay_returns_the_current_message_state"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_put_rejects_different_data_for_an_existing_key",
+      "subScenarioName": "put rejects different data for an existing key",
+      "line": 54,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_put_rejects_different_data_for_an_existing_key"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_put_without_a_key_always_creates_a_new_message",
+      "subScenarioName": "put without a key always creates a new message",
+      "line": 68,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_put_without_a_key_always_creates_a_new_message"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_unkeyed_messages_support_the_claim_aware_lifecycle",
+      "subScenarioName": "unkeyed messages support the claim aware lifecycle",
+      "line": 81,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_unkeyed_messages_support_the_claim_aware_lifecycle"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_put_rejects_nonstring_message_data",
+      "subScenarioName": "put rejects nonstring message data",
+      "line": 118,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_put_rejects_nonstring_message_data"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_different_keys_can_use_the_same_data",
+      "subScenarioName": "different keys can use the same data",
+      "line": 134,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_different_keys_can_use_the_same_data"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_put_rejects_nonstring_idempotency_keys",
+      "subScenarioName": "put rejects nonstring idempotency keys",
+      "line": 146,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_put_rejects_nonstring_idempotency_keys"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_put_treats_special_idempotency_keys_as_opaque_text",
+      "subScenarioName": "put treats special idempotency keys as opaque text",
+      "line": 176,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_put_treats_special_idempotency_keys_as_opaque_text"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_idempotency_keys_are_case_sensitive",
+      "subScenarioName": "idempotency keys are case sensitive",
+      "line": 191,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_idempotency_keys_are_case_sensitive"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_idempotency_key_does_not_control_fifo_order",
+      "subScenarioName": "idempotency key does not control fifo order",
+      "line": 202,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_idempotency_key_does_not_control_fifo_order"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_prune_releases_a_completed_idempotency_key",
+      "subScenarioName": "prune releases a completed idempotency key",
+      "line": 214,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_prune_releases_a_completed_idempotency_key"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_prune_can_keep_a_failed_key_reserved",
+      "subScenarioName": "prune can keep a failed key reserved",
+      "line": 232,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_prune_can_keep_a_failed_key_reserved"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_replay_succeeds_when_the_ready_queue_is_full",
+      "subScenarioName": "replay succeeds when the ready queue is full",
+      "line": 258,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_replay_succeeds_when_the_ready_queue_is_full"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_idempotent_put_uses_the_callers_transaction",
+      "subScenarioName": "idempotent put uses the callers transaction",
+      "line": 275,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_idempotent_put_uses_the_callers_transaction"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_immediate_transactions_serialize_concurrent_keyed_puts",
+      "subScenarioName": "immediate transactions serialize concurrent keyed puts",
+      "line": 294,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_immediate_transactions_serialize_concurrent_keyed_puts"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_replay_survives_close_and_reopen",
+      "subScenarioName": "replay survives close and reopen",
+      "line": 322,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_replay_survives_close_and_reopen"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_same_key_is_independent_in_each_queue_file",
+      "subScenarioName": "same key is independent in each queue file",
+      "line": 336,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_same_key_is_independent_in_each_queue_file"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_concurrent_replays_create_one_message",
+      "subScenarioName": "concurrent replays create one message",
+      "line": 349,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_concurrent_replays_create_one_message"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_concurrent_conflicting_replays_choose_one_payload",
+      "subScenarioName": "concurrent conflicting replays choose one payload",
+      "line": 376,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_concurrent_conflicting_replays_choose_one_payload"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_shared_queue_concurrent_replays_create_one_message",
+      "subScenarioName": "shared queue concurrent replays create one message",
+      "line": 413,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_shared_queue_concurrent_replays_create_one_message"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_shared_queue_concurrent_conflicts_choose_one_payload",
+      "subScenarioName": "shared queue concurrent conflicts choose one payload",
+      "line": 435,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_shared_queue_concurrent_conflicts_choose_one_payload"
+    },
+    {
+      "filePath": "tests/test_idempotency.py",
+      "testFunction": "test_legacy_schema_migration_adds_safe_message_fields",
+      "subScenarioName": "legacy schema migration adds safe message fields",
+      "line": 472,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_legacy_schema_migration_adds_safe_message_fields"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_message_legacy_constructor_uses_safe_field_defaults",
+      "subScenarioName": "message legacy constructor uses safe field defaults",
+      "line": 19,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_message_legacy_constructor_uses_safe_field_defaults"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_message_timestamps_use_unix_nanoseconds",
+      "subScenarioName": "message timestamps use unix nanoseconds",
+      "line": 34,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_message_timestamps_use_unix_nanoseconds"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_uuid7_matches_rfc_9562_test_vector",
+      "subScenarioName": "uuid7 matches rfc 9562 test vector",
+      "line": 64,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_uuid7_matches_rfc_9562_test_vector"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_uuid7_uses_unix_milliseconds_and_rfc_bits",
+      "subScenarioName": "uuid7 uses unix milliseconds and rfc bits",
+      "line": 82,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_uuid7_uses_unix_milliseconds_and_rfc_bits"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_uuid7_is_monotonic_when_clock_repeats_or_regresses",
+      "subScenarioName": "uuid7 is monotonic when clock repeats or regresses",
+      "line": 101,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_uuid7_is_monotonic_when_clock_repeats_or_regresses"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_uuid7_is_unique_during_concurrent_generation",
+      "subScenarioName": "uuid7 is unique during concurrent generation",
+      "line": 118,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_uuid7_is_unique_during_concurrent_generation"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_mixed_uuid_formats_sort_by_message_id_after_reopen",
+      "subScenarioName": "mixed uuid formats sort by message id after reopen",
+      "line": 139,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_mixed_uuid_formats_sort_by_message_id_after_reopen"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_selects_pop_method_for_sqlite_features",
+      "subScenarioName": "selects pop method for sqlite features",
+      "line": 204,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_selects_pop_method_for_sqlite_features"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_rejects_unsupported_sqlite_major_versions",
+      "subScenarioName": "rejects unsupported sqlite major versions",
+      "line": 219,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_rejects_unsupported_sqlite_major_versions"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_get_sqlite_version_returns_complete_version",
+      "subScenarioName": "get sqlite version returns complete version",
+      "line": 236,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_get_sqlite_version_returns_complete_version"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_connection_kwargs_are_forwarded_to_all_connections",
+      "subScenarioName": "connection kwargs are forwarded to all connections",
+      "line": 249,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_connection_kwargs_are_forwarded_to_all_connections"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_new_database_enables_wal",
+      "subScenarioName": "new database enables wal",
+      "line": 270,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_new_database_enables_wal"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_queue_uses_sqlite_default_cache_size",
+      "subScenarioName": "queue uses sqlite default cache size",
+      "line": 279,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_queue_uses_sqlite_default_cache_size"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_existing_wal_database_skips_journal_mode_change",
+      "subScenarioName": "existing wal database skips journal mode change",
+      "line": 292,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_existing_wal_database_skips_journal_mode_change"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_managed_connection_kwargs_are_rejected",
+      "subScenarioName": "managed connection kwargs are rejected",
+      "line": 326,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_managed_connection_kwargs_are_rejected"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_filename_creates_database_at_exact_path",
+      "subScenarioName": "filename creates database at exact path",
+      "line": 338,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_filename_creates_database_at_exact_path"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_string_filename_can_be_relative_to_current_directory",
+      "subScenarioName": "string filename can be relative to current directory",
+      "line": 349,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_string_filename_can_be_relative_to_current_directory"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_database_paths_identify_queues",
+      "subScenarioName": "database paths identify queues",
+      "line": 362,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_database_paths_identify_queues"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_filename_must_be_a_string_or_path",
+      "subScenarioName": "filename must be a string or path",
+      "line": 409,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_filename_must_be_a_string_or_path"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_filename_must_not_be_empty",
+      "subScenarioName": "filename must not be empty",
+      "line": 415,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_filename_must_not_be_empty"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_queue_creates_fixed_schema",
+      "subScenarioName": "queue creates fixed schema",
+      "line": 421,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_queue_creates_fixed_schema"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_database_with_custom_queue_table_is_rejected_without_changes",
+      "subScenarioName": "database with custom queue table is rejected without changes",
+      "line": 474,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_database_with_custom_queue_table_is_rejected_without_changes"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_database_with_queue_and_another_table_is_rejected",
+      "subScenarioName": "database with queue and another table is rejected",
+      "line": 508,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_database_with_queue_and_another_table_is_rejected"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_database_error_lists_multiple_unsupported_tables",
+      "subScenarioName": "database error lists multiple unsupported tables",
+      "line": 539,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_database_error_lists_multiple_unsupported_tables"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_insert_pop",
+      "subScenarioName": "insert pop",
+      "line": 561,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_insert_pop"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_get_unknow",
+      "subScenarioName": "get unknow",
+      "line": 575,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_get_unknow"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_pop_all_locked",
+      "subScenarioName": "pop all locked",
+      "line": 580,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_pop_all_locked"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_basic_actions",
+      "subScenarioName": "basic actions",
+      "line": 589,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_basic_actions"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_queue_size",
+      "subScenarioName": "queue size",
+      "line": 615,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_queue_size"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_prune",
+      "subScenarioName": "prune",
+      "line": 627,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_prune"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_max_size",
+      "subScenarioName": "max size",
+      "line": 642,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_max_size"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_maxsize_persists_when_reopened_without_a_value",
+      "subScenarioName": "maxsize persists when reopened without a value",
+      "line": 658,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_maxsize_persists_when_reopened_without_a_value"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_maxsize_reopens_with_the_same_value",
+      "subScenarioName": "maxsize reopens with the same value",
+      "line": 671,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_maxsize_reopens_with_the_same_value"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_conflicting_maxsize_is_rejected",
+      "subScenarioName": "conflicting maxsize is rejected",
+      "line": 683,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_conflicting_maxsize_is_rejected"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_concurrent_producers_do_not_exceed_persistent_maxsize",
+      "subScenarioName": "concurrent producers do not exceed persistent maxsize",
+      "line": 703,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_concurrent_producers_do_not_exceed_persistent_maxsize"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_zero_maxsize_is_persistent",
+      "subScenarioName": "zero maxsize is persistent",
+      "line": 735,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_zero_maxsize_is_persistent"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_negative_maxsize_is_rejected_before_schema_changes",
+      "subScenarioName": "negative maxsize is rejected before schema changes",
+      "line": 747,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_negative_maxsize_is_rejected_before_schema_changes"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_invalid_maxsize_type_is_rejected_before_schema_changes",
+      "subScenarioName": "invalid maxsize type is rejected before schema changes",
+      "line": 757,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_invalid_maxsize_type_is_rejected_before_schema_changes"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_empty",
+      "subScenarioName": "empty",
+      "line": 766,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_empty"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_list_locked",
+      "subScenarioName": "list locked",
+      "line": 774,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_list_locked"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_retry_failed",
+      "subScenarioName": "retry failed",
+      "line": 790,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_retry_failed"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_done_accepts_a_current_claim_and_rejects_a_missing_message",
+      "subScenarioName": "done accepts a current claim and rejects a missing message",
+      "line": 807,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_done_accepts_a_current_claim_and_rejects_a_missing_message"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_mark_failed_accepts_a_current_claim_and_rejects_a_missing_message",
+      "subScenarioName": "mark failed accepts a current claim and rejects a missing message",
+      "line": 819,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_mark_failed_accepts_a_current_claim_and_rejects_a_missing_message"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_retry_accepts_a_current_claim_and_rejects_a_missing_message",
+      "subScenarioName": "retry accepts a current claim and rejects a missing message",
+      "line": 831,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_retry_accepts_a_current_claim_and_rejects_a_missing_message"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_count_failed",
+      "subScenarioName": "count failed",
+      "line": 845,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_count_failed"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_queue_gets_fixed_indexes",
+      "subScenarioName": "queue gets fixed indexes",
+      "line": 874,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_queue_gets_fixed_indexes"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_duplicate_message_ids_are_rejected_by_sqlite",
+      "subScenarioName": "duplicate message ids are rejected by sqlite",
+      "line": 888,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_duplicate_message_ids_are_rejected_by_sqlite"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_fifo_queries_use_composite_index_without_temporary_sort",
+      "subScenarioName": "fifo queries use composite index without temporary sort",
+      "line": 935,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_fifo_queries_use_composite_index_without_temporary_sort"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_all_message_read_paths_return_typed_status",
+      "subScenarioName": "all message read paths return typed status",
+      "line": 951,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_all_message_read_paths_return_typed_status"
+    },
+    {
+      "filePath": "tests/test_litequeue.py",
+      "testFunction": "test_unknown_stored_status_raises_useful_error",
+      "subScenarioName": "unknown stored status raises useful error",
+      "line": 983,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_unknown_stored_status_raises_useful_error"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_pop_assigns_a_new_claim_id_for_each_delivery",
+      "subScenarioName": "pop assigns a new claim id for each delivery",
+      "line": 34,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_pop_assigns_a_new_claim_id_for_each_delivery"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_stale_worker_cannot_complete_a_new_claim",
+      "subScenarioName": "stale worker cannot complete a new claim",
+      "line": 57,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_stale_worker_cannot_complete_a_new_claim"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_expired_claim_recovery_fences_the_old_worker",
+      "subScenarioName": "expired claim recovery fences the old worker",
+      "line": 89,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_expired_claim_recovery_fences_the_old_worker"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_stale_claim_cannot_apply_a_state_transition",
+      "subScenarioName": "stale claim cannot apply a state transition",
+      "line": 121,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_stale_claim_cannot_apply_a_state_transition"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_claim_owned_transitions_reject_invalid_source_states",
+      "subScenarioName": "claim owned transitions reject invalid source states",
+      "line": 152,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_claim_owned_transitions_reject_invalid_source_states"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_failed_claim_can_return_to_ready_once",
+      "subScenarioName": "failed claim can return to ready once",
+      "line": 173,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_failed_claim_can_return_to_ready_once"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_claim_owned_transitions_reject_invalid_claim_id_types",
+      "subScenarioName": "claim owned transitions reject invalid claim id types",
+      "line": 195,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_claim_owned_transitions_reject_invalid_claim_id_types"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_claim_owned_transitions_reject_invalid_claim_id_values",
+      "subScenarioName": "claim owned transitions reject invalid claim id values",
+      "line": 211,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_claim_owned_transitions_reject_invalid_claim_id_values"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_retry_expired_changes_only_old_locked_messages",
+      "subScenarioName": "retry expired changes only old locked messages",
+      "line": 228,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_retry_expired_changes_only_old_locked_messages"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_retry_expired_rejects_invalid_threshold_types",
+      "subScenarioName": "retry expired rejects invalid threshold types",
+      "line": 286,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_retry_expired_rejects_invalid_threshold_types"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_retry_expired_rejects_invalid_threshold_values",
+      "subScenarioName": "retry expired rejects invalid threshold values",
+      "line": 303,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_retry_expired_rejects_invalid_threshold_values"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_concurrent_expired_recovery_retries_each_claim_once",
+      "subScenarioName": "concurrent expired recovery retries each claim once",
+      "line": 317,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_concurrent_expired_recovery_retries_each_claim_once"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_completion_and_expired_recovery_have_one_winner",
+      "subScenarioName": "completion and expired recovery have one winner",
+      "line": 354,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_completion_and_expired_recovery_have_one_winner"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_retry_expired_uses_a_strict_age_boundary",
+      "subScenarioName": "retry expired uses a strict age boundary",
+      "line": 405,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_retry_expired_uses_a_strict_age_boundary"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_retry_expired_uses_a_fractional_nanosecond_threshold",
+      "subScenarioName": "retry expired uses a fractional nanosecond threshold",
+      "line": 425,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_retry_expired_uses_a_fractional_nanosecond_threshold"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_retry_expired_rejects_a_seconds_threshold_too_large_for_float",
+      "subScenarioName": "retry expired rejects a seconds threshold too large for float",
+      "line": 445,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_retry_expired_rejects_a_seconds_threshold_too_large_for_float"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_retry_expired_accepts_a_large_finite_seconds_threshold",
+      "subScenarioName": "retry expired accepts a large finite seconds threshold",
+      "line": 455,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_retry_expired_accepts_a_large_finite_seconds_threshold"
+    },
+    {
+      "filePath": "tests/test_message_claim_ids.py",
+      "testFunction": "test_claim_id_sequence_survives_close_and_reopen",
+      "subScenarioName": "claim id sequence survives close and reopen",
+      "line": 477,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_claim_id_sequence_survives_close_and_reopen"
+    },
+    {
+      "filePath": "tests/test_migrations.py",
+      "testFunction": "test_migration_1_reproduces_the_version_012_schema",
+      "subScenarioName": "migration 1 reproduces the version 012 schema",
+      "line": 69,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_migration_1_reproduces_the_version_012_schema"
+    },
+    {
+      "filePath": "tests/test_migrations.py",
+      "testFunction": "test_migration_1_adopts_an_existing_version_012_database",
+      "subScenarioName": "migration 1 adopts an existing version 012 database",
+      "line": 115,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_migration_1_adopts_an_existing_version_012_database"
+    },
+    {
+      "filePath": "tests/test_migrations.py",
+      "testFunction": "test_migrations_are_applied_in_version_order",
+      "subScenarioName": "migrations are applied in version order",
+      "line": 164,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_migrations_are_applied_in_version_order"
+    },
+    {
+      "filePath": "tests/test_migrations.py",
+      "testFunction": "test_migration_2_upgrades_a_database_at_version_1",
+      "subScenarioName": "migration 2 upgrades a database at version 1",
+      "line": 188,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_migration_2_upgrades_a_database_at_version_1"
+    },
+    {
+      "filePath": "tests/test_migrations.py",
+      "testFunction": "test_migration_3_upgrades_a_database_at_version_2",
+      "subScenarioName": "migration 3 upgrades a database at version 2",
+      "line": 231,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_migration_3_upgrades_a_database_at_version_2"
+    },
+    {
+      "filePath": "tests/test_migrations.py",
+      "testFunction": "test_existing_version_012_capacity_survives_all_migrations",
+      "subScenarioName": "existing version 012 capacity survives all migrations",
+      "line": 280,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_existing_version_012_capacity_survives_all_migrations"
+    },
+    {
+      "filePath": "tests/test_migrations.py",
+      "testFunction": "test_failed_migration_does_not_advance_user_version",
+      "subScenarioName": "failed migration does not advance user version",
+      "line": 317,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_failed_migration_does_not_advance_user_version"
+    },
+    {
+      "filePath": "tests/test_migrations.py",
+      "testFunction": "test_concurrent_migration_runners_apply_each_version_once",
+      "subScenarioName": "concurrent migration runners apply each version once",
+      "line": 337,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_concurrent_migration_runners_apply_each_version_once"
+    },
+    {
+      "filePath": "tests/test_migrations.py",
+      "testFunction": "test_newer_database_version_is_rejected_without_schema_changes",
+      "subScenarioName": "newer database version is rejected without schema changes",
+      "line": 370,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_newer_database_version_is_rejected_without_schema_changes"
+    },
+    {
+      "filePath": "tests/test_release_migrations.py",
+      "testFunction": "test_checkout_migrates_a_queue_created_by_version_012",
+      "subScenarioName": "checkout migrates a queue created by version 012",
+      "line": 381,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_checkout_migrates_a_queue_created_by_version_012"
+    },
+    {
+      "filePath": "tests/test_release_migrations.py",
+      "testFunction": "test_checkout_migrates_a_queue_created_by_version_013",
+      "subScenarioName": "checkout migrates a queue created by version 013",
+      "line": 503,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_checkout_migrates_a_queue_created_by_version_013"
+    },
+    {
+      "filePath": "tests/test_size_semantics.py",
+      "testFunction": "test_locked_work_is_not_ready_backlog",
+      "subScenarioName": "locked work is not ready backlog",
+      "line": 6,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_locked_work_is_not_ready_backlog"
+    },
+    {
+      "filePath": "tests/test_size_semantics.py",
+      "testFunction": "test_counts_cover_every_message_status",
+      "subScenarioName": "counts cover every message status",
+      "line": 22,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_counts_cover_every_message_status"
+    },
+    {
+      "filePath": "tests/test_sqlite_versions.py",
+      "testFunction": "test_suite_passes_with_sqlite_release",
+      "subScenarioName": "suite passes with sqlite release",
+      "line": 71,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_suite_passes_with_sqlite_release"
+    },
+    {
+      "filePath": "tests/test_threading.py",
+      "testFunction": "test_file_queue_uses_shared_connection_options",
+      "subScenarioName": "file queue uses shared connection options",
+      "line": 41,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_file_queue_uses_shared_connection_options"
+    },
+    {
+      "filePath": "tests/test_threading.py",
+      "testFunction": "test_read_pool_contains_ten_distinct_query_only_connections",
+      "subScenarioName": "read pool contains ten distinct query only connections",
+      "line": 63,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_read_pool_contains_ten_distinct_query_only_connections"
+    },
+    {
+      "filePath": "tests/test_threading.py",
+      "testFunction": "test_read_connection_is_returned_to_pool",
+      "subScenarioName": "read connection is returned to pool",
+      "line": 84,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_read_connection_is_returned_to_pool"
+    },
+    {
+      "filePath": "tests/test_threading.py",
+      "testFunction": "test_shared_queue_enforces_maxsize_under_contention",
+      "subScenarioName": "shared queue enforces maxsize under contention",
+      "line": 104,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_shared_queue_enforces_maxsize_under_contention"
+    },
+    {
+      "filePath": "tests/test_threading.py",
+      "testFunction": "test_shared_queue_supports_concurrent_lifecycle_operations",
+      "subScenarioName": "shared queue supports concurrent lifecycle operations",
+      "line": 125,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_shared_queue_supports_concurrent_lifecycle_operations"
+    },
+    {
+      "filePath": "tests/test_threading.py",
+      "testFunction": "test_concurrent_consumers_do_not_duplicate_claims",
+      "subScenarioName": "concurrent consumers do not duplicate claims",
+      "line": 153,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_concurrent_consumers_do_not_duplicate_claims"
+    },
+    {
+      "filePath": "tests/test_threading.py",
+      "testFunction": "test_transaction_rollback_excludes_concurrent_put",
+      "subScenarioName": "transaction rollback excludes concurrent put",
+      "line": 172,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_transaction_rollback_excludes_concurrent_put"
+    },
+    {
+      "filePath": "tests/test_threading.py",
+      "testFunction": "test_reads_continue_without_observing_uncommitted_writes",
+      "subScenarioName": "reads continue without observing uncommitted writes",
+      "line": 199,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_reads_continue_without_observing_uncommitted_writes"
+    },
+    {
+      "filePath": "tests/test_threading.py",
+      "testFunction": "test_transaction_owner_reads_its_uncommitted_writes",
+      "subScenarioName": "transaction owner reads its uncommitted writes",
+      "line": 229,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_transaction_owner_reads_its_uncommitted_writes"
+    },
+    {
+      "filePath": "tests/test_threading.py",
+      "testFunction": "test_concurrent_failure_and_retry_transitions",
+      "subScenarioName": "concurrent failure and retry transitions",
+      "line": 244,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_concurrent_failure_and_retry_transitions"
+    },
+    {
+      "filePath": "tests/test_threading.py",
+      "testFunction": "test_close_waits_for_active_transaction",
+      "subScenarioName": "close waits for active transaction",
+      "line": 282,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_close_waits_for_active_transaction"
+    },
+    {
+      "filePath": "tests/test_threading.py",
+      "testFunction": "test_close_waits_for_checked_out_read_connection",
+      "subScenarioName": "close waits for checked out read connection",
+      "line": 313,
+      "assertionTypes": [
+        "pytest/unittest"
+      ],
+      "inferredInvariant": "Guarantees invariant: test_close_waits_for_checked_out_read_connection"
+    }
+  ],
+  "historicalFixesSummary": [
+    {
+      "commitHash": "8084787353ef75b958b182548d0f4be842b86627",
+      "authorDate": "2026-07-20T22:59:25+02:00",
+      "subject": "better version checks",
+      "body": "closes https://github.com/litements/litequeue/issues/25",
+      "issueRefs": [],
+      "touchedFiles": [
+        "readme.md",
+        "src/litequeue/__init__.py",
+        "tests/test_litequeue.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "8bde1654598f2ce61d3fc349f5408092b2acf35c",
+      "authorDate": "2026-07-20T17:05:24+02:00",
+      "subject": "fix",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "benchmark.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "6322d765a0a98c417843d54497dc3ff7f6a2b675",
+      "authorDate": "2026-07-20T11:21:25+02:00",
+      "subject": "Merge branch 'ag/fix-uuidv7'",
+      "body": "# Conflicts:\n#\tsrc/litequeue/__init__.py\n#\ttests/test_litequeue.py",
+      "issueRefs": [],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1543fc0084b0d8f17d809fb9e8c765a824e7c067",
+      "authorDate": "2026-07-20T10:24:11+02:00",
+      "subject": "Merge branch 'ag/fix-litequeue-review-backlog'",
+      "body": "# Conflicts:\n#\tsrc/litequeue/__init__.py\n#\ttests/test_litequeue.py",
+      "issueRefs": [],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "8b9f388057535e6b03b225b2f858d990bdb9ca4c",
+      "authorDate": "2026-07-20T10:19:38+02:00",
+      "subject": "maxsize reopen fix and validation",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "readme.md",
+        "src/litequeue/__init__.py",
+        "tests/test_litequeue.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "14dd632ec71a02c204f32a4381bbd5b1d8d794d9",
+      "authorDate": "2026-07-20T10:16:31+02:00",
+      "subject": "fix potential SQL injection",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "src/litequeue/__init__.py",
+        "tests/test_litequeue.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "14c0dd14be2f75c90dd69f244127278118fc7792",
+      "authorDate": "2024-08-08T23:20:39+02:00",
+      "subject": "Merge pull request #15 from grzegorz-aniol/fix/custom-queue-name",
+      "body": "Fix for supporting custom queue table name",
+      "issueRefs": [
+        "#15"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "897ddda8e1e5538bd84c63c70cd47aae8b98bb84",
+      "authorDate": "2024-08-08T22:38:03+02:00",
+      "subject": "Fix for supporting custom queue table name",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "litequeue.py",
+        "test.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "325375861212c206d1c868d2c6bd0171e40482d7",
+      "authorDate": "2024-07-16T09:57:10+02:00",
+      "subject": "Merge pull request #14 from ifduyue/patch-1",
+      "body": "Fix typo in uuid7 function",
+      "issueRefs": [
+        "#14"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "8be93ee39327c3936fa4852e0f659023596e752c",
+      "authorDate": "2024-07-16T15:47:08+08:00",
+      "subject": "Fix typo in uuid7 function",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "litequeue.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "52051977575f9fa6c7c3b5f17513b26a3e549abf",
+      "authorDate": "2024-03-11T22:34:20+01:00",
+      "subject": "update fixture names",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "test.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "4a85f264568a755dfae4746fce37b870eadfbb61",
+      "authorDate": "2023-09-25T13:28:12+02:00",
+      "subject": "fix type hint",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "litequeue.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "2839dd331d407244fce58d70ba47be28f1b364cd",
+      "authorDate": "2023-09-25T13:19:09+02:00",
+      "subject": "Merge pull request #8 from nische/main",
+      "body": "Bugfix in retry (assert x ) & add some simple features",
+      "issueRefs": [
+        "#8"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "0cae294a20e3b57770d18fd1fcd6f04e37ad2f6c",
+      "authorDate": "2023-07-18T12:45:08+02:00",
+      "subject": "fix bug enum repr change in new python versions",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "litequeue.py",
+        "test.py"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "7cb80a829267c7b0cc76b0f6161ad00b5b102169",
+      "authorDate": "2023-02-12T23:22:59+01:00",
+      "subject": "fix upload command",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "Makefile"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "bf06a31250a2acf31f6f6b7e4a0e59f7707c9745",
+      "authorDate": "2023-02-12T23:14:14+01:00",
+      "subject": "fix",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "litequeue.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "f6ef6fd2fcb911e7fd7305e3a9977c8808499391",
+      "authorDate": "2023-02-12T23:08:40+01:00",
+      "subject": "Fix",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "litequeue.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "94457dac8e80b7d8957fe3698306f484a0fe5088",
+      "authorDate": "2023-02-12T23:05:44+01:00",
+      "subject": "Fix",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "litequeue.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "2ae13cc5348841e6b759dbfffc053d401c990ff5",
+      "authorDate": "2023-02-12T23:01:47+01:00",
+      "subject": "Fix",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "litequeue.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "36f3e61dcb193686acee532172f4c48c1a425808",
+      "authorDate": "2023-02-12T22:47:51+01:00",
+      "subject": "fix",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "test.py"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "3eda9d9882cf14436751cab26b22e814399beca1",
+      "authorDate": "2021-02-09T16:32:05+01:00",
+      "subject": "fix type signatures",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "litequeue.py"
+      ],
+      "fixCategory": "other"
+    }
+  ]
+}

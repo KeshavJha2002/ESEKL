@@ -1,0 +1,985 @@
+[
+  {
+    "commitHash": "85cf10c09c6c3c86160d6f0eb156f62d0efc1648",
+    "authorDate": "2026-08-11T14:19:49-04:00",
+    "subject": "Merge pull request #1534 from jehiah/tcp_connection_blocking_shutdown_1534",
+    "body": "bug(nsqd): TCP shutdown hang from late connection registration",
+    "issueRefs": [
+      "#1534"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "e9ba0b486844e426918065e897b8a36cca5c6aaf",
+    "authorDate": "2026-08-04T23:37:20-04:00",
+    "subject": "Fix TCP shutdown hang: track pending (pre-handshake) connections",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqd/tcp.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "6a6c424e8e6b3975f8ae8f96e56850136a1bdf27",
+    "authorDate": "2026-08-04T23:28:12-04:00",
+    "subject": "Add test reproducing TCP shutdown hang on slow/idle clients",
+    "body": "A connection accepted by protocol.TCPServer is counted in its WaitGroup\nimmediately, but tcpServer.Handle() only registers it in the conns map\n(used by Close() to force-close outstanding connections) after reading\nthe client's 4-byte protocol magic via io.ReadFull, with no read\ndeadline set beforehand. A client that connects and never sends data is\ntherefore invisible to Close() and blocks wg.Wait() (and thus\nnsqd.Exit()) forever.\n\nUses testing/synctest with a net.Pipe-backed fake listener to reproduce\nthis deterministically without real sockets or wall-clock timeouts.\n\nCo-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqd/tcp_test.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "9ea507128926c83b7dd8f32d8c38bbbe8ef41beb",
+    "authorDate": "2025-06-29T12:17:41-04:00",
+    "subject": "Merge pull request #1504 from c3llus/feat/issue-1499/new-max-defer-delay",
+    "body": "nsqd: add support for configurable max-defer-timeout for DPUB",
+    "issueRefs": [
+      "#1504"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "d182ee2fb26c6c60dd00cc20b421cb1cd6e9978d",
+    "authorDate": "2024-11-18T12:25:47+07:00",
+    "subject": "feat(nsqd): added new max defer timeout options",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "apps/nsqd/main.go",
+      "apps/nsqd/options.go",
+      "nsqd/http.go",
+      "nsqd/options.go",
+      "nsqd/protocol_v2.go",
+      "nsqd/protocol_v2_test.go",
+      "nsqd/protocol_v2_unixsocket_test.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "73d42c442b8bd45fd7ed59e908c8f742f950c1c0",
+    "authorDate": "2024-11-17T17:03:23-08:00",
+    "subject": "Merge pull request #1498 from johnou/bugfix/nsqadmin_graphite_target_param",
+    "body": "nsqadmin: fix graphite 'target' param serialization",
+    "issueRefs": [
+      "#1498"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "62fa86898f0cc688fe965f990cb160fed1a9286a",
+    "authorDate": "2024-04-28T11:28:07-07:00",
+    "subject": "Merge pull request #1485 from writegr/master",
+    "body": "chore: fix function name",
+    "issueRefs": [
+      "#1485"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f61cda2a7e728acd7d6d402774e3c224fd80a9b3",
+    "authorDate": "2024-04-18T12:09:18+08:00",
+    "subject": "chore: fix function name",
+    "body": "Signed-off-by: writegr <wellweek@outlook.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/protocol/errors.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bd6b0abb3feea26a99988fdda7907b636a6dcfe5",
+    "authorDate": "2023-12-27T18:38:01-05:00",
+    "subject": "dist: push multi-platform image; fix bugs creating 'latest' tag",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "Makefile",
+      "dist.sh"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c3941e19d4f3027409ee849a3910506f797eccc0",
+    "authorDate": "2023-12-26T10:17:47-08:00",
+    "subject": "Merge pull request #1473 from intellitrend-team/fix-nsqauth-tls-root-ca-file",
+    "body": "nsqd: use --tls-root-ca-file in nsqauth request",
+    "issueRefs": [
+      "#1473"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2a5fb3efabcef66514c9d1e2909023192e82b476",
+    "authorDate": "2023-12-26T09:52:15-08:00",
+    "subject": "Merge pull request #1478 from dudleycarr/fix-docker-build",
+    "body": "Dockerfile: remove nsswitch.conf check",
+    "issueRefs": [
+      "#1478"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "eb27dd5c0102d641c758ce59297eb2a17e955ff0",
+    "authorDate": "2023-11-06T12:56:53+01:00",
+    "subject": "nsqd: use --tls-root-ca-file in nsqauth request",
+    "body": "Fix #1464",
+    "issueRefs": [
+      "#1464"
+    ],
+    "touchedFiles": [
+      "internal/auth/authorizations.go",
+      "nsqd/client_v2.go",
+      "nsqd/nsqd.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e6e3f7c92b8c471d40fa4c74703b1c211e51d9a3",
+    "authorDate": "2023-10-29T19:23:33-07:00",
+    "subject": "Merge pull request #1468 from dudleycarr/fix-add-topic-pause-label",
+    "body": "nsqadmin: add paused label to topics within the node view.",
+    "issueRefs": [
+      "#1468"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5cef35c91b9a409c1cb9c66a74fb515c281820cf",
+    "authorDate": "2023-10-29T18:22:35-07:00",
+    "subject": "Merge pull request #1469 from dudleycarr/fix-eslint-errors",
+    "body": "nsqadmin: fix eslint errors",
+    "issueRefs": [
+      "#1469"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6d4bd5c489a4c12f24ee8689193befa1757ed25b",
+    "authorDate": "2023-10-26T21:44:41-07:00",
+    "subject": "fix eslint errors",
+    "body": "* Define globals in eslint config\n* Add missing semicolons\n* Fix line length issues\n* Rename Node to NodeModel to avoid built-in conflict\n* Added lint script to package.json",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqadmin/.eslintrc",
+      "nsqadmin/package.json",
+      "nsqadmin/static/build/main.js.map",
+      "nsqadmin/static/js/collections/nodes.js",
+      "nsqadmin/static/js/lib/handlebars_helpers.js",
+      "nsqadmin/static/js/models/node.js",
+      "nsqadmin/static/js/views/app.js",
+      "nsqadmin/static/js/views/counter.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "30998dd27fb4dabc88dc96a7197f5347adf74183",
+    "authorDate": "2023-10-25T09:48:39-04:00",
+    "subject": "Merge pull request #1467 from dudleycarr/fix-run-away-counter",
+    "body": "nsqadmin: fix counter view",
+    "issueRefs": [
+      "#1467"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1f116a9f2f242a3b787278618508daf28e874b89",
+    "authorDate": "2023-10-24T11:06:27-07:00",
+    "subject": "fix counter by bounding animation steps",
+    "body": "Use lastNum instead of remainder\n\nAdd nsqadmin build artifacts",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqadmin/static/build/main.js",
+      "nsqadmin/static/build/main.js.map",
+      "nsqadmin/static/js/views/counter.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9a8c304460e4bdf7361326e21c5a9fe58892c39f",
+    "authorDate": "2023-10-24T14:38:31-04:00",
+    "subject": "Merge pull request #1462 from dudleycarr/fix-admin-check-tombstoneNodeForTopic",
+    "body": "nsqadmin: add admin check for topic/node thombstone endpoint",
+    "issueRefs": [
+      "#1462"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fc7550658dea84be1c3564f70fa8eeb6436f4330",
+    "authorDate": "2023-09-28T15:57:49-07:00",
+    "subject": "fix: add admin check for topic/node thombstone endpoint",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqadmin/http.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "096736654a6b5aeec28e5efd57588066bfbe55f9",
+    "authorDate": "2023-10-24T13:56:30-04:00",
+    "subject": "Merge pull request #1466 from dudleycarr/fix-nsqadmin-node-view",
+    "body": "nsqadmin: fix broken graph template in node view",
+    "issueRefs": [
+      "#1466"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "428db4d00b0f676bf31d07bbcb6fe69568faee36",
+    "authorDate": "2023-10-24T09:09:56-07:00",
+    "subject": "fix broken graph template in nsqadmin node view",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqadmin/static/build/main.js",
+      "nsqadmin/static/build/main.js.map",
+      "nsqadmin/static/js/views/node.hbs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f1aa9468df99f944c3ed6b9b1073bcc515e9134d",
+    "authorDate": "2023-07-16T13:07:21-07:00",
+    "subject": "*: fix deprecated use of toml.DecodeReader",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "apps/nsqd/main_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d1d836e548f86c8a3be007adb0f11cd337289fee",
+    "authorDate": "2023-05-29T18:57:35-07:00",
+    "subject": "Merge pull request #1450 from mreiferson/staticcheck-fix",
+    "body": "*: bump staticcheck-action",
+    "issueRefs": [
+      "#1450"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "49c281587ecc4dae15dd085af8811ba619a18c48",
+    "authorDate": "2023-05-29T18:42:05-07:00",
+    "subject": "Merge pull request #1439 from zhouhailin/oscs_fix_cfkuq80au51vtsb6vdig",
+    "body": "fix(sec): upgrade boto to",
+    "issueRefs": [
+      "#1439"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cfbd287826cd2182c28ef7071e62e3a5c98f72ce",
+    "authorDate": "2023-04-26T18:11:10+08:00",
+    "subject": "fix(nsqd):concurrency safety",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqd/channel.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1362af17d50b7129b47c0291e7f2e0b7eef2bb62",
+    "authorDate": "2023-03-05T16:19:31-08:00",
+    "subject": "Merge pull request #1441 from ploxiln/spreadwriter_flush_empty",
+    "body": "SpreadWriter: fix flush panic with zero writes",
+    "issueRefs": [
+      "#1441"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "af671755495f5359cf06f1663f3f1adf842c543d",
+    "authorDate": "2023-02-28T02:48:49-05:00",
+    "subject": "SpreadWriter: fix flush panic with zero writes",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/writers/spread_writer.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "393f7b994f0c15b7cccccbb605f983be5dcfd8db",
+    "authorDate": "2022-09-23T11:47:46-04:00",
+    "subject": "Merge pull request #1424 from guozhao-coder/nsqd-freememory-api",
+    "body": "nsqd: add debug http endpoint to release memory to OS",
+    "issueRefs": [
+      "#1424"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b4b8339e4db2acba923831b203ea079c04c746aa",
+    "authorDate": "2022-08-05T09:57:55+08:00",
+    "subject": "Update readme.md",
+    "body": "fixed typo and punctuations",
+    "issueRefs": [],
+    "touchedFiles": [
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9b4ac5509e51c87b613364a69224e43bf7970780",
+    "authorDate": "2022-04-25T16:29:07+05:30",
+    "subject": "fix : nsqd /info api returns more information about nsqd instance. #1401",
+    "body": "",
+    "issueRefs": [
+      "#1401"
+    ],
+    "touchedFiles": [
+      "nsqd/http.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "74731b699a521f673a5cc514e3831d538fe07142",
+    "authorDate": "2021-09-11T21:56:30-04:00",
+    "subject": "Merge pull request #1372 from ploxiln/nsqadmin_assets_debug_flag",
+    "body": "nsqadmin: new flag --dev-static-dir instead of debug build tag",
+    "issueRefs": [
+      "#1372"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2e99e51c798341a68adec2be02f28accd5db6c9a",
+    "authorDate": "2021-09-05T17:23:29-04:00",
+    "subject": "nsqadmin: new flag --dev-static-dir instead of debug build tag",
+    "body": "avoid hard-coded ../../nsqadmin/static/build in debug build,\nmore flexible and obvious this way",
+    "issueRefs": [],
+    "touchedFiles": [
+      "apps/nsqadmin/main.go",
+      "nsqadmin/readme.md",
+      "nsqadmin/http.go",
+      "nsqadmin/options.go",
+      "nsqadmin/static.go",
+      "nsqadmin/static_debug.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "12901cd322680888dae39448021f6f317d9d18f9",
+    "authorDate": "2021-08-15T21:02:23-07:00",
+    "subject": "Merge pull request #1365 from mreiferson/dist-fix",
+    "body": "dist: don't push images",
+    "issueRefs": [
+      "#1365"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fbe961ca079ab007d974c072df631ca485798c72",
+    "authorDate": "2021-08-15T13:37:06-07:00",
+    "subject": "Merge pull request #1361 from mreiferson/windows-crash",
+    "body": "apps/nsqd: initialize nsqd in Init(); move signal handling to go-svc",
+    "issueRefs": [
+      "#1361"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "828d1559916bd9e356086582968fc23b400bd44e",
+    "authorDate": "2021-08-15T11:18:46-04:00",
+    "subject": "Dockerfile: simplify - remove GO111MODULE and DESTDIR",
+    "body": "* recent versions of Go do not need GO111MODULE set\n * PREFIX=/opt/nsq makes as much sense as DESTDIR=/opt PREFIX=/nsq\n * no need to run test.sh in the same RUN as the build",
+    "issueRefs": [],
+    "touchedFiles": [
+      "Dockerfile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "19a913cad66e1597a6a9f1ae11bf3013d48e5d1c",
+    "authorDate": "2021-05-12T11:23:11-04:00",
+    "subject": "fixup formatting more",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/auth/authorizations.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "37c281745280f363938c505a2989e61643d04043",
+    "authorDate": "2021-05-12T11:22:37-04:00",
+    "subject": "fixup formatting",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/auth/authorizations.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fd6c5491b6390535f1cbb2964159f0336d4960a2",
+    "authorDate": "2021-05-12T17:14:58+03:00",
+    "subject": "check for schema separator instead of http, https://github.com/nsqio/nsq/pull/1341#issuecomment-839065228",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/auth/authorizations.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "619ac107518795e802fb2293a48dcf90b1df95c9",
+    "authorDate": "2021-04-03T19:42:53-07:00",
+    "subject": "Merge pull request #1314 from mreiferson/ephemeral-live-lock-1251",
+    "body": "nsqd: fix ephemeral channel sub live lock",
+    "issueRefs": [
+      "#1314"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7521c9db979bcdc484816e92b6492d55d946743a",
+    "authorDate": "2021-01-01T21:02:37-08:00",
+    "subject": "nsqd: only try 2x for ephemeral channel sub race; extend timeout to 100ms",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqd/protocol_v2.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "58a8cc71c17a29becc33cb949d27c613959b3890",
+    "authorDate": "2021-01-01T16:51:19-08:00",
+    "subject": "nsqd: fix error message for sub > max consumers",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqd/channel.go",
+      "nsqd/protocol_v2.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "74f0dca57b80551af2935341c656017c26b02280",
+    "authorDate": "2021-03-28T18:52:32-07:00",
+    "subject": "Merge pull request #1330 from edoger/fix-example-cfg-files",
+    "body": "*: fix invalid key in example cfg file and support log_level from cfg file",
+    "issueRefs": [
+      "#1330"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "798b939901629ac90495150c917a63494d247e37",
+    "authorDate": "2021-03-28T12:31:51-07:00",
+    "subject": "Merge pull request #1333 from mreiferson/test-script",
+    "body": "*: test script failing to run -race",
+    "issueRefs": [
+      "#1333"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "ca13d88277b3c40b00a501e629e2114154e30c6f",
+    "authorDate": "2021-03-28T11:13:31-07:00",
+    "subject": "*: fix test for standard sh",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "test.sh"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a2140606f819e43f5da51ac03d692dd93ee99884",
+    "authorDate": "2021-03-18T19:10:50+08:00",
+    "subject": "Fix invalid key in example cfg file.",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "contrib/nsqadmin.cfg.example",
+      "contrib/nsqd.cfg.example",
+      "contrib/nsqlookupd.cfg.example"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d3d0bbf01e22943700bb61b94fade60f99216f49",
+    "authorDate": "2020-06-13T21:09:12-07:00",
+    "subject": "Revert \"nsqd: fix stall in Exit() due to tcp-protocol producer connections\"",
+    "body": "This reverts commit 5f2153fb301af5293d6c9bb993432316bd9ab310.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqd/nsqd.go",
+      "nsqd/tcp.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c3a47b9e016d942175df64b7c50e189c2751c901",
+    "authorDate": "2020-11-18T22:17:46-05:00",
+    "subject": "Merge pull request #1297 from bharatx-in/issue-1073",
+    "body": "nsqd: seperate broadcast ports for tcp and http",
+    "issueRefs": [
+      "#1297"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e989f967d9c2768483af784146461be7d1f63674",
+    "authorDate": "2020-10-18T20:46:26-04:00",
+    "subject": "Merge pull request #1287 from nsqio/nsqadmin-fix-graphite-url",
+    "body": "nsqadmin: --proxy-graphite option is broken",
+    "issueRefs": [
+      "#1287"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6ef4b60c24f8fb8374a21f9c518174c2915d8d11",
+    "authorDate": "2020-10-10T21:54:29-07:00",
+    "subject": "nsqadmin: fix GRAPHITE_URL when --proxy-graphite enabled",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqadmin/static/html/index.html"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1124ec8cd651e2c63d70a9c8dce4e6aa9e03a4d0",
+    "authorDate": "2020-07-29T22:25:03-04:00",
+    "subject": "Merge pull request #1271 from TangDH03/master",
+    "body": "nsqlookupd: fix listen error lists incorrect address",
+    "issueRefs": [
+      "#1271"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e0407926d6d9c13e048d0e77d9e371f857b54837",
+    "authorDate": "2020-07-29T21:44:57+08:00",
+    "subject": "nsqlookupd: fix listen error lists incorrect address",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqlookupd/nsqlookupd.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c9001fc5faabae88ad0922014fc81f5157170807",
+    "authorDate": "2020-06-16T08:13:20-07:00",
+    "subject": "Merge pull request #1264 from mreiferson/fix-benchmark-script",
+    "body": "*: update and fix benchmark script",
+    "issueRefs": [
+      "#1264"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d82459db82daa9ab6081d66aa02fdca73af064b2",
+    "authorDate": "2020-06-11T09:05:22-04:00",
+    "subject": "Merge pull request #1261 from mreiferson/readme-fix",
+    "body": "readme: fix bytedance image ref",
+    "issueRefs": [
+      "#1261"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fb8a9a1c9680786b06927ebdd2b153cc6494fc41",
+    "authorDate": "2020-06-10T22:03:36-07:00",
+    "subject": "readme: fix bytedance image ref",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8db8c50e5e583bbde3528de93a5e363edd788868",
+    "authorDate": "2020-03-26T18:31:23-04:00",
+    "subject": "Merge pull request #1243 from victorabarros/master",
+    "body": "fix docker hub url in changelog",
+    "issueRefs": [
+      "#1243"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "2207dc2ee147108bc03c393d58233f9e127d0ff0",
+    "authorDate": "2020-03-26T17:21:48-03:00",
+    "subject": "Fix docker hub url",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ChangeLog.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ce7706d3374fa402c2ad1fc691cd6e3a0e902ff6",
+    "authorDate": "2020-02-19T22:56:13-05:00",
+    "subject": "Dockerfile: add nsswitch.conf so go resolver uses /etc/hosts first",
+    "body": "go upstream might fix this soon, but for now it is rather surprising\nsee https://github.com/golang/go/issues/35305",
+    "issueRefs": [],
+    "touchedFiles": [
+      "Dockerfile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "702a1c0ba460cde7e9f8fccc073fe87bfaaff0f9",
+    "authorDate": "2019-12-03T19:18:40-05:00",
+    "subject": "Merge pull request #1220 from mdh67899/fix-log",
+    "body": "fix the log when data-path is not exist",
+    "issueRefs": [
+      "#1220"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f6c533625053d46b59be30bfb8e8ca5d86608317",
+    "authorDate": "2019-12-03T13:35:29+08:00",
+    "subject": "fix the log output when data-path is not exist or in use by another instance of nsqd",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/dirlock/dirlock.go",
+      "nsqd/nsqd.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5b67f580f3cbb63c02c4678e76896f5807147145",
+    "authorDate": "2019-10-29T01:12:29-04:00",
+    "subject": "Merge pull request #1205 from ploxiln/fix_build_win_tag",
+    "body": "build: fix dirlock build tags for windows build",
+    "issueRefs": [
+      "#1205"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2a46de8cf56dfd2be9f7a73b0ede72e748c32a20",
+    "authorDate": "2019-10-25T18:05:11-04:00",
+    "subject": "build: fix dirlock build tags for windows build",
+    "body": "needs to be \"not windows AND not illumos\"\nwas OR - always true because windows is not illumos\n(and illumos was broken similarly)",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/dirlock/dirlock.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "430e90b658ea7698b40fa62d4430c4613cfb4bd5",
+    "authorDate": "2019-10-26T23:15:08-07:00",
+    "subject": "Replace sort.Sort with sort.Ints",
+    "body": "Fix staticcheck issue",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/pqueue/pqueue_test.go",
+      "nsqd/in_flight_pqueue_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c3c5af987e3ace68cc6174a77596975188b5ce2e",
+    "authorDate": "2019-10-16T23:10:57-04:00",
+    "subject": "Merge pull request #1198 from ploxiln/nsqd_exit_tcp_closeall",
+    "body": "nsqd: fix stall in Exit() due to tcp producer conns",
+    "issueRefs": [
+      "#1198"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5f2153fb301af5293d6c9bb993432316bd9ab310",
+    "authorDate": "2019-10-15T02:32:25-04:00",
+    "subject": "nsqd: fix stall in Exit() due to tcp-protocol producer connections",
+    "body": "Consumer connections are closed when topics are closed,\nbut tcp-protocol publish connections are not,\nso add tcpServer.CloseAll().\n\nproblem introduced by https://github.com/nsqio/nsq/pull/1190",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqd/nsqd.go",
+      "nsqd/tcp.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5c31a5163b45856bb5c42be3371c927ee3f92f75",
+    "authorDate": "2019-10-03T22:47:04+02:00",
+    "subject": "Merge pull request #1195 from i-sevostyanov/master",
+    "body": "dirlock: fix compilation on illumos.",
+    "issueRefs": [
+      "#1195"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "72cbb4077c98d2de7b9e9257979d1237ec817421",
+    "authorDate": "2019-10-01T22:02:40+03:00",
+    "subject": "Fix compilation on illumos.",
+    "body": "Fixes #765",
+    "issueRefs": [
+      "Fixes #765"
+    ],
+    "touchedFiles": [
+      "internal/dirlock/dirlock.go",
+      "internal/dirlock/dirlock_illumos.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fa9f2b41a2783cb879991d73b0724fc6883f6b1b",
+    "authorDate": "2019-09-21T23:08:29-04:00",
+    "subject": "Merge pull request #1189 from ploxiln/bump_handlebars",
+    "body": "nsqadmin: update run-time js deps, fix channel delete",
+    "issueRefs": [
+      "#1189"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4d384b4383d82697e4a2a3ae21692985536bc5fa",
+    "authorDate": "2019-09-18T20:15:50-04:00",
+    "subject": "nsqadmin: fix js source-map serving for firefox",
+    "body": "The Content-Type of the source-map file is not supposed to matter.\nBut, if Content-Encoding is gzip, and Content-Type is x-gzip, then\nFirefox does not decompress the response before trying to decode json,\nand fails to load the source map for the debugger, complaining:\n\"unexpected character at line 1 column 1 of the JSON data\".\nWith a proper Content-Type, Firefox decompresses and understands.\n(Chrome works either way.)",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqadmin/http.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "56c146342467f88b7377884534be2b6c68feb328",
+    "authorDate": "2019-09-18T17:45:25-04:00",
+    "subject": "nsqadmin: fix nsqadmin channel delete \"this.model undefined\"",
+    "body": "I don't fully understand \"this\" scope, but this change seems to\nfix the delete button for both firefox and chrome.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqadmin/static/js/views/channel.js"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "09b06de17ae811de28f3f8fe2e6bb6f4cc0a382b",
+    "authorDate": "2019-09-19T23:27:08-04:00",
+    "subject": "Merge pull request #1190 from benjsto/benjsto/go-1-12-tests",
+    "body": "nsqlookupd: synchronize goroutines to avoid t.Log data races",
+    "issueRefs": [
+      "#1190"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "61de19e43f7f3bb7059614a00aea5230d5c856e0",
+    "authorDate": "2019-09-18T17:23:00-05:00",
+    "subject": "nsqlookupd: close all connections on exit to avoid t.Log races",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/protocol/tcp_server.go",
+      "nsqlookupd/lookup_protocol_v1_test.go",
+      "nsqlookupd/nsqlookupd.go",
+      "nsqlookupd/tcp.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "9faeb4a842b95d745930452bc1a9b98c5f22a81b",
+    "authorDate": "2019-09-17T01:00:53-04:00",
+    "subject": "Merge pull request #1186 from ploxiln/ipv6_nodes_link_fix",
+    "body": "nsqadmin: fix nodes list links with ipv6 addresses",
+    "issueRefs": [
+      "#1186"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e4c34b179a589e1c4d4000ac2f7ac129e084b4b7",
+    "authorDate": "2019-09-11T02:23:48-04:00",
+    "subject": "nsqadmin: fix nodes list links with ipv6 addresses",
+    "body": "An ipv6 address needs to be wrapped in \"[]\" when joined with port\nbecause \":\" inside the ipv6 address makes it ambiguous.\n\nMost (all?) of our go code uses net.JoinHostPort() which does this.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqadmin/static/js/collections/nodes.js",
+      "nsqadmin/static/js/views/nodes.hbs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "470346fb434f27fe2d67f8b99c2876828a8dfd4c",
+    "authorDate": "2019-09-06T20:56:09-04:00",
+    "subject": "Merge pull request #1159 from bitpeng/bugfix",
+    "body": "nsqd: set memoryMsgChan as nil when --mem-queue-size=0",
+    "issueRefs": [
+      "#1159"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3eb619f6fcc1f1e5eab3585f36463bb774a351b3",
+    "authorDate": "2019-03-02T22:34:09-08:00",
+    "subject": "Merge pull request #1140 from mdh67899/fix-nsqd-tcp-accept-error",
+    "body": "nsqd/nsqlookupd: properly handle fatal accept errors",
+    "issueRefs": [
+      "#1140"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cbdcd547aa3240b98c9d340a62591973b63e82f3",
+    "authorDate": "2019-02-10T20:26:45-05:00",
+    "subject": "Merge pull request #1134 from ploxiln/nsqadmin_client_count",
+    "body": "nsqadmin: connections count fixes",
+    "issueRefs": [
+      "#1134"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e7f846d32e69ae92e3326cf3b09c6a5e815e60b0",
+    "authorDate": "2019-02-08T17:27:41-05:00",
+    "subject": "nsqadmin: fix channel view total rate column",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqadmin/static/js/views/channel.hbs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1eba46ea495f3cbd4d0e842d261ed6b1a39a5eb9",
+    "authorDate": "2019-02-08T16:53:26-05:00",
+    "subject": "nsqadmin: fix connections count (now client_count from nsqd)",
+    "body": "clients array is no longer populated if only count is needed",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqadmin/static/js/views/channel.hbs",
+      "nsqadmin/static/js/views/topic.hbs"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c3c364e7c37393000c879079347b414ab5a8ae5e",
+    "authorDate": "2019-02-09T19:54:44-05:00",
+    "subject": "Merge pull request #1133 from ploxiln/min_output_buffer_timeout",
+    "body": "nsqd: add flag --min-output-buffer-timeout with default 25ms",
+    "issueRefs": [
+      "#1133"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "569fd25cfbcdce6151a2f35c473975017a35c893",
+    "authorDate": "2019-02-02T21:09:39-05:00",
+    "subject": "nsqd: disable client BufferOutputTimeout if BufferOutputSize is disabled",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "nsqd/client_v2.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "41e5692367a2c6a39e2cc69e0e64efe4423b8a60",
+    "authorDate": "2019-02-02T14:27:00-05:00",
+    "subject": "nsqd: add flag --min-output-buffer-timeout with default 25ms",
+    "body": "Lower timeouts are more expensive for nsqd, so it seems odd to put\na maximum on the timeout a client can request, but not a minimum.\n\nAlso change --max-output-buffer-timeout default to 30 seconds,\nup from 1 second. Again, it's cheaper/easier for nsqd.\nBut we may still want to help people avoid unwittingly setting\nit close to (or above) the default --message-timeout (60 seconds).",
+    "issueRefs": [],
+    "touchedFiles": [
+      "apps/nsqd/nsqd.go",
+      "nsqd/client_v2.go",
+      "nsqd/options.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "21074c4acf61bc2028491fc54a36993892f15054",
+    "authorDate": "2019-01-29T12:32:46-05:00",
+    "subject": "Merge pull request #1132 from FilWisher/fix_json_error_quote",
+    "body": "internal/http_api: fixed error messages quoting",
+    "issueRefs": [
+      "#1132"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d430c4eba73288e4082d402e43f5557259d52063",
+    "authorDate": "2019-01-27T23:31:57+00:00",
+    "subject": "internal/http_api: fixed error messages quoting",
+    "body": "Error messages that get bubbled up are returned from the API wrapped\nusing a call to fmt.Sprintf(`{\"message\":\"%s\"}`, data). Double quotes\nappearing inside `data` are unescaped causing incorrectly formatted JSON\n(which breaks the UI).",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/http_api/api_response.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ecd3a88fa09b12bcf9670f74860c98c3d9e56191",
+    "authorDate": "2019-01-15T22:58:03-08:00",
+    "subject": "Merge pull request #1125 from andyxning/add_support_for_customise_output-buffer-timeout",
+    "body": "nsqd: add support for customise output-buffer-timeout",
+    "issueRefs": [
+      "#1125"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "1de9c136150cd1e781debad0ba15104483656a9b",
+    "authorDate": "2019-01-15T21:59:36+08:00",
+    "subject": "add support for customise output-buffer-timeout",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "apps/nsqd/nsqd.go",
+      "nsqd/client_v2.go",
+      "nsqd/options.go"
+    ],
+    "fixCategory": "timeout"
+  }
+]

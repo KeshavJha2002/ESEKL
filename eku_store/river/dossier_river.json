@@ -1,0 +1,1076 @@
+{
+  "repoName": "riverqueue/river",
+  "domain": "message_queues",
+  "gitCommitHash": "008a9fdfba4f47fabe5ef33bcd706eb9f1358801",
+  "analyzedAt": "2026-08-22T15:45:00.000Z",
+  "overview": {
+    "purpose": "Fast, ultra-reliable PostgreSQL-native background job queue for Go with transactional job creation, transactional job completion, multi-queue concurrency control, periodic scheduling, leader election, and high-performance batching.",
+    "architectureType": "PostgreSQL-backed ACID-compliant job queue leveraging FOR UPDATE SKIP LOCKED row-level locking, LISTEN/NOTIFY real-time push dispatch, partial unique indexes for deduplication, term-scoped leader election on unlogged tables, and asynchronous batch completion.",
+    "keyDifferentiators": [
+      "Transactional Enqueue & Complete: Full transactional atomicity allowing jobs to be inserted (InsertTx) and marked complete (JobCompleteTx) inside the caller's business database transactions without distributed transactions (2PC)",
+      "FOR UPDATE SKIP LOCKED Concurrency: Lock-free polling and concurrency control directly in PostgreSQL, eliminating lock contention between parallel worker processes",
+      "Partial Unique Indexes & Bitmask Filtering: Deduplication enforced at database level using partial unique index over unique_key conditioned on bitmask function river_job_state_in_bitmask(unique_states, state)",
+      "Zero-Polling Real-Time Dispatch: Real-time notification latency via PostgreSQL LISTEN/NOTIFY with automatic fall-back to debounced jittered polling during network partitions or poll-only modes",
+      "Term-Scoped Leader Election: Distributed leader coordination using unlogged river_leader table with monotonically bounded local trust windows (elected_at + TTL - safety margin) and explicit term scoping"
+    ]
+  },
+  "components": [
+    {
+      "name": "Client",
+      "role": "Producer API, Lifecycle Supervisor & Service Coordinator",
+      "primaryFiles": [
+        "client.go"
+      ],
+      "publicInterfaces": [
+        "NewClient[TTx any](driver riverdriver.Driver[TTx], config *Config) (*Client[TTx], error)",
+        "Start(ctx context.Context) error",
+        "Stop(ctx context.Context) error",
+        "StopAndCancel(ctx context.Context) error",
+        "Insert(ctx context.Context, args JobArgs, opts *InsertOpts) (*rivertype.JobInsertResult, error)",
+        "InsertTx(ctx context.Context, tx TTx, args JobArgs, opts *InsertOpts) (*rivertype.JobInsertResult, error)",
+        "InsertMany(ctx context.Context, params []InsertManyParams) ([]*rivertype.JobInsertResult, error)",
+        "InsertManyTx(ctx context.Context, tx TTx, params []InsertManyParams) ([]*rivertype.JobInsertResult, error)",
+        "JobCancel(ctx context.Context, jobID int64) (*rivertype.JobRow, error)",
+        "JobCancelTx(ctx context.Context, tx TTx, jobID int64) (*rivertype.JobRow, error)",
+        "JobRetry(ctx context.Context, id int64) (*rivertype.JobRow, error)",
+        "JobRetryTx(ctx context.Context, tx TTx, id int64) (*rivertype.JobRow, error)",
+        "JobDelete(ctx context.Context, id int64) (*rivertype.JobRow, error)",
+        "JobDeleteTx(ctx context.Context, tx TTx, id int64) (*rivertype.JobRow, error)",
+        "JobList(ctx context.Context, params *JobListParams) (*JobListResult, error)",
+        "Subscribe(kinds ...EventKind) (<-chan *Event, func())"
+      ],
+      "dependencies": [
+        "riverdriver.Driver",
+        "internal/jobcompleter.JobCompleter",
+        "internal/leadership.Elector",
+        "internal/notifier.Notifier",
+        "internal/maintenance.JobCleaner",
+        "internal/maintenance.JobRescuer",
+        "internal/maintenance.JobScheduler",
+        "internal/maintenance.PeriodicJobEnqueuer",
+        "internal/maintenance.QueueCleaner",
+        "internal/maintenance.Reindexer"
+      ],
+      "stateManaged": [
+        "Producer registry map (producersByQueueName map[string]*producer)",
+        "Client operational lifecycle state (baseservice.BaseService / startstop.BaseStartStop)",
+        "Background maintenance services list",
+        "Subscription event channels"
+      ],
+      "evidence": {
+        "filePath": "client.go",
+        "lineRange": [
+          702,
+          1254
+        ],
+        "symbol": "Client.Start / Client.InsertTx / Client.NewClient",
+        "observation": "Initializes driver, pilot, completer, notifier, elector, maintenance services, and per-queue producers; executes coordinated graceful start and ordered parallel shutdown with soft-stop escalation.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Producer",
+      "role": "Queue Worker Pool Supervisor & Job Fetch Dispatcher",
+      "primaryFiles": [
+        "producer.go"
+      ],
+      "publicInterfaces": [
+        "newProducer(archetype *baseservice.Archetype, exec riverdriver.Executor, pilot riverpilot.Pilot, config *producerConfig) *producer",
+        "Start(ctx context.Context) error",
+        "StartWorkContext(fetchCtx, workCtx context.Context) error",
+        "Stop()",
+        "TriggerJobFetch()",
+        "TriggerQueueControlEvent(controlEvent *controlEventPayload)"
+      ],
+      "dependencies": [
+        "internal/jobexecutor.JobExecutor",
+        "internal/jobcompleter.JobCompleter",
+        "internal/notifier.Notifier",
+        "riverdriver.Executor",
+        "rivershared/riverpilot.Pilot"
+      ],
+      "stateManaged": [
+        "Active in-flight job executors map (activeJobs map[int64]*jobexecutor.JobExecutor)",
+        "Atomic active worker counter (numJobsActive atomic.Int32)",
+        "Atomic stuck worker counter (numJobsStuck atomic.Int32)",
+        "Queue paused/resumed status",
+        "Debounced fetch limiter channel (fetchLimiter *chanutil.DebouncedChan)"
+      ],
+      "evidence": {
+        "filePath": "producer.go",
+        "lineRange": [
+          185,
+          678
+        ],
+        "symbol": "producer.fetchAndRunLoop / producer.dispatchWork",
+        "observation": "Listens for LISTEN/NOTIFY insert notifications and periodic jittered poll ticks, checks capacity against MaxWorkers, calls pilot.JobGetAvailable (FOR UPDATE SKIP LOCKED), and spawns concurrent JobExecutor goroutines.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "JobExecutor",
+      "role": "Individual Job Execution Unit & Error/Snooze/Cancel Boundary",
+      "primaryFiles": [
+        "internal/jobexecutor/job_executor.go"
+      ],
+      "publicInterfaces": [
+        "Execute(ctx context.Context)",
+        "Cancel(ctx context.Context)",
+        "TryCloseSlot() bool"
+      ],
+      "dependencies": [
+        "internal/workunit.WorkUnit",
+        "internal/jobcompleter.JobCompleter",
+        "internal/pluginlookup.JobPluginLookup",
+        "internal/retrypolicy.ClientRetryPolicy"
+      ],
+      "stateManaged": [
+        "Per-job execution timeout and stuck-job watcher timer",
+        "Job execution outcome (success, error, snooze, panic, cancel, soft stop)",
+        "Job attempt statistics and metadata update accumulators"
+      ],
+      "evidence": {
+        "filePath": "internal/jobexecutor/job_executor.go",
+        "lineRange": [
+          106,
+          552
+        ],
+        "symbol": "JobExecutor.Execute / JobExecutor.execute / JobExecutor.reportResult",
+        "observation": "Wraps worker execution in panic recovery deferral, applies timeout context and stuck job monitoring, processes Snooze/Cancel/Error returns, calculates exponential backoff retry timestamps, and hands results to JobCompleter.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "BatchCompleter",
+      "role": "High-Throughput Asynchronous State Persister & Completion Aggregator",
+      "primaryFiles": [
+        "internal/jobcompleter/job_completer.go"
+      ],
+      "publicInterfaces": [
+        "NewBatchCompleter(archetype *baseservice.Archetype, schema string, exec riverdriver.Executor, pilot riverpilot.Pilot, subscribeCh SubscribeChan) *BatchCompleter",
+        "JobSetStateIfRunning(ctx context.Context, stats *jobstats.JobStatistics, params *riverdriver.JobSetStateIfRunningParams) error",
+        "Start(ctx context.Context) error",
+        "ResetSubscribeChan(subscribeCh SubscribeChan)"
+      ],
+      "dependencies": [
+        "riverdriver.Executor",
+        "rivershared/riverpilot.Pilot"
+      ],
+      "stateManaged": [
+        "Buffered completion map (setStateParams map[int64]batchCompleterSetState)",
+        "Ticker interval (50ms) and batch size thresholds (start threshold 100, max sub-batch 5,000)",
+        "Backlog wait channel for flow-control throttle"
+      ],
+      "evidence": {
+        "filePath": "internal/jobcompleter/job_completer.go",
+        "lineRange": [
+          308,
+          550
+        ],
+        "symbol": "BatchCompleter.Start / BatchCompleter.handleBatch",
+        "observation": "Accumulates job completion outcomes in memory, flushes them periodically (every 50ms or when reaching threshold) as a single multi-row JobSetStateIfRunningMany database query chunked in batches of 5,000.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Elector",
+      "role": "Distributed Leader Election & Term Coordination Service",
+      "primaryFiles": [
+        "internal/leadership/elector.go"
+      ],
+      "publicInterfaces": [
+        "NewElector(archetype *baseservice.Archetype, exec riverdriver.Executor, notifier *notifier.Notifier, config *Config) *Elector",
+        "Start(ctx context.Context) error",
+        "Listen() *Subscription"
+      ],
+      "dependencies": [
+        "riverdriver.Executor",
+        "internal/notifier.Notifier"
+      ],
+      "stateManaged": [
+        "Elected term tuple (clientID, electedAt, trustedUntil)",
+        "Local monotonic trust window (TTL - 1s safety margin)",
+        "Subscription relay FIFO transition queues"
+      ],
+      "evidence": {
+        "filePath": "internal/leadership/elector.go",
+        "lineRange": [
+          96,
+          572
+        ],
+        "symbol": "Elector.Start / Elector.runFollowerState / Elector.runLeaderState",
+        "observation": "Coordinates leader status via unlogged table river_leader with explicit (leader_id, elected_at) terms, renewing leadership every ElectInterval and resigning via NOTIFY on shutdown.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "JobRescuer",
+      "role": "Stalled/Orphaned Active Task Sweeper & Recovery Service",
+      "primaryFiles": [
+        "internal/maintenance/job_rescuer.go"
+      ],
+      "publicInterfaces": [
+        "NewRescuer(archetype *baseservice.Archetype, config *JobRescuerConfig, exec riverdriver.Executor) *JobRescuer",
+        "Start(ctx context.Context) error"
+      ],
+      "dependencies": [
+        "riverdriver.Executor",
+        "rivershared/riverpilot.Pilot"
+      ],
+      "stateManaged": [
+        "Periodic sweep timer (default interval 30s)",
+        "Stuck threshold horizon (time.Now() - RescueAfter, default 1 hour)",
+        "Circuit breaker for degraded database query batch sizing"
+      ],
+      "evidence": {
+        "filePath": "internal/maintenance/job_rescuer.go",
+        "lineRange": [
+          92,
+          320
+        ],
+        "symbol": "JobRescuer.runOnce / JobRescuer.getStuckJobs",
+        "observation": "Queries running jobs older than stuckHorizon via JobGetStuck, checks worker timeout and cancel status, and transitions orphaned jobs to retryable, discarded, or cancelled via JobRescueMany.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "JobScheduler",
+      "role": "Scheduled & Retryable Task Activation Engine",
+      "primaryFiles": [
+        "internal/maintenance/job_scheduler.go"
+      ],
+      "publicInterfaces": [
+        "NewJobScheduler(archetype *baseservice.Archetype, config *JobSchedulerConfig, exec riverdriver.Executor) *JobScheduler",
+        "Start(ctx context.Context) error"
+      ],
+      "dependencies": [
+        "riverdriver.Executor"
+      ],
+      "stateManaged": [
+        "Periodic scheduling timer (default interval 5s)",
+        "Batch migration of due scheduled and retryable jobs to available"
+      ],
+      "evidence": {
+        "filePath": "internal/maintenance/job_scheduler.go",
+        "lineRange": [
+          73,
+          234
+        ],
+        "symbol": "JobScheduler.runOnce",
+        "observation": "Executes JobSchedule query to move due rows (scheduled_at <= now()) in scheduled or retryable state to available, discarding duplicate unique key conflicts and firing insert notifications for affected queues.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "JobCleaner",
+      "role": "Finalized Job Retention Garbage Collector",
+      "primaryFiles": [
+        "internal/maintenance/job_cleaner.go"
+      ],
+      "publicInterfaces": [
+        "NewJobCleaner(archetype *baseservice.Archetype, config *JobCleanerConfig, exec riverdriver.Executor) *JobCleaner",
+        "Start(ctx context.Context) error"
+      ],
+      "dependencies": [
+        "riverdriver.Executor"
+      ],
+      "stateManaged": [
+        "Periodic retention sweep timer (default 1 minute)",
+        "Configurable retention horizons: Completed (24h), Cancelled (24h), Discarded (7d)"
+      ],
+      "evidence": {
+        "filePath": "internal/maintenance/job_cleaner.go",
+        "lineRange": [
+          90,
+          240
+        ],
+        "symbol": "JobCleaner.runOnce",
+        "observation": "Issues JobDeleteBefore in batches of up to 10,000 rows to prune completed, cancelled, and discarded jobs whose finalized_at timestamp is older than configured retention horizons.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "PeriodicJobEnqueuer",
+      "role": "Cron Scheduling & Periodic Job Ingestion Engine",
+      "primaryFiles": [
+        "internal/maintenance/periodic_job_enqueuer.go"
+      ],
+      "publicInterfaces": [
+        "NewPeriodicJobEnqueuer(archetype *baseservice.Archetype, config *PeriodicJobEnqueuerConfig, exec riverdriver.Executor) (*PeriodicJobEnqueuer, error)",
+        "Start(ctx context.Context) error",
+        "Add(job *PeriodicJob) (rivertype.PeriodicJobHandle, error)",
+        "AddMany(jobs []*PeriodicJob) error"
+      ],
+      "dependencies": [
+        "riverdriver.Executor",
+        "rivershared/riverpilot.PilotPeriodicJob"
+      ],
+      "stateManaged": [
+        "Periodic job registry map (periodicJobs map[rivertype.PeriodicJobHandle]*PeriodicJob)",
+        "Next run calculation timestamps",
+        "Wakeup channel on schedule modification"
+      ],
+      "evidence": {
+        "filePath": "internal/maintenance/periodic_job_enqueuer.go",
+        "lineRange": [
+          113,
+          350
+        ],
+        "symbol": "PeriodicJobEnqueuer.runOnce / PeriodicJobEnqueuer.insertBatch",
+        "observation": "Computes next due timestamps for registered cron jobs, enqueues them via InsertMany with unique period bounds to guarantee exactly-once scheduled execution across distributed nodes.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "StorageEngine_PostgreSQL",
+      "role": "PostgreSQL Storage Engine, SQL Dialect & Concurrency Layer",
+      "primaryFiles": [
+        "riverdriver/riverpgxv5/river_pgx_v5_driver.go",
+        "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+        "riverdriver/riverpgxv5/internal/dbsqlc/river_leader.sql",
+        "riverdriver/riverpgxv5/internal/dbsqlc/river_queue.sql"
+      ],
+      "publicInterfaces": [
+        "New(pool *pgxpool.Pool) *Driver",
+        "GetExecutor() riverdriver.Executor",
+        "GetListener(params *riverdriver.GetListenenerParams) riverdriver.Listener",
+        "UnwrapExecutor(tx pgx.Tx) riverdriver.ExecutorTx"
+      ],
+      "dependencies": [
+        "github.com/jackc/pgx/v5",
+        "github.com/jackc/pgx/v5/pgxpool"
+      ],
+      "stateManaged": [
+        "PostgreSQL Tables: river_job, river_queue, river_leader (unlogged), river_migration",
+        "Partial unique index river_job_unique_idx",
+        "LISTEN/NOTIFY channels: river_insert, river_control, river_leadership"
+      ],
+      "evidence": {
+        "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+        "lineRange": [
+          40,
+          686
+        ],
+        "symbol": "JobGetAvailable / JobInsertFastMany / JobSetStateIfRunningMany",
+        "observation": "Implements core queries: FOR UPDATE SKIP LOCKED job dequeue, ON CONFLICT (unique_key) unique insertion, and optimistic lock-checked batch state completion.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    }
+  ],
+  "stateMachines": [
+    {
+      "name": "RiverJobLifecycle",
+      "states": [
+        "available",
+        "running",
+        "completed",
+        "retryable",
+        "scheduled",
+        "discarded",
+        "cancelled",
+        "pending"
+      ],
+      "initialState": "available (or scheduled / pending)",
+      "terminalStates": [
+        "completed",
+        "discarded",
+        "cancelled"
+      ],
+      "transitions": [
+        {
+          "from": "Client (New)",
+          "to": "available",
+          "event": "Client.Insert / Client.InsertTx (ScheduledAt is nil or <= now)",
+          "guardConditions": [
+            "args non-empty and valid Kind",
+            "unique constraint check passed on unique_key + unique_states bitmask"
+          ],
+          "mechanism": "JobInsertFastMany SQL query with ON CONFLICT (unique_key) WHERE unique_key IS NOT NULL AND unique_states IS NOT NULL AND river_job_state_in_bitmask(unique_states, state) DO UPDATE SET kind = EXCLUDED.kind RETURNING *, (xmax != 0) AS unique_skipped_as_duplicate",
+          "evidence": {
+            "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+            "lineRange": [
+              267,
+              322
+            ],
+            "observation": "Inserts row with state 'available', scheduled_at = coalesce(scheduled_at, now()), and evaluates unique conflict.",
+            "luaOrCodeBehavior": "INSERT INTO river_job (...) SELECT ... ON CONFLICT (unique_key) WHERE ... DO UPDATE SET kind = EXCLUDED.kind RETURNING river_job.*, (xmax != 0) AS unique_skipped_as_duplicate;",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Client (New)",
+          "to": "scheduled",
+          "event": "Client.Insert / Client.InsertTx (ScheduledAt in future)",
+          "guardConditions": [
+            "scheduled_at > now()",
+            "unique constraint check passed on unique_key + unique_states bitmask"
+          ],
+          "mechanism": "JobInsertFastMany SQL query inserting row with state 'scheduled' and future scheduled_at",
+          "evidence": {
+            "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+            "lineRange": [
+              283,
+              321
+            ],
+            "observation": "Inserts row with state 'scheduled' and scheduled_at timestamp.",
+            "luaOrCodeBehavior": "INSERT INTO river_job (state, scheduled_at, ...) VALUES ('scheduled', @scheduled_at, ...)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Client (New)",
+          "to": "pending",
+          "event": "Client.Insert with State == JobStatePending",
+          "guardConditions": [
+            "explicitly set Pending option on InsertOpts"
+          ],
+          "mechanism": "JobInsertFastMany SQL query inserting row with state 'pending'",
+          "evidence": {
+            "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+            "lineRange": [
+              283,
+              321
+            ],
+            "observation": "Inserts row with state 'pending'. Pending jobs are parked indefinitely until moved by user API.",
+            "luaOrCodeBehavior": "INSERT INTO river_job (state, ...) VALUES ('pending', ...)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "available",
+          "to": "running",
+          "event": "Producer Fetch (JobGetAvailable)",
+          "guardConditions": [
+            "queue is not paused (paused_at IS NULL)",
+            "producer activeJobs count < MaxWorkers",
+            "state = 'available' AND scheduled_at <= now() AND queue = @queue"
+          ],
+          "mechanism": "JobGetAvailable SQL query using CTE with FOR UPDATE SKIP LOCKED ordered by priority ASC, scheduled_at ASC, id ASC LIMIT @max_to_lock, followed by UPDATE river_job SET state = 'running', attempt = attempt + 1, attempted_at = now(), attempted_by = array_append(attempted_by, @attempted_by)",
+          "evidence": {
+            "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+            "lineRange": [
+              201,
+              238
+            ],
+            "observation": "Atomically locks available job rows using SKIP LOCKED, increments attempt count, appends client ID, and transitions state to 'running'.",
+            "luaOrCodeBehavior": "WITH locked_jobs AS (SELECT * FROM river_job WHERE state = 'available' AND queue = @queue AND scheduled_at <= now() ORDER BY priority ASC, scheduled_at ASC, id ASC LIMIT @max_to_lock FOR UPDATE SKIP LOCKED) UPDATE river_job SET state = 'running', attempt = attempt + 1, attempted_at = now(), attempted_by = array_append(...) FROM locked_jobs WHERE river_job.id = locked_jobs.id RETURNING river_job.*;",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "running",
+          "to": "completed",
+          "event": "Worker Success (nil error) / JobCompleteTx",
+          "guardConditions": [
+            "worker Work function returns nil error OR JobCompleteTx called in transaction",
+            "river_job.state = 'running' in database at time of update"
+          ],
+          "mechanism": "JobSetStateIfRunningMany SQL query: UPDATE river_job SET state = 'completed', finalized_at = now(), metadata = metadata || @metadata_updates WHERE id = @id AND (state = 'running' OR @metadata_do_merge)",
+          "evidence": {
+            "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+            "lineRange": [
+              639,
+              686
+            ],
+            "observation": "Optimistically sets state to 'completed', sets finalized_at timestamp, and merges any metadata updates recorded by worker.",
+            "luaOrCodeBehavior": "UPDATE river_job SET state = 'completed', finalized_at = coalesce(@now, now()), metadata = metadata || @metadata_updates WHERE id = @id AND state = 'running' RETURNING *;",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "running",
+          "to": "retryable",
+          "event": "Worker Error (Attempt < MaxAttempts and next retry > SchedulerInterval)",
+          "guardConditions": [
+            "worker Work returns error / panics (not JobCancelError or soft stop)",
+            "job.Attempt < job.MaxAttempts",
+            "next retry delay > schedulerInterval"
+          ],
+          "mechanism": "JobSetStateIfRunningMany SQL query: UPDATE river_job SET state = 'retryable', scheduled_at = @next_retry, errors = array_append(errors, @error_json) WHERE id = @id AND state = 'running'",
+          "evidence": {
+            "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+            "lineRange": [
+              639,
+              686
+            ],
+            "observation": "Appends AttemptError payload to errors array, updates scheduled_at to future retry instant, and sets state to 'retryable'.",
+            "luaOrCodeBehavior": "UPDATE river_job SET state = 'retryable', scheduled_at = @scheduled_at, errors = array_append(errors, @errors) WHERE id = @id AND state = 'running';",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "running",
+          "to": "available",
+          "event": "Worker Error / Snooze (Short Retry <= SchedulerInterval) OR Soft Stop Interruption",
+          "guardConditions": [
+            "next retry delay <= schedulerInterval OR worker returned JobSnoozeError with short delay OR client soft stop cancelled context",
+            "state = 'running'"
+          ],
+          "mechanism": "JobSetStateIfRunningMany SQL query: JobSetStateErrorAvailable / JobSetStateSnoozedAvailable / JobSetStateInterrupted updating scheduled_at and keeping state as 'available'",
+          "evidence": {
+            "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+            "lineRange": [
+              639,
+              686
+            ],
+            "observation": "Immediately resets state to 'available' bypassing the scheduler loop for low-latency retries and soft-stop re-executions.",
+            "luaOrCodeBehavior": "UPDATE river_job SET state = 'available', scheduled_at = @scheduled_at, attempt = @attempt WHERE id = @id AND state = 'running';",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "running",
+          "to": "scheduled",
+          "event": "Worker Snooze (Duration > SchedulerInterval)",
+          "guardConditions": [
+            "worker Work returns JobSnoozeError",
+            "snooze duration > schedulerInterval",
+            "state = 'running'"
+          ],
+          "mechanism": "JobSetStateIfRunningMany SQL query: JobSetStateSnoozed updating scheduled_at = now() + duration, attempt = attempt - 1, and metadata['snoozes'] = snoozes + 1",
+          "evidence": {
+            "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+            "lineRange": [
+              639,
+              686
+            ],
+            "observation": "Snoozes job to future scheduled_at, decrements attempt counter to avoid penalizing snooze as a failed attempt, and sets state to 'scheduled'.",
+            "luaOrCodeBehavior": "UPDATE river_job SET state = 'scheduled', scheduled_at = @scheduled_at, attempt = attempt - 1, metadata = metadata || '{\"snoozes\": N}' WHERE id = @id AND state = 'running';",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "running",
+          "to": "discarded",
+          "event": "Worker Error (Attempt >= MaxAttempts Exhausted)",
+          "guardConditions": [
+            "worker Work returned error / panicked",
+            "job.Attempt >= job.MaxAttempts"
+          ],
+          "mechanism": "JobSetStateIfRunningMany SQL query: UPDATE river_job SET state = 'discarded', finalized_at = now(), errors = array_append(errors, @error_json) WHERE id = @id AND state = 'running'",
+          "evidence": {
+            "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+            "lineRange": [
+              639,
+              686
+            ],
+            "observation": "Finalizes exhausted job to 'discarded', records finalized_at, appends error JSON, marking job dead until manual user intervention.",
+            "luaOrCodeBehavior": "UPDATE river_job SET state = 'discarded', finalized_at = now(), errors = array_append(errors, @errors) WHERE id = @id AND state = 'running';",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "running",
+          "to": "cancelled",
+          "event": "Worker Return with JobCancelError / ErrorHandler Cancel / Remote Cancel",
+          "guardConditions": [
+            "worker returned JobCancelError OR ErrorHandler specified SetCancelled: true OR cancel_attempted_at metadata present"
+          ],
+          "mechanism": "JobSetStateIfRunningMany SQL query setting state = 'cancelled' and finalized_at = now()",
+          "evidence": {
+            "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+            "lineRange": [
+              675,
+              682
+            ],
+            "observation": "Transitions running job to 'cancelled' with finalized_at timestamp, checking cancel_attempted_at flag in metadata.",
+            "luaOrCodeBehavior": "UPDATE river_job SET state = 'cancelled', finalized_at = now() WHERE id = @id AND state = 'running';",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "scheduled / retryable",
+          "to": "available",
+          "event": "JobScheduler Tick (scheduled_at <= now)",
+          "guardConditions": [
+            "scheduled_at <= now()",
+            "state IN ('scheduled', 'retryable')",
+            "no unique key conflict among active rows"
+          ],
+          "mechanism": "JobSchedule SQL query using CTE FOR UPDATE with window function ROW_NUMBER() OVER (PARTITION BY unique_key) and unique_conflicts detection",
+          "evidence": {
+            "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+            "lineRange": [
+              540,
+              618
+            ],
+            "observation": "Moves due scheduled and retryable rows to 'available' in batches; if duplicate unique_key conflict exists, sets conflicting row to 'discarded' with metadata conflict flag.",
+            "luaOrCodeBehavior": "WITH jobs_to_schedule AS (SELECT * FROM river_job WHERE state IN ('retryable', 'scheduled') AND scheduled_at <= now() FOR UPDATE) ... UPDATE river_job SET state = job_updates.new_state ...;",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "running",
+          "to": "retryable / discarded / cancelled (Rescued)",
+          "event": "JobRescuer Sweep (attempted_at < stuckHorizon)",
+          "guardConditions": [
+            "state = 'running'",
+            "attempted_at < now() - RescueAfter (default 1 hour)"
+          ],
+          "mechanism": "JobRescueMany SQL query: UPDATE river_job SET errors = array_append(errors, @error), state = @state, scheduled_at = @scheduled_at, metadata = metadata || '{\"river:rescue_count\": N}'",
+          "evidence": {
+            "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+            "lineRange": [
+              480,
+              504
+            ],
+            "observation": "Rescues orphaned stuck jobs from dead worker processes, increments rescue_count metadata, and transitions row to retryable, discarded, or cancelled.",
+            "luaOrCodeBehavior": "UPDATE river_job SET errors = array_append(errors, updated_job.error), finalized_at = updated_job.finalized_at, state = updated_job.state, metadata = metadata || ... WHERE river_job.id = updated_job.id;",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "completed / discarded / cancelled",
+          "to": "Deleted (Reaped)",
+          "event": "JobCleaner Tick (finalized_at < retentionHorizon)",
+          "guardConditions": [
+            "finalized_at < now() - RetentionPeriod",
+            "state IN ('completed', 'cancelled', 'discarded')"
+          ],
+          "mechanism": "JobDeleteBefore SQL query: DELETE FROM river_job WHERE id IN (SELECT id FROM river_job WHERE finalized_at < horizon LIMIT @max)",
+          "evidence": {
+            "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+            "lineRange": [
+              155,
+              176
+            ],
+            "observation": "Purges expired finalized jobs in batches up to 10,000 rows.",
+            "luaOrCodeBehavior": "DELETE FROM river_job WHERE id IN (SELECT id FROM river_job WHERE finalized_at < @horizon ORDER BY id LIMIT @max);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-01",
+      "atomicStatement": "Job dequeue atomically locks and transitions up to MaxToLock available rows to state 'running' using FOR UPDATE SKIP LOCKED ordered by priority ASC, scheduled_at ASC, id ASC within a single SQL statement.",
+      "enforcingMechanism": "JobGetAvailable SQL query CTE locking rows with FOR UPDATE SKIP LOCKED and immediately executing UPDATE river_job SET state = 'running', attempt = attempt + 1, attempted_at = now().",
+      "sourceLocation": {
+        "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+        "lineRange": [
+          201,
+          238
+        ]
+      },
+      "testEvidence": {
+        "filePath": "riverdriver/riverdrivertest/job_read.go",
+        "testFunction": "exerciseJobRead/JobGetAvailable",
+        "lineRange": [
+          15,
+          160
+        ],
+        "observation": "Asserts that concurrent workers calling JobGetAvailable lock distinct non-overlapping subsets of available jobs and increment attempt counter."
+      },
+      "historicalContext": {
+        "commitHash": "008a9fdfba4f47fabe5ef33bcd706eb9f1358801",
+        "issueOrPr": "Core Architecture",
+        "context": "PostgreSQL-native lock-free dequeue primitive eliminating contention across distributed worker processes."
+      }
+    },
+    {
+      "id": "INV-02",
+      "atomicStatement": "Unique job deduplication is enforced by a PostgreSQL partial unique index over unique_key conditioned on river_job_state_in_bitmask(unique_states, state) returning 1.",
+      "enforcingMechanism": "Partial unique index river_job_unique_idx on (unique_key) WHERE unique_key IS NOT NULL AND unique_states IS NOT NULL AND river_job_state_in_bitmask(unique_states, state), coupled with JobInsertFastMany ON CONFLICT DO UPDATE SET kind = EXCLUDED.kind.",
+      "sourceLocation": {
+        "filePath": "riverdriver/riverpgxv5/migration/main/006_bulk_unique.up.sql",
+        "lineRange": [
+          1,
+          41
+        ]
+      },
+      "testEvidence": {
+        "filePath": "riverdriver/riverdrivertest/job_insert.go",
+        "testFunction": "exerciseJobInsert/JobInsertFastMany/UniqueConflict",
+        "lineRange": [
+          181,
+          230
+        ],
+        "observation": "Verifies that inserting a second job with identical unique_key while the first is in an active unique state returns UniqueSkippedAsDuplicate: true and returns existing Job.ID."
+      },
+      "historicalContext": {
+        "commitHash": "008a9fdfba4f47fabe5ef33bcd706eb9f1358801",
+        "issueOrPr": "Migration 006 / PR #1084",
+        "context": "Replaced legacy whole-table unique index and advisory lock slow paths with high-performance state-bitmasked partial unique indexes."
+      }
+    },
+    {
+      "id": "INV-03",
+      "atomicStatement": "JobCompleteTx executes within the caller's database transaction to atomically commit job completion alongside business data mutations.",
+      "enforcingMechanism": "JobCompleteTx invokes driver.UnwrapExecutor(tx) to execute JobSetStateIfRunningMany within caller's existing transaction.",
+      "sourceLocation": {
+        "filePath": "job_complete_tx.go",
+        "lineRange": [
+          33,
+          90
+        ]
+      },
+      "testEvidence": {
+        "filePath": "client_test.go",
+        "testFunction": "Test_Client_JobCompletion/JobCompleteTx",
+        "lineRange": [
+          620,
+          715
+        ],
+        "observation": "Verifies that when JobCompleteTx commits inside a user transaction, the job is marked completed; if the user transaction rolls back, the job remains in running state and is retried."
+      },
+      "historicalContext": {
+        "commitHash": "0b7bcc7a8ad7d041fa6b201c8377148b612c5090",
+        "issueOrPr": "PR #1350 / #1290",
+        "context": "Standardized post-persist state resolution: when JobCompleteTx commits and worker subsequently returns an error, the committed completion state and event take precedence."
+      }
+    },
+    {
+      "id": "INV-04",
+      "atomicStatement": "Leader election is scoped to an explicit database term tuple (leader_id, elected_at) with local trust window expiring at attemptStarted + TTL - 1s safety margin.",
+      "enforcingMechanism": "Elector.runLeaderState computes reelectAttemptTimeout from term.remaining(now); LeaderAttemptReelect checks elected_at = @elected_at AND expires_at >= now() AND leader_id = @leader_id.",
+      "sourceLocation": {
+        "filePath": "internal/leadership/elector.go",
+        "lineRange": [
+          238,
+          278
+        ]
+      },
+      "testEvidence": {
+        "filePath": "internal/leadership/elector_test.go",
+        "testFunction": "TestElector_WithNotifier/ElectorGainsMaintainsAndResignsLeadership",
+        "lineRange": [
+          210,
+          340
+        ],
+        "observation": "Verifies leader gains leadership, periodically maintains leadership via re-election within trust window, and cleanly steps down when lease expires or resignation is requested."
+      },
+      "historicalContext": {
+        "commitHash": "e3fc3c2a81c53f8a3f628c33aeee07c087cbff05",
+        "issueOrPr": "PR #1213",
+        "context": "Redesigned leader election around explicit DB-issued terms (leader_id, elected_at) and local monotonic trust windows to prevent stale-term resurrection and clock skew hazards."
+      }
+    },
+    {
+      "id": "INV-05",
+      "atomicStatement": "Soft-stopped jobs interrupted by client shutdown are made immediately available with preserved attempt count and emit EventKindJobInterrupted.",
+      "enforcingMechanism": "isSoftStopCancelError identifies context cancellation caused by rivercommon.ErrStop; JobExecutor invokes JobSetStateInterrupted setting state = 'available', scheduled_at = now, attempt = max(attempt-1, 0).",
+      "sourceLocation": {
+        "filePath": "internal/jobexecutor/job_executor.go",
+        "lineRange": [
+          454,
+          491
+        ]
+      },
+      "testEvidence": {
+        "filePath": "client_test.go",
+        "testFunction": "Test_Client_SoftStop/JobInterruptedDueToShutdownRetriesImmediately",
+        "lineRange": [
+          1420,
+          1510
+        ],
+        "observation": "Asserts slow worker cancelled during client stop is reset to available immediately without incrementing attempt number or exhausting max attempts."
+      },
+      "historicalContext": {
+        "commitHash": "fdf6cdf12567a5b70c003f5ff850273f09e7efcf",
+        "issueOrPr": "PR #1290 / #1289",
+        "context": "Eliminated unfair failure penalties and exponential backoff delays on graceful restarts by treating client shutdown interruptions as non-faulting immediate requeues."
+      }
+    },
+    {
+      "id": "INV-06",
+      "atomicStatement": "BatchCompleter flushes accumulated job completions to PostgreSQL in multi-row batches up to 5,000 items every 50ms or when backlog reaches 100 items.",
+      "enforcingMechanism": "BatchCompleter.Start ticker loop (50ms) and handleBatch method slicing setStateBatch into completionMaxSize (5000) chunks executed via pilot.JobSetStateIfRunningMany.",
+      "sourceLocation": {
+        "filePath": "internal/jobcompleter/job_completer.go",
+        "lineRange": [
+          369,
+          535
+        ]
+      },
+      "testEvidence": {
+        "filePath": "internal/jobcompleter/job_completer_test.go",
+        "testFunction": "TestBatchCompleter/CompletesJobsInBatch",
+        "lineRange": [
+          85,
+          190
+        ],
+        "observation": "Verifies that hundreds of concurrent completions are merged and executed in a single batched database query within 50ms tick interval."
+      },
+      "historicalContext": {
+        "commitHash": "008a9fdfba4f47fabe5ef33bcd706eb9f1358801",
+        "issueOrPr": "Performance Optimization",
+        "context": "Drastically reduces database roundtrips and transaction overhead under heavy throughput workloads."
+      }
+    },
+    {
+      "id": "INV-07",
+      "atomicStatement": "Remote job cancellation publishes a JSON control payload via pg_notify and updates the job's metadata with cancel_attempted_at to prevent rescuer re-execution.",
+      "enforcingMechanism": "JobCancel SQL query CTE calling pg_notify on control topic and setting metadata = jsonb_set(metadata, '{cancel_attempted_at}', now::jsonb); Producer cancelCh forwards cancel signal to active JobExecutor.",
+      "sourceLocation": {
+        "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+        "lineRange": [
+          40,
+          81
+        ]
+      },
+      "testEvidence": {
+        "filePath": "client_test.go",
+        "testFunction": "Test_Client_JobCancel/CancelsRunningJobRemotely",
+        "lineRange": [
+          850,
+          940
+        ],
+        "observation": "Verifies that calling JobCancel on an active running job delivers notification to worker node, cancels job context with ErrJobCancelledRemotely, and transitions job to cancelled."
+      },
+      "historicalContext": {
+        "commitHash": "0b7bcc7a8ad7d041fa6b201c8377148b612c5090",
+        "issueOrPr": "PR #1350",
+        "context": "Standardized cancellation precedence across active and inactive states."
+      }
+    },
+    {
+      "id": "INV-08",
+      "atomicStatement": "JobRescuer ignores running jobs whose worker timeout is explicitly configured as -1 (disabled timeout).",
+      "enforcingMechanism": "JobRescuer.makeRetryDecision checks cmp.Or(workUnit.Timeout(), config.ClientJobTimeout); if timeout == -1, returns jobRetryDecisionIgnore.",
+      "sourceLocation": {
+        "filePath": "internal/maintenance/job_rescuer.go",
+        "lineRange": [
+          334,
+          375
+        ]
+      },
+      "testEvidence": {
+        "filePath": "internal/maintenance/job_rescuer_test.go",
+        "testFunction": "TestJobRescuer/DoesNotRescueJobWithDisabledTimeout",
+        "lineRange": [
+          140,
+          210
+        ],
+        "observation": "Asserts that long-running jobs with timeout = -1 remain in running state and are never rescued by JobRescuer even after RescueAfter duration elapses."
+      },
+      "historicalContext": {
+        "commitHash": "b6c733cf8699eeb825a0c719c6c81041817d87c9",
+        "issueOrPr": "PR #1331 / #1288",
+        "context": "Fixed bug where JobRescuer incorrectly rescued long-running jobs when client-level JobTimeout was set to -1."
+      }
+    }
+  ],
+  "failureModesAndDefenses": [
+    {
+      "failureMode": "Worker Process Crash / Hardware Failure Leaves In-Flight Jobs Orphaned in Running State",
+      "detectionMechanism": "JobRescuer periodically queries PostgreSQL for jobs in state = 'running' with attempted_at < now() - RescueAfter (default 1 hour) using JobGetStuck.",
+      "recoveryAction": "JobRescuer inspects job error count against MaxAttempts; if retries remain, schedules retry via JobRescueMany (state = 'retryable' / 'available'); otherwise finalizes to 'discarded' with error payload 'Stuck job rescued by JobRescuer'.",
+      "sourceEvidence": {
+        "filePath": "internal/maintenance/job_rescuer.go",
+        "lineRange": [
+          200,
+          280
+        ],
+        "observation": "Batch-rescues orphaned jobs, increments river:rescue_count metadata counter, and handles cancel_attempted_at flags."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "Architecture Core & PR #1318",
+        "rootCause": "Absence of active worker heartbeat causes crashed jobs to remain locked indefinitely without centralized sweeper.",
+        "fixDescription": "Implemented periodic JobRescuer sweeper with paginated queries and circuit-breaker batch fallback (PR #1318)."
+      },
+      "prescribedMitigation": "Ensure rescue horizon (RescueAfter) is strictly larger than maximum expected worker execution duration to prevent dual execution."
+    },
+    {
+      "failureMode": "PostgreSQL LISTEN/NOTIFY Connection Dropped or Bouncer Incompatibility (PgBouncer Transaction Pooling)",
+      "detectionMechanism": "Notifier listener connection returns EOF or I/O error; or PollOnly configuration is enabled.",
+      "recoveryAction": "Producer falls back to periodic jittered polling (fetchPollLoop with FetchPollInterval + 10% jitter); Elector polls river_leader table directly for expiration.",
+      "sourceEvidence": {
+        "filePath": "producer.go",
+        "lineRange": [
+          611,
+          637
+        ],
+        "observation": "fetchPollLoop resets jittered timer every FetchPollInterval to trigger fetchLimiter.Call() independently of notifications."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "PR #1245 / #1275",
+        "rootCause": "Transaction-pooling proxies like PgBouncer do not support persistent LISTEN/NOTIFY connections, causing missed push events.",
+        "fixDescription": "Implemented robust fallback poll loop with randomized jitter and explicit notification outbox / trigger hooks."
+      },
+      "prescribedMitigation": "Deploy River in PollOnly mode or use session pooling when connecting through transaction-mode connection poolers."
+    },
+    {
+      "failureMode": "Index Panic in Completer When Job is Concurrently Deleted Out-of-Band",
+      "detectionMechanism": "Driver query JobSetStateIfRunningMany returns 0 rows because the job row was deleted prior to completion.",
+      "recoveryAction": "Explicit length check len(jobs) < 1 in InlineCompleter and AsyncCompleter before indexing jobs[0].",
+      "sourceEvidence": {
+        "filePath": "internal/jobcompleter/job_completer.go",
+        "lineRange": [
+          141,
+          147
+        ],
+        "observation": "Guards against index-out-of-range panic by checking len(jobs) < 1 and returning nil."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "Fixes PR #1308",
+        "rootCause": "When a job was deleted out-of-band by a purge query while completing, driver returned 0 rows, panicking jobs[0].",
+        "fixDescription": "Added nil / length guards across all completers (commit a6411dd...)."
+      },
+      "prescribedMitigation": "Always verify returned row counts before accessing slice elements on conditional UPDATE statements."
+    },
+    {
+      "failureMode": "Worker Execution Blocks Past Soft Stop Allowance During Client Graceful Shutdown",
+      "detectionMechanism": "Client.Start softStopTimer fires after Config.SoftStopTimeout elapses while producers are still draining.",
+      "recoveryAction": "Escalates soft stop to hard stop by invoking workCancel(rivercommon.ErrStop), cancelling contexts of remaining running jobs. Workers exit cleanly and JobExecutor marks them as immediately available without retry penalty.",
+      "sourceEvidence": {
+        "filePath": "client.go",
+        "lineRange": [
+          1222,
+          1228
+        ],
+        "observation": "Logs warning and triggers workCancel(rivercommon.ErrStop) on soft stop timeout expiration."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "PR #1239 / #1290",
+        "rootCause": "Long-running jobs blocked process restart indefinitely during deployments without stop timeout escalation.",
+        "fixDescription": "Introduced Config.SoftStopTimeout with automatic context cancellation escalation and JobSetStateInterrupted."
+      },
+      "prescribedMitigation": "Configure SoftStopTimeout (e.g. 10s–30s) in production deployments to bound deployment restart times."
+    },
+    {
+      "failureMode": "Database Query Degradation Causing Cascading Timeouts in Maintenance Sweepers",
+      "detectionMechanism": "Consecutive context.DeadlineExceeded errors from JobCleaner, JobRescuer, or JobScheduler queries.",
+      "recoveryAction": "reducedBatchSizeBreaker trips after consecutive timeouts, permanently downgrading query batch size to smaller chunk (e.g. 500 instead of 10,000).",
+      "sourceEvidence": {
+        "filePath": "internal/maintenance/job_cleaner.go",
+        "lineRange": [
+          102,
+          108
+        ],
+        "observation": "Circuit breaker monitors query timeouts and scales down batch size."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "PR #1115 / Architecture",
+        "rootCause": "Enormous backlogs on degraded PostgreSQL databases caused maintenance queries to exceed statement timeouts repeatedly.",
+        "fixDescription": "Added circuit breaker batch reduction across all QueueMaintainer services."
+      },
+      "prescribedMitigation": "Employ adaptive batch sizing and statement timeouts on all background sweep queries."
+    }
+  ],
+  "historicalEvolution": [
+    {
+      "milestoneOrBug": "Leader Election Term Scoping and Monotonic Trust Window Redesign",
+      "commitHash": "e3fc3c2a81c53f8a3f628c33aeee07c087cbff05",
+      "issueOrPr": "PR #1213",
+      "rootCause": "Old elector treated leadership as an implicit lease; reelection and resignation were not scoped to a specific term, making same-client reacquisition prone to race conditions and stale term resurrection.",
+      "architecturalFix": "Refactored elector around explicit database terms (leader_id, elected_at), local monotonic trust windows anchored to attempt start times with safety margins, and FIFO relay transition delivery.",
+      "affectedFiles": [
+        "internal/leadership/elector.go",
+        "internal/leadership/elector_test.go",
+        "riverdriver/riverpgxv5/internal/dbsqlc/river_leader.sql",
+        "riverdriver/riverpgxv5/river_pgx_v5_driver.go"
+      ],
+      "evidence": {
+        "filePath": "internal/leadership/elector.go",
+        "observation": "newLeadershipTerm anchors trustedUntil = attemptStarted + TTL - safetyMargin; LeaderAttemptReelect checks (leader_id, elected_at)."
+      }
+    },
+    {
+      "milestoneOrBug": "Standardization of Post-Persist Event State Precedence",
+      "commitHash": "0b7bcc7a8ad7d041fa6b201c8377148b612c5090",
+      "issueOrPr": "PR #1350 / #1290",
+      "rootCause": "When JobCompleteTx committed successfully inside a worker transaction but the worker function subsequently returned an error, River emitted an ambiguous and erroneous job_failed event instead of job_completed.",
+      "architecturalFix": "Standardized event emission precedence in completerJobUpdatedFromStateAndReason so persisted database state (completed, cancelled) strictly overrides transient worker return values.",
+      "affectedFiles": [
+        "internal/jobcompleter/job_completer.go",
+        "internal/jobcompleter/job_completer_test.go",
+        "job_complete_tx.go",
+        "client_test.go"
+      ],
+      "evidence": {
+        "filePath": "internal/jobcompleter/job_completer.go",
+        "observation": "completerJobUpdatedFromStateAndReason maps job.State == Completed directly to JobSetStateReasonCompleted regardless of error."
+      }
+    },
+    {
+      "milestoneOrBug": "Non-Faulting Soft-Stop Interruption and EventKindJobInterrupted",
+      "commitHash": "fdf6cdf12567a5b70c003f5ff850273f09e7efcf",
+      "issueOrPr": "PR #1290 / #1289",
+      "rootCause": "Jobs interrupted by client shutdown were treated as regular errors, incrementing attempt counts, risking discard on max attempts, and introducing retry delays.",
+      "architecturalFix": "Implemented JobSetStateInterrupted to immediately requeue soft-stopped jobs to available without incrementing attempt count or recording error, emitting EventKindJobInterrupted.",
+      "affectedFiles": [
+        "client.go",
+        "client_test.go",
+        "event.go",
+        "internal/jobexecutor/job_executor.go",
+        "internal/jobcompleter/job_completer.go"
+      ],
+      "evidence": {
+        "filePath": "internal/jobexecutor/job_executor.go",
+        "observation": "isSoftStopCancelError branches to JobSetStateInterrupted with attempt = max(jobRow.Attempt-1, 0)."
+      }
+    },
+    {
+      "milestoneOrBug": "State Bitmask Partial Unique Index Migration for Bulk Deduplication",
+      "commitHash": "008a9fdfba4f47fabe5ef33bcd706eb9f1358801",
+      "issueOrPr": "Migration 006 / PR #1084",
+      "rootCause": "Whole-table unique indexes and fallback advisory locks limited ingestion throughput and prevented fine-grained per-state unique scoping during high-volume batch inserts.",
+      "architecturalFix": "Introduced migration 006 with river_job_state_in_bitmask(unique_states, state) IMMUTABLE SQL function and partial unique index river_job_unique_idx on (unique_key).",
+      "affectedFiles": [
+        "riverdriver/riverpgxv5/migration/main/006_bulk_unique.up.sql",
+        "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+        "internal/dbunique/db_unique.go"
+      ],
+      "evidence": {
+        "filePath": "riverdriver/riverpgxv5/migration/main/006_bulk_unique.up.sql",
+        "observation": "Defines 8-bit state mask function and partial unique index on unique_key."
+      }
+    },
+    {
+      "milestoneOrBug": "Guard Against Index Panic When Job Deleted During Batch Completion",
+      "commitHash": "008a9fdfba4f47fabe5ef33bcd706eb9f1358801",
+      "issueOrPr": "PR #1308",
+      "rootCause": "If a job was deleted out of band while an Async or Inline completer was in flight, the driver returned 0 rows, causing an index out of bounds panic when indexing rows[0].",
+      "architecturalFix": "Added explicit if len(jobs) < 1 { return nil } guard in all completers.",
+      "affectedFiles": [
+        "internal/jobcompleter/job_completer.go",
+        "internal/jobcompleter/job_completer_test.go"
+      ],
+      "evidence": {
+        "filePath": "internal/jobcompleter/job_completer.go",
+        "observation": "Guards len(jobs) < 1 before indexing jobs[0]."
+      }
+    }
+  ],
+  "unresolvedContradictionsAndBypasses": [
+    {
+      "claimOrGuarantee": "Worker has exclusive ownership during task execution.",
+      "contradictionOrBypass": "If a worker goroutine hangs or runs longer than RescueAfter (default 1 hour) without returning, JobRescuer reassigns the job to retryable or available. A second worker can dequeue and run the job concurrently with the first stalled worker. While JobSetStateIfRunningMany prevents the first worker from finalizing state if it wakes up after the second worker finishes, both workers execute user business logic concurrently during the overlap window.",
+      "codeLocation": "internal/maintenance/job_rescuer.go:L200-L285 and internal/jobexecutor/job_executor.go:L185-L285",
+      "evidence": "JobRescuer updates state from running to retryable via JobRescueMany without preemptively killing the remote stalled worker OS process or goroutine."
+    },
+    {
+      "claimOrGuarantee": "BatchCompleter provides durable state persistence for completed jobs.",
+      "contradictionOrBypass": "BatchCompleter buffers job completion status in an in-memory map (setStateParams) and flushes every 50ms or 100 items. If the worker process encounters a catastrophic crash (SIGKILL, OOM, power loss) before the buffer is flushed, the in-memory completed states are lost. In PostgreSQL, the jobs remain in state = 'running' until swept by JobRescuer after 1 hour, causing them to be re-executed.",
+      "codeLocation": "internal/jobcompleter/job_completer.go:L369-L440",
+      "evidence": "setStateParams is stored purely in memory (map[int64]batchCompleterSetState) protected by a sync.RWMutex until handleBatch runs."
+    },
+    {
+      "claimOrGuarantee": "Config.AdvisoryLockPrefix prevents advisory lock collisions with host applications.",
+      "contradictionOrBypass": "Setting AdvisoryLockPrefix cordons the lock to a 32-bit namespace prefix, but compresses the available hash space for River's own locks to only 32 bits, substantially increasing the mathematical probability of internal advisory lock hash collisions between distinct River jobs.",
+      "codeLocation": "client.go:L97-L113",
+      "evidence": "client.go doc comments explicitly note that AdvisoryLockPrefix leaves only 32 bits of number space for advisory lock hashes, making internal River collisions more likely."
+    }
+  ],
+  "adversarialCritique": {
+    "boundaryConditions": [
+      "Process pauses (GC or container CPU throttle) exceeding the leader election trust window (TTL - 1s) cause the current leader to step down while another node acquires leadership, causing dual leader overlap if the stalled leader resumes without checking its local deadline.",
+      "PostgreSQL replication lag: if jobs are inserted via LISTEN/NOTIFY and worker processes connect to read-replicas or transaction poolers without primary snapshot visibility, workers may attempt to fetch before the inserted row is visible on the replica.",
+      "Catastrophic process termination (SIGKILL) while BatchCompleter holds thousands of in-memory completed jobs causes those jobs to remain in running state for 1 hour until JobRescuer rescues them, leading to duplicate execution.",
+      "PostgreSQL pg_notify payload size limit (8,000 bytes) requires River notifications to contain only minimal routing identifiers (job_id, queue, action) rather than full job arguments."
+    ],
+    "untestedAssumptions": [
+      "Assumes PostgreSQL server clock and application host clocks do not drift beyond leader local deadline safety margins (1 second).",
+      "Assumes user worker implementations cooperatively respect context cancellation (ctx.Done()) when timeouts or remote cancellations occur; uncooperative workers block goroutines indefinitely.",
+      "Assumes database connection pool sizing (MaxConns) is sufficiently large to accommodate concurrent producer worker loops, maintenance services, listener connections, and batch completers without connection pool starvation."
+    ],
+    "acceptedTradeOffs": [
+      "At-least-once delivery over strict exactly-once: duplicate executions can occur during worker crashes, rescue sweeper re-enqueues, or network partitions.",
+      "In-memory completion batching (50ms buffer) over synchronous completion: trades catastrophic crash durability for order-of-magnitude higher throughput (thousands of completions per single database transaction).",
+      "PostgreSQL database engine coupling over broker neutrality: achieves transactional atomicity (InsertTx, JobCompleteTx) and zero-infrastructure overhead by deeply integrating with PostgreSQL primitives (FOR UPDATE SKIP LOCKED, LISTEN/NOTIFY, partial indexes).",
+      "Optimistic concurrency on completion (JobSetStateIfRunningMany) over long-held locks: workers do not hold open database transactions for the duration of job execution, avoiding connection starvation at the cost of potential dual execution if jobs are rescued."
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ESEKL Negative Fixture Schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["fixtureId", "description", "expectedErrorCategory", "payload"],
+    "properties": {
+      "fixtureId": {
+        "type": "string",
+        "pattern": "^NEG-[A-Z0-9]+-\\d+$"
+      },
+      "description": {
+        "type": "string",
+        "minLength": 10
+      },
+      "expectedErrorCategory": {
+        "type": "string",
+        "enum": [
+          "BROKEN_EVIDENCE_ID",
+          "MISSING_SOURCE_PROVENANCE",
+          "UNREGISTERED_REPOSITORY",
+          "INVALID_SUBSTRATE",
+          "MISSING_LINKED_DOMAIN_EKUS",
+          "SCHEMA_VALIDATION_ERROR",
+          "UNBACKED_HISTORY_LABEL",
+          "INVALID_KEYWORD_FACETS_TYPE",
+          "BROKEN_SUPPORT_LINK",
+          "BROKEN_ALTERNATIVE_LINK",
+          "BROKEN_COUNTEREXAMPLE_LINK",
+          "BROKEN_NOT_APPLICABLE_LINK"
+        ]
+      },
+      "payload": {
+        "type": "object"
+      }
+    },
+    "additionalProperties": false
+  }
+}

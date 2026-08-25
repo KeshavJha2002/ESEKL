@@ -1,0 +1,967 @@
+{
+  "repoName": "apache/activemq-artemis",
+  "domain": "message_queues",
+  "gitCommitHash": "ded1b54c538de60b4df8f4953c5e1979ac64b5db",
+  "analyzedAt": "2026-08-22T22:00:00.000Z",
+  "overview": {
+    "purpose": "High-performance, embeddable, multi-protocol (AMQP 1.0, MQTT 3.1.1/5, OpenWire, STOMP, HornetQ/Core) message broker in Java engineered for ultra-low latency, mission-critical throughput, append-only Direct AIO/NIO journal persistence, cursor-indexed overflow paging, non-blocking Netty remoting, distributed lock lease HA, and dual-quorum network replication.",
+    "architectureType": "Multi-protocol Actor-driven broker featuring non-blocking Netty I/O channels, MPSC lock-free queue ingest with PriorityLinkedList delivery, Direct AIO / libaio aligned circular append-only journal persistence, cursor-indexed multi-page file overflow paging, term-based distributed lock coordinator failover, and dual-quorum network replication.",
+    "keyDifferentiators": [
+      "Non-Blocking MPSC Queue Ingestion: Decouples concurrent client producer threads from queue dispatch execution by enqueuing incoming references into a lock-free JCTools MpscUnboundedArrayQueue before single-threaded DeliverRunner polling.",
+      "Asynchronous Direct AIO Journal: Implements zero-copy aligned disk writes on Linux kernel libaio with atomic 4KB sector alignment and TimedBuffer microsecond batch synchronization.",
+      "Virtual Memory Overflow Paging: Transparently transitions addresses exceeding max-size-bytes into append-only page files, managing consumption through PageSubscription cursor indexes without exhausting heap memory.",
+      "Three-Way Dual-Quorum OperationContext: Atomically coordinates asynchronous completion across storage journal writes, network replication streams, and page syncs using atomic bitfield updaters before invoking client callbacks.",
+      "Activation-Gated Distributed HA Locks: Prevents split-brain and standby contention by restricting pluggable Curator/ZooKeeper distributed lock acquisition strictly to nodes that have completed broker activation."
+    ]
+  },
+  "components": [
+    {
+      "name": "ActiveMQServerImpl",
+      "role": "Broker Daemon Lifecycle Supervisor & Subsystem Coordinator",
+      "primaryFiles": [
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/ActiveMQServerImpl.java",
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/ActiveMQServer.java"
+      ],
+      "publicInterfaces": [
+        "void start() throws Exception",
+        "void stop(boolean boolean, boolean criticalIOError, boolean restarting) throws Exception",
+        "void completeActivation(boolean isSecondary) throws Exception",
+        "Queue createQueue(QueueConfiguration queueConfiguration, boolean ignoreIfExists) throws Exception",
+        "void destroyQueue(SimpleString queueName, SecurityAuth session, boolean checkConsumerCount, boolean removeConsumers, boolean autoDeleteAddress) throws Exception",
+        "PostOffice getPostOffice()",
+        "StorageManager getStorageManager()",
+        "PagingManager getPagingManager()",
+        "RemotingService getRemotingService()"
+      ],
+      "dependencies": [
+        "PostOfficeImpl",
+        "JournalStorageManager",
+        "PagingManagerImpl",
+        "RemotingServiceImpl",
+        "ClusterManager",
+        "ManagementService",
+        "SecurityStore",
+        "LockCoordinator"
+      ],
+      "stateManaged": [
+        "Broker lifecycle state (STOPPED, STARTING, STARTED, STOPPING)",
+        "Activation status (active primary vs passive backup)",
+        "Registered queues and address bindings map",
+        "Ordered and scheduled thread pool executors"
+      ],
+      "evidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/ActiveMQServerImpl.java",
+        "lineRange": [
+          380,
+          1250
+        ],
+        "symbol": "public class ActiveMQServerImpl implements ActiveMQServer",
+        "observation": "Coordinates broker bootstrapping, initializes storage manager and paging systems, binds Netty acceptors, manages HA activation transitions, and supervises shutdown cleanup.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "QueueImpl",
+      "role": "Lock-Free MPSC Ingest, PriorityLinkedList Dispatcher & Consumer Multiplexer",
+      "primaryFiles": [
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/QueueImpl.java",
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/Queue.java"
+      ],
+      "publicInterfaces": [
+        "void addTail(MessageReference ref, boolean direct)",
+        "void addHead(MessageReference ref, boolean direct)",
+        "boolean deliverDirect(MessageReference ref)",
+        "void deliverAsync()",
+        "void acknowledge(Transaction tx, MessageReference ref, AckReason reason, ServerConsumer consumer, boolean delivering) throws Exception",
+        "void cancel(Transaction tx, MessageReference ref, boolean reset) throws Exception",
+        "void checkDepage()",
+        "boolean hasMatchingConsumer(Message message)"
+      ],
+      "dependencies": [
+        "PostOffice",
+        "PagingStore",
+        "PageSubscription",
+        "PriorityLinkedListImpl",
+        "MpscUnboundedArrayQueue",
+        "ScheduledDeliveryHandler",
+        "SizeAwareMetric"
+      ],
+      "stateManaged": [
+        "In-flight messages priority list (messageReferences PriorityLinkedList with 10 priorities)",
+        "Intermediate lock-free ingestion queue (intermediateMessageReferences MpscUnboundedArrayQueue)",
+        "Consumer distribution list (PriorityConsumerListImpl)",
+        "Memory consumption metrics (queueMemorySize SizeAwareMetric)",
+        "Delivering messages count and persistent size (deliveringMetrics)"
+      ],
+      "evidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/QueueImpl.java",
+        "lineRange": [
+          138,
+          3200
+        ],
+        "symbol": "public class QueueImpl extends CriticalComponentImpl implements Queue",
+        "observation": "Enqueues messages lock-free into intermediate MPSC buffer, batches transfers into 10-level priority linked lists, executes single-threaded DeliverRunner iterations under deliverLock, and regulates cursor depaging.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "PostOfficeImpl",
+      "role": "Address Routing Engine, Duplicate ID Cache & Divert/Mirror Coordinator",
+      "primaryFiles": [
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/postoffice/impl/PostOfficeImpl.java",
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/postoffice/PostOffice.java"
+      ],
+      "publicInterfaces": [
+        "RoutingStatus route(Message message, RoutingContext context, boolean direct) throws Exception",
+        "RoutingStatus route(Message message, RoutingContext context, boolean direct, boolean rejectDuplicates, Binding bindingMove, boolean sendToDLA) throws Exception",
+        "DuplicateIDCache getDuplicateIDCache(SimpleString address, int cacheSize)",
+        "void addBinding(Binding binding) throws Exception",
+        "void removeBinding(SimpleString uniqueName, Transaction tx, boolean deleteData) throws Exception"
+      ],
+      "dependencies": [
+        "AddressManager",
+        "StorageManager",
+        "PagingManager",
+        "HierarchicalRepository<AddressSettings>",
+        "DuplicateIDCaches",
+        "ManagementService"
+      ],
+      "stateManaged": [
+        "Address-to-Bindings routing registry (AddressManager)",
+        "Address duplicate ID sliding-window caches (ConcurrentMap<SimpleString, DuplicateIDCache>)",
+        "Divert configurations and bridge bindings",
+        "Expiry and Address Queue reaper scheduled tasks"
+      ],
+      "evidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/postoffice/impl/PostOfficeImpl.java",
+        "lineRange": [
+          118,
+          1340
+        ],
+        "symbol": "public class PostOfficeImpl implements PostOffice, NotificationListener, BindingsFactory",
+        "observation": "Matches address wildcards against bound queues, checks DuplicateID sliding window caches before enqueue, applies address expiry policies, and forwards messages to divert and mirror queues.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "JournalImpl",
+      "role": "Direct AIO / libaio Append-Only Circular Transactional Storage Engine",
+      "primaryFiles": [
+        "artemis-journal/src/main/java/org/apache/activemq/artemis/core/journal/impl/JournalImpl.java",
+        "artemis-journal/src/main/java/org/apache/activemq/artemis/core/journal/Journal.java"
+      ],
+      "publicInterfaces": [
+        "void appendAddRecord(long id, byte recordType, Persister persister, Object record, boolean sync, IOCompletion callback) throws Exception",
+        "void appendUpdateRecord(long id, byte recordType, Persister persister, Object record, boolean sync, IOCompletion callback) throws Exception",
+        "void appendDeleteRecord(long id, boolean sync, IOCompletion callback) throws Exception",
+        "void appendAddRecordTransactional(long txID, long id, byte recordType, Persister persister, Object record) throws Exception",
+        "void appendCommitRecord(long txID, boolean sync, IOCompletion callback) throws Exception",
+        "void appendRollbackRecord(long txID, boolean sync, IOCompletion callback) throws Exception",
+        "JournalLoadInformation load(LoaderCallback reloadManager) throws Exception"
+      ],
+      "dependencies": [
+        "SequentialFileFactory",
+        "JournalFilesRepository",
+        "TimedBuffer",
+        "AIOSequentialFileFactory",
+        "NIOSequentialFileFactory"
+      ],
+      "stateManaged": [
+        "Circular pool of fixed-size journal files (dataFiles, freeFiles, openedFiles)",
+        "Active append transaction records map (ConcurrentLongHashMap<JournalTransaction>)",
+        "Live record location index (ConcurrentLongHashMap<JournalRecord> records)",
+        "Compactor state and journal reclaim thresholds"
+      ],
+      "evidence": {
+        "filePath": "artemis-journal/src/main/java/org/apache/activemq/artemis/core/journal/impl/JournalImpl.java",
+        "lineRange": [
+          106,
+          1160
+        ],
+        "symbol": "public class JournalImpl extends JournalBase implements TestableJournal, JournalRecordProvider",
+        "observation": "Appends fixed-header binary records (ADD, UPDATE, DELETE, PREPARE, COMMIT, ROLLBACK) to sequential files via direct Linux AIO or NIO, maintaining 4KB sector alignment and compacting reclaimed files.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "PagingStoreImpl",
+      "role": "Virtual Memory Overflow Paging & Cursor-Indexed Storage Engine",
+      "primaryFiles": [
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/paging/impl/PagingStoreImpl.java",
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/paging/PagingStore.java"
+      ],
+      "publicInterfaces": [
+        "boolean page(Message message, Transaction tx, RouteContextList listCtx) throws Exception",
+        "int page(Message message, Transaction tx, RouteContextList listCtx, Function<Message, Message> pageDecorator, boolean useFlowControl) throws Exception",
+        "boolean startPaging() throws Exception",
+        "boolean stopPaging() throws Exception",
+        "boolean checkPageFile(boolean force) throws Exception",
+        "Page createPage(long pageId) throws Exception",
+        "PageCursorProvider getCursorProvider()"
+      ],
+      "dependencies": [
+        "PagingManager",
+        "StorageManager",
+        "PageTimedWriter",
+        "SequentialFileFactory",
+        "PageCursorProviderImpl"
+      ],
+      "stateManaged": [
+        "Paging state boolean flag (volatile boolean paging)",
+        "Address memory size metric (SizeAwareMetric size)",
+        "Current active page reference (volatile Page currentPage, long currentPageId)",
+        "Page file counters and subscription cursor positions"
+      ],
+      "evidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/paging/impl/PagingStoreImpl.java",
+        "lineRange": [
+          100,
+          1600
+        ],
+        "symbol": "public class PagingStoreImpl implements PagingStore",
+        "observation": "Monitors address memory thresholds, opens sequential page files when max-size-bytes is exceeded, writes paged message records with transaction identifiers, and notifies cursor providers for depaging.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "TimedBuffer",
+      "role": "Microsecond Direct-Memory Batching Flusher",
+      "primaryFiles": [
+        "artemis-journal/src/main/java/org/apache/activemq/artemis/core/io/buffer/TimedBuffer.java"
+      ],
+      "publicInterfaces": [
+        "void start()",
+        "void stop()",
+        "boolean checkSize(int sizeChecked)",
+        "void addBytes(ActiveMQBuffer src, boolean sync, IOCallback callback)",
+        "void flush()",
+        "void setObserver(TimedBufferObserver observer)"
+      ],
+      "dependencies": [
+        "CriticalAnalyzer",
+        "ChannelBufferWrapper",
+        "TimedBufferObserver"
+      ],
+      "stateManaged": [
+        "Direct off-heap ByteBuffer (buffer)",
+        "Pending IOCallback list (callbacks)",
+        "Spin-limiter semaphore (spinLimiter)",
+        "Flush timer thread (CheckTimer)"
+      ],
+      "evidence": {
+        "filePath": "artemis-journal/src/main/java/org/apache/activemq/artemis/core/io/buffer/TimedBuffer.java",
+        "lineRange": [
+          42,
+          250
+        ],
+        "symbol": "public final class TimedBuffer extends CriticalComponentImpl",
+        "observation": "Buffers sequential journal writes into off-heap direct memory, flushing synchronously when full or asynchronously upon microsecond timer expiry to minimize disk write syscalls.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "ReplicationManager",
+      "role": "Active-Passive Synchronous Dual-Quorum Journal & Paging Replicator",
+      "primaryFiles": [
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/replication/ReplicationManager.java",
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/replication/ReplicationEndpoint.java"
+      ],
+      "publicInterfaces": [
+        "void start() throws Exception",
+        "void stop() throws Exception",
+        "void appendAddRecord(byte journalID, byte operation, long id, byte recordType, Persister persister, Object record)",
+        "void appendDeleteRecord(byte journalID, long id)",
+        "void appendCommitRecord(byte journalID, boolean sync, long txID, boolean lineUp)",
+        "void pageWrite(PagedMessage message, int pageNumber, SimpleString address)",
+        "void syncJournalFile(JournalFile jf, byte id)"
+      ],
+      "dependencies": [
+        "CoreRemotingConnection",
+        "Channel",
+        "OperationContextImpl",
+        "QuorumManager"
+      ],
+      "stateManaged": [
+        "Replication remoting channel (Channel replicatingChannel)",
+        "In-flight replicated packets queue (replicatePacketRequests)",
+        "Slow replication detection timers and un-writable nanos tracker",
+        "Replication tokens (OperationContext repliToken)"
+      ],
+      "evidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/replication/ReplicationManager.java",
+        "lineRange": [
+          96,
+          520
+        ],
+        "symbol": "public final class ReplicationManager implements ActiveMQComponent",
+        "observation": "Streams journal modifications, page events, and large message chunks over Netty TCP channels to backup nodes, holding client completion until backup replication acks return.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "NettyAcceptor",
+      "role": "Asynchronous Non-Blocking Protocol Acceptor & Transport Multiplexer",
+      "primaryFiles": [
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/impl/netty/NettyAcceptor.java",
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/server/impl/RemotingServiceImpl.java"
+      ],
+      "publicInterfaces": [
+        "void start() throws Exception",
+        "void stop() throws Exception",
+        "void pause()",
+        "boolean isStarted()",
+        "Map<Object, NettyServerConnection> getConnections()"
+      ],
+      "dependencies": [
+        "EventLoopGroup",
+        "ServerBootstrap",
+        "ProtocolManagerFactory",
+        "ActiveMQSecurityManager"
+      ],
+      "stateManaged": [
+        "Active Netty TCP Channel pipeline and ChannelGroup",
+        "Protocol detection handlers (AMQP, MQTT, OpenWire, STOMP, Core)",
+        "SSL/TLS SSLContext engines and connection throttlers"
+      ],
+      "evidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/impl/netty/NettyAcceptor.java",
+        "lineRange": [
+          120,
+          350
+        ],
+        "symbol": "public class NettyAcceptor extends AbstractAcceptor",
+        "observation": "Binds TCP/HTTP/WebSocket server sockets via Netty EventLoopGroups, auto-detects inbound wire protocols, negotiates TLS encryption, and instantiates protocol connection handlers.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "ClusterConnectionImpl",
+      "role": "Topology-Aware Inter-Broker Store-and-Forward Mesh Engine",
+      "primaryFiles": [
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/cluster/impl/ClusterConnectionImpl.java",
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/cluster/ClusterConnection.java"
+      ],
+      "publicInterfaces": [
+        "void start() throws Exception",
+        "void stop() throws Exception",
+        "void nodeUP(TopologyMember member, boolean last)",
+        "void nodeDown(long uniqueEventID, String nodeID)",
+        "void removeRecord(String nodeID)",
+        "void disconnectRecord(String nodeID)"
+      ],
+      "dependencies": [
+        "ClusterConnectionBridge",
+        "Topology",
+        "ServerLocator",
+        "PostOffice",
+        "ManagementService"
+      ],
+      "stateManaged": [
+        "Cluster member topology registry (Topology topology)",
+        "Active forwarding records map (Map<String, MessageFlowRecord> records)",
+        "Store-and-forward queues ($.artemis.internal.sf.<cluster-name>.<node-id>)",
+        "Records synchronization guard (Object recordsGuard)"
+      ],
+      "evidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/cluster/impl/ClusterConnectionImpl.java",
+        "lineRange": [
+          150,
+          580
+        ],
+        "symbol": "public final class ClusterConnectionImpl extends ActiveMQScheduledComponent implements ClusterConnection",
+        "observation": "Maintains cluster membership topology notifications, constructs dedicated store-and-forward bridge queues to peer brokers, and load-balances messages on demand across the cluster mesh.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "LockCoordinator",
+      "role": "Pluggable Distributed Lock Lease & HA Coordinator",
+      "primaryFiles": [
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/lock/LockCoordinator.java",
+        "artemis-lockmanager/artemis-lockmanager-ri/src/main/java/org/apache/activemq/artemis/lockmanager/zookeeper/CuratorDistributedLockManager.java"
+      ],
+      "publicInterfaces": [
+        "void start()",
+        "void stop()",
+        "void run()",
+        "void onLockAcquired(RunnableEx runnable, int priority)",
+        "void onLockReleased(RunnableEx runnable, int priority)",
+        "boolean isLocked()",
+        "String getStatus()"
+      ],
+      "dependencies": [
+        "DistributedLockManager",
+        "DistributedLock",
+        "ActiveMQServer"
+      ],
+      "stateManaged": [
+        "Distributed lock lease status (volatile boolean locked)",
+        "Active DistributedLock reference",
+        "Prioritized lock acquisition and release callbacks lists",
+        "Auto-start enablement flag (volatile boolean autoStart)"
+      ],
+      "evidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/lock/LockCoordinator.java",
+        "lineRange": [
+          46,
+          376
+        ],
+        "symbol": "public class LockCoordinator extends ActiveMQScheduledComponent",
+        "observation": "Periodically polls pluggable distributed lock managers (e.g. Apache Curator ZooKeeper) using bounded timeouts, activating registered acceptors and connections upon lock acquisition.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-01",
+      "atomicStatement": "JournalImpl appends records sequentially with 4KB sector alignment using direct Linux AIO (libaio) and blocks transaction completion until the write is submitted to disk.",
+      "enforcingMechanism": "AIOSequentialFile with LibaioFile.write and TimedBuffer direct off-heap synchronization",
+      "sourceLocation": {
+        "filePath": "artemis-journal/src/main/java/org/apache/activemq/artemis/core/journal/impl/JournalImpl.java",
+        "lineRange": [
+          915,
+          959
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/unit-tests/src/test/java/org/apache/activemq/artemis/tests/unit/core/journal/impl/AlignedJournalImplTest.java",
+        "testFunction": "testBasicAlignment",
+        "lineRange": [
+          94,
+          135
+        ],
+        "observation": "Verifies that SequentialFile enforces sector alignment on writes and rejects misaligned buffers."
+      },
+      "historicalContext": {
+        "commitHash": "ae94df41d5d4d8bf355c413ae43f0ec118148707",
+        "issueOrPr": "ARTEMIS-6189",
+        "context": "Extended journal persister encoding to generic collections supporting non-primitive key mappings for resilient MQTT states."
+      }
+    },
+    {
+      "id": "INV-02",
+      "atomicStatement": "Producer threads submitting messages to QueueImpl never acquire queue monitor locks, enqueuing lock-free into intermediate MPSC array queues before single-threaded DeliverRunner processing.",
+      "enforcingMechanism": "MpscUnboundedArrayQueue<MessageReference> intermediateMessageReferences in QueueImpl.addTail",
+      "sourceLocation": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/QueueImpl.java",
+        "lineRange": [
+          1048,
+          1057
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/client/MultipleProducersTest.java",
+        "testFunction": "testMultipleProducers",
+        "lineRange": [
+          40,
+          95
+        ],
+        "observation": "Asserts high-concurrency multi-producer enqueue integrity without race conditions or dropped message references."
+      },
+      "historicalContext": {
+        "commitHash": "5c3c91f974859ea0c2655ba116600254c4075a20",
+        "issueOrPr": "NO-JIRA",
+        "context": "Hardened MultipleProducersTest synchronization against intermittent concurrent delivery timing anomalies."
+      }
+    },
+    {
+      "id": "INV-03",
+      "atomicStatement": "QueueImpl preserves strict FIFO queue order across cancellations, rollbacks, and redeliveries by sorting message references using monotonic per-queue sequence IDs rather than global message IDs.",
+      "enforcingMechanism": "MessageReferenceComparatorSequence in PriorityLinkedListImpl",
+      "sourceLocation": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/MessageReferenceImpl.java",
+        "lineRange": [
+          43,
+          60
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/paging/PagingOrderTest.java",
+        "testFunction": "testOrderAcrossRollback",
+        "lineRange": [
+          50,
+          110
+        ],
+        "observation": "Validates that rolled back message references are re-inserted at the head of the priority list according to original sequence ordering."
+      },
+      "historicalContext": {
+        "commitHash": "00dd2dde19f974bf1ee555881f132f995045b95a",
+        "issueOrPr": "ARTEMIS-6179",
+        "context": "Preserved queue iteration consistency during depage while fixing deadlock between deleteReference and depage."
+      }
+    },
+    {
+      "id": "INV-04",
+      "atomicStatement": "Transactional message acknowledgements in QueueImpl are committed atomically with storage deletions via RefsOperation.afterCommit, preventing phantom deliveries upon crash recovery.",
+      "enforcingMechanism": "RefsOperation transaction callback registering durable message ref down operations",
+      "sourceLocation": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/RefsOperation.java",
+        "lineRange": [
+          189,
+          206
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/unit-tests/src/test/java/org/apache/activemq/artemis/tests/unit/core/journal/impl/BatchCommitTest.java",
+        "testFunction": "testBatchCommitRollback",
+        "lineRange": [
+          45,
+          105
+        ],
+        "observation": "Verifies that transactional acknowledgements survive broker restart only if commit record was written to journal."
+      },
+      "historicalContext": {
+        "commitHash": "86ed6b4aab3ab1c601ee3414d46e247d44c14641",
+        "issueOrPr": "ARTEMIS-6146",
+        "context": "Fixed transaction lifecycle consistency for large message acknowledgements routed across diverts and mirror targets."
+      }
+    },
+    {
+      "id": "INV-05",
+      "atomicStatement": "When an address exceeds configured max-size-bytes, PagingStoreImpl redirects messages into sequential page files on disk, rejecting or throttling producers according to AddressFullMessagePolicy.",
+      "enforcingMechanism": "PagingStoreImpl.page() checking AddressFullMessagePolicy (PAGE, BLOCK, DROP, FAIL)",
+      "sourceLocation": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/paging/impl/PagingStoreImpl.java",
+        "lineRange": [
+          1437,
+          1508
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/paging/PagingMaxReadLimitTest.java",
+        "testFunction": "testMaxReadPageMessages",
+        "lineRange": [
+          57,
+          128
+        ],
+        "observation": "Asserts that when max-read-messages is reached, paging flow control engages (logging AMQ224127) and throttles further depaging."
+      },
+      "historicalContext": {
+        "commitHash": "00dd2dde19f974bf1ee555881f132f995045b95a",
+        "issueOrPr": "ARTEMIS-6179",
+        "context": "Removed redundant outer synchronization on QueueImpl.deleteReference() to prevent lock inversion deadlocks against PagingStore depaging executor."
+      }
+    },
+    {
+      "id": "INV-06",
+      "atomicStatement": "PostOfficeImpl filters duplicate inbound messages across broker restarts by maintaining a persistent journal-backed sliding window cache of message _AMQ_DUPL_ID headers.",
+      "enforcingMechanism": "PersistentDuplicateIDCache in PostOfficeImpl.checkDuplicateID()",
+      "sourceLocation": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/postoffice/impl/PostOfficeImpl.java",
+        "lineRange": [
+          1187,
+          1206
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/unit-tests/src/test/java/org/apache/activemq/artemis/tests/unit/core/postoffice/impl/DuplicateDetectionUnitTest.java",
+        "testFunction": "testReloadDuplication",
+        "lineRange": [
+          75,
+          155
+        ],
+        "observation": "Verifies that DuplicateID cache entries survive journal reload and reject duplicate insertions."
+      },
+      "historicalContext": {
+        "commitHash": "b30557853d73e73be1fa421f38e1b95d2c97762b",
+        "issueOrPr": "ARTEMIS-6189",
+        "context": "Integrated DuplicateIDCache into MQTT protocol handler for crash-resilient QoS 1 and QoS 2 duplicate packet deduplication."
+      }
+    },
+    {
+      "id": "INV-07",
+      "atomicStatement": "OperationContextImpl requires atomic completion across storage journal writes, network replication streams, and paging syncs before executing client completion callbacks.",
+      "enforcingMechanism": "Atomic bitfield counters (STORE_LINEUP_UPDATER, REPLICATION_LINEUP_UPDATER, PAGE_LINEUP_UPDATER) in OperationContextImpl",
+      "sourceLocation": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/persistence/impl/journal/OperationContextImpl.java",
+        "lineRange": [
+          193,
+          270
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/cluster/failover/NettyReplicationStopTest.java",
+        "testFunction": "testReplicationStopOnTimeout",
+        "lineRange": [
+          60,
+          115
+        ],
+        "observation": "Validates that client callbacks are held until both local journal writes and replication acknowledgements complete."
+      },
+      "historicalContext": {
+        "commitHash": "6640f77cc55de6be3a0e33231c8e1df683254617",
+        "issueOrPr": "ARTEMIS-6153",
+        "context": "Synchronized cluster connection record teardown on recordsGuard to prevent race conditions during rapid broker failover."
+      }
+    },
+    {
+      "id": "INV-08",
+      "atomicStatement": "Passive HA backup brokers never contend for distributed lock coordinator leases until active primary activation is completed.",
+      "enforcingMechanism": "completeActivation() gating LockCoordinator startup in ActiveMQServerImpl",
+      "sourceLocation": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/lock/LockCoordinator.java",
+        "lineRange": [
+          327,
+          355
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/cluster/failover/LockCoordinatorHaActivationTest.java",
+        "testFunction": "testPassiveBackupDoesNotContendForLock",
+        "lineRange": [
+          52,
+          100
+        ],
+        "observation": "Asserts that passive backup broker keeps lock coordinator in Stopped state and only acquires distributed lock upon primary shutdown."
+      },
+      "historicalContext": {
+        "commitHash": "d12d99af276ed5d6f7a9fb4edc24e6500d3ebeab",
+        "issueOrPr": "ARTEMIS-6162",
+        "context": "Delayed LockCoordinator polling until completeActivation() so passive backups do not steal distributed locks from active primaries."
+      }
+    },
+    {
+      "id": "INV-09",
+      "atomicStatement": "ClusterConnectionImpl automatically re-evaluates cluster topology and re-creates store-and-forward bridge queues if a target node is still present after record removal.",
+      "enforcingMechanism": "Synchronized recordsGuard and topology re-verification in ClusterConnectionImpl.removeRecord",
+      "sourceLocation": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/cluster/impl/ClusterConnectionImpl.java",
+        "lineRange": [
+          310,
+          360
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/cluster/distribution/ClusterConnectionSfQueueRaceTest.java",
+        "testFunction": "testRemoveRecordReCreatesWhenNodeIsInTopology",
+        "lineRange": [
+          110,
+          132
+        ],
+        "observation": "Verifies that removeRecord re-creates the store-and-forward bridge queue if the node is already present in topology."
+      },
+      "historicalContext": {
+        "commitHash": "6640f77cc55de6be3a0e33231c8e1df683254617",
+        "issueOrPr": "ARTEMIS-6153",
+        "context": "Fixed race where nodeUP topology notification arrived while stale record was present and was ignored; subsequent removeRecord removed stale record leaving no bridge and no SF queue."
+      }
+    },
+    {
+      "id": "INV-10",
+      "atomicStatement": "TimedBuffer flushes off-heap direct memory buffers to disk immediately when filled or upon microsecond timer expiry, executing associated IOCallbacks in strict batch order.",
+      "enforcingMechanism": "TimedBuffer.checkSize() and CheckTimer run loop with spinLimiter semaphore",
+      "sourceLocation": {
+        "filePath": "artemis-journal/src/main/java/org/apache/activemq/artemis/core/io/buffer/TimedBuffer.java",
+        "lineRange": [
+          212,
+          250
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/unit-tests/src/test/java/org/apache/activemq/artemis/tests/unit/core/journal/impl/TimedBufferTest.java",
+        "testFunction": "testFillBuffer",
+        "lineRange": [
+          71,
+          132
+        ],
+        "observation": "Verifies that TimedBuffer flushes accumulated bytes when capacity limit is reached and executes callbacks in order."
+      },
+      "historicalContext": {
+        "commitHash": "ded1b54c538de60b4df8f4953c5e1979ac64b5db",
+        "issueOrPr": "ARTEMIS-6142",
+        "context": "Reverted premature InVM connection close changes to preserve remoting lifecycle guarantees."
+      }
+    }
+  ],
+  "failureModesAndDefenses": [
+    {
+      "failureMode": "Deadlock between Management removeMessage() and Paging depage() Executor",
+      "detectionMechanism": "ThreadMXBean deadlock detection or blocked PagingStore and QueueImpl workers",
+      "recoveryAction": "Eliminated outer synchronized(this) on QueueImpl.deleteReference() to avoid lock order inversion with depageLock.",
+      "sourceEvidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/QueueImpl.java",
+        "lineRange": [
+          2010,
+          2035
+        ],
+        "observation": "deleteReference() delegates synchronization exclusively to iterQueue() via depageLock."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "ARTEMIS-6179",
+        "rootCause": "deleteReference() acquired synchronized(this) then depageLock, while depage() acquired depageLock then synchronized(this), causing deadlock under concurrent management removal and consumer depaging.",
+        "fixDescription": "Removed redundant synchronized keyword from deleteReference(), mirroring earlier fix in copyReference (ARTEMIS-5376)."
+      },
+      "prescribedMitigation": "Never nest instance monitor locks inside or outside subsystem locks (depageLock); enforce single-point synchronization within iterQueue()."
+    },
+    {
+      "failureMode": "Broker Startup and Shutdown Hang on Unreachable ZooKeeper Ensemble",
+      "detectionMechanism": "Indefinite thread parking on LockCoordinator ordered executor during server shutdown",
+      "recoveryAction": "Bounded lock manager startup with coordinator check period timeout, allowing scheduled retries.",
+      "sourceEvidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/lock/LockCoordinator.java",
+        "lineRange": [
+          327,
+          337
+        ],
+        "observation": "Calls lockManager.start(getPeriod(), getTimeUnit()) instead of unbounded start()."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "ARTEMIS-6159",
+        "rootCause": "LockCoordinator.run() called unbounded start() which blocked indefinitely in CuratorFramework.blockUntilConnected, starving the ordered executor required for broker stop.",
+        "fixDescription": "Bounded start call to coordinator check period; retried on subsequent scheduled execution ticks."
+      },
+      "prescribedMitigation": "All external distributed coordinator connection attempts must use finite timeouts and non-blocking retry loops."
+    },
+    {
+      "failureMode": "HTTP Tunneling Client Request/Reply Starvation Under Cluster Topology Floods",
+      "detectionMechanism": "Core client synchronous request timeouts while connected over HTTP acceptor",
+      "recoveryAction": "Aggressive idle GET polling and HTTP response slot replenishment for server-initiated async messages.",
+      "sourceEvidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/impl/netty/HttpAcceptorHandler.java",
+        "lineRange": [
+          100,
+          180
+        ],
+        "observation": "Replenishes HTTP response slots on idle GET scans to prevent server-initiated packets from draining reply channels."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "ARTEMIS-6172",
+        "rootCause": "Server-initiated async packets (ClusterTopologyChangeMessage) consumed queued HTTP response slots, blocking synchronous client request replies until new requests arrived.",
+        "fixDescription": "Ensured idle polling scans replenish response slots and decoupled async notifications from client reply slots."
+      },
+      "prescribedMitigation": "Separate asynchronous broadcast event channels from synchronous RPC request/response multiplexing queues in HTTP-tunneled transports."
+    },
+    {
+      "failureMode": "Permanent Store-and-Forward Queue Loss After Rapid Node Cycling",
+      "detectionMechanism": "Messages accumulating indefinitely without forwarding to restarted cluster node",
+      "recoveryAction": "Re-check cluster topology under recordsGuard immediately after record removal and re-create bridge if node is active.",
+      "sourceEvidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/cluster/impl/ClusterConnectionImpl.java",
+        "lineRange": [
+          310,
+          360
+        ],
+        "observation": "removeRecord() verifies if nodeID is still present in topology after record deletion."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "ARTEMIS-6153",
+        "rootCause": "nodeUP topology notification arrived while stale record was present and was ignored; subsequent removeRecord removed stale record leaving no bridge and no SF queue.",
+        "fixDescription": "Synchronized removeRecord on recordsGuard and added post-removal topology re-verification."
+      },
+      "prescribedMitigation": "State cleanup routines must re-validate current system topology before finalizing bridge disconnection."
+    },
+    {
+      "failureMode": "Split-Brain Distributed Lock Contention by Passive Replicated Backup",
+      "detectionMechanism": "Passive backup holding distributed lock while acceptors and broker connections remain uninitialized",
+      "recoveryAction": "Delayed LockCoordinator polling until broker completeActivation() runs.",
+      "sourceEvidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/ActiveMQServerImpl.java",
+        "lineRange": [
+          780,
+          830
+        ],
+        "observation": "completeActivation() invokes lock coordinators right before starting acceptors."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "ARTEMIS-6162",
+        "rootCause": "ActiveMQServerImpl.internalStart() started lock coordinators unconditionally, allowing passive backups to race and acquire locks before activation.",
+        "fixDescription": "Split coordinator creation from startup; started lock polling strictly in completeActivation()."
+      },
+      "prescribedMitigation": "Gate all HA leadership and lock leasing mechanisms behind explicit broker role activation lifecycle hooks."
+    },
+    {
+      "failureMode": "Replication Channel Socket Saturation and Primary Stall",
+      "detectionMechanism": "Netty channel blockUntilWritable(0) returning false beyond maxAllowedSlownessNanos",
+      "recoveryAction": "Disconnect lagging backup broker and release pending replication contexts to protect primary.",
+      "sourceEvidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/replication/ReplicationManager.java",
+        "lineRange": [
+          489,
+          513
+        ],
+        "observation": "Releases replicated packets and stops replication manager upon persistent write buffer fullness."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "Replication Slowness Protocol",
+        "rootCause": "Slow network or blocked disk on backup filled Netty send buffers on primary, threatening to block all primary producer acknowledgements.",
+        "fixDescription": "Implemented checkSlowReplication watchdog that isolates degraded backups."
+      },
+      "prescribedMitigation": "Enforce bounded asynchronous send buffers with fail-fast disconnect watchdogs on replication streams."
+    },
+    {
+      "failureMode": "Large Message File Corruption Through Divert and Mirror Routes",
+      "detectionMechanism": "Large message file deletion errors or truncated payloads on downstream mirror brokers",
+      "recoveryAction": "Ref-counted large message file handles across divert routes and mirror controllers.",
+      "sourceEvidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/DivertImpl.java",
+        "lineRange": [
+          110,
+          180
+        ],
+        "observation": "Increments large message reference counters prior to diverting across mirror connections."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "ARTEMIS-6146",
+        "rootCause": "Large messages routed through diverts could have underlying disk files deleted prematurely if the source message was acknowledged before mirror forwarding.",
+        "fixDescription": "Ensured proper ref-counting and file lifecycle decoupling between original message and diverted copies."
+      },
+      "prescribedMitigation": "Track large message disk file handles with explicit reference counters across all routing branches."
+    }
+  ],
+  "historicalEvolution": [
+    {
+      "milestoneOrBug": "Fix deleteReference and depage Deadlock in QueueImpl",
+      "commitHash": "00dd2dde19f974bf1ee555881f132f995045b95a",
+      "issueOrPr": "ARTEMIS-6179",
+      "rootCause": "QueueImpl.deleteReference() held synchronized(this) while acquiring depageLock via iterQueue(), while depage() held depageLock and acquired synchronized(this).",
+      "architecturalFix": "Removed redundant synchronized modifier from deleteReference(), mirroring the ARTEMIS-5376 fix in copyReference.",
+      "affectedFiles": [
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/QueueImpl.java",
+        "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/management/ManagementWithPagingServerTest.java"
+      ],
+      "evidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/QueueImpl.java",
+        "observation": "Eliminated synchronized on deleteReference() to prevent lock order inversion."
+      }
+    },
+    {
+      "milestoneOrBug": "Implement MQTT QoS 1 & 2 Crash Resiliency via JournalHashMap and DuplicateIDCache",
+      "commitHash": "b30557853d73e73be1fa421f38e1b95d2c97762b",
+      "issueOrPr": "ARTEMIS-6189",
+      "rootCause": "MQTT packet-ID correlations and QoS 2 PUBREC tracking relied on volatile in-memory maps that were lost on broker restart.",
+      "architecturalFix": "Persisted packet-ID assignments via generalized JournalHashMap and backed PUBREC tracking with persistent DuplicateIDCache.",
+      "affectedFiles": [
+        "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTStateManager.java",
+        "artemis-journal/src/main/java/org/apache/activemq/artemis/core/journal/collections/JournalHashMap.java",
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/postoffice/impl/PersistentDuplicateIDCache.java"
+      ],
+      "evidence": {
+        "filePath": "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTStateManager.java",
+        "observation": "Stores packet ID state in JournalHashMap and drives PUBREL retransmission from DuplicateIDCache on reconnect."
+      }
+    },
+    {
+      "milestoneOrBug": "Bound Lock Coordinator Start to Prevent Unreachable ZooKeeper Broker Hang",
+      "commitHash": "09c4d4fc0fa5c91b69d7199862b20d499fc55432",
+      "issueOrPr": "ARTEMIS-6159",
+      "rootCause": "LockCoordinator.run() started lock managers with unbounded start(-1, null), blocking the ordered executor indefinitely when ZooKeeper was unreachable.",
+      "architecturalFix": "Bounded start() call to coordinator check period; retried on subsequent scheduled execution ticks.",
+      "affectedFiles": [
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/lock/LockCoordinator.java",
+        "artemis-server/src/test/java/org/apache/activemq/artemis/core/server/lock/LockCoordinatorTest.java",
+        "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/lockmanager/UnreachableLockManagerTest.java"
+      ],
+      "evidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/lock/LockCoordinator.java",
+        "observation": "Delegates to lockManager.start(getPeriod(), getTimeUnit()) in periodic run loop."
+      }
+    },
+    {
+      "milestoneOrBug": "Activation-Gated Lock Coordinator Startup to Prevent Passive Backup Lock Theft",
+      "commitHash": "d12d99af276ed5d6f7a9fb4edc24e6500d3ebeab",
+      "issueOrPr": "ARTEMIS-6162",
+      "rootCause": "ActiveMQServerImpl.internalStart() started lock coordinators immediately, allowing passive backup nodes to contend for and acquire locks before activation.",
+      "architecturalFix": "Split coordinator creation from polling; started polling strictly in completeActivation() before starting acceptors.",
+      "affectedFiles": [
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/ActiveMQServerImpl.java",
+        "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/cluster/failover/LockCoordinatorHaActivationTest.java"
+      ],
+      "evidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/ActiveMQServerImpl.java",
+        "observation": "Invokes startLockCoordinators() exclusively within completeActivation()."
+      }
+    },
+    {
+      "milestoneOrBug": "Fix HTTP Tunneling Server Async Packets Starving Client Request Replies",
+      "commitHash": "29ba2a4c08786e876b27c966ff0fc62019d6bd53",
+      "issueOrPr": "ARTEMIS-6172",
+      "rootCause": "Server-initiated ClusterTopology packets consumed HTTP response slots, causing synchronous client replies to block on responses.take().",
+      "architecturalFix": "Ensured idle polling scans replenish response slots and prevented async broadcasts from exhausting RPC reply queues.",
+      "affectedFiles": [
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/impl/netty/HttpAcceptorHandler.java",
+        "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/http/CoreClientOverHttpTest.java"
+      ],
+      "evidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/impl/netty/HttpAcceptorHandler.java",
+        "observation": "Handles async packet dispatching with slot management that avoids client reply starvation."
+      }
+    },
+    {
+      "milestoneOrBug": "Fix Race in ClusterConnectionImpl Store-and-Forward Queue Teardown",
+      "commitHash": "6640f77cc55de6be3a0e33231c8e1df683254617",
+      "issueOrPr": "ARTEMIS-6153",
+      "rootCause": "removeRecord() was not synchronized on recordsGuard, allowing nodeUP notification to interleave between fail() and removal, causing permanent bridge loss.",
+      "architecturalFix": "Synchronized removeRecord() on recordsGuard and added post-removal topology re-check to re-create bridge if node is active.",
+      "affectedFiles": [
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/cluster/impl/ClusterConnectionImpl.java",
+        "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/cluster/distribution/ClusterConnectionSfQueueRaceTest.java"
+      ],
+      "evidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/cluster/impl/ClusterConnectionImpl.java",
+        "observation": "Guards removeRecord() under recordsGuard and validates topology existence."
+      }
+    },
+    {
+      "milestoneOrBug": "Fix Large Message Inconsistencies Through Divert and Mirror Routes",
+      "commitHash": "86ed6b4aab3ab1c601ee3414d46e247d44c14641",
+      "issueOrPr": "ARTEMIS-6146",
+      "rootCause": "Large messages forwarded through diverts were susceptible to file deletion races if original messages were dropped before mirror replication.",
+      "architecturalFix": "Refactored large message handle retention in DivertImpl and PostOfficeImpl to preserve underlying disk files across routing branches.",
+      "affectedFiles": [
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/postoffice/impl/PostOfficeImpl.java",
+        "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/DivertImpl.java",
+        "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/amqp/connect/AMQPMirrorLargeMessageDivertDroppedTest.java"
+      ],
+      "evidence": {
+        "filePath": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/DivertImpl.java",
+        "observation": "Retains message refcount and avoids premature large message file deletion."
+      }
+    }
+  ],
+  "unresolvedContradictionsAndBypasses": [
+    {
+      "claimOrGuarantee": "QueueImpl enforces strict memory threshold limits when paging mode is engaged.",
+      "contradictionOrBypass": "In PagingStoreImpl.writePage(), the readLock is released before timedWriter.addTask() is executed. Under high concurrent producer bursts, multiple threads pass the memory check simultaneously, causing address memory usage to temporarily exceed max-size-bytes by the size of several in-flight batch pages before flow control throttles further submissions.",
+      "codeLocation": "artemis-server/src/main/java/org/apache/activemq/artemis/core/paging/impl/PagingStoreImpl.java:L1545-L1565",
+      "evidence": "Source comments explicitly document that timedWriter.incrementTask() is called inside readLock while addTask() is called outside locks to prevent page cleanup deadlocks (found during FloodServerWithAsyncSendTest)."
+    },
+    {
+      "claimOrGuarantee": "Distributed lock coordinators guarantee exclusive ownership without split-brain failover windows.",
+      "contradictionOrBypass": "When an active primary experiences a prolonged GC pause or network partition exceeding the distributed lock lease TTL, the lock coordinator loses its ZooKeeper lease and a standby node activates. If the paused primary resumes before detecting lease loss, a transient split-brain write window occurs where both nodes accept client writes until the primary's next check-period poll.",
+      "codeLocation": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/lock/LockCoordinator.java:L327-L355",
+      "evidence": "LockCoordinator polling operates on a periodic timer (default 5000ms); lock revocation is not synchronous with kernel I/O fencing."
+    },
+    {
+      "claimOrGuarantee": "MQTT QoS 2 packet delivery counters survive arbitrary broker crashes.",
+      "contradictionOrBypass": "While packet ID mapping and PUBREC caches are persisted via JournalHashMap and DuplicateIDCache, transient in-memory connection session state (e.g. unacknowledged in-flight client subscriptions) can reset if failover occurs between MQTT CONNECT packet arrival and session startup CountDownLatch completion.",
+      "codeLocation": "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTProtocolHandler.java:L120-L180",
+      "evidence": "Commit b30557853d73e73be1fa421f38e1b95d2c97762b documents asynchronous session startup with CountDownLatch to mitigate packet races during CONNACK."
+    },
+    {
+      "claimOrGuarantee": "Shared-store journal lock leasing provides instantaneous primary-to-backup failover.",
+      "contradictionOrBypass": "Shared-store failover relies on file lock polling (FileLockNodeManager). The backup must wait for the primary process to release the OS file lock or for lock lease expiration (default 2000-5000ms), introducing a mandatory failover latency window during which client requests block or fail.",
+      "codeLocation": "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/FileLockNodeManager.java:L100-L180",
+      "evidence": "FileLockNodeManager periodically polls tryLock() on journal lock files with sleep intervals to avoid high NFS/SAN CPU consumption."
+    }
+  ],
+  "adversarialCritique": {
+    "boundaryConditions": [
+      "Network partitions isolating a primary broker from its ZooKeeper lock ensemble cause lock lease forfeiture after session timeout, forcing primary to pause acceptors while backup activates.",
+      "Sustained producer ingestion exceeding disk write throughput triggers paging mode; if page directory disk partitions fill completely, AddressFullMessagePolicy.FAIL drops messages or rejects client transactions.",
+      "Large message streams exceeding client memory limits rely on file streaming; sudden socket disconnects during transfer require background reaper threads to purge incomplete spool files.",
+      "HTTP tunneling transports subject to high-frequency cluster topology broadcasts can exhaust HTTP response slots if idle polling scans are delayed."
+    ],
+    "untestedAssumptions": [
+      "Assumes underlying POSIX filesystem (ext4/xfs) provides true Direct I/O (O_DIRECT) support without fallback to kernel buffered I/O, ensuring 4KB aligned writes do not incur page cache write amplification.",
+      "Assumes network latency between replicated HA pairs is strictly lower than replication timeout thresholds (default 5000ms) to prevent false-positive backup isolation.",
+      "Assumes client SDKs implement exponential backoff reconnection logic to tolerate broker failover and topology redistribution windows."
+    ],
+    "acceptedTradeOffs": [
+      "Append-only circular journal over relational table indexing: delivers massive sequential disk throughput and sub-millisecond commits at the cost of requiring periodic compaction passes to reclaim deleted records.",
+      "Lock-free MPSC enqueue over synchronized queue locking: drastically reduces producer contention on multi-core servers while delegating reference ordering and batching to single-threaded DeliverRunner iterations.",
+      "Asynchronous cursor paging over synchronous in-memory retention: allows unbounded message queues that exceed JVM heap limits at the cost of additional disk I/O and depaging latency under memory pressure.",
+      "Activation-gated lock acquisition over immediate backup polling: eliminates split-brain lock competition by passive backups while accepting a brief failover latency window during backup activation."
+    ]
+  }
+}

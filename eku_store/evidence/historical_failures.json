@@ -1,0 +1,141 @@
+[
+  {
+    "id": "HIST-RIVER-001",
+    "repo": "river",
+    "assumption": "Assumed Go panic handlers in error paths would reliably record failed job attempts.",
+    "trigger": "Hard worker crashes (SIGKILL, container OOM) abruptly killed worker processes without executing defer/recover handlers.",
+    "observedFailure": "Attempt count remained un-incremented, causing poison pill tasks to loop endlessly on recovery.",
+    "fixCommit": "fdf6cdf12567a5b70c003f5ff850273f09e7efcf",
+    "changedFiles": [
+      "internal/jobexecutor/job_executor.go"
+    ],
+    "regressionTest": "TestJobExecutor in internal/jobexecutor/job_executor_test.go",
+    "generalizedConstraint": "Delivery/attempt counters MUST be atomically incremented at claim time during dequeue, not in post-execution error handlers.",
+    "confidence": "HIGH",
+    "commitVerifiedInGit": true
+  },
+  {
+    "id": "HIST-RIVER-002",
+    "repo": "river",
+    "assumption": "Assumed client timeout configuration would always be positive.",
+    "trigger": "Client configured worker timeout as -1 (disabled timeout).",
+    "observedFailure": "JobRescuer improperly rescued active running jobs prematurely.",
+    "fixCommit": "b6c733cf8699eeb825a0c719c6c81041817d87c9",
+    "changedFiles": [
+      "internal/maintenance/job_rescuer.go"
+    ],
+    "regressionTest": "TestJobRescuer in internal/maintenance/job_rescuer_test.go",
+    "generalizedConstraint": "Crash recovery sweepers must explicitly check for disabled timeout flags before reclaiming running jobs.",
+    "confidence": "HIGH",
+    "commitVerifiedInGit": true
+  },
+  {
+    "id": "HIST-NSQ-001",
+    "repo": "nsq",
+    "assumption": "Assumed TCP connection closing during server shutdown would not block on slow/idle clients.",
+    "trigger": "Slow client connection before handshake blocked server Exit() loop indefinitely.",
+    "observedFailure": "nsqd process hung on SIGTERM during deployment rolling restarts.",
+    "fixCommit": "e9ba0b486844e426918065e897b8a36cca5c6aaf",
+    "changedFiles": [
+      "nsqd/tcp.go"
+    ],
+    "regressionTest": "TestTCPServerShutdownHangsOnSlowClient in nsqd/tcp_test.go",
+    "generalizedConstraint": "Graceful shutdown drain protocols must enforce hard socket read deadlines on pending/pre-handshake connections.",
+    "confidence": "HIGH",
+    "commitVerifiedInGit": true
+  },
+  {
+    "id": "HIST-ROCKETMQ-001",
+    "repo": "rocketmq",
+    "assumption": "Assumed RocksDBConsumeQueue start index lookup would never be called with an offset below the queue's minimum retained offset.",
+    "trigger": "Consumer requested truncated offset below getMinOffsetInQueue().",
+    "observedFailure": "iterateFrom returned null CqUnits triggering client NullPointerExceptions and read loop stalls.",
+    "fixCommit": "e58f9fd35ad45b4bd11d749d2a368a3f6b3b9d38",
+    "changedFiles": [
+      "store/src/main/java/org/apache/rocketmq/store/queue/RocksDBConsumeQueue.java"
+    ],
+    "regressionTest": "testIterateFrom_startIndexBelowMinOffset_returnsNull in store/src/test/java/org/apache/rocketmq/store/queue/RocksDBConsumeQueueTest.java",
+    "generalizedConstraint": "Logical queue offset iterators must explicitly reject below-min-offset queries by returning null/empty to allow consumers to adjust offsets.",
+    "confidence": "HIGH",
+    "commitVerifiedInGit": true
+  },
+  {
+    "id": "HIST-REDPANDA-001",
+    "repo": "redpanda",
+    "assumption": "Assumed segment appender could append new records while a DMA write was actively in flight.",
+    "trigger": "High-throughput concurrent append triggered race condition in DMA buffer chunk assignment.",
+    "observedFailure": "Corrupted segment append and potential DMA kernel panic.",
+    "fixCommit": "953579e0f76d9f265128ee83a97fc9e8af19378e",
+    "changedFiles": [
+      "src/v/storage/segment_appender.cc"
+    ],
+    "regressionTest": "AppendPastInflightDmaEndStaysInPlace in src/v/storage/tests/segment_appender_test.cc",
+    "generalizedConstraint": "Direct I/O log appenders must guarantee immutable buffer boundaries and forbid appending into active DMA chunks.",
+    "confidence": "HIGH",
+    "commitVerifiedInGit": true
+  },
+  {
+    "id": "HIST-NATS-001",
+    "repo": "nats-server",
+    "assumption": "Assumed rejected consumer creation would cleanly abort without modifying existing registered consumer state.",
+    "trigger": "Client submitted invalid consumer creation parameters for an existing consumer name.",
+    "observedFailure": "Bug caused existing consumer state to be inadvertently destroyed / corrupted in JetStream metadata upon rejected create failure.",
+    "fixCommit": "1787eee035cf0253c201fa0f05afad92b6f296dc",
+    "changedFiles": [
+      "server/consumer.go"
+    ],
+    "regressionTest": "TestJetStreamConsumerCreateCollisionPreservesExistingConsumerStore in server/jetstream_consumer_test.go",
+    "generalizedConstraint": "Metadata state machine operations must validate all preconditions before mutating or unregistering active state.",
+    "confidence": "HIGH",
+    "commitVerifiedInGit": true
+  },
+  {
+    "id": "HIST-ARTEMIS-001",
+    "repo": "artemis",
+    "assumption": "Assumed deleteReference and queue depaging could acquire reference locks concurrently without order coordination.",
+    "trigger": "Simultaneous message deletion and multi-page queue overflow depaging.",
+    "observedFailure": "Deadlock between deleteReference lock and PagingStore depage lock.",
+    "fixCommit": "00dd2dde19f974bf1ee555881f132f995045b95a",
+    "changedFiles": [
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/QueueImpl.java"
+    ],
+    "regressionTest": "testRemoveMessageWhilstPagingAndConsuming in tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/management/ManagementWithPagingServerTest.java",
+    "generalizedConstraint": "Queue storage engines must establish a strict global lock hierarchy between message reference lifecycle and paging store operations.",
+    "confidence": "HIGH",
+    "commitVerifiedInGit": true
+  },
+  {
+    "id": "HIST-PGMQ-001",
+    "repo": "pgmq",
+    "assumption": "Assumed concurrent extension queue creation would be serialized by PostgreSQL table DDL locks.",
+    "trigger": "Multiple concurrent worker threads invoked PGMQueueExt#create on startup.",
+    "observedFailure": "Race condition caused duplicate table creation error and migration failure.",
+    "fixCommit": "196482b797a1a7d6c68db03af25fc98c812a1677",
+    "changedFiles": [
+      "pgmq-extension/src/api.rs"
+    ],
+    "regressionTest": "test_create_queue_race_condition in pgmq-rs/tests/pg_ext_integration_test.rs",
+    "generalizedConstraint": "Queue table initialization must use explicit advisory locks or IF NOT EXISTS DDL guards.",
+    "confidence": "HIGH",
+    "commitVerifiedInGit": true
+  },
+  {
+    "id": "HIST-RIVER-003",
+    "repo": "river",
+    "assumption": "Assumed a worker's late success/failure return could drive events and metrics without first reconciling against the persisted terminal job state.",
+    "trigger": "A job was externally cancelled, requeued, or otherwise finalized while an older worker attempt later returned a result.",
+    "observedFailure": "Bug caused job completion/cancellation events to fail by reflecting the worker's requested transition instead of the actual persisted job row, making finalization observability misleading even when storage state stayed safe.",
+    "fixCommit": "0b7bcc7a8ad7d041fa6b201c8377148b612c5090",
+    "changedFiles": [
+      "client_test.go",
+      "internal/jobexecutor/job_executor.go",
+      "internal/jobcompleter/job_completer.go",
+      "internal/jobcompleter/job_completer_test.go",
+      "CHANGELOG.md"
+    ],
+    "regressionTest": "TestCompleterJobUpdatedFromStateAndReason in internal/jobcompleter/job_completer_test.go",
+    "generalizedConstraint": "Completion/failure events and metrics must be derived from the persisted transition result; stale or superseded worker outcomes need typed stale-owner/no-op handling.",
+    "confidence": "MEDIUM",
+    "commitVerifiedInGit": true
+  }
+]

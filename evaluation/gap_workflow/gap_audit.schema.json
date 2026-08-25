@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Evidence Gap Audit Schema",
+  "description": "Schema for structured gap analysis comparing raw repository discoveries against ESEKL knowledge layer responses.",
+  "type": "object",
+  "required": [
+    "auditId",
+    "sourceRun",
+    "auditedAt",
+    "rawAccessCondition",
+    "eseklAccessCondition",
+    "gaps"
+  ],
+  "properties": {
+    "auditId": {
+      "type": "string",
+      "pattern": "^GAP-[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+$"
+    },
+    "sourceRun": {
+      "type": "string"
+    },
+    "auditedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rawAccessCondition": {
+      "type": "string"
+    },
+    "eseklAccessCondition": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "benchmarkCase",
+          "rawDiscovery",
+          "wasPresentInEseklResponse",
+          "gapType",
+          "rootCause",
+          "requiredPatch",
+          "patchedObservationIds",
+          "patchedClaimIds",
+          "patchedHistoricalFailureIds",
+          "blindRerunResult",
+          "promotionDecision"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^GAP-ITEM-[0-9]{3}$"
+          },
+          "benchmarkCase": {
+            "type": "string"
+          },
+          "rawDiscovery": {
+            "type": "string"
+          },
+          "wasPresentInEseklResponse": {
+            "type": "boolean"
+          },
+          "gapType": {
+            "type": "string",
+            "enum": [
+              "MISSING_OBSERVATION",
+              "OVERLY_COMPRESSED_OBSERVATION",
+              "MISSING_FAILURE_CHAIN",
+              "RETRIEVAL_FAILED",
+              "ABSTRACTION_HID_CONDITION",
+              "EVIDENCE_PACKET_OMITTED_REGRESSION_TEST",
+              "NOT_A_REAL_GAP"
+            ]
+          },
+          "rootCause": {
+            "type": "string"
+          },
+          "requiredPatch": {
+            "type": "string"
+          },
+          "patchedObservationIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "patchedClaimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "patchedHistoricalFailureIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "blindRerunResult": {
+            "type": "string",
+            "enum": [
+              "RESOLVED_EARLY_RETRIEVAL",
+              "PARTIALLY_RESOLVED",
+              "STILL_MISSED",
+              "NOT_YET_RERUN"
+            ]
+          },
+          "promotionDecision": {
+            "type": "string",
+            "enum": [
+              "PROMOTED_TO_PATCH_RELEASE",
+              "RETAINED_IN_LEDGER_ONLY",
+              "REJECTED",
+              "PENDING_RERUN"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

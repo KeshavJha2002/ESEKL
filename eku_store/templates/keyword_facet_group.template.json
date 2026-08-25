@@ -1,0 +1,25 @@
+{
+  "$comment": "Template structure for keyword/facet grouping notes and MCP responses",
+  "groupId": "skip_locked",
+  "groupType": "COMMON_KEYWORD | UNIQUE_KEYWORD | MECHANISM_FAMILY | SUBSTRATE_FAMILY",
+  "keyword": "skip_locked",
+  "participatingRepoEkus": [
+    {
+      "id": "REKU-RIVER-001",
+      "repository": "river",
+      "mechanism": "Relational Lock-Free Dequeue (FOR UPDATE SKIP LOCKED)",
+      "claim": "PostgreSQL FOR UPDATE SKIP LOCKED allows concurrent worker pools to acquire non-overlapping available jobs without table-level locking."
+    }
+  ],
+  "participatingDomainEkus": [
+    {
+      "id": "EKU-QUEUE-007",
+      "title": "Lock-Free MVCC Row Skipping Dequeue",
+      "claimId": "CLM-007"
+    }
+  ],
+  "repositories": [
+    "river"
+  ],
+  "epistemicStatus": "KEYWORD_GROUP_VIEW"
+}

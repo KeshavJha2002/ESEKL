@@ -1,0 +1,2072 @@
+[
+  {
+    "commitHash": "1787eee035cf0253c201fa0f05afad92b6f296dc",
+    "authorDate": "2026-08-21T14:50:11+01:00",
+    "subject": "[FIXED] Rejected consumer create destroys existing consumer state (#8491)",
+    "body": "This PR fixes a number of issues relating to errors on consumer create:\n- `setConsumer` no longer overwrites an existing consumer and\n`removeConsumer` only unregisters when the entry is the same instance\nthat is passed, so a stale consumer with the same name can't evict the\nlive consumer from `mset.consumers`, `cList` and `csl`.\n- The name-exists check now runs before\n`mset.store.ConsumerStore(o.name, ...)`, which opened the existing\nconsumer's on-disk directory and then deleted it when the rejected\ncreate tore itself down.\n- Error paths release the temporary consumer with `o.stop()` instead of\n`o.deleteWithoutAdvisory()`, which on the early name checks could\n`os.RemoveAll` an unrelated stream named `obs` (unlikely but fixed\nanyhow).\n- The `ackMsgs`/`nextMsgReqs` ipQueues are created after the name-exists\ncheck, since they key `s.ipQueues` by consumer name and the rejected\ncreate overwrote and then unregistered the live consumer's entries.\n- `mset.numFilter` is removed, as it was maintained in three places,\nnever read, and miscounted consumers using `FilterSubjects`.\n\nIn practice the name-exists paths above only apply to single/standalone\nservers, since clustered paths perform this check elsewhere and would\nprevent it.",
+    "issueRefs": [
+      "#8491"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "198b3547056f2eace81e59b61713c0cf7c39f56d",
+    "authorDate": "2026-08-21T13:05:05+01:00",
+    "subject": "Various de-flakes and fixes (#8492)",
+    "body": "",
+    "issueRefs": [
+      "#8492"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c9e290a22407039873a9227b9ca82e14ca89b013",
+    "authorDate": "2026-08-21T12:25:03+01:00",
+    "subject": "(2.15) [FIXED] Preserve FirstSeq during WAL replay (#8490)",
+    "body": "If replicated SyncAlways stream is restarted before its first Raft\nsnapshot,\nWAL replay would reset the stream store to sequence zero, ignoring\nFirstSeq.",
+    "issueRefs": [
+      "#8490"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "59c390fcbe1fe0b654966a1249ab24ac6f500a52",
+    "authorDate": "2026-08-21T12:42:24+02:00",
+    "subject": "[FIXED] No direct gets on follower that stepped down from candidate",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/raft.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8bf14f509ded694ba22a00693c93f04d75c1dfb8",
+    "authorDate": "2026-08-21T12:42:11+02:00",
+    "subject": "(2.15) [FIXED] Data race reading stream node during WAL replay check",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/stream.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "b10b2a88f85ba7d02052543f3cebd6d31d3f1f12",
+    "authorDate": "2026-05-27T09:57:07+02:00",
+    "subject": "[FIXED] Consumer name collision removes existing IPQs",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/consumer.go",
+      "server/jetstream_consumer_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0a649c833f5cc8a9fe28a8c1aead71af8db9cd7c",
+    "authorDate": "2026-05-27T09:31:21+02:00",
+    "subject": "[FIXED] Failed consumer create leaks internal clients",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/consumer.go",
+      "server/jetstream_consumer_test.go"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "fd51540ea0ad81be227d3eecaeff030f60bf465e",
+    "authorDate": "2026-05-26T22:55:17+02:00",
+    "subject": "[FIXED] Consumer name collision deletes existing store",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/consumer.go",
+      "server/jetstream_consumer_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "292f87074948de46ce5d8d2136137c3fb3eec77d",
+    "authorDate": "2026-05-26T20:46:52+02:00",
+    "subject": "[FIXED] Consumer delete inconsistency",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/consumer.go",
+      "server/jetstream_test.go",
+      "server/stream.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "854fd834fb1880a935d45e23ccb1fd13daace09c",
+    "authorDate": "2026-08-21T11:30:36+02:00",
+    "subject": "[FIXED] Preserve FirstSeq during WAL replay",
+    "body": "If replicated SyncAlways stream is restarted before its first Raft snapshot,\nWAL replay would reset the stream store to sequence zero, ignoring FirstSeq.\n\nSigned-off-by: Daniele Sciascia <daniele@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster_1_test.go",
+      "server/jetstream_helpers_test.go",
+      "server/stream.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1d9d4f42618a2d8fafa42431d270617c8ddd1350",
+    "authorDate": "2026-08-21T10:16:06+01:00",
+    "subject": "(2.15) NRG: Don't campaign as managed node outside the peer set (#8489)",
+    "body": "If a server was added in the assignment but was not added as a peer in\nthe Raft group yet, it could still campaign and try to become leader.\nThis PR fixes that by not allowing a peer of a managed group, that is\nnot in the peer set, to try to campaign for leadership.\n\nThis was the original reason for\n`TestJetStreamClusterStreamScaleDownChangesRaftGroup` flaking. Since\nthat's not what the test is meant to cover, a simple\n`c.waitOnStreamLeader` after the scale up was added to ensure the scale\nup completes and all peers are added, a small NRG change with a test to\ncover that was made instead.\n\nAlso added a test covering the `n.managed` interaction in `n.trackPeer`,\nwhich was technically already covered by the high-level tests, but good\nto have as a simpler Raft-level one too. Finally, added\n`PeerInfo.Pending` to expose whether any peers exist in the assignment\nbut are not part of the Raft group yet.",
+    "issueRefs": [
+      "#8489"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "8e2b49f534aae7fe32f3d0e01d44a5c6a26820f4",
+    "authorDate": "2026-08-20T22:17:09+01:00",
+    "subject": "[FIXED] Stale flow control stalls consumer after leader change (#8488)",
+    "body": "",
+    "issueRefs": [
+      "#8488"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "35956cb104b4c22847f0365adeba1631b2c31f6d",
+    "authorDate": "2026-08-20T13:55:02+02:00",
+    "subject": "[FIXED] Stale flow control stalls consumer after leader change",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/consumer.go",
+      "server/jetstream_consumer_test.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "071b555a7a9606fd8f81dcd538a30bc305dc5041",
+    "authorDate": "2026-08-20T16:58:51+01:00",
+    "subject": "Fix cross-tier JetStream consumer counting for limits (#8484)",
+    "body": "<!-- Please make sure to read CONTRIBUTING.md, then delete this notice\nand replace it with your PR description. Commit sign-offs certify that\nthe contribution is your original work and that you license the work to\nthe project under the Apache-2.0 license. We cannot accept contributions\nwithout it. -->\n\ncloses https://github.com/nats-io/nats_server/issues/8483\n\nFix the server not distinguishing between consumer tiers when counting\nthe number of consumers for a stream for account limits enforcement.\n\nI only updated the cluster path, `jsClusteredConsumerRequest`, since a\nsingle server would not have R3 assets by nature of not being clustered.",
+    "issueRefs": [
+      "#8484"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8bba885d460f427962cfa8e2c88965806c2b2216",
+    "authorDate": "2026-08-20T15:31:42+01:00",
+    "subject": "(2.15) [IMPROVED] Faster durable source/mirror consumer resets (#8323)",
+    "body": "This PR contains a number of improvements to how durable consumers are\nused for mirroring/sourcing.\n\nOn consumer reset, pending is only recalculated when the starting\nsequence actually changes or there were pending messages. Repeated\nresets back to the ack floor (or any other sequence) with no delivery in\nbetween are therefore idempotent and recalculate pending only once.\nAdditionally, consumers using `AckAll` or `AckFlowControl` can't perform\nout-of-order acks, so they get a further optimization of not\nrecalculating pending at all and instead just doing `o.npc +=\nlen(o.pending)` when resetting back to the ack floor.\n\nFor durable mirror/source consumers a timed out reset request or one\nthat is in a long backoff would not short-circuit even if the durable\nconsumer could technically send heartbeats on the delivery subject. If\nwe've timed out of a reset request, we now start a dummy subscription\nlistening on the delivery subject for heartbeats or messages. If any is\nreceived it short-circuits the request backoff and immediately retries.\nSince the reset request itself is very cheap to perform, we can quickly\nstop our dummy subscription, send the reset request, get the response,\nand then set up our real subscription that processes the messages. The\ntimeout on a reset request is now also lowered to 5s from 30s.",
+    "issueRefs": [
+      "#8323"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "ba4045cfff05a114a39c426f7b68b158f960f6f1",
+    "authorDate": "2026-08-20T06:46:39-07:00",
+    "subject": "Fix cross-tier JetStream consumer counting for limits",
+    "body": "Signed-off-by: Joe Riddle <joe@synadia.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster.go",
+      "server/jetstream_jwt_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "50657def0ddaa1606c0bb2f24cbecdd952c26512",
+    "authorDate": "2026-08-20T14:34:06+01:00",
+    "subject": "[FIXED] Data race reading consumer config in stream consumer getters (#8478)",
+    "body": "`getPublicConsumers` and `getDirectConsumers` walk `mset.cList` and read\n`o.cfg.Direct` while holding only `mset.clsMu`, never the consumer's own\nlock.\n`updateConfig` assigns the whole `ConsumerConfig` struct under `o.mu`,\nso a consumer update concurrent with a consumer list is an\nunsynchronized read/write on the same field.\n\nThis is reachable from the JetStream API on a single server, no cluster\nrequired: `jsConsumerCreateRequest`'s update path against\n`jsConsumerListRequest`.\nIt shows up in downstream test suites that run `-race` while creating\nand listing consumers, where a single race poisons every test in the\npackage run.\n\n```\nWARNING: DATA RACE\nWrite at 0x00c0006003e0 by goroutine 108:\n  server.(*consumer).updateConfig()      consumer.go:2657   // o.cfg = *cfg\nPrevious read at 0x00c0006003e1 by goroutine 109:\n  server.(*stream).getPublicConsumers()  stream.go:8633     // o.cfg.Direct\n```\n\nThe two addresses are one byte apart: `MemoryStorage` and `Direct` are\nadjacent `bool`s in `ConsumerConfig`, so the struct assignment and the\nfield read overlap in the same word.\n\n## Changes\n\nFollowing review, this takes `Direct` and `Sourcing` out of the racing\nset entirely rather than guarding each reader with a lock.\n\n- `consumer` gains `direct` and `sourcing`, copied from the config at\ncreation. Both production constructors set them,\n`addConsumerWithAssignment` and the offline placeholder in\n`EnableJetStream`.\n- `checkNewConsumerConfig` rejects updates to either field. The check\nalone would not have fixed the race, since the wholesale `o.cfg` swap\ntrips the detector even when the value never changes, which is why both\nhalves are needed.\n- No lock or atomics required to read them: they are written in the\nconstruction literal before `setConsumer` publishes the consumer into\n`cList` under `clsMu`, and every reader synchronizes through `clsMu`,\nthe stream lock, or `o.mu`.\n- The list-walking getters now take no consumer lock at all.\n`numDirectConsumers` drops the `o.mu.RLock` it was already taking for\nthis field, and `partitionUnique` classifies before locking, so it only\ntakes the consumer lock when it needs `o.subjf`.\n- `setConsumer` and `removeConsumer` read the same pair unlocked too.\nNot demonstrably a race, since `stopWithFlags` clears `o.mset` under\n`o.mu` first and later updates reject a nil `mset`, but it can observe\nan updated value and mismatch `mset.sourcingConsumers`. Reading the\ncreation value on both the increment and the decrement makes that\naccounting symmetric by construction.\n- `locksordering.txt` is unchanged from base, since nothing nests locks\nanymore.\n\n## On preventing updates\n\nBoth fields are prevented rather than just `Direct`, otherwise the\ncached value and `o.cfg` can disagree: `partitionUnique` and the\n`sourcingConsumers` count would answer from the creation value while\n`updateConfig`, `ca.Config.Sourcing` and `config()` follow the updated\none.\n\nChanging `Sourcing` on a non-direct consumer already misbehaves today,\nbecause `setConsumer` counts from the creation config and\n`removeConsumer` from the updated one, so a flip either leaks the count\nor steals another consumer's decrement, and that counter feeds\nMaxConsumers and work queue decisions. That argument does not hold when\n`Direct=true`, where both sides test `Direct || Sourcing`.\n\nWorth a maintainer opinion: both fields are JSON exposed, and the\nmetadata leader validates a config before proposing while peers\nrevalidate on apply, so an older leader can commit an assignment a newer\npeer rejects. The same asymmetry already applies to the eight fields\n`checkNewConsumerConfig` rejects today, but these two predicates are\nnew. No in-tree mirror, source, recovery or clustered path changes\neither field on an existing consumer, and the `Sourcing` downgrade\nretries always pick a fresh consumer name so they create rather than\nupdate. Happy to reduce this to `Direct` only if preferred.\n\n## Testing\n\n- `TestJetStreamConsumerConfigDirectRace` pairs an `updateConfig` loop\nwith a `getPublicConsumers` loop, following the existing\n`TestJetStreamConsumerUpdateConfigStopRace` idiom. Reported the race on\n8 of 8 runs before the change.\n- `TestJetStreamConsumerUpdateRejectsDirectAndSourcingChange` covers the\nnew checks, alongside the existing\n`TestJetStreamConsumerUpdateRejectsStorageChange`.\n- Full CI matrix run locally, all 16 test groups green, plus the\nconsumer suite under `-race`.",
+    "issueRefs": [
+      "#8478"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "2a377b8f1cc2f24ed94c40469c478837f050b169",
+    "authorDate": "2026-08-20T11:10:40+02:00",
+    "subject": "(2.15) [IMPROVED] Probe durable deliver subject on reset request timeout",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster_3_test.go",
+      "server/stream.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "ab6735a5e0b03c6453a8775dd3cba463c02f406b",
+    "authorDate": "2026-08-18T10:39:42+02:00",
+    "subject": "[FIXED] Data race reading consumer config in stream consumer getters",
+    "body": "getPublicConsumers and getDirectConsumers walked mset.cList and read\no.cfg.Direct while holding only mset.clsMu, never the consumer's own lock.\nupdateConfig assigns the whole ConsumerConfig struct under o.mu, so a consumer\nupdate racing a consumer list produced a reported race between consumer.go's\n`o.cfg = *cfg` and the Direct read, on adjacent bytes of the\nMemoryStorage/Direct bool pair. It was reachable from the JetStream API in a\nsingle-server setup: jsConsumerCreateRequest's update path against\njsConsumerListRequest.\n\nRather than taking a read lock per consumer while walking the list, as\nsuggested in review by @neilalexander and @MauriceVanVeen, copy Direct and\nSourcing onto the consumer at creation and reject updates to either in\ncheckNewConsumerConfig. The walk then needs no consumer lock at all, and the\nfields need no atomics: they are written in the construction literal before\nsetConsumer publishes the consumer into cList under clsMu, and every reader\nsynchronizes through clsMu, the stream lock or o.mu. Both production\nconstructors set them, addConsumerWithAssignment and the offline placeholder in\nEnableJetStream.\n\nThat also lets numDirectConsumers drop the read lock it already took for the\nsame field, and partitionUnique classify before locking for o.subjf.\n\nsetConsumer and removeConsumer read the same pair unlocked. That is not\ndemonstrably a race, since stopWithFlags clears o.mset under o.mu before\nremoveConsumer and later updates reject a nil mset, but it could observe an\nupdated value and mismatch mset.sourcingConsumers. Reading the creation value\non both the increment and the decrement makes that accounting symmetric by\nconstruction.\n\nSourcing is rejected as well, so the copied value cannot disagree with o.cfg.\nChanging Sourcing on a non-direct consumer already corrupts\nmset.sourcingConsumers today, because setConsumer counts from the creation\nconfig and removeConsumer from the updated one, and that counter feeds\nMaxConsumers and work queue decisions. No in-tree mirror, source, recovery or\nclustered path changes either field on an existing consumer; the Sourcing\ndowngrade retries always pick a fresh consumer name, so they create rather than\nupdate. Both fields are JSON exposed, though, so a raw client could, and the\nmetadata leader validates a config before proposing while peers revalidate on\napply. An older leader can therefore commit an assignment a newer peer rejects.\nThat asymmetry already applies to the eight fields checkNewConsumerConfig\nrejects today, but these two predicates are new, so it is worth a look.\n\nTestJetStreamConsumerConfigDirectRace pairs an updateConfig loop with a\ngetPublicConsumers loop and reported the race on 8 of 8 runs before this\nchange. TestJetStreamConsumerUpdateRejectsDirectAndSourcingChange covers the\nnew checks.\n\nSigned-off-by: Nico Berlee <nico.berlee@on2it.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/consumer.go",
+      "server/jetstream.go",
+      "server/jetstream_consumer_test.go",
+      "server/stream.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "872dc293b35d537295c30ee07f79eb9a1e3c879a",
+    "authorDate": "2026-08-20T12:29:37+01:00",
+    "subject": "Make reverse response map removal constant time (#8463)",
+    "body": "Relates to #6307.\n\n## Problem\n\nA client may reuse a single reply subject across many concurrent service\nimport requests. Nothing forbids this, and `nats.go`'s legacy pull\nsubscription `Fetch` does exactly that — `newFetchInbox` returns the\nsubscription's inbox unchanged for a non-wildcard subject, so every pull\nrequest on that subscription shares one reply subject.\n\nEvery outstanding response for a reply subject is appended to one slice\nin `Account.imports.rrMap`, and `_checkForReverseEntry` removes an entry\nby scanning that slice for a matching response subject:\n\n```go\nfor i, sre := range sres {\n    if sre.msub == si.from {\n        sres = append(sres[:i], sres[i+1:]...)\n        break\n    }\n}\n```\n\nWhen entries share a reply subject the slice length tracks the number of\noutstanding responses, so each removal is O(n) and clearing them all is\nO(n²).\n\nThat matters because `checkExpiredResponses` walks every outstanding\nresponse on each pass and re-arms its timer only once the pass has\nfinished. Past a certain backlog a pass no longer completes within the\nresponse threshold, so the reaper falls permanently behind: the backlog\ngrows, the next pass gets slower, and the account's memory grows without\nbound. We hit this on a production cluster where one `$SYS` response map\nreached ~1.5M entries with ~1.18M of them under a single reply subject,\non a server pinned at ~1100–1400% CPU. Restarting the server is\ncurrently the only way out.\n\nThis is, I believe, the mechanism behind #6307, which we opened in Dec\n2024 and where we posted heap profiles and `accountz` captures in May:\nthe in-use heap on the affected pods is dominated by\n`addRespServiceImport` / `addReverseRespMapEntry` /\n`setupResponseServiceImport`, the entries sit on the system account's\n`exports.responses`, and the source is the auto-injected `$JS.API.>`\nimport that `enableAllJetStreamServiceImportsAndMappings` creates for\nevery JetStream-enabled account. What we could not explain at the time\nwas why the entries were not simply expiring at the 2 minute response\nthreshold. The answer is that they are, but the reaper cannot keep up\nonce removal has gone quadratic, so it falls behind and never catches\nback up. That also explains an observation from that thread which\npuzzled us: the bloated pod was sometimes an API hot-spot and sometimes\nheld zero stream leaders, because what matters is not how much JetStream\nwork the node does, but whether a client on that node reuses one reply\nsubject.\n\n`$JS.API.CONSUMER.MSG.NEXT` is already special-cased in\n`processServiceImport` for what looks like this reason, but every other\nJS API call and every user-defined service export still take this path.\n\n## Change\n\nKeep the slice — that is what the common case wants, since reply\nsubjects are normally unique per request and the list holds a single\nentry — but build an index once a reply subject accumulates more than\n`rrIndexThreshold` (16) outstanding responses. Removal then swaps with\nthe last entry instead of shifting, and finds its target through the\nindex.\n\n`respEntries` is held by value in `rrMap`, so a mutation has to be\nwritten back under its key. Rather than leave that to each caller,\n`importMap` owns `addRespEntry` and `removeRespEntry` and the write back\nlives in one place.\n\nThe removal path also keys off `reply` throughout. It previously looked\nthe entry up under `reply` but wrote the remainder back under `si.to`.\n**Every caller reaches that code with the two equal**, so this is not a\nbehaviour change — entries are only ever added under `to`, and the sole\n`si != nil` removal path is `removeRespServiceImport` →\n`checkForReverseEntry(to, si, false)`. It removes a mismatch between the\nkey read and the key written, nothing more. An earlier revision of this\ndescription claimed it fixed a reachable bug; it does not.\n\n## Numbers\n\n`BenchmarkReverseRespMapRemoval` clears n outstanding responses, so\nns/op is the cost of draining the whole set. Apple M3, `-benchtime 5x`:\n\n| shared reply subject | before | after |\n|---|---|---|\n| 1000 | 102.6µs | 85.0µs |\n| 10000 | 5.148ms | 0.795ms |\n| 40000 | 103.197ms | 3.349ms |\n\n| unique reply subjects | before | after |\n|---|---|---|\n| 1000 | 98.3µs | 86.6µs |\n| 10000 | 0.856ms | 0.851ms |\n| 40000 | 3.611ms | 3.349ms |\n\nThe quadratic growth is visible in the shared column before the change:\nfour times the entries costs twenty times the work. After it, and in the\nunique case throughout, cost is linear in the number of entries.\nAllocations are identical in both columns of the unique case (39898\nallocs/op, 1842411 B/op at n=40000), since the index is never allocated\nfor a reply subject holding a single entry.\n\nSeparately, measured over 50k requests each with its own reply subject,\nsteady-state cost is **380.6 vs 370.2 bytes** per outstanding request.\nAn earlier version of this patch replaced the slice with a plain\n`map[string]*serviceRespEntry` and cost 590.1 bytes per request, which\nis why the threshold exists.\n\n## Testing\n\n- `TestServiceImportReverseEntriesSharedReplySubject` covers both the\nunindexed and indexed paths, removing entries one at a time and\nasserting the index stays in sync with the list.\n- `TestServiceImportReverseEntriesBulkRemoval` covers the other removal\npath, where `si == nil` drops a whole reply subject at once and cleans\nup the matching responses on the exporting account. That is what runs\nwhen interest in the reply subject goes away.\n- `BenchmarkReverseRespMapRemoval` guards the complexity in-tree rather\nthan only in this description.\n\nNote the previous behaviour was correct, only slow, so these tests guard\nthe invariant this change introduces rather than reproducing a wrong\nresult.\n\nBoth tests share a `sharedInboxRequests` helper which drains the\n`net.Pipe` connections it creates. Without that drain the server's write\nloops sit on the flush deadline and each subtest spends 10 seconds in\n`Shutdown`; with it the two tests together run in under two seconds.\n\nI ran `go test ./server -run\n'Service|Import|Export|Response|Account|Latency'` on this branch and on\n`main` for comparison, and both passed. On one earlier run this branch\nhit\n`TestLeafNodeWithWeightedDQRequestsToSuperClusterWithSeparateAccounts`\nfailing its final `require_True(t, r2.Load() > r1.Load())`. That test\ndrains subscribers based on `rand.Intn(6) > 4` and then asserts a\ndistribution, and it passes in isolation on both this branch and `main`,\nso I believe it is unrelated flakiness — but I am flagging it rather\nthan hiding it, in case you read it differently.\n\nI have not run the full suite, only that subset plus the JetStream tests\ntouching accounts. Happy to run more, or to rework the approach if you\nwould rather solve this a different way — for instance by bounding the\nreaper's work per pass instead, which the `TODO(dlc)` in\n`processServiceImport` hints at.",
+    "issueRefs": [
+      "#8463",
+      "#6307"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "49a5f28b7fd5bde22010a9ed96f990705b593ce3",
+    "authorDate": "2026-06-08T17:34:29+02:00",
+    "subject": "[FIXED] Restore pre-2.10 source coverage in TestJetStreamSourceBasics",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore_test.go",
+      "server/jetstream_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "452802b08f41e9043a1f97f9efdaa744dbb2a6ce",
+    "authorDate": "2026-06-08T16:54:46+02:00",
+    "subject": "(2.15) [FIXED] Don't allow non-sourced publish of source header",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/errors.json",
+      "server/jetstream_batching.go",
+      "server/jetstream_errors_generated.go",
+      "server/jetstream_test.go",
+      "server/stream.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5faed6ac4254959dd7c45102cd062aaa665c1ef0",
+    "authorDate": "2026-08-20T09:49:51+01:00",
+    "subject": "[FIXED] Preserve stream created time after recovery (#8471)",
+    "body": "During standalone file stream recovery, the persisted creation time was\nrestored on the stream object, but the internal file store configuration\nretained the server startup time.\n\nA subsequent stream configuration update persisted that stale value to\n`meta.inf`. After another restart, the changed creation time was exposed\nthrough the JetStream API.\n\nThis change keeps the stream and file store creation timestamps\nsynchronized when restoring the persisted creation time.\n\nA regression test covers:\n\n1. Creating a file-backed stream.\n2. Restarting the server.\n3. Updating the stream configuration.\n4. Restarting the server again.\n5. Verifying that `StreamInfo.Created` remains unchanged.\n\nResolves #8470",
+    "issueRefs": [
+      "#8471",
+      "Resolves #8470"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "f1eb64272bbd9e1255ecb5d598a1b83789c2e582",
+    "authorDate": "2026-08-19T13:12:09+01:00",
+    "subject": "(2.15) [IMPROVED] Finalize desired meta reconciliation (#8476)",
+    "body": "This PR finalizes desired meta reconciliation with some tweaks:\n- The JS lock was held throughout both `runStreamMigration` and\n`runConsumerMigration`. Now we snapshot the fields we need and then\nrelease the JS lock so we're not holding JS lock when accessing stream,\nconsumer or Raft data/locks.\n- When peer-removing a stream peer can't replace the peer, it leaves an\nempty spot that can be later added when a new peer joins the cluster.\nHowever, while in this \"under-replicated\" state it marked it as\nmigrating, which resulted in constant meta layer churn since it\ninitialized and finalized desired state in a loop while in this state.\nThis PR fixes that by only running desired state reconciliation if there\nis desired state, if the assignment's peer set is different from the\nRaft group, or the group is part of a legacy move where the assignment's\npeer set is larger than the intended replica count.\n- A stream cancel move endpoint was added, which has similar behavior to\nthe system-level cancel move, but is scoped purely to the account the\nuser is in and allows the user to cancel a move which wasn't possible\nbefore. The `\"stream move not in progress\"` error was renamed to\n`\"stream reconfiguration not in progress\"` and a `\"stream\nreconfiguration already in progress\"` error was added since desired\nstate is not limited to moves, it also includes scaling and retention\nchanges.\n- Scale and retention changes can now be stacked again, and the meta\nlayer and stream/consumer layer together ensure data is kept safe\nthroughout. But, errors are kept to deny: concurrent scale and move,\nmove while one is already in progress, move while a scale is already in\nprogress, etc.\n- A little bit of code deduplication between `runStreamMigration` and\n`runConsumerMigration` by extracting: `desiredSnapshot` which snapshots\nall desired-related data under the JS lock, `removeEvictedPeers` which\nremoves peers that are still part of the Raft group, but are no longer\nin the assignment (usually as a result of peer-remove, but could fix\nlingering peer set desync prior to upgrade too), and `extendPeerSet`\nwhich gradually adds peers to the Raft group.\n- Reporting migration status in stream/consumer info:\n`Cluster.Desired.Status: { Description: string, Type: string, Err:\nstring? }`. The description contains a simple human-readable description\nof what status the migration is in, and the type contains an enum that\ncan be used for identifying what the migration is waiting on, like a\nmembership change, quorum, blocked on a consumer moving, etc.\n\nFollow-up of https://github.com/nats-io/nats_server/pull/8432",
+    "issueRefs": [
+      "#8476"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "43a285e6a51cc2a62231ac882464ebb34e0a51e7",
+    "authorDate": "2026-08-12T22:50:52+02:00",
+    "subject": "(2.15) [FIXED] Under-replicated group spins isMigrating forever",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_1_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a9f6467e5f11d32f1a1f953985c95d58521d77ac",
+    "authorDate": "2026-08-19T10:46:44+01:00",
+    "subject": "[FIXED] Inline block compaction ignores SyncAlways (#8475)",
+    "body": "Inline compaction works by rewriting an entire block file and replacing\nthe old file with the new compacted file. However, inline compaction\nignored the SyncAlways setting. Meaning that a power loss could result\nin the loss of acknowledged messages.",
+    "issueRefs": [
+      "#8475"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1f459ae1daea0d74d2b51f45e17b16714e1c6b7f",
+    "authorDate": "2026-08-17T14:07:25+02:00",
+    "subject": "[FIXED] Inline block compaction ignores SyncAlways",
+    "body": "Inline compaction works by rewriting an entire block file and replacing\nthe old file with the new compacted file. However, inline compaction\nignored the SyncAlways setting. Meaning that a power loss could result\nin the loss of acknowledged messages.\n\nSigned-off-by: Daniele Sciascia <daniele@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore.go",
+      "server/filestore_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8e54a59546b11dc62bf894b2360c12a01f465cf6",
+    "authorDate": "2026-08-17T18:04:24+01:00",
+    "subject": "[FIXED] Missing stream snapshot on shutdown, plus test de-flakes (#8465)",
+    "body": "Two problems prevented a stream from snapshotting on shutdown:\n\n- `doSnapshot` suppressed the snapshot when an async checkpoint was\nstill in progress (`errSnapInProgress`) or when `failedSnapshots > 0`.\nOn shutdown we now bypass both and force-install directly, which aborts\nany in-flight checkpoint.\n`TestNRGForcedInstallSnapshotAbortsInProgressCheckpoint` covers that the\naborted checkpoint can no longer load or install, and that its late\n`Abort()` doesn't cancel the freshly installed snapshot. (This was\nalready the case before this PR, but now has test coverage)\n- `monitorQuitC` recreated `mset.mqch` when it was nil, so a monitor\ngoroutine starting after `stopMonitoring` had already signaled would\nwait on a channel that would never close, and `stopMonitoring` would\nblock on `monitorWg` forever. It now returns a pre-closed channel\ninstead; `startMonitorWg` creates the quit channel and skips it when the\nstream is closed or closing.\n\n`stream.stop` now waits for the monitor routine when shutting down (and\nnot deleting), so the shutdown snapshot actually completes before\nteardown continues.\n\nAlso de-flakes `TestJetStreamClusterAsyncFlushBasics` and\n`TestJetStreamClusterCreateR3StreamWithOfflineNodes`, and fixes a data\nrace on `Group.node` in the health check test helpers.\n\nVarious tests also started flaking with `JetStream system temporarily\nunavailable` due to consistently changing to `lostQuorumInterval` in\nhttps://github.com/nats-io/nats_server/pull/8452, the test-only 2s is\nbumped to 5s.",
+    "issueRefs": [
+      "#8465"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "54b0dfa3bb767d554912d3208e25c530d411291e",
+    "authorDate": "2026-08-17T11:10:26+02:00",
+    "subject": "[FIXED] Serialize snapshot file writes with a dedicated lock",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/raft.go",
+      "server/raft_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5185bb3a41a93ebb50cca43e4d71482902732329",
+    "authorDate": "2026-08-13T12:16:08+02:00",
+    "subject": "[TEST] Data race on Group.node in health check helpers",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster_1_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "bb6a770955e46e42e11002183b80cb4f2213d910",
+    "authorDate": "2026-08-13T00:01:16+02:00",
+    "subject": "[FIXED] Missing shutdown snapshot & hung monitor stop",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_1_test.go",
+      "server/raft_test.go",
+      "server/stream.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c90dfe278ad594b3f74155d9aeff9864c3798e34",
+    "authorDate": "2026-08-17T12:03:12+02:00",
+    "subject": "[FIXED] Serialize stream created time updates",
+    "body": "Signed-off-by: Grzegorz Zielinski <11303447+Green7@users.noreply.github.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/stream.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "483e4884ae8f997ecd739e6b10915e7865b81ed4",
+    "authorDate": "2026-08-17T10:14:32+01:00",
+    "subject": "[FIXED] Reject stream update to replicas > 1 in non-clustered mode (#8464)",
+    "body": "",
+    "issueRefs": [
+      "#8464"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b48d3910689fb703c2da269e858e90bc9535edba",
+    "authorDate": "2026-08-16T15:51:50+02:00",
+    "subject": "[FIXED] Preserve stream created time after recovery",
+    "body": "Signed-off-by: Grzegorz Zielinski <11303447+Green7@users.noreply.github.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore.go",
+      "server/jetstream_test.go",
+      "server/stream.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f413f3d7eb455d3a5bf2f825ab7c03a017878079",
+    "authorDate": "2026-08-14T11:56:07+02:00",
+    "subject": "[FIXED] Reject stream update to replicas > 1 in non-clustered mode",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_test.go",
+      "server/stream.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "99bbfb98035f4f0df06333a9a280c0517eaeff1c",
+    "authorDate": "2026-08-14T10:14:55+01:00",
+    "subject": "(2.15) [FIXED] Migration added offline peers & removed peers before catchup (#8460)",
+    "body": "This PR fixes two remaining issues, and removes the final two FIXMEs:\n\n- Migrations would add peers as fast as possible, without checking\nwhether the peer being added was even online. Adding an offline peer\ngrows the quorum size, which could drop the group out of quorum until\nenough nodes came online. `selectPeerToAdd` now prefers the candidate\nwe've heard from most recently, and only adds an unheard peer if the\nlive members still reach quorum in the grown group.\n- Migrations also didn't wait for upper-layer stream catchup to complete\nbefore removing old peers. An old peer is now only removed if the group\nleft after the removal retains a store-current majority, based on\n`Current`/`Lag` and the stream's active `catchupPeers`.\n\nFollow-up of https://github.com/nats-io/nats_server/pull/8432",
+    "issueRefs": [
+      "#8460"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "965c9a4d7fd17b281db36bf75c8682b1d0652a73",
+    "authorDate": "2026-08-12T15:35:46+02:00",
+    "subject": "(2.15) [FIXED] Migration removed old peer before stream catchup completed",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_2_test.go",
+      "server/jetstream_super_cluster_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "91600e5f05b2b4213fed0fb65b330e78c62fb639",
+    "authorDate": "2026-08-11T16:30:24+02:00",
+    "subject": "(2.15) [FIXED] Migration could stall by adding an offline peer to the group",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_2_test.go",
+      "server/jetstream_cluster_3_test.go",
+      "server/raft.go",
+      "server/raft_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cfde14bd61eeae13aa036b12e60c44552b4cbc22",
+    "authorDate": "2026-08-07T20:49:04+02:00",
+    "subject": "(2.15) [FIXED] Evict peer-removed peers for group below quorum",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_api.go",
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_1_test.go",
+      "server/jetstream_cluster_3_test.go",
+      "server/jetstream_helpers_test.go",
+      "server/raft.go",
+      "server/raft_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c685a549ed6f7f8be8501f8833c480cf457d243e",
+    "authorDate": "2026-08-06T15:59:27+02:00",
+    "subject": "(2.15) [FIXED] Reconcile assignments with missing or stale peers",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "locksordering.txt",
+      "server/consumer.go",
+      "server/events.go",
+      "server/jetstream.go",
+      "server/jetstream_api.go",
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_1_test.go",
+      "server/jetstream_cluster_3_test.go",
+      "server/server.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fcdcacf045f25937185821745723d733b5cdda97",
+    "authorDate": "2026-08-13T15:19:32+01:00",
+    "subject": "(2.15) [IMPROVED] Source stream recreation detection (#8384)",
+    "body": "Previously if you started sourcing from a stream that was recreated, it\nwould wait for the recreated stream's sequence to move back up to the\nlast sourced sequence before it accepted new messages. This PR detects a\nstream being recreated by noticing a changed `Nats-Stream-Identity`,\nwhich is the hash of the stream's created time. There exists no unique\nidentifier for a stream/consumer lifetime apart from the created time,\nso that's used and is the most practical since collisions are unlikely\nenough.\n\n- This hash is appended to the source header to know what \"identity\" of\nthe stream was associated with the highest sequence for that source.\n(source header before: `TEST 1 > > foo`, after: `TEST 1 > > foo\nsLkPMPK6`)\n- This identity is passed in the consumer create request to prevent a\nconsumer from being created based on sequences derived from the previous\nstream. An error is returned (`JSConsumerStreamIdentityMismatch`) if a\nmismatch is detected, the request is then retried with reset sequences\nto allow sourcing from the beginning.\n- The consumer reset request does not allow for the identity to be\npassed in, and instead relies on the caller to notice a different\nidentity and subsequent in-memory state reset. This prevents unnecessary\nchurn of requests since the reset will always happen based on a consumer\nthat already exists and needs to be reset anyway.\n- Both the consumer create and reset responses contain this identity to\nget informed of the latest identity of the stream, which is then passed\ninto the source header.\n\nThis PR additionally requires that the starting sequence for a consumer\nis respected, even for sourcing consumers that were previously\n(incorrectly) clamped within the sourced stream's first/last sequence\nrange.\n\nUpgrade note: the servers on both ends will need to be updated for this\nmechanism to kick in. A downgrade should ignore the extra appended\nidentity from the header and fall back to the previous behavior.\n\nResolves https://github.com/nats-io/nats_server/issues/8346,\nhttps://github.com/nats-io/nats_server/issues/6206,\nhttps://github.com/nats-io/nats_server/issues/5847",
+    "issueRefs": [
+      "#8384"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "0742ba413c622f155edd0f2d8d47a742e1e52625",
+    "authorDate": "2026-08-13T14:43:41+01:00",
+    "subject": "[FIXED] Extend dios to cover filestore block syncs (#8462)",
+    "body": "",
+    "issueRefs": [
+      "#8462"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "87be4369fd0e75b9b684ac12358491e5b49aa996",
+    "authorDate": "2026-08-13T12:33:52+02:00",
+    "subject": "[FIXED] Extend dios to cover filestore block syncs",
+    "body": "Signed-off-by: Daniele Sciascia <daniele@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3388b92deb4b8920491783e9e8296c562896aa46",
+    "authorDate": "2026-08-05T14:59:14+02:00",
+    "subject": "(2.15) [FIXED] Peer-remove and evacuate server or stream peer",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_api.go",
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_1_test.go",
+      "server/norace_1_test.go",
+      "server/raft.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "af45c3d1e3cb22364e606c8abba8a4af23efa553",
+    "authorDate": "2026-08-12T13:27:10+01:00",
+    "subject": "[FIXED] `syncBlocks` may skip sync on compacted blocks (#8456)",
+    "body": "`syncBlocks` should leave all message blocks synced after it returns.\nThis was not always the case when a block needed compaction during the\nsame pass. Specifically, if the block was initially marked as not\nneeding sync, i.e. `mb.needSync = false`, then `syncBlocks` would miss\nthe fact that `compactWithFloor` could later set\n`mb.needSync = true` on that same block.\nKeep track of blocks compacted and sync both the new compacted file and\nits directory before returning.",
+    "issueRefs": [
+      "#8456"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c3ed978d3eaa7ba20639bea4acf9b67a8d99f406",
+    "authorDate": "2026-08-12T13:18:37+01:00",
+    "subject": "[FIXED] Route missing after reconnect due to gossip URL mismatch (#8454)",
+    "body": "Found via Antithesis testing: `upgradeRouteToSolicited` could upgrade a\ngossip-dialed connection to `Explicit` while keeping its gossip URL, so\nafter a disconnect `routeStillValid` rejected that URL and the reconnect\nwas silently abandoned, leaving a route pool slot unfilled between two\nlive servers. This PR adopts the configured URL during the upgrade, so\nreconnects always pass `routeStillValid`.",
+    "issueRefs": [
+      "#8454"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7069ac3fa3c3daf40bd38e21b49421aefe277fd5",
+    "authorDate": "2026-08-12T12:35:14+02:00",
+    "subject": "[FIXED] `syncBlocks` may skip sync on compacted blocks",
+    "body": "`syncBlocks` should leave all message blocks synced after\nit returns. This was not always the case when a block\nneeded compaction during the same pass. Specifically,\nif the block was initially marked as not needing sync,\ni.e. `mb.needSync = false`, then `syncBlocks` would miss\nthe fact that `compactWithFloor` could later set\n`mb.needSync = true` on that same block.\nKeep track of blocks compacted and sync both the new\ncompacted file and its directory before returning.\n\nSigned-off-by: Daniele Sciascia <daniele@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore.go",
+      "server/filestore_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "df1b12b7c6f3e461df926b649981ef0d3dd87891",
+    "authorDate": "2026-08-11T19:14:37+02:00",
+    "subject": "[FIXED] Route missing after reconnect due to gossip URL mismatch",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/route.go",
+      "server/routes_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "674a7bcab30da055e3225b8e6d48ec6bb642dc6e",
+    "authorDate": "2026-08-11T12:40:55+01:00",
+    "subject": "[FIXED] Idempotent stream create uses same created timestamp (#8449)",
+    "body": "Follow-up of https://github.com/nats-io/nats_server/pull/8413\n\nAn idempotent stream create was not actually idempotent. The `Created`\ntimestamp in the assignment would be updated to the current time,\ninstead of preserving what was in the assignment already. This could\nresult in recreating the stream and losing its data if such an\n\"idempotent\" stream create was performed while a node that hosts it was\ndown and it then came back up and caught up from a meta snapshot\ncontaining the updated `Created` timestamp.\n\nOnly the `Created` timestamp is meant to be used for detecting a\nrecreated stream/consumer. However, since the result of this bug may\nexist in meta logs for versions 2.14.4 and 2.12.14, this additional\nhandling ensures the stream is only deleted when both the group name and\nthe created time are different.",
+    "issueRefs": [
+      "#8449"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "82b040547e442a15fd3e07c23f337d9c839bd6e4",
+    "authorDate": "2026-08-11T10:26:59+02:00",
+    "subject": "[FIXED] Idempotent stream create uses same created timestamp",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_3_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9b8105eb536b5250faecf341f9838a932cea2a76",
+    "authorDate": "2026-08-11T11:46:12+01:00",
+    "subject": "Make leafnode tcp dialtimeout configurable (#8427)",
+    "body": "Fixes  https://github.com/nats-io/nats_server/issues/8426  \n\nTentative fix - there is no tooling in the project to unit test network\ndelay during connection setup (raw packet delay).\n\nSigned-off-by: Michael Röschter <michael@roeschter.de>",
+    "issueRefs": [
+      "#8427"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "231618b4268b24454bfe2190c676fc8ae9f46780",
+    "authorDate": "2026-07-27T23:35:32+01:00",
+    "subject": "Make leafnode tcp dialtimeout configurable",
+    "body": "Signed-off-by: Michael Röschter <michael@roeschter.de>\n\nDialtimeout in leafnodes section\n\nSigned-off-by: Michael Röschter michael@roeschter.de\n\nDialtimeout in leafnodes section\n\nSigned-off-by: Michael Röschter michael@roeschter.de\n\nAdded unit test for dial_timeout default and configuration precedence\n\nSigned-off-by: Michael Röschter <michael@roeschter.de>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/leafnode.go",
+      "server/leafnode_test.go",
+      "server/opts.go",
+      "server/server.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "70716980dd0723fb75afb7ae962beda48a75219e",
+    "authorDate": "2026-07-15T11:43:57+02:00",
+    "subject": "(2.15) [FIXED] Source/mirror respects OptStartSeq",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/consumer.go",
+      "server/jetstream_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d9dd620b1af65e84efe439357f9cd3ae8e2ad84e",
+    "authorDate": "2026-08-07T16:06:34+01:00",
+    "subject": "(2.15) [ADDED] Domain prefixed JetStream API in the system account (#8429)",
+    "body": "The system account can be shared between a hub and leaf cluster, but\nhaving different domains. This ensures they are treated as two separate\nJetStream meta groups. Before this PR it wasn't possible to administer\nthe leaf cluster from the hub, since the system account's JS API wasn't\ndomain-aware, and the servers added automatic pub/sub denies to\n`$JS.API.>` so JetStreams of different domains don't cross-talk about a\nsystem JS API request. This PR preserves the pub/sub denies and adds\nsupport for the domain-aware JS API, by allowing the same\n`$JS.<domain>.API.>` convention that accounts use.",
+    "issueRefs": [
+      "#8429"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "db0a2c8ce3241df7dbc6cd730b989cfa05677068",
+    "authorDate": "2026-08-04T16:38:52+01:00",
+    "subject": "[FIXED] SetLoggerV2 deadlocks when prev logger errors on close (#8430)",
+    "body": "Calling `s.Errorf(...)` within `s.logging.Lock(); ...;\ns.logging.Unlock()` would result in a deadlock, 'cause `s.Errorf()`\ntries to acquire the same mutex (`s.logging`).\n\nReproduction:\n\n```go\n\n// failingCloseLogger implements both server.Logger and io.Closer.\ntype failingCloseLogger struct{}\n\nfunc (l *failingCloseLogger) Noticef(format string, v ...any) {}\n// ... other server.Logger functions\nfunc (l *failingCloseLogger) Close() error {\n\treturn errors.New(\"simulated close error\")\n}\n\nfunc main() {\n\topts := &server.Options{\n\t\tHost:   \"127.0.0.1\",\n\t\tPort:   -1,\n\t\tNoLog:  true,\n\t\tNoSigs: true,\n\t}\n\n\ts, err := server.NewServer(opts)\n\tif err != nil {\n\t\tos.Exit(1)\n\t}\n\n\ts.SetLogger(&failingCloseLogger{}, false, false)\n\tfmt.Println(\"First logger installed.\")\n\n\tdone := make(chan struct{})\n\tgo func() {\n\t\ts.SetLogger(&failingCloseLogger{}, false, false)\n\t\tclose(done)\n\t}()\n\n\tselect {\n\tcase <-done:\n\t\tfmt.Println(\"Second logger installed.\")\n\tcase <-time.After(3 * time.Second):\n\t\tbuf := make([]byte, 64<<10)\n\t\tnumBytes := runtime.Stack(buf, true)\n\t\tfmt.Println(string(buf[:numBytes]))\n\t\tpanic(\"deadlocked\")\n\t}\n}\n```\n\nResults in:\n\n```sh\n$ go run main.go\n\nFirst logger installed.\ngoroutine 1 [running]:\nmain.main()\n\teadlock-repro/main.go:54 +0x200\n\ngoroutine 5 [sync.RWMutex.RLock]:\nsync.runtime_SemacquireRWMutexR(0x8adc4b17ee8?, 0xdc?, 0x10?)\n\t/opt/homebrew/Cellar/go/1.26.1/libexec/src/runtime/sema.go:100 +0x28\nsync.(*RWMutex).RLock(...)\n\t/opt/homebrew/Cellar/go/1.26.1/libexec/src/sync/rwmutex.go:74\ngithub.com/nats-io/nats_server/v2/server.(*Server).executeLogCall(0x8adc4c5a008, 0x104daab70, {0x1046cccfc, 0x18}, {0x8adc4ad2b20, 0x1, 0x1})\n\tnats_server/server/log.go:288 +0x90\ngithub.com/nats-io/nats_server/v2/server.(*Server).Errorf(...)\n\tnats_server/server/log.go:189\ngithub.com/nats-io/nats_server/v2/server.(*Server).SetLoggerV2(0x8adc4c5a008, {0x104db8088, 0x104e64e00}, 0x0?, 0x0?, 0x0?)\n\tnats_server/server/log.go:139 +0x1e4\ngithub.com/nats-io/nats_server/v2/server.(*Server).SetLogger(...)\n\tnats_server/server/log.go:112\nmain.main.func1()\n\tmain.go:45 +0x44\ncreated by main.main in goroutine 1\n\tmain.go:44 +0x150\n\n```\n\nThe issue was found with [mulint](https://github.com/palkan/mulint), so\nit's kinda hypothetical. Potential real-world scenarios when it might\noccur is log rotation (`ReOpenLogs(...)` w/ a broken old logger) and\nembedded servers calling `SetLogger` multiple times.",
+    "issueRefs": [
+      "#8430"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "8803c2a123eff32f8d3327b796f165ae1dd13691",
+    "authorDate": "2026-08-04T16:17:56+01:00",
+    "subject": "(2.14) [FIXED] AckAll on WQ removed messages outside consumer filter (#8431)",
+    "body": "Normally `AckAll` on a WorkQueue isn't permitted, since `AckExplicit` or\n`AckFlowControl` is required. However, if you'd source from a WorkQueue\nstarting from 2.14, this uses a consumer with `AckFlowControl`, which\nfunctions like `AckAll`. A filtered source consumer could then ack\nmessages outside the consumer filter, resulting in those messages being\nremoved. This path also is engaged for Interest streams, but isn't\nproblematic there since messages without a consumer have no interest, so\nremoving them is correct.\n\nThis PR fixes that by only calling `mset.ackMsg` on messages that were\npending prior to the `AckAll`.\n\nResolves https://github.com/nats-io/nats_server/issues/8423",
+    "issueRefs": [
+      "#8431"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ccd898ea86accf40861f1dd651df8e7fb9c0e5f3",
+    "authorDate": "2026-07-27T11:47:25+02:00",
+    "subject": "[FIXED] Certificate users authenticatable by username on other listeners",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/auth.go",
+      "server/auth_test.go",
+      "server/mqtt_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "91af36a3800bfa40eb2e37bc1ed5bef2ecac1ce6",
+    "authorDate": "2026-07-27T11:35:36+02:00",
+    "subject": "[FIXED] Block MQTT subscriptions to internal MQTT subjects",
+    "body": "Prevent MQTT clients from subscribing to $MQTT.* subjects.\nSubscribing to subjects such as `$MQTT.msgs.*` or `$MQTT.rmsgs.*`\nallows users to bypass their deny permissions.\n\nSigned-off-by: Daniele Sciascia <daniele@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/mqtt.go",
+      "server/mqtt_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "05f8f880db76ebbf1e686f489068dedf9e449330",
+    "authorDate": "2026-07-24T20:11:31+02:00",
+    "subject": "[FIXED] Consumer assignment proposed without a raft group",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_benchmark_test.go",
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_1_test.go",
+      "server/jetstream_cluster_4_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "61e59f52655695937d302ed2c72d9aea61444525",
+    "authorDate": "2026-07-24T17:36:14+02:00",
+    "subject": "[FIXED] Panic setting up a stream source/mirror on malformed create response",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_test.go",
+      "server/stream.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "0fb7c1f572aea5639e6d68a936c1951a05d95644",
+    "authorDate": "2026-07-24T11:31:31+02:00",
+    "subject": "[FIXED] Panic decoding MQTT retained messages, sessions and JS API replies",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/mqtt.go",
+      "server/mqtt_test.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "0cd37272f99fc71b1968621660c75e5f5c4df30a",
+    "authorDate": "2026-07-24T11:27:46+02:00",
+    "subject": "[FIXED] Panic decoding counter source with null entry",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_batching.go",
+      "server/jetstream_batching_test.go",
+      "server/stream.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "5ac26a87fa3a55104ac2a56a5f167260aaaee9cf",
+    "authorDate": "2026-07-24T16:06:25+02:00",
+    "subject": "[FIXED] Reject wildcard snapshot delivery subjects",
+    "body": "Require literal delivery subjects and handle notification\nregistration errors to prevent snapshot goroutine leaks.\n\nSigned-off-by: Daniele Sciascia <daniele@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_api.go",
+      "server/jetstream_test.go"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "91045691aa5f134f77038e7501ef157b7a40ed27",
+    "authorDate": "2026-07-24T13:18:45+02:00",
+    "subject": "[FIXED] Prevent panic on whitespace subscription permissions",
+    "body": "JWT validation may accept a whitespace only permission subject. Parsing that\nentry yields no fields, and splitSubjectQueue previously indexed the empty\nresult. Return an error when no subject is present so callers safely skip the\ninvalid entry.\n\nSigned-off-by: Daniele Sciascia <daniele@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/client.go",
+      "server/client_test.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "544a1ec0d7d5421fec2ddc3194a382e08e3f5628",
+    "authorDate": "2026-07-24T10:39:04+01:00",
+    "subject": "Fix handling of `PING`-first path on auth callout system",
+    "body": "Signed-off-by: Neil Twigg <neil@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/auth_callout_test.go",
+      "server/parser.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "74d7a2d94b9b07a3d103149bc2956a83cec51553",
+    "authorDate": "2026-07-28T15:28:18+02:00",
+    "subject": "[FIXED] AckAll on WQ removed messages outside consumer filter",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/consumer.go",
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_3_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "efa55d5925a7353bedd2ff44ce5fa3c558ff236c",
+    "authorDate": "2026-07-28T19:54:16-07:00",
+    "subject": "[FIXED] SetLoggerV2 deadlock when prev logger errors on close",
+    "body": "Calling s.Errorf() tries to acquire the same s.logging mutex which we're already holding, so we should call it after Unlock()\n\nSigned-off-by: Vladimir Dementyev <dementiev.vm@gmail.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/log.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "3b5b37c6e1444596098c3357db2ccff5adc027e8",
+    "authorDate": "2026-07-24T21:40:03+02:00",
+    "subject": "(2.15) [ADDED] Domain prefixed JetStream API in the system account",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream.go",
+      "server/jetstream_cluster_2_test.go",
+      "server/jwt_test.go",
+      "server/leafnode.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "95c0a878ad59fff8233597932633ea9c8878f898",
+    "authorDate": "2026-07-27T17:02:40+01:00",
+    "subject": "[FIXED] \"TLS required\" logged at startup when allow_non_tls is set (#8420)",
+    "body": "Resolves #8419\n\n## Problem\n\nThe client accept loop emits its TLS startup notice based only on\nwhether a TLS config exists:\n\n```go\n// Alert of TLS enabled.\nif opts.TLSConfig != nil {\n    s.Noticef(\"TLS required for client connections\")\n    ...\n}\n```\n\n`opts.AllowNonTLS` is never consulted, so a server configured with a\n`tls{}` block **and** `allow_non_tls: true` tells the operator that TLS\nis required while it is in fact accepting both TLS and plaintext clients\non the same port.\n\nEverything else in the server already gets this right:\n\n- `server/server.go:743` — the INFO sent to clients is built with\n`TLSRequired: tlsReq && !opts.AllowNonTLS`, advertising `TLSAvailable`\ninstead, so clients are correctly told TLS is optional.\n- `server/server.go:3410` — the accept path sniffs TLS versus plaintext:\n`sniffTLS := !tlsFirst && opts.TLSConfig != nil && (inProcess ||\nopts.AllowNonTLS)`.\n\nOnly the operator-facing log line disagrees with what the server does.\nThe existing comment, \"Alert of TLS enabled\", suggests the intent was\n\"TLS is configured\", not \"TLS is required\".\n\nThis came out of a 2.12.5 deployment with `tls{cert_file, key_file,\nca_file}` plus `allow_non_tls: true`, whose banner read \"TLS required\nfor client connections\" while its own `/connz` listed, on that same\nport:\n\n| name | lang | TLS |\n| --- | --- | --- |\n| `nats-modbus-1-server-id-1-connection` | .NET | 1.3 |\n| `nats-iec61850-1-server-id-1-connection` | .NET | 1.3 |\n| `ProducerPrimary` | .NET | 1.3 |\n| `NATS CLI Version 0.4.0` | go | plaintext |\n\nA `nats sub` / `nats pub` round trip over plain `nats://localhost:4222`\nsucceeded against that server at the same time. The banner is the first\nthing an operator reads when diagnosing connectivity, and here it\nasserts a security property the server is not enforcing; it cost real\ndebugging time during an unrelated certificate investigation, because\nplaintext clients had been ruled out on the strength of that line. The\ninverse case matters more: on a deployment meant to be TLS-only, the\nsame message hides a stray `allow_non_tls: true` that is still accepting\ncleartext.\n\n## Change\n\nThe notice now distinguishes the two cases:\n\n| config | before | after |\n| --- | --- | --- |\n| `tls{}` | `TLS required for client connections` | unchanged |\n| `tls{}` + `allow_non_tls` | `TLS required for client connections` |\n`TLS available for client connections` |\n| `tls{}` + `allow_non_tls` + `handshake_first: true` | `TLS required\nfor client connections` | unchanged |\n| `tls{}` + `allow_non_tls` + `handshake_first` with fallback delay |\n`TLS required for client connections` | `TLS available for client\nconnections` |\n\nThe `TLSHandshakeFirst` warning below it is untouched; the condition it\nuses is now hoisted into a local and shared with the notice so the two\ncannot drift apart. No behavioral change beyond the log text, and\nnothing added to `go.mod`.\n\n**On the wording.** This is vocabulary NATS already uses for this\nconfiguration, not something invented here: the INFO protocol\ndistinguishes `tls_required` from `tls_available`, and the TLS\ndocumentation describes exactly this setup as configuring the server as\n\"tls available\" — \"This is done via an empty `tls` block and the\n`allow_non_tls` flag\"\n([docs](https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls)).\nWith `tls {}` + `allow_non_tls: true`, the log line and the docs now say\nthe same words. If you would rather be more explicit, `TLS available for\nclient connections (non-TLS clients allowed)` is fine by me — I picked\nthe terse form only to mirror the protocol field and the docs.\n\n**Why not just `s.info.TLSRequired`.** The condition looks redundant\nnext to `server/server.go:743`, but collapsing it would be wrong. With\ncerts + `allow_non_tls: true` + `handshake_first: true`,\n`info.TLSRequired` is false, yet TLS is genuinely mandatory — the\nhandshake-first override is applied per connection at\n`server/server.go:3308-3310`, not on the startup info. I confirmed with\na built binary that a raw plaintext socket is refused in that\nconfiguration. Hence the explicit handshake-first term, which the third\nrow of the table and the third test case pin down.\n\n## Scope\n\n- This was the only place that reported it wrong. `/varz`\n(`server/monitor.go:1808`) and `PortsInfo` (`server/server.go:4249`)\nboth derive from `info.TLSRequired` and are already correct under\n`allow_non_tls`.\n- The notice is emitted once from `AcceptLoop` at startup and, as\nbefore, is not re-emitted on config reload. `AllowNonTLS` is not\nreloadable in any case, so the reported scenario is startup-only.\n- It describes the TCP client listener. In-process connections\n(`s.InProcessConn`) negotiate TLS-or-plaintext regardless of\n`allow_non_tls` (`server/server.go:3289`, `:3410`); that is\npre-existing, unchanged here, and `AcceptLoop` is not even entered under\n`DontListen`.\n- **Out of scope:** `server/mqtt.go:550` picks the `tls://` scheme for\nthe MQTT listen line on `TLSConfig != nil`, while `server/mqtt.go:625`\nhonours the same `opts.AllowNonTLS`, so that line has a related\ninaccuracy. It is a different message with different semantics, so I\nleft it out deliberately — happy to follow up separately if you want it\nfixed.\n\n## Testing\n\nAdded a regression test using the existing `captureNoticeLogger` helper.\nIt starts a server for each of the four rows above and asserts that\nexactly one `TLS ... for client connections` notice is emitted and that\nit is the right one; reverting only the `server/server.go` hunk makes\nthe two \"available\" cases fail. `go test ./server/ -run TLS` passes,\nincluding under `-race -count=3`.\n\nBeyond the unit test, I checked the log against actual behaviour on a\nlocally built binary: on the `allow_non_tls` config a raw plaintext\nsocket completes a PING/PONG round trip and TLS clients connect at 1.3\non the same port (`/connz` reproduces the table above, four connections,\none plaintext); on the plain `tls{}` config and on the `handshake_first`\nconfig, plaintext is refused. In every case the new notice matches what\nthe port actually accepts.",
+    "issueRefs": [
+      "#8420",
+      "Resolves #8419"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "f1c40e32c8b88b22b00ddd5a545772f11b131dd1",
+    "authorDate": "2026-07-27T15:16:31+01:00",
+    "subject": "Switch `stree` to use strings for prefixes internally (#8412)",
+    "body": "In Go, `[]byte` headers are 24 bytes, whereas `string` headers are only\n16 bytes. We don't generally care about slice capacity in the context of\nprefixes as we are always managing the copies ourselves, so using native\nstrings can save us some memory per subject.\n\nThe included benchmark builds a tree containing 250,000 subjects shaped\nas:\n\n```text\naccount.<0-999>.stream.<sequence>\n```\n\nAverage results across a few runs vs `main`:\n\n| Metric | Before | After | Change |\n|---|---:|---:|---:|\n| Retained heap | 17.86 MB | 14.73 MB | **−17.5%** |\n| Total allocation while building | 20.87 MB | 17.28 MB | **−17.2%** |\n| Construction allocations | 699,978 | 623,430 | **−10.9%** |\n| Find, 2 million lookups | 141.71 ms | 142.24 ms | +0.4% |\n| `IterFast`, 5 million entries | 39.21 ms | 38.67 ms | −1.4% |\n| Match, 5 million entries | 69.24 ms | 68.72 ms | −0.8% |",
+    "issueRefs": [
+      "#8412"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "c1ca29ba0d040c259bcf23e1a7451c38609ab14a",
+    "authorDate": "2026-07-24T17:42:11-04:00",
+    "subject": "[FIXED] \"TLS required\" logged at startup when allow_non_tls is set",
+    "body": "The startup notice was emitted purely on `opts.TLSConfig != nil` and never\nconsulted `opts.AllowNonTLS`, so a server configured with a `tls{}` block\nand `allow_non_tls: true` logged \"TLS required for client connections\"\nwhile it was in fact accepting both TLS and plaintext clients on the same\nport. This was reported against 2.12.5, where the server printed that\nnotice while its own /connz simultaneously listed three TLS 1.3 client\nconnections and one plaintext connection on that port, and a nats pub/sub\nround trip over plain nats:// succeeded.\n\nThe rest of the server already gets this right: the INFO protocol sent to\nclients sets `TLSRequired: tlsReq && !opts.AllowNonTLS` (and `TLSAvailable`\ninstead), and the accept path sniffs TLS versus plaintext when\n`!tlsFirst && opts.TLSConfig != nil && (inProcess || opts.AllowNonTLS)`.\nOnly the operator-facing log line disagreed. The surrounding comment,\n\"Alert of TLS enabled\", shows the intent was to report that TLS is\nconfigured, not that it is mandatory.\n\nThe notice now distinguishes the two cases, borrowing the vocabulary\nalready used in INFO: \"TLS required\" when TLS is mandatory, \"TLS available\"\nwhen `allow_non_tls` permits plaintext clients as well. Note that\n\"TLS Handshake First\" without a fallback delay overrides `allow_non_tls`\nand does make TLS mandatory, so that case keeps saying \"required\".\nBehavior is otherwise unchanged; this only corrects the log message.\n\nAdded a regression test that starts a server with a TLS config both with\nand without `allow_non_tls`, including the \"TLS Handshake First\"\ncombinations, and asserts on the emitted notice.\n\nSigned-off-by: Jainal Gosaliya <jainal09gosalia@gmail.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/client_test.go",
+      "server/server.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "5e645df4c0ce2a0b4e0c985f6a51a34cd4f53367",
+    "authorDate": "2026-07-24T10:07:18+01:00",
+    "subject": "[FIXED] MQTT: QoS2 message released on a resumed session lost its QoS and PI (#8414)",
+    "body": "This came up while testing with\nhttps://github.com/ConnectEverything/mqtt-test/pull/4\n\nTwo root causes. The delivery callbacks and the retain handling read the\npublishing connection's c.mqtt.pp — the last PUBLISH parsed — which is\nstale for a PUBREL- or will-initiated delivery, so a QoS2 message\nreleased after a reconnect was delivered as QoS0 with no packet\nidentifier. And the staged copy in $MQTT_qos2in never persisted the\nretain flag, so it could not be recovered on another connection at all.\nSame-connection flows worked only while the scratch happened to still\nhold the right packet. Because of the interplay, the two must be fixed\ntogether.\n\nThe delivered message now becomes the client's current publish for the\nduration of the broadcast (swapped into the readLoop-owned c.mqtt.pp,\nrestored by the same defer as the pubargs); wills build their own\nmqttPublish and use the common path instead of writing into the scratch\nby hand. The staged copy\npersists the retain flag in a second, flags byte of the Nmqtt-Pub header\nvalue, restored when the PUBREL rebuilds the publish; older servers read\nonly the first (QoS) byte, and messages without a flags byte read as not\nretained.\n\nRetained QoS2 messages now survive an in-flight reconnect: a PUBLISH\nstaged on one connection and released by the PUBREL on the next stores\nthe retained message, where before the retain bit died with the first\nconnection's parser state. This matches Spec [MQTT-4.3.3] Method A as\nimplemented by mosquitto, which likewise persists the retain flag with\nthe staged message and applies it at release, together with the\ndelivery.\n\nAdded regression tests: a PUBREL on a resumed session delivers at the\nsubscription's QoS exactly once, a retransmitted PUBREL is acknowledged\nwithout redelivering, and the retain flag survives the staging round\ntrip.",
+    "issueRefs": [
+      "#8414"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7d562cb2cb11aea756a359d82dd9de31a9ee41ce",
+    "authorDate": "2026-07-24T10:06:23+01:00",
+    "subject": "[FIXED] Detect stream/consumer recreate after meta snapshot (#8413)",
+    "body": "When a stream was deleted and recreated under the same name while a\nreplica was down, and the meta log was compacted, the returning replica\nwould catch up via a meta snapshot instead of replaying the delete and\ncreate entries. `applyMetaSnapshot` matched streams by name only, so the\nrecreated stream was treated as an update of the existing one, and the\nreplica kept the raft group and message store of the previous\nincarnation. Creating a new consumer that had its consumer leader land\non this replica could then result in its delivery sequence skipping way\nahead compared to the recreated stream.\n\nThis PR fixes that by detecting that the stream's group changed,\nremoving the old stream and creating the new one, mirroring the existing\nconsumer handling added in\nhttps://github.com/nats-io/nats_server/pull/6507.\n\nThis PR additionally fixes the consumer path, since the raft group's\nname is updated after scale up/down from/to replicated, so the created\ntimestamp is used since it's the only field that changes after recreate\nand never on an update.",
+    "issueRefs": [
+      "#8413"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "2b40e0d55f3dc58645fde4afc2051bcfca0f5413",
+    "authorDate": "2026-07-23T16:14:24+02:00",
+    "subject": "[FIXED] Detect stream/consumer recreate after meta snapshot",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_3_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d7c6adf570cebe8bed774cd8b661b5e629139c2e",
+    "authorDate": "2026-07-21T08:14:21-07:00",
+    "subject": "[FIXED] MQTT: QoS2 message released on a resumed session lost its QoS and retain flag",
+    "body": "Two root causes. The delivery callbacks and the retain handling read the\npublishing connection's c.mqtt.pp — the last PUBLISH parsed — which is\nstale for a PUBREL- or will-initiated delivery, so a QoS2 message released\nafter a reconnect was delivered as QoS0 with no packet identifier. And the\nstaged copy in $MQTT_qos2in never persisted the retain flag, so it could\nnot be recovered on another connection at all. Same-connection flows\nworked only while the scratch happened to still hold the right packet.\nBecause of the interplay, the two must be fixed together.\n\nThe delivered message now becomes the client's current publish for the\nduration of the broadcast (swapped into the readLoop-owned c.mqtt.pp,\nrestored by the same defer as the pubargs); wills build their own\nmqttPublish and use the common path instead of writing into the scratch by\nhand. The staged copy\npersists the retain flag in a second, flags byte of the Nmqtt-Pub header\nvalue, restored when the PUBREL rebuilds the publish; older servers read\nonly the first (QoS) byte, and messages without a flags byte read as not\nretained.\n\nRetained QoS2 messages now survive an in-flight reconnect: a PUBLISH\nstaged on one connection and released by the PUBREL on the next stores\nthe retained message, where before the retain bit died with the first\nconnection's parser state. This matches Spec [MQTT-4.3.3] Method A as\nimplemented by mosquitto, which likewise persists the retain flag with the\nstaged message and applies it at release, together with the delivery.\n\nAdded regression tests: a PUBREL on a resumed session delivers at the\nsubscription's QoS exactly once, a retransmitted PUBREL is acknowledged\nwithout redelivering, and the retain flag survives the staging round trip.\n\nSigned-off-by: Lev Brouk <levbrouk@gmail.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/mqtt.go",
+      "server/mqtt_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6ec86e555f138b7d66b0196ca9b643fba6d54750",
+    "authorDate": "2026-07-23T15:54:36+01:00",
+    "subject": "Switch `stree` to use strings for prefixes internally",
+    "body": "Signed-off-by: Neil Twigg <neil@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/stree/leaf.go",
+      "server/stree/node.go",
+      "server/stree/node10.go",
+      "server/stree/node16.go",
+      "server/stree/node4.go",
+      "server/stree/node48.go",
+      "server/stree/parts.go",
+      "server/stree/stree.go",
+      "server/stree/stree_test.go",
+      "server/stree/util.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4ec9e8d85af2c4121b9f75ffda68341c3847adf7",
+    "authorDate": "2026-07-23T10:59:51+01:00",
+    "subject": "[FIXED] Clustered consumer create races stream meta apply (#8410)",
+    "body": "A stream create immediately followed by a consumer create could fail\nwith a `stream not found`. This can happen if the stream leader applies\nand answers the stream creation faster than that the meta layer applies\nit. This PR fixes that by making `clusterStreamConfig` be aware of\ninflight proposals.",
+    "issueRefs": [
+      "#8410"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "bb4c76d08f9718e1088f9067ef00787753937436",
+    "authorDate": "2026-07-23T10:19:47+02:00",
+    "subject": "[FIXED] Clustered consumer create races stream meta apply",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_3_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "591965be0649705bc04a90bf5585d45493ce42de",
+    "authorDate": "2026-07-22T15:51:41+01:00",
+    "subject": "[Fixes] 8396 - Consumer reset across account barriers (#8407)",
+    "body": "### Problem\n\nConsumer RESET responses sent through a service import could be dropped.\nThe service-import response subscription and the response publisher\nshare the exporting account's internal client, whose no-echo setting\nprevented the reply from reaching the importer. This also left\ncross-account durable source setup inactive when it reused an existing\nconsumer.\n\n### Fix\n\nAllow echo replies for import/export on the same server.\nThe may fix other issues with import/export when the responder is an\ninternal service\n\n### Testing\n\ngo test -race ./server -run\n'^TestJetStreamConsumerResetResponseAcrossServiceImport$' -count=3\n\n\n\n\nSigned-off-by: Michael Röschter <michael@roeschter.de>",
+    "issueRefs": [
+      "#8407"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "7ce30f3717ffef4271699131c046112445203118",
+    "authorDate": "2026-07-22T17:53:29+04:00",
+    "subject": "Fixes 8386 - Consumer reset",
+    "body": "The fix is superficially trivial - but lets see if all other tests still pass\n\nSigned-off-by: Michael Röschter <michael@roeschter.de>",
+    "issueRefs": [
+      "Fixes 8386"
+    ],
+    "touchedFiles": [
+      "server/client.go",
+      "server/jetstream_consumer_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b1e8aac606511d0c26e90c5bcdd5036b7447e713",
+    "authorDate": "2026-07-22T13:23:55+01:00",
+    "subject": "[IMPROVED] Preallocate EncodedStreamState encoding buffer (#8405)",
+    "body": "`EncodedStreamState` encoded into a fixed 1KB buffer and grew it by\nappending. For streams with many interior deletes this caused repeated\nbuffer growth and copying, resulting in significant allocation churn.\nThis PR improves that by calculating the total size once and\npreallocating what's needed. This drops the number of required\nallocations, as well as reduces time spent by 1-3x since no time is\nwasted on re-allocating. The encoded content itself is unchanged.\n\nReplaces https://github.com/nats-io/nats_server/pull/8402",
+    "issueRefs": [
+      "#8405"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "cd5750388655b62808f282b79bed5e83856cc9b7",
+    "authorDate": "2026-07-22T11:54:00+01:00",
+    "subject": "[FIXED] Filestore SyncDeleted could skip sparse delete blocks (#8404)",
+    "body": "`pruneDeleteBlock` treated two delete blocks with equal `State()` as\nhaving equal contents. However, it's technically possible for two\n`avl.SequenceSet` to have the same `State()` but not the same contents,\nwhich would make `SyncDeleted` skip deleting messages.",
+    "issueRefs": [
+      "#8404"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9961e967b8a0e82b3bfd7b0da9066384f0aa1337",
+    "authorDate": "2026-07-22T11:12:23+02:00",
+    "subject": "[FIXED] Filestore SyncDeleted could skip sparse delete blocks",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/avl/seqset.go",
+      "server/avl/seqset_test.go",
+      "server/filestore.go",
+      "server/filestore_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f042ce2b51ca7778e48c549fdfe68cb2de5d4010",
+    "authorDate": "2026-07-21T13:46:17+01:00",
+    "subject": "[FIXED] fileStore Compact and StoreMsg race (#8400)",
+    "body": "Compact(x) deletes all messages with sequence less than x. As an\noptimization, if Compact determines that x covers all messages currently\nin the fileStore, then it will call purge() to purge the entire store.\nCompact() would briefly release the filestore lock before purging. So a\nnew entry could sneak in between and then be purged. For instance,\nconcurrent invocations of Compact(10) and StoreMsg() creating sequence\n10, could result in the newly stored message to be purged, violating\nCompact's contract.\n\nAdd method purgeLocked() so that compact() can purge without releasing\nthe filestore lock.",
+    "issueRefs": [
+      "#8400"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "45aff041228f657d263b94ae6f9fe8b84a5b541b",
+    "authorDate": "2026-07-21T13:44:46+01:00",
+    "subject": "[FIXED] Refresh Jetstream limits in /varz after reload (#8394)",
+    "body": "Fixes #8388",
+    "issueRefs": [
+      "#8394",
+      "Fixes #8388"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8fab1b9abe204e64a1dc20a58cb1783edc4be047",
+    "authorDate": "2026-07-21T13:44:04+01:00",
+    "subject": "Skip expired JWT accounts in JetStream healthz scans (#8379)",
+    "body": "## Summary\n- Do not mark `/healthz` unavailable when JetStream account lookup fails\nbecause a JWT account has expired\n- Applies to both single-server store recovery and clustered stream\nassignment health checks\n- Explicit `Account` healthz requests still surface expired-account\nerrors\n- Adds regression coverage in\n`TestJetStreamJWTHealthzIgnoresExpiredAccounts`\n\nFixes #8084\n\n## Test plan\n- [x] `go test ./server -run\nTestJetStreamJWTHealthzIgnoresExpiredAccounts -count=1`\n- [ ] Confirm cluster `/healthz` remains OK when an expired JWT account\nstill has JetStream assets",
+    "issueRefs": [
+      "#8379",
+      "Fixes #8084"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fd3c50a185ec7bba672f006a32aa89a52771a8d9",
+    "authorDate": "2026-07-20T12:18:42+02:00",
+    "subject": "[FIXED] fileStore Compact and StoreMsg race",
+    "body": "Compact(x) deletes all messages with sequence less than x. As an\noptimization, if Compact determines that x covers all messages\ncurrently in the fileStore, then it will call purge() to purge\nthe entire store.\nCompact() would briefly release the filestore lock before purging.\nSo a new entry could sneak in between and then be purged.\nFor instance, concurrent invocations of Compact(10) and StoreMsg()\ncreating sequence 10, could result in the newly stored message to\nbe purged, violating Compact's contract.\n\nAdd method purgeLocked() so that compact() can purge without\nreleasing the filestore lock.\n\nSigned-off-by: Daniele Sciascia <daniele@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore.go",
+      "server/filestore_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "1014443fb75d5a6879ebd5cde940209573fabb7f",
+    "authorDate": "2026-07-17T10:34:11+02:00",
+    "subject": "[FIXED] Missing cache release in firstSeqForSubj/recalculateForSubj",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore.go",
+      "server/filestore_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9bf87a529c43eaef078c777c3d6e5565967e1c69",
+    "authorDate": "2026-07-17T13:45:02+02:00",
+    "subject": "[FIXED] Refresh Jetstream limits in /varz after reload",
+    "body": "Fixes #8388\n\nSigned-off-by: Daniele Sciascia <daniele@nats.io>",
+    "issueRefs": [
+      "Fixes #8388"
+    ],
+    "touchedFiles": [
+      "server/monitor.go",
+      "server/reload_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b78fa1e9ebe138f0249094633612f1c03883f7da",
+    "authorDate": "2026-07-16T14:56:56+01:00",
+    "subject": "Fix stream publish checks to include filestore max message size (#8389)",
+    "body": "This should fix #8386 by rejecting messages that are larger than the\nmaximum filestore permitted size. This is only really a problem when\n`max_payload` has been increased beyond 32MB, which isn't recommended\nanyway.\n\nWe check the max file store size before proposal, otherwise in cluster\nmode we will run into problems when applying AEs.",
+    "issueRefs": [
+      "#8389",
+      "#8386"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dce0b028b523ad11f740800fbca2781eee09cb41",
+    "authorDate": "2026-07-16T11:30:09+01:00",
+    "subject": "Fix stream publish checks to include filestore max message size",
+    "body": "Signed-off-by: Neil Twigg <neil@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore.go",
+      "server/jetstream_batching.go",
+      "server/jetstream_cluster_2_test.go",
+      "server/jetstream_test.go",
+      "server/stream.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a0f553bbcf1977df9be7855950dc71cdda1ae540",
+    "authorDate": "2026-07-15T10:09:18+01:00",
+    "subject": "[FIXED] Reject consumer storage type update (#8382)",
+    "body": "Resolves https://github.com/nats-io/nats_server/issues/8381",
+    "issueRefs": [
+      "#8382"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bcdf50584f2ecc0a8dfddb52cadbf67f2ac3df34",
+    "authorDate": "2026-07-15T10:08:56+01:00",
+    "subject": "Fix filestore not releasing strong cache references correctly (#8380)",
+    "body": "In some cases, we weren't correctly releasing strong filestore block\ncache pointers back to weak status, which meant that the server could\nhold onto them for longer than intended under certain usage patterns.\nThis would push up memory usage and, in the worst case, push up against\nthe GC.",
+    "issueRefs": [
+      "#8380"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "aa59c80df193e38e279f5a15539e64736ce054a2",
+    "authorDate": "2026-07-15T08:58:22+02:00",
+    "subject": "[FIXED] Reject consumer storage type update",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/consumer.go",
+      "server/jetstream_consumer_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "785adbbc1ec526d605395d0fe875c3b3038ce87f",
+    "authorDate": "2026-07-14T19:09:21+01:00",
+    "subject": "Fix filestore not releasing strong cache references correctly",
+    "body": "Signed-off-by: Neil Twigg <neil@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore.go",
+      "server/filestore_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6ba23e6b4d2be88954a9ea70f3ed3c07312b2501",
+    "authorDate": "2026-07-14T10:31:02+01:00",
+    "subject": "(2.14) [FIXED] Filestore MaxMsgsPer enforcement racing concurrent removal (#8378)",
+    "body": "`firstSeqForSubj` and `removeMsgViaLimits` release and re-acquire the\nfilestore lock, so a concurrent removal (`RemoveMsg` or age expiry)\ncould remove the sequence the `MaxMsgsPer` enforcement in `storeRawMsg`\nwas about to evict. The resulting error (`ErrStoreMsgNotFound` or\n`errNoBlkData`) was latched into `fs.werr`, permanently disabling\nwrites.",
+    "issueRefs": [
+      "#8378"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "50b7ef6b469ab7c0e0b73e6ca1b9129e1b61a8e2",
+    "authorDate": "2026-07-14T10:29:52+01:00",
+    "subject": "[FIXED] Atomic batch expected subject ownership (#8377)",
+    "body": "Closes #8376",
+    "issueRefs": [
+      "#8377",
+      "Closes #8376"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7c3c03e3a0aba1e51640656b68ca107f5a556165",
+    "authorDate": "2026-07-14T10:36:00+05:45",
+    "subject": "Skip expired JWT accounts in JetStream healthz scans.",
+    "body": "Expired accounts are not a JetStream health problem and were causing\n/healthz to return 503 for otherwise healthy servers. Fixes #8084.\n\nSigned-off-by: Mahan Sigdel <sigdelmb123@gmail.com>\nCo-authored-by: Cursor <cursoragent@cursor.com>",
+    "issueRefs": [
+      "Fixes #8084"
+    ],
+    "touchedFiles": [
+      "server/jetstream_jwt_test.go",
+      "server/monitor.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "685d468199ce4a9ddf13dd6d019253c65c9ff199",
+    "authorDate": "2026-07-13T15:10:39+02:00",
+    "subject": "(2.14) [FIXED] Filestore MaxMsgsPer enforcement racing concurrent removal",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore.go",
+      "server/filestore_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "39a478eecce6e2238fa0f35b418def274c7b36ec",
+    "authorDate": "2026-07-13T12:13:25-04:00",
+    "subject": "[FIXED] Atomic batch expected subject ownership",
+    "body": "Signed-off-by: Oliver Lambson <oliverlambson@gmail.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_batching.go",
+      "server/jetstream_batching_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e4cbe181adec4e08339a4854203197d0fa5f2413",
+    "authorDate": "2026-07-10T14:32:21+01:00",
+    "subject": "(2.15) [FIXED] Consumer remapping on retention change (#8371)",
+    "body": "- The consumer's config was aliased, which is now copied before updating\nthe replicas. (And the reason why `TestJetStreamLimitsToInterestPolicy`\nstarted flaking)\n- When changing retention from limits to interest, the consumers should\nbe remapped first before the retention changes.\n- Remove the consumer assignments retention check block since it depends\non a stream leader existing, and was also a data race since the JS lock\nwas not held while iterating `mset.sa.consumers`.\n\nWhen the desired meta approach PRs land for 2.15 we can make retention\nchanges and consumer remapping a lot smoother. We could then even\nsupport changing between all retention policies safely, but all of that\nis future work.",
+    "issueRefs": [
+      "#8371"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "6fa64eee0501742d24fa9615f06516ba48d1bee2",
+    "authorDate": "2026-07-10T14:27:03+01:00",
+    "subject": "[FIXED] Batch apply state data race (#8369)",
+    "body": "There was a data race on accessing `batch.id` without holding the lock.\nInstead moved `batchApply` out of `mset` so it requires no locks to be\nheld.\n\n```\n=== RUN   TestJetStreamAtomicBatchPublishCleanup/Disable\n==================\nWARNING: DATA RACE\nWrite at 0x00c000c779a8 by goroutine 25560:\n  github.com/nats-io/nats_server/v2/server.(*batchApply).clearBatchStateLocked()\n      /home/runner/work/nats_server/nats_server/server/jetstream_batching.go:511 +0xd6\n\nPrevious read at 0x00c000c779a8 by goroutine 25707:\n  github.com/nats-io/nats_server/v2/server.(*jetStream).applyStreamEntries()\n      /home/runner/work/nats_server/nats_server/server/jetstream_cluster.go:4548 +0x3b55\n```",
+    "issueRefs": [
+      "#8369"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "b59f32b458d56c85eb938bc20054514cd3e788df",
+    "authorDate": "2026-07-09T21:02:59+02:00",
+    "subject": "(2.15) [FIXED] Data race on consumer assignments retention check",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/stream.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "009f9eb4d1421f1d1ffdce82003ebd16baac01b4",
+    "authorDate": "2026-07-09T20:41:12+02:00",
+    "subject": "(2.15) [FIXED] Scale up consumers first on stream retention change",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster.go",
+      "server/jetstream_test.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "47c484f5a4acf1f30685ed95db57461ea2c47771",
+    "authorDate": "2026-07-09T19:50:27+02:00",
+    "subject": "(2.15) [FIXED] Consumer config aliasing on stream update",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "02b0b6c5caa4a515bdd32fa958f94473e539420e",
+    "authorDate": "2026-07-08T22:10:48+02:00",
+    "subject": "[FIXED] Batch apply state data race",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "locksordering.txt",
+      "server/jetstream_batching.go",
+      "server/jetstream_batching_test.go",
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_3_test.go",
+      "server/jetstream_cluster_4_test.go",
+      "server/stream.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "1be499156d9bc757ea08bd148608b622e38b7514",
+    "authorDate": "2026-07-09T11:00:40+01:00",
+    "subject": "(2.15) [FIXED] Consumer peer set remapping (#8335)",
+    "body": "When a stream's replica count is updated, durable consumers are meant to\nauto scale with them if `num_replicas: 0` was set in the consumer\nconfig. However, the `isAutoScale` variable also included named\nephemeral consumers in this auto scaling, whereas they aren't supposed\nto do that. They'd still converge to the allowed replica count based on\nthe consumer migration code, but this PR fixes that by not needlessly\nscaling up these consumers for them to then be migrated back down, which\nresults in noticeable churn.\n\nAdditionally, this PR refactors the 3 consumer peer set remap paths into\na single reusable method. Marked as 2.15 for the time being, since I'll\nwant to get rid of the `sysRequest` separately, since it requires an\nunsafe JS release and re-acquire.",
+    "issueRefs": [
+      "#8335"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3a75a2bb84de7eb837d16a339db93726c93cca17",
+    "authorDate": "2026-07-08T14:04:56+01:00",
+    "subject": "[FIXED] MQTT: Pending QoS 1/2 deliveries leak when a subscription is downgraded to QoS 0 (#8359)",
+    "body": "Re-subscribing an existing QoS 1/2 filter at QoS 0 deletes the filter's\nJS consumer in processJSConsumer, but unlike mqttProcessUnsubs it did\nnot purge the consumer's entries from sess.cpending /\nsess.pendingPublish. Any message that had a packet identifier assigned\nbut was never acknowledged (e.g. the client disconnected mid-flight)\nthen leaks: no consumer remains to redeliver it, so no PUBACK/PUBCOMP\never arrives, and the identifier permanently counts against the\nsession's in-flight cap (effectiveMaxAck). Over a long-lived session\ndoing repeated QoS 2/1 -> QoS 0 -> QoS 2/1 re-subscribes the budget\nerodes until QoS 1/2 delivery stalls.\n\nPurge cpending and the associated pendingPublish entries on the QoS 0\ndowngrade path too. deleteConsumer is asynchronous, so on both teardown\npaths (downgrade and unsubscribe) an in-flight delivery callback could\ncall trackPublish and repopulate the maps after the purge. Guard against\nthat with a new mqttSub.closed flag, set under sess.mu and sess.subsMu\n(the delivery-field discipline) in the same critical section as the\npurge; mqttDeliverMsgCbQoS12 checks it and skips re-tracking. The flag\nleaves sub.mqtt valid so a delivery already past the guard can still\ncomplete its enqueue (which dereferences sub.mqtt) without panicking.",
+    "issueRefs": [
+      "#8359"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "e12b8abaa142bb09d86549f11b13636ee1568b7d",
+    "authorDate": "2026-07-02T13:45:29+02:00",
+    "subject": "mqtt: stop tracking and purge pending deliveries when a QoS 1/2 consumer is removed",
+    "body": "Re-subscribing an existing QoS 1/2 filter at QoS 0 deletes the filter's JS\nconsumer in processJSConsumer, but unlike mqttProcessUnsubs it did not purge\nthe consumer's entries from sess.cpending / sess.pendingPublish. Any message\nthat had a packet identifier assigned but was never acknowledged (e.g. the\nclient disconnected mid-flight) then leaks: no consumer remains to redeliver\nit, so no PUBACK/PUBCOMP ever arrives, and the identifier permanently counts\nagainst the session's in-flight cap (effectiveMaxAck). Over a long-lived\nsession doing repeated QoS 2/1 -> QoS 0 -> QoS 2/1 re-subscribes the budget\nerodes until QoS 1/2 delivery stalls.\n\nPurge cpending and the associated pendingPublish entries on the QoS 0 downgrade\npath too. deleteConsumer is asynchronous, so on both teardown paths (downgrade\nand unsubscribe) an in-flight delivery callback could call trackPublish and\nrepopulate the maps after the purge. Guard against that with a new\nmqttSub.closed flag, set under sess.mu and sess.subsMu (the delivery-field\ndiscipline) in the same critical section as the purge; mqttDeliverMsgCbQoS12\nchecks it and skips re-tracking. The flag leaves sub.mqtt valid so a delivery\nalready past the guard can still complete its enqueue (which dereferences\nsub.mqtt) without panicking.\n\nIn-flight retained QoS deliveries leaked the same way on both teardown paths:\ntrackPublishRetained put their packet identifiers only in pendingPublish (its\ncomment claimed a cpending entry that was never written), so the durable-keyed\npurge could not find them, and with no JS consumer they are never redelivered.\nTrack them in cpending under a per-subscription pseudo-durable key\n(mqttRetainedPendingDur, with the PI as the sequence) and purge that key\nalongside the consumer's on downgrade and unsubscribe; acks already clean both\nmaps via untrackPublish.\n\nSigned-off-by: Nico Berlee <nico.berlee@on2it.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/mqtt.go",
+      "server/mqtt_test.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "574bee772a66dcd5899b0d539f1b36656612623e",
+    "authorDate": "2026-07-08T11:56:25+01:00",
+    "subject": "[FIXED] Block encryption key file was not synced (#8366)",
+    "body": "Can be applied cleanly on the 2.14 line, but will need a custom backport\nfor 2.12 since it doesn't have the additional error handling.",
+    "issueRefs": [
+      "#8366"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0d5bb5e5129b9992f41905374a5d597bffb581a6",
+    "authorDate": "2026-07-08T10:53:22+02:00",
+    "subject": "[FIXED] Block encryption key file was not synced",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore.go",
+      "server/filestore_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "00c8df07b3afb2fe04493689924c379068b1b468",
+    "authorDate": "2026-07-08T10:04:37+01:00",
+    "subject": "(2.14) [FIXED] Failed recovery with truncated block key file (#8365)",
+    "body": "An unsynced and truncated block key file would result in `encryption bad\nkey size` preventing the filestore from starting. This PR reverts to the\neffective 2.12 and below behavior of removing the block file, while\nstill handling the error, since without the key the data can't be\nrecovered. This allows for recovery through catchup from the leader, but\nis not fully correct and should be replaced by a peer-based recovery\nmethod in the future.",
+    "issueRefs": [
+      "#8365"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "be176ed84b701055707dedfca67ecbef41374c0e",
+    "authorDate": "2026-07-08T09:51:39+01:00",
+    "subject": "[FIXED] MQTT: Reuse of QoS 1/2 packet identifiers within a delivery burst (#8358)",
+    "body": "bumpPI assigns QoS 1/2 packet identifiers by scanning from sess.last_pi.\nuntrackPublish (on PUBACK/PUBCOMP) and the unsubscribe cleanup reset\nlast_pi to 0 whenever pendingPublish became empty, restarting numbering\nfrom 1. During a burst of QoS 1 deliveries where the client's PUBACKs\ninterleave between deliveries, pendingPublish momentarily empties, so a\njust-freed identifier is reused within the same burst. Clients and the\n3.1.1 conformance suite (MQTT-2.3.1-4, MQTT-4.6.0-4) treat that as a\nduplicate / reused-before-ack packet identifier.\n\nKeep last_pi as a monotonic rolling counter (bumpPI already wraps at\n0xFFFF and skips in-use identifiers) and reset it only in sess.clear(),\nso a discarded/reused session does not inherit the previous session's\nidentifiers either. Spec [MQTT-2.3.1-4], [MQTT-3.1.2-6].",
+    "issueRefs": [
+      "#8358"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fbeb92f91f11add6e48f1cdd387e9f20bbc2defc",
+    "authorDate": "2026-07-08T09:10:17+02:00",
+    "subject": "(2.14) [FIXED] Failed recovery with truncated block key file",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore.go",
+      "server/jetstream_cluster_2_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b17055db9a57915206687db7da192b90d6d713e1",
+    "authorDate": "2026-07-06T16:48:39+02:00",
+    "subject": "(2.15) [FIXED] Consumer peer set remapping on peer addition",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_1_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "42a23fd36e714eea993b12a860d176dcaf3e1604",
+    "authorDate": "2026-07-06T16:12:51+02:00",
+    "subject": "(2.15) [FIXED] Consumer peer set remapping on peer removal",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_1_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0a6cc9e061a63b36628afb1744bdefab176f25f5",
+    "authorDate": "2026-07-06T12:44:14+01:00",
+    "subject": "reject oversized message length in decodeStreamMsg (#8357)",
+    "body": "panic: runtime error: slice bounds out of range [:-1]\n        decodeStreamMsg  server/jetstream_cluster.go  (buf[:ml])\n\n`ml` is `int(le.Uint32(buf))`. On the 386/arm targets `int` is 32 bits,\nso a length with the high bit set reads back negative and `len(buf) <\nml` compares a positive against a negative, which is false. Decode falls\nthrough to `buf[:ml]` and panics. The decoder sits behind\n`applyStreamMsgOp` and `processCatchupMsg`, so one malformed\n`streamMsgOp` entry from a peer crashes a 32-bit follower's\napply/catchup goroutine.\n\nBefore: a negative `ml` slips past the guard on 32-bit; a large positive\n`ml` was already rejected.\nAfter: `ml < 0` is rejected next to the existing `len(buf) < ml`, so the\nbound holds on every arch.\n\n64-bit builds see no behavior change, since `int(uint32)` is never\nnegative there. The cost is one comparison on the decode path.",
+    "issueRefs": [
+      "#8357"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "11a678271284208b2446cb8c9101cbbd4ac82ae9",
+    "authorDate": "2026-07-06T11:00:23+01:00",
+    "subject": "(2.14) [FIXED] Stale response received for mirror/source create retry (#8356)",
+    "body": "The mirror/source recreation path used the same reply subject and\nsubscription. Since many servers might have returned error responses, we\nneed to recreate the reply subject and subscription to not receive stale\nerror responses.",
+    "issueRefs": [
+      "#8356"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "be46036268951dbd4c81b773c37d6011dabb8038",
+    "authorDate": "2026-07-06T10:59:27+01:00",
+    "subject": "bound node count in avl seqset decode to buffer length (#8355)",
+    "body": "decodev2 and decodev1 in server/avl/seqset.go read the node count as a\nuint32 into an int, then size-check the buffer with `expectedLen =\nminLen + nn*perNode`. On the shipped 386 and arm targets an int is 32\nbits, so a node count above MaxInt32 goes negative and the multiply\noverflows, and the length check then passes for a short buffer. The set\nis peer-supplied: a replicated stream state carries an avl-encoded\ndelete map, so `DecodeStreamState` calls `avl.Decode` on bytes from\nanother server, and a 32-bit follower panics in `make([]node, nn)` with\na negative length or reads past the buffer.\n\nBefore, the count feeds a multiply that can wrap before the comparison.\nAfter, the same bound is checked with division, `nn >\n(len(buf)-minLen)/perNode`, plus an explicit `nn < 0` reject, neither of\nwhich can overflow at any int width. Valid input decodes exactly as\nbefore, and keeping the guard in the decoder covers every caller\n(store.go, filestore.go) instead of each one re-checking. 64-bit builds\nwere already safe here, so the only behavioral change is that the 32-bit\ntargets reject the malformed count instead of crashing.",
+    "issueRefs": [
+      "#8355"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "e5943df84d32f537295f1ff44062ea6832abeb3d",
+    "authorDate": "2026-07-06T10:02:02+02:00",
+    "subject": "(2.14) [FIXED] Stale response received for mirror/source create retry",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_test.go",
+      "server/stream.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dd0f12d479de19df97e3c6275ab087f8e3b91891",
+    "authorDate": "2026-07-02T13:19:50+01:00",
+    "subject": "Fix a race in TestNRGTruncateWALRevertsUncommittedRemovePeer (#8349)",
+    "body": "Same for TestNRGTruncateWALRevertsUncommittedAddPeer.",
+    "issueRefs": [
+      "#8349"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "c01e7ecfea2f1a2fdf273caeb1dfa79c8b662b3e",
+    "authorDate": "2026-07-02T13:38:04+02:00",
+    "subject": "Fix a race in TestNRGTruncateWALRevertsUncommittedRemovePeer",
+    "body": "Same for TestNRGTruncateWALRevertsUncommittedAddPeer.\n\nSigned-off-by: Daniele Sciascia <daniele@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/raft_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "78e246e27897aa7f4339648ca90b7931947fa7e6",
+    "authorDate": "2026-06-02T16:19:41+02:00",
+    "subject": "Add BenchmarkFileStoreConsumerStoreConcurrentDiskIO",
+    "body": "Add a benchmark based on TestNoRaceJetStreamConsumerFileStoreConcurrentDiskIO,\nthe test that accompanied the introduction of the disk IO semaphore \"dios\".\nThe benchmark keeps the same workload of creating many consumer stores\n(bumped from 1000 to 10000) and concurrently updating, writing, and deleting\ntheir state.\nThe benchmark measures the difference between using default sized dios and a\nlarge enough dios to make the workload unbounded.\n\nSigned-off-by: Daniele Sciascia <daniele@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "822c56d17de931b56da507ab0895a21cb5f62eb0",
+    "authorDate": "2026-07-01T12:44:38+01:00",
+    "subject": "reject malformed replicated skip and reset consumer updates (#8345)",
+    "body": "applyConsumerEntries reads the sequence for the updateSkipOp and\nresetSeqOp consumer ops with a fixed-width le.Uint64 straight off the\nentry buffer, without checking there are 8 bytes after the op byte. A\nreplicated entry from a peer whose data is the op byte plus fewer than 8\nbytes makes le.Uint64(buf[1:]) / le.Uint64(buf[1:9]) run off the end and\npanic the apply goroutine. The neighboring updateDeliveredOp and\nupdateAcksOp already decode through\ndecodeDeliveredUpdate/decodeAckUpdate, which reject short buffers; these\ntwo ops were the outliers.\n\nBefore: the two ops indexed the buffer directly and crashed on a\ntruncated entry. After: they go through\ndecodeSkipUpdate/decodeResetUpdate, which return an error for anything\nunder 8 bytes, so a malformed entry is rejected the same way the sibling\nops already are. Keeping the read behind a helper matches the existing\nconsumer-op decoders and puts the length check in one place; the\ntradeoff is two more small functions instead of an inline guard, which\nreads better sitting next to the ack and delivered decoders.",
+    "issueRefs": [
+      "#8345"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "c8433b577ed7b2f33e50a8337097a07760ae1ea6",
+    "authorDate": "2026-07-01T09:30:45+02:00",
+    "subject": "NRG: Add membership partition regression tests",
+    "body": "Add test for two cases fixed in 2f60ea8fea08c270979da90682a33768c558fa95,\nby making sure that when a peer is added or removed from the membership,\nthe cluster size and quorum are updated at the same time.\nPreviously, followers would first add peers when receiving the EntryAddPeer\nand adjust the cluster size only after the entry was committed.\n\nSigned-off-by: Daniele Sciascia <daniele@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/raft_helpers_test.go",
+      "server/raft_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8605d4ee81ced4e8e0ebe5897f77a11f6c9f87bf",
+    "authorDate": "2026-06-29T16:59:05+01:00",
+    "subject": "Fix `TestMQTTParsePub`",
+    "body": "The test case was broken and was removed from the releases.\n\nSigned-off-by: Neil Twigg <neil@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/mqtt_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f04c3b437855ac0fef483a657317f2cbb6deed49",
+    "authorDate": "2026-06-18T12:02:47+02:00",
+    "subject": "[FIXED] JetStream remote usage update panic on length integer overflow",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream.go",
+      "server/jetstream_test.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "c75576eb66660e1b9f66eb76fbc2bb15f5c930ee",
+    "authorDate": "2026-06-18T10:59:49+02:00",
+    "subject": "[FIXED] Connz/Subsz pagination panic on Offset+Limit integer overflow",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/monitor.go",
+      "server/monitor_test.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "8f5013bf5c4cf30a6e4c68997f4222e42f3450d7",
+    "authorDate": "2026-06-18T09:28:23+02:00",
+    "subject": "[FIXED] MQTT subscribe deny not enforced on retained/QoS replay paths",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/mqtt.go",
+      "server/mqtt_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dc6827ade90ca3d000033d66769ceb9ae6a3ac84",
+    "authorDate": "2026-06-18T08:54:11+02:00",
+    "subject": "[FIXED] WebSocket /mqtt upgrade panics when MQTT is disabled",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/websocket.go",
+      "server/websocket_test.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "44414a5989f4692870bf51b7a60d349e3cbd4bb0",
+    "authorDate": "2026-06-17T13:18:06+02:00",
+    "subject": "[FIXED] Leaf connections bypass Nats-Trace-Dest publish permission check",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/msgtrace.go",
+      "server/msgtrace_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "4c7fa22efc570399311f9fcd2ce59cf5ba567623",
+    "authorDate": "2026-06-17T12:36:02+02:00",
+    "subject": "[FIXED] Block MQTT subscribe to internal $MQTT.deliver.pubrel subjects",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/mqtt.go",
+      "server/mqtt_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "46d982dff6f79e223584ea4054bf71cda77e4420",
+    "authorDate": "2026-06-17T12:22:16+02:00",
+    "subject": "[FIXED] NoAuthUser checks connection restrictions",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/parser.go",
+      "server/parser_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "778a0c6c7d8866f953974eb561ebbab255f960a3",
+    "authorDate": "2026-06-16T16:27:30+02:00",
+    "subject": "[FIXED] MQTT PUBLISH remaining-length underflow leads to process panic",
+    "body": "MQTT PUBLISH parsing could compute a negative payload size, when the\npacket declared a wrong remaining length. Reject those malformed\npackets.\n\nSigned-off-by: Daniele Sciascia <daniele@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/mqtt.go",
+      "server/mqtt_test.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "54b75d5128845b7cdb123ca0a1e719b38874e5b9",
+    "authorDate": "2026-06-12T09:16:08+02:00",
+    "subject": "[FIXED] MQTT partial CONNECT packets can exhaust pre-auth memory",
+    "body": "Reject MQTT packet whose length exceeds the client max payload\nbefore buffering incomplete packets.\n\nThis prevents unauthenticated clients from advertising a large\nCONNECT packet, sending most of it, and having the server keep\nlarge partial packets in memory, until the authentication timeout.\n\nSigned-off-by: Daniele Sciascia <daniele@nats.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/mqtt.go",
+      "server/mqtt_test.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "7296a41e1bd13311816e1f80d57adc2128b03603",
+    "authorDate": "2026-06-12T14:45:28+02:00",
+    "subject": "[FIXED] Data race on shared closed client detailed CONNZ",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/monitor.go",
+      "server/monitor_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "d6cc7cfe10025d8b676e07997f89ff761bba5c46",
+    "authorDate": "2026-06-10T16:37:25+02:00",
+    "subject": "[FIXED] Data race traversing deleted-message map in SyncDeleted",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore.go",
+      "server/filestore_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "f026e39efa84ee79d438c3cf6684a047b4a78d54",
+    "authorDate": "2026-06-10T16:31:44+02:00",
+    "subject": "[FIXED] Data race on last snapshot time in monitorCluster",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "dce71c1d9ed512d177c2518a4bbf1f7d234f913e",
+    "authorDate": "2026-06-10T16:29:17+02:00",
+    "subject": "[FIXED] Data race reading raft term in processAppendEntryResponse",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/raft.go",
+      "server/raft_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "d1deacb070483e3a3d02b9f7ab5c97b9a80e2bf5",
+    "authorDate": "2026-06-10T16:26:29+02:00",
+    "subject": "[FIXED] Route confirmation wait never ran during cluster pool reload",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/reload.go",
+      "server/reload_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "01fb2cba1eb7c533f22b5ea666624ceda4cc112c",
+    "authorDate": "2026-06-10T16:19:00+02:00",
+    "subject": "[FIXED] Data race on message block TTL/schedule counters in storeRawMsg",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore.go",
+      "server/filestore_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "7b28b4a3184c23248a72e8b979519c8ff237ca1d",
+    "authorDate": "2026-06-10T16:17:00+02:00",
+    "subject": "[FIXED] Data races on sync-always flags in file store UpdateConfig",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/filestore.go",
+      "server/filestore_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "5e154e0eff1eea3b3bf91041effda854ff90e811",
+    "authorDate": "2026-06-10T16:11:20+02:00",
+    "subject": "[FIXED] Data race reading another stream's subjects in overlap check",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_test.go",
+      "server/stream.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "3b1a7873c7014fb83ec0549787f3379de991d9ea",
+    "authorDate": "2026-06-10T16:10:01+02:00",
+    "subject": "[FIXED] Data race mutating stream config without config lock",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_test.go",
+      "server/stream.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "b40cb088e3ef7253c06aa44b3260a1691b9236eb",
+    "authorDate": "2026-06-10T15:56:09+02:00",
+    "subject": "[FIXED] Data race reading client account in CONNZ filter",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/client.go",
+      "server/monitor.go",
+      "server/monitor_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "ebe4664870b5b11228006e790e610bce6d87d11f",
+    "authorDate": "2026-06-10T15:54:27+02:00",
+    "subject": "[FIXED] Data race reading service import fields in sendTrackingLatency",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/accounts.go",
+      "server/accounts_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "cbada1b0ced121e652ab445f2d44caa34e44563e",
+    "authorDate": "2026-06-10T15:51:05+02:00",
+    "subject": "[FIXED] Raft WaitGroup leak when catchup goroutine fails to launch",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/raft.go",
+      "server/raft_test.go"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "e694ba9dc84d36f8abd4957730ee3ba950f01416",
+    "authorDate": "2026-06-10T15:45:16+02:00",
+    "subject": "[FIXED] Data race clearing account JetStream reference on account removal",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/accounts.go",
+      "server/accounts_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "a84aff66789ec9c3d01892de0e8c34e6a196b058",
+    "authorDate": "2026-06-10T15:42:58+02:00",
+    "subject": "[FIXED] Data race on client max payload when applying scoped signing-key limits",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/client.go",
+      "server/client_test.go",
+      "server/consumer.go",
+      "server/jetstream_consumer_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "37e90a8e80b2c0a888f1f1a55556fdfba708f007",
+    "authorDate": "2026-06-10T15:36:34+02:00",
+    "subject": "[FIXED] Forced STATSZ broadcast suppressed by rate limiter",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/events.go",
+      "server/events_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ed80193bba78e81855b27c8278688a46853529a5",
+    "authorDate": "2026-06-10T15:35:47+02:00",
+    "subject": "[FIXED] Direct consumers misreported in JSZ account detail",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/monitor.go",
+      "server/monitor_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1063794433a80092ef47ce2d0613c6b5b777de5f",
+    "authorDate": "2026-06-10T15:32:35+02:00",
+    "subject": "[FIXED] Invalid priority-group pull request both rejected and served",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/consumer.go",
+      "server/jetstream_consumer_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "843a9da44a8baefa7423223073242542bcaabc92",
+    "authorDate": "2026-06-10T10:52:45+02:00",
+    "subject": "[FIXED] Re-requested raft catchup stalled by deleting its new progress queue",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/raft.go",
+      "server/raft_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "36e45913105e4bd4fc6b4433e95648e8a01fc540",
+    "authorDate": "2026-06-10T10:52:11+02:00",
+    "subject": "[FIXED] Data race reading JetStream limits during account claims update",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/accounts.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "fc1841047589b9465e7fb81ca10d5c30e7b5cf87",
+    "authorDate": "2026-06-10T10:51:21+02:00",
+    "subject": "[FIXED] Stale first sequence after memory store compact of fully deleted range",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/memstore.go",
+      "server/store_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6b0bc3dc64558cfd6e65841c48bb99fa80693088",
+    "authorDate": "2026-06-10T09:50:44+02:00",
+    "subject": "[FIXED] Read lock leak in healthz consumer check when stream is missing",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_cluster.go",
+      "server/jetstream_cluster_1_test.go"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "cfe5fa0dd96be3791de421f4995d0b6558639b2f",
+    "authorDate": "2026-06-10T09:45:11+02:00",
+    "subject": "[FIXED] Data race reading account default permissions during authentication",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/accounts.go",
+      "server/accounts_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "968c8ed4d65eb57e35f09ea3b969577ba1056333",
+    "authorDate": "2026-06-10T09:41:54+02:00",
+    "subject": "[FIXED] Data race removing all service import subs under read lock",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/accounts.go",
+      "server/accounts_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "fcd42316d5ac87f90244e832deedc63da593c116",
+    "authorDate": "2026-06-10T09:35:48+02:00",
+    "subject": "[FIXED] Data race on Varz between request and config reload",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/monitor_test.go",
+      "server/reload.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "a14271902f07a8d355fa26f716730819c86d0564",
+    "authorDate": "2026-06-10T09:22:01+02:00",
+    "subject": "[FIXED] Wrong stream import invalidated when activation expiration finds no match",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/accounts.go",
+      "server/accounts_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ca898ffcf95be444a2d5045e895737ead2a67596",
+    "authorDate": "2026-06-10T16:27:48+02:00",
+    "subject": "[FIXED] Panic applying catchup marker buffered into atomic batch",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_batching_test.go",
+      "server/jetstream_cluster.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "9238ef51adb45aa949855d2dc279abf09cbd509f",
+    "authorDate": "2026-06-10T15:45:54+02:00",
+    "subject": "[FIXED] Nil deref on service import latency in remoteLatencyUpdate",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/events.go",
+      "server/events_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d1709531f227ce3ec229ccfe7b45823f7c9af5aa",
+    "authorDate": "2026-06-10T15:44:12+02:00",
+    "subject": "[FIXED] Concurrent map access in healthz consumer check",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/jetstream_test.go",
+      "server/monitor.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "41ed410a0ca4c654bec216e10b62906126678800",
+    "authorDate": "2026-06-10T15:41:52+02:00",
+    "subject": "[FIXED] Concurrent map access of signing keys in applyAccountLimits",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/client.go",
+      "server/client_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "98f93576a2d574d0d5d353e97ecef27556e41dd3",
+    "authorDate": "2026-06-10T15:38:40+02:00",
+    "subject": "[FIXED] Nil deref on consumer's stream after unlock",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/consumer.go",
+      "server/jetstream_consumer_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "54e6bf27489c2577bf20fbc9cd77be97de0f0074",
+    "authorDate": "2026-06-10T15:31:26+02:00",
+    "subject": "[FIXED] MQTT panic on publish with oversized topic length",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/mqtt.go",
+      "server/mqtt_test.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "9b4c3b077eb1c983c4d23587e9b301ebf88de8bb",
+    "authorDate": "2026-06-10T10:51:43+02:00",
+    "subject": "[FIXED] Nil deref tracking latency when requestor client is cleared",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/accounts.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ba7f0897421154823cfac99a6c9597b6aa148a05",
+    "authorDate": "2026-06-10T10:50:29+02:00",
+    "subject": "[FIXED] Concurrent map access of consumers during stream update",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/stream.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0dae68f9e8f6c1d59567634eb16a98ea3e9c3cca",
+    "authorDate": "2026-06-10T09:38:36+02:00",
+    "subject": "[FIXED] Nil deref on malformed append entry response",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/raft.go",
+      "server/raft_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "698c76e9192dd9672585f63c5bef0a77bd722757",
+    "authorDate": "2026-06-10T09:31:33+02:00",
+    "subject": "[FIXED] Send on closed resetCh panic during shutdown",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/events.go",
+      "server/events_test.go",
+      "server/reload.go",
+      "server/server.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "83a7c3e3e655663662d7e9d2fede6a5c3e41a376",
+    "authorDate": "2026-06-10T09:25:30+02:00",
+    "subject": "[FIXED] Concurrent map access validating auth callout signing key",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/auth_callout.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "68a3a1647168c53c1a19c4b2f91e38c59d28abe4",
+    "authorDate": "2026-06-10T09:19:31+02:00",
+    "subject": "[FIXED] Panic in pinned-client on pull request without priority group",
+    "body": "Signed-off-by: Maurice van Veen <github@mauricevanveen.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/consumer.go",
+      "server/jetstream_consumer_test.go"
+    ],
+    "fixCategory": "crash"
+  }
+]

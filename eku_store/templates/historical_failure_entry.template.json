@@ -1,0 +1,13 @@
+{
+  "$comment": "Template for adding a historical postmortem failure to eku_store/evidence/historical_failures.json",
+  "id": "HIST-<REPO>-<001>",
+  "repo": "repo-name",
+  "title": "Short descriptive title of the bug / race condition / leak",
+  "commitHash": "40-character-git-fix-commit-sha",
+  "originalAssumption": "Flawed design assumption that caused the vulnerability under stress.",
+  "triggeringCondition": "Specific operational or environmental trigger (e.g. clock drift, unhandled SIGKILL, storage saturation).",
+  "observedFailure": "Symptom or catastrophic failure mode observed in production or testing.",
+  "failureMechanism": "Detailed breakdown of the root cause mechanism.",
+  "preventionContract": "Mandatory invariant required to prevent recurrence.",
+  "regressionTest": "TestName in relative/path/to/test_file.ext"
+}

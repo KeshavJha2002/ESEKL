@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hardened Hidden Key Scoring Rubric Schema",
+  "description": "Schema for defining empirical hidden keys with required semantic facets, failure triggers, and validation shapes.",
+  "type": "object",
+  "required": [
+    "suiteId",
+    "suiteTitle",
+    "description",
+    "dimensions",
+    "hiddenKeys"
+  ],
+  "properties": {
+    "suiteId": {
+      "type": "string"
+    },
+    "suiteTitle": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "dimensions": {
+      "type": "object",
+      "required": [
+        "evidence_recall_weight",
+        "contract_coverage_weight",
+        "failure_scenario_weight",
+        "validation_test_weight",
+        "counterexample_weight"
+      ],
+      "properties": {
+        "evidence_recall_weight": { "type": "number" },
+        "contract_coverage_weight": { "type": "number" },
+        "failure_scenario_weight": { "type": "number" },
+        "validation_test_weight": { "type": "number" },
+        "counterexample_weight": { "type": "number" }
+      }
+    },
+    "hiddenKeys": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "description",
+          "acceptable_phrasings",
+          "must_include_contract_terms",
+          "must_include_failure_trigger",
+          "must_include_validation_shape",
+          "weight"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^KEY-[0-9]{3}$"
+          },
+          "description": {
+            "type": "string"
+          },
+          "acceptable_phrasings": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "required_evidence_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "must_include_contract_terms": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "must_include_failure_trigger": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "must_include_validation_shape": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "disallowed_generic_matches": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "business_contract_expected": {
+            "type": "string"
+          },
+          "failure_scenario_expected": {
+            "type": "string"
+          },
+          "validation_test_expected": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

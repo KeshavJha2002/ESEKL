@@ -1,0 +1,3 @@
+# ESEKL Validation & Benchmark Dependencies
+# Pinned to known-good version supporting Draft-07 and Draft-2020-12 schemas without transitive drift
+jsonschema==4.23.0

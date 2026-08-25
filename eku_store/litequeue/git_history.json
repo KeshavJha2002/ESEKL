@@ -1,0 +1,236 @@
+[
+  {
+    "commitHash": "8084787353ef75b958b182548d0f4be842b86627",
+    "authorDate": "2026-07-20T22:59:25+02:00",
+    "subject": "better version checks",
+    "body": "closes https://github.com/litements/litequeue/issues/25",
+    "issueRefs": [],
+    "touchedFiles": [
+      "readme.md",
+      "src/litequeue/__init__.py",
+      "tests/test_litequeue.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8bde1654598f2ce61d3fc349f5408092b2acf35c",
+    "authorDate": "2026-07-20T17:05:24+02:00",
+    "subject": "fix",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "benchmark.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6322d765a0a98c417843d54497dc3ff7f6a2b675",
+    "authorDate": "2026-07-20T11:21:25+02:00",
+    "subject": "Merge branch 'ag/fix-uuidv7'",
+    "body": "# Conflicts:\n#\tsrc/litequeue/__init__.py\n#\ttests/test_litequeue.py",
+    "issueRefs": [],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1543fc0084b0d8f17d809fb9e8c765a824e7c067",
+    "authorDate": "2026-07-20T10:24:11+02:00",
+    "subject": "Merge branch 'ag/fix-litequeue-review-backlog'",
+    "body": "# Conflicts:\n#\tsrc/litequeue/__init__.py\n#\ttests/test_litequeue.py",
+    "issueRefs": [],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8b9f388057535e6b03b225b2f858d990bdb9ca4c",
+    "authorDate": "2026-07-20T10:19:38+02:00",
+    "subject": "maxsize reopen fix and validation",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "readme.md",
+      "src/litequeue/__init__.py",
+      "tests/test_litequeue.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "14dd632ec71a02c204f32a4381bbd5b1d8d794d9",
+    "authorDate": "2026-07-20T10:16:31+02:00",
+    "subject": "fix potential SQL injection",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/litequeue/__init__.py",
+      "tests/test_litequeue.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "14c0dd14be2f75c90dd69f244127278118fc7792",
+    "authorDate": "2024-08-08T23:20:39+02:00",
+    "subject": "Merge pull request #15 from grzegorz-aniol/fix/custom-queue-name",
+    "body": "Fix for supporting custom queue table name",
+    "issueRefs": [
+      "#15"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "897ddda8e1e5538bd84c63c70cd47aae8b98bb84",
+    "authorDate": "2024-08-08T22:38:03+02:00",
+    "subject": "Fix for supporting custom queue table name",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "litequeue.py",
+      "test.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "325375861212c206d1c868d2c6bd0171e40482d7",
+    "authorDate": "2024-07-16T09:57:10+02:00",
+    "subject": "Merge pull request #14 from ifduyue/patch-1",
+    "body": "Fix typo in uuid7 function",
+    "issueRefs": [
+      "#14"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8be93ee39327c3936fa4852e0f659023596e752c",
+    "authorDate": "2024-07-16T15:47:08+08:00",
+    "subject": "Fix typo in uuid7 function",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "litequeue.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "52051977575f9fa6c7c3b5f17513b26a3e549abf",
+    "authorDate": "2024-03-11T22:34:20+01:00",
+    "subject": "update fixture names",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "test.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4a85f264568a755dfae4746fce37b870eadfbb61",
+    "authorDate": "2023-09-25T13:28:12+02:00",
+    "subject": "fix type hint",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "litequeue.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2839dd331d407244fce58d70ba47be28f1b364cd",
+    "authorDate": "2023-09-25T13:19:09+02:00",
+    "subject": "Merge pull request #8 from nische/main",
+    "body": "Bugfix in retry (assert x ) & add some simple features",
+    "issueRefs": [
+      "#8"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0cae294a20e3b57770d18fd1fcd6f04e37ad2f6c",
+    "authorDate": "2023-07-18T12:45:08+02:00",
+    "subject": "fix bug enum repr change in new python versions",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "litequeue.py",
+      "test.py"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "7cb80a829267c7b0cc76b0f6161ad00b5b102169",
+    "authorDate": "2023-02-12T23:22:59+01:00",
+    "subject": "fix upload command",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "Makefile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bf06a31250a2acf31f6f6b7e4a0e59f7707c9745",
+    "authorDate": "2023-02-12T23:14:14+01:00",
+    "subject": "fix",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "litequeue.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f6ef6fd2fcb911e7fd7305e3a9977c8808499391",
+    "authorDate": "2023-02-12T23:08:40+01:00",
+    "subject": "Fix",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "litequeue.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "94457dac8e80b7d8957fe3698306f484a0fe5088",
+    "authorDate": "2023-02-12T23:05:44+01:00",
+    "subject": "Fix",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "litequeue.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2ae13cc5348841e6b759dbfffc053d401c990ff5",
+    "authorDate": "2023-02-12T23:01:47+01:00",
+    "subject": "Fix",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "litequeue.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "36f3e61dcb193686acee532172f4c48c1a425808",
+    "authorDate": "2023-02-12T22:47:51+01:00",
+    "subject": "fix",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "test.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3eda9d9882cf14436751cab26b22e814399beca1",
+    "authorDate": "2021-02-09T16:32:05+01:00",
+    "subject": "fix type signatures",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "litequeue.py"
+    ],
+    "fixCategory": "other"
+  }
+]

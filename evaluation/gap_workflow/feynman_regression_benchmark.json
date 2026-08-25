@@ -1,0 +1,90 @@
+{
+  "$schema": "../scorers/hidden_key.schema.json",
+  "suiteId": "BENCHMARK-FEYNMAN-REGRESSION",
+  "suiteTitle": "Feynman-to-Galileo Gap Regression Benchmark",
+  "description": "Regression benchmark validating that future ESEKL updates preserve early recall of all seven critical failure modes surfaced in the initial Feynman audit.",
+  "dimensions": {
+    "evidence_recall_weight": 0.40,
+    "contract_coverage_weight": 0.25,
+    "failure_scenario_weight": 0.20,
+    "validation_test_weight": 0.10,
+    "counterexample_weight": 0.05
+  },
+  "passThresholds": {
+    "minCompositeScore": 6.5,
+    "minRecalledKeys": 5,
+    "requireCounterexamples": true
+  },
+  "hiddenKeys": [
+    {
+      "id": "KEY-001",
+      "description": "Fenced domain result promotion and transactional outbox emission.",
+      "acceptable_phrasings": ["fenced domain", "outbox", "result promotion", "token fencing", "generation token"],
+      "required_evidence_ids": ["CLM-015", "OBS-BULLMQ-002", "OBS-LITEQUEUE-002", "OBS-RIVER-006"],
+      "must_include_contract_terms": ["generation", "token", "fence", "outbox", "promotion"],
+      "must_include_failure_trigger": ["pause", "gc", "stale", "superseded", "zombie"],
+      "must_include_validation_shape": ["0 rows", "reject", "rollback"],
+      "weight": 1.0
+    },
+    {
+      "id": "KEY-002",
+      "description": "River state-only finalization edge condition.",
+      "acceptable_phrasings": ["state-only", "state = 'running'", "river", "unfenced completion"],
+      "required_evidence_ids": ["OBS-RIVER-006", "HIST-RIVER-003"],
+      "must_include_contract_terms": ["state", "running", "token", "finalization"],
+      "must_include_failure_trigger": ["cancellation", "lease expired", "slow worker"],
+      "must_include_validation_shape": ["execute without renewer", "verify completion sql"],
+      "weight": 1.0
+    },
+    {
+      "id": "KEY-003",
+      "description": "Authoritative storage-time recovery vs caller-supplied 'now' timestamp.",
+      "acceptable_phrasings": ["caller-supplied", "now()", "storage-side time", "clock drift", "ntp skew"],
+      "required_evidence_ids": ["CLM-016", "OBS-PGMQ-001", "OBS-RIVER-007"],
+      "must_include_contract_terms": ["storage-side", "clock_timestamp", "server time", "caller-supplied"],
+      "must_include_failure_trigger": ["clock drift", "skew", "ntp", "step clock"],
+      "must_include_validation_shape": ["step vm clock", "recovery schedule unchanged"],
+      "weight": 1.0
+    },
+    {
+      "id": "KEY-004",
+      "description": "Separate tracking of attempts-started vs handled failures vs worker loss.",
+      "acceptable_phrasings": ["attempts-started", "attempts-made", "worker-loss", "stalled counter"],
+      "required_evidence_ids": ["CLM-017", "OBS-BULLMQ-004"],
+      "must_include_contract_terms": ["attempt", "failure", "counter", "claim time"],
+      "must_include_failure_trigger": ["sigkill", "oom", "crash before handler"],
+      "must_include_validation_shape": ["incremented at claim", "counted toward dlq"],
+      "weight": 1.0
+    },
+    {
+      "id": "KEY-005",
+      "description": "Poison payload isolation from repeatable/scheduler stall exemptions.",
+      "acceptable_phrasings": ["repeatable job", "scheduler stall", "stall exemption", "maxStalledCount", "poison payload"],
+      "required_evidence_ids": ["CLM-018", "OBS-BULLMQ-005"],
+      "must_include_contract_terms": ["repeatable", "scheduler", "exemption", "dlq", "poison"],
+      "must_include_failure_trigger": ["corrupt payload", "infinite loop", "unparseable"],
+      "must_include_validation_shape": ["bypass exemption", "route to dlq"],
+      "weight": 1.0
+    },
+    {
+      "id": "KEY-006",
+      "description": "Bounded admission waiters and explicit storage stall rejection.",
+      "acceptable_phrasings": ["admission waiter", "waiter queue", "memory semaphore", "fast failure", "SYSTEM_BUSY"],
+      "required_evidence_ids": ["CLM-019", "OBS-REDPANDA-003", "OBS-ROCKETMQ-002"],
+      "must_include_contract_terms": ["waiter", "semaphore", "fast failure", "rejection", "bounded"],
+      "must_include_failure_trigger": ["io stall", "disk freeze", "lock duration"],
+      "must_include_validation_shape": ["reject overflow", "no memory leak", "system_busy"],
+      "weight": 1.0
+    },
+    {
+      "id": "KEY-007",
+      "description": "Decoupled worker-drain and broker-socket shutdown contracts.",
+      "acceptable_phrasings": ["worker-drain", "broker-socket", "renewer lifetime", "socket close deadline", "lame duck"],
+      "required_evidence_ids": ["CLM-020", "OBS-NATS-002", "OBS-RIVER-005", "HIST-NSQ-001"],
+      "must_include_contract_terms": ["renewer", "socket", "drain", "deadline", "shutdown"],
+      "must_include_failure_trigger": ["sigterm", "rolling restart", "slow client"],
+      "must_include_validation_shape": ["socket closes within", "worker drains within", "renewer stops"],
+      "weight": 1.0
+    }
+  ]
+}

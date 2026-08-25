@@ -1,0 +1,25 @@
+{
+  "$schema": "./gap_audit.schema.json",
+  "auditId": "GAP-YYYY-MM-DD-short-slug",
+  "sourceRun": "2026-08-23-example-run",
+  "auditedAt": "2026-08-23T10:00:00.000Z",
+  "rawAccessCondition": "Raw Repositories",
+  "eseklAccessCondition": "ESEKL MCP",
+  "summary": "High-level summary of the gap audit findings and proposed patches.",
+  "gaps": [
+    {
+      "id": "GAP-ITEM-001",
+      "benchmarkCase": "CASE-001: Zombie Worker Fencing",
+      "rawDiscovery": "Description of the concrete mechanism or failure surfaced by the raw repo agent.",
+      "wasPresentInEseklResponse": false,
+      "gapType": "MISSING_OBSERVATION",
+      "rootCause": "Why ESEKL missed it (e.g. premature abstraction compression, missing source extraction).",
+      "requiredPatch": "Description of the observation/claim/historical failure patch needed.",
+      "patchedObservationIds": ["OBS-REPO-00X"],
+      "patchedClaimIds": ["CLM-0XX"],
+      "patchedHistoricalFailureIds": ["HIST-REPO-00X"],
+      "blindRerunResult": "RESOLVED_EARLY_RETRIEVAL",
+      "promotionDecision": "PROMOTED_TO_PATCH_RELEASE"
+    }
+  ]
+}

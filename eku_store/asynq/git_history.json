@@ -1,0 +1,2099 @@
+[
+  {
+    "commitHash": "d671a4c4271e9a7aed7a3094e162ea3fe4b76c49",
+    "authorDate": "2026-05-14T15:32:15+03:00",
+    "subject": "Merge pull request #1100 from ljluestc/fix/669-sentinel-db-parsing",
+    "body": "fix: parse DB number from redis-sentinel URI path",
+    "issueRefs": [
+      "#1100"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f81d452160ac51dee2f2c1e2c36b7b8066f82f85",
+    "authorDate": "2026-05-14T15:31:49+03:00",
+    "subject": "Merge pull request #1101 from sevico/refactor",
+    "body": "refactor(cli): migrate commands from Run to RunE and fix group error …",
+    "issueRefs": [
+      "#1101"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "23905a286f434e24def17f6d91083f6160bb3e3d",
+    "authorDate": "2026-04-13T13:58:23+03:00",
+    "subject": "Merge pull request #1104 from Bahtya/fix/pubsub-connection-leak",
+    "body": "fix: close pubsub connection on Subscribe error in CancelationPubSub",
+    "issueRefs": [
+      "#1104"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "06a06970d687392f30bc577401c80488cf064994",
+    "authorDate": "2026-04-09T11:35:11-07:00",
+    "subject": "Document atomicity guarantees and fix NOSCRIPT bug in BatchEnqueue",
+    "body": "Add comprehensive doc comments to BatchEnqueueContext, the Broker\ninterface method, and the RDB implementation explaining that the batch\nuses a Redis pipeline (not MULTI/EXEC), so partial success is possible\nand individual Lua scripts are atomic but the batch is not.\n\nFix a bug where Script.Run inside a pipeline only sends EVALSHA without\nthe automatic EVAL fallback that non-pipeline calls get. On a fresh\nRedis (or after SCRIPT FLUSH), this caused NOSCRIPT errors for every\npipeline-batched script invocation. The fix preloads the required Lua\nscripts before building the pipeline.\n\nAlso roll back the in-memory queuesPublished cache when the pipeline\nfails, preventing stale entries from suppressing future SADD calls.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "client.go",
+      "internal/base/base.go",
+      "internal/rdb/rdb.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5586efeae7939e60ff02b7e7caa22e0de8c15685",
+    "authorDate": "2026-04-09T20:11:53+08:00",
+    "subject": "test: add test for CancelationPubSub error path",
+    "body": "Add TestCancelationPubSubReceiveError to verify that when\nReceive() fails in CancelationPubSub(), an error is returned\nand the pubsub connection is not leaked.\n\nThis provides test coverage for the pubsub.Close() fix that\nwas missing in the previous commit.\n\nBahtya",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "dd3c923f4406085d36a8efb7299202a8133e0fd5",
+    "authorDate": "2026-04-09T18:15:48+08:00",
+    "subject": "fix: close pubsub connection on Subscribe error in CancelationPubSub",
+    "body": "When redis.Subscribe succeeds but Receive() fails, the pubsub\nconnection was not being closed before returning the error. This caused\nthe subscriber goroutine to leak a Redis connection on each retry\niteration, eventually exhausting the connection pool.\n\nFixes #1095",
+    "issueRefs": [
+      "Fixes #1095"
+    ],
+    "touchedFiles": [
+      "internal/rdb/rdb.go"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "f81c78e68d0f3210efcbbd682659df100b8e6860",
+    "authorDate": "2026-04-09T10:08:50+03:00",
+    "subject": "Merge pull request #1092 from NilPuig/fix/memory-usage-nil-guard",
+    "body": "Fix nil panic in memoryUsageCmd Lua script",
+    "issueRefs": [
+      "#1092"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "f8d66778140e4ec4466c721b14cab471eadbacf1",
+    "authorDate": "2026-04-05T01:13:41+08:00",
+    "subject": "refactor(cli): migrate commands from Run to RunE and fix group error handling",
+    "body": "Migrate all CLI command handlers from cobra's Run to RunE, replacing\nfmt.Println(err) + os.Exit(1) patterns with idiomatic error returns.\nThis improves testability and lets cobra handle errors consistently\nvia the existing SilenceUsage/SilenceErrors configuration.\n\nAlso refactor getDuration() and getTime() helpers to return errors\ninstead of calling os.Exit(1).\n\nFix a bug in group.go where the error from inspector.Groups() was\nnever checked, causing silent failures (e.g. on Redis connection\nerrors) to be misreported as \"No groups found\".",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tools/asynq/cmd/cron.go",
+      "tools/asynq/cmd/dash.go",
+      "tools/asynq/cmd/group.go",
+      "tools/asynq/cmd/queue.go",
+      "tools/asynq/cmd/root.go",
+      "tools/asynq/cmd/server.go",
+      "tools/asynq/cmd/stats.go",
+      "tools/asynq/cmd/task.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "07898eade0b221f1475cbcc0775e7619f965fce3",
+    "authorDate": "2026-03-21T11:20:52-07:00",
+    "subject": "fix: parse DB number from redis-sentinel URI path (#669)",
+    "body": "Previously, parseRedisSentinelURI ignored the /dbnumber path segment,\nmaking it impossible to connect to any DB other than 0 via sentinel URIs.\n\nThis adds DB extraction from the URI path, consistent with how\nparseRedisURI already handles it for redis:// and rediss:// schemes.\n\nCloses #669",
+    "issueRefs": [
+      "#669",
+      "Closes #669"
+    ],
+    "touchedFiles": [
+      "asynq.go",
+      "asynq_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "71ebcfa129854909f2dbce2619d57f9264d99a11",
+    "authorDate": "2026-02-25T09:06:20-08:00",
+    "subject": "Fix BatchEnqueueContext time comparison and add scheduled task support",
+    "body": "BatchEnqueueContext had a time comparison bug where `now` was captured\nbefore the loop but `processAt` was set to time.Now() inside\ncomposeOptions during each iteration, causing all immediate tasks to be\nincorrectly classified as scheduled and rejected.\n\nFix: move `now` capture inside the loop, after composeOptions.\n\nAdditionally, extend BatchEnqueueContext to support scheduled tasks in\nthe same pipeline. Tasks with a future ProcessAt are now routed to\nscheduleCmd (ZADD to scheduled set) instead of being rejected. Only\nunique and group tasks remain unsupported.\n\nChanges:\n- Add BatchEnqueueItem type pairing TaskMessage with optional ProcessAt\n- Update Broker interface, RDB, and testbroker to use BatchEnqueueItem\n- Route immediate tasks to enqueueCmd, scheduled tasks to scheduleCmd\n- Return correct TaskState (Pending vs Scheduled) in results\n- Add tests for immediate, scheduled, and mixed batch scenarios",
+    "issueRefs": [],
+    "touchedFiles": [
+      "client.go",
+      "client_test.go",
+      "internal/base/base.go",
+      "internal/rdb/rdb.go",
+      "internal/rdb/rdb_test.go",
+      "internal/testbroker/testbroker.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "2fd155e31da91ecbe2d3f3f8475eee485805cd41",
+    "authorDate": "2026-02-07T15:13:58+08:00",
+    "subject": "Fix nil guard for MEMORY USAGE in memoryUsageCmd Lua script",
+    "body": "MEMORY USAGE returns nil for keys that no longer exist (e.g., expired\nor deleted task keys). In Lua, nil is converted to false (a boolean).\nThe script then attempts arithmetic on this boolean value, causing:\n\n  ERR user_script:30: attempt to perform arithmetic on local 'bytes'\n  (a boolean value)\n\nThis breaks the /api/queues endpoint in asynqmon, showing \"Could not\nretrieve queues live data\" in the UI.\n\nThe fix adds nil guards around all three MEMORY USAGE calls on task\nkeys, and a divide-by-zero guard on agg_task_sample_size.\n\nTested in production with Redis 7.2 and asynq v0.25.1 worker.\n\nFixes #728\nRelated to #901",
+    "issueRefs": [
+      "Fixes #728",
+      "#901"
+    ],
+    "touchedFiles": [
+      "internal/rdb/inspect.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d704b68a426d1d3a6c707f9661d29296e1350775",
+    "authorDate": "2026-02-03T09:36:26+03:00",
+    "subject": "Prepare release (docs): v0.26.0 (#1084)",
+    "body": "* pre-release: v0.26.0\n\n* deps upgrades\n* min go version set to 1.24.0\n\n* feat: done add-username-cli (#1083)\n\n* Feature: Add Headers Support to Tasks (#1070)\n\n* feat(task): Add headers support to tasks\n\n* fix: cleanup copy map code\n\n* fix: Add tests\n\n* Add --tls option to dash command (#1073)\n\n* Add --tls option to dash command\n\n* Switch order so it works better when both --tls and --tls_server are set\n\n* docs: update CHANGELOG\n\n---------\n\nCo-authored-by: Artemii Kulikov <91570054+vlle@users.noreply.github.com>\nCo-authored-by: Joe <85931983+joejoe-am@users.noreply.github.com>\nCo-authored-by: Thomas Hansen <th4019@gmail.com>",
+    "issueRefs": [
+      "#1084",
+      "#1083",
+      "#1070",
+      "#1073"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "c4876e7247f5d3d3de5f48809bcc27eed7a3b7a1",
+    "authorDate": "2025-11-04T09:07:59-08:00",
+    "subject": "Feature: Add Headers Support to Tasks (#1070)",
+    "body": "* feat(task): Add headers support to tasks\n\n* fix: cleanup copy map code\n\n* fix: Add tests",
+    "issueRefs": [
+      "#1070"
+    ],
+    "touchedFiles": [
+      "aggregator.go",
+      "asynq.go",
+      "client.go",
+      "client_test.go",
+      "internal/base/base.go",
+      "internal/proto/asynq.pb.go",
+      "internal/proto/asynq.proto",
+      "processor.go",
+      "recoverer.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5de9b1faf04b08d88f09c5304657226910df3158",
+    "authorDate": "2025-11-04T09:07:59-08:00",
+    "subject": "Feature: Add Headers Support to Tasks (#1070)",
+    "body": "* feat(task): Add headers support to tasks\n\n* fix: cleanup copy map code\n\n* fix: Add tests",
+    "issueRefs": [
+      "#1070"
+    ],
+    "touchedFiles": [
+      "aggregator.go",
+      "asynq.go",
+      "client.go",
+      "client_test.go",
+      "internal/base/base.go",
+      "internal/proto/asynq.pb.go",
+      "internal/proto/asynq.proto",
+      "processor.go",
+      "recoverer.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1831a07efe5fb498cd7f62b58cd40b94d9d40fc3",
+    "authorDate": "2025-11-04T18:58:08+03:30",
+    "subject": "fix: correct error message text in ResultWriter.Write (#1054)",
+    "body": "Co-authored-by: amirreza.fahimidero <amirreza.fahimidero@snapp.cab>\nCo-authored-by: Mohamed Sohail <sohailsameja@gmail.com>",
+    "issueRefs": [
+      "#1054"
+    ],
+    "touchedFiles": [
+      "asynq.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ea0c6e93f0f44d2efc171fd82e12845742f3a353",
+    "authorDate": "2025-04-01T17:05:18+11:00",
+    "subject": "chore: fix godoc comment (#1009)",
+    "body": "",
+    "issueRefs": [
+      "#1009"
+    ],
+    "touchedFiles": [
+      "server.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "043dcfbf5663eedf82c86b17274099c6ff62f91c",
+    "authorDate": "2024-12-11T09:05:00+03:00",
+    "subject": "fix: call Stop on all other signals to correctly set the server state for the shutdown procedure to complete successfully (#982)",
+    "body": "* fixes: #979",
+    "issueRefs": [
+      "#982",
+      "#979"
+    ],
+    "touchedFiles": [
+      "signals_unix.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "127fac2e9043249efd2442b4180ba4b9358649b0",
+    "authorDate": "2024-12-06T08:40:04+03:00",
+    "subject": "fix: NewScheduler incorrectly creates underlying Client, closing broker properly (#977)",
+    "body": "* fix: NewScheduler wrongly creates a client whose sharedConnection value is always true\r\n\r\n* This is affecting the PeriodicManager as well as the Scheduler\r\n\r\n* fix: closing the Client also closes the broker\r\n\r\n* The error was also previously unhandled. For shared connections an error will be returned by the broker itself because the sharedConnection bool is also set on the client. This also means we can get rid of the sharedConnection flag on the Scheduler itself and let it work internally.",
+    "issueRefs": [
+      "#977"
+    ],
+    "touchedFiles": [
+      "scheduler.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "80479b528db53a1f507d4c11efaad9abc583e490",
+    "authorDate": "2024-11-13T03:09:59-08:00",
+    "subject": "Include registration error in the log (#657)",
+    "body": "* Include registration error in the log\r\n\r\n* remove chatty debug log\r\n\r\nthis will show in the logs every 5 seconds as debug (not even trace) which leads to a lot of noise",
+    "issueRefs": [
+      "#657"
+    ],
+    "touchedFiles": [
+      "periodic_task_manager.go",
+      "scheduler.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "d2c207fbb8049549c01d5b3880e4fd76e8a2eb18",
+    "authorDate": "2024-11-11T13:25:42+08:00",
+    "subject": "fix: queues map init with size (#673)",
+    "body": "Co-authored-by: yipinhe <yipinhe@tencent.com>",
+    "issueRefs": [
+      "#673"
+    ],
+    "touchedFiles": [
+      "internal/base/base.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4f00f52c1d72a2f4ed3c0c5c642b365ae335905a",
+    "authorDate": "2024-11-07T06:34:28+01:00",
+    "subject": "Add the scheduler option HeartbeatInterval (#956)",
+    "body": "* Add the scheduler option HeartbeatInterval\r\n\r\n* Fix possible premature expiration of scheduler entries",
+    "issueRefs": [
+      "#956"
+    ],
+    "touchedFiles": [
+      "internal/rdb/rdb.go",
+      "scheduler.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fd3eb86d951af40736d2a5fabbd410e152000ac7",
+    "authorDate": "2024-11-01T11:13:57+03:00",
+    "subject": "release: v0.25.0",
+    "body": "* prepare release (docs): v0.25.0\r\n\r\n* docs: add PR 946 to changelog\r\n\r\n* docs: update issue templates, add releatively stable update\r\n\r\n* Ths project should be considered relatively stable because we haven't broken the API in over 2 years.\r\n\r\n* docs: add Redis Cluster compatibility caveat",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".github/ISSUE_TEMPLATE/bug_report.md",
+      ".github/ISSUE_TEMPLATE/feature_request.md",
+      "CHANGELOG.md",
+      "readme.md",
+      "internal/base/base.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "ef0d32965fcf8414085fa1ab5deb95b1e2c6ecc2",
+    "authorDate": "2024-10-29T08:45:33+03:00",
+    "subject": "Merge pull request #945 from Shopify/fix-test-default-port",
+    "body": "Update tests to use the configured Redis address",
+    "issueRefs": [
+      "#945"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "03f4799712c56c66f392c124da702ab32b5d0702",
+    "authorDate": "2024-10-26T07:48:12+02:00",
+    "subject": "Run golangci-lint in CI (#927)",
+    "body": "* Setup golangci-lint in CI and local-dev\r\n\r\n* Fix linting error or locally disable linter",
+    "issueRefs": [
+      "#927"
+    ],
+    "touchedFiles": [
+      ".github/workflows/build.yml",
+      "Makefile",
+      "benchmark_test.go",
+      "client.go",
+      "client_test.go",
+      "heartbeat.go",
+      "internal/base/base.go",
+      "internal/rdb/rdb_test.go",
+      "periodic_task_manager.go",
+      "processor_test.go",
+      "scheduler.go",
+      "server_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f4b56498f283193217d1ffa8d63edb46fcbf3a01",
+    "authorDate": "2024-10-19T10:07:17+03:00",
+    "subject": "docs: small fix on semantics",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ff7ef48463f5b508e917502600bbdcdaf7ff6f1d",
+    "authorDate": "2024-10-19T14:45:18+08:00",
+    "subject": "fix: possible inconsistent scores between ProcessIn and ProcessAt (#876)",
+    "body": "",
+    "issueRefs": [
+      "#876"
+    ],
+    "touchedFiles": [
+      "client_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0dc670d7d8551321de3ca574441670e86e8b5dd1",
+    "authorDate": "2024-10-19T01:18:09-05:00",
+    "subject": "Archived tasks that are trimmed from the set are deleted (#743)",
+    "body": "* fixed trimmed archive tasks not being deleted.\r\n\r\n* improved test case.\r\n\r\n* changed ZRANGEBYSCORE to ZRANGE with BYSCORE option.\r\n\r\n---------\r\n\r\nCo-authored-by: Harrison <harrison@Harrisons-MacBook-Pro.local>\r\nCo-authored-by: Harrison Miller <harrison.miller@MBP-Harrison-Miller-M2.local>",
+    "issueRefs": [
+      "#743"
+    ],
+    "touchedFiles": [
+      "internal/rdb/rdb.go",
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "2b632b93d5d57a9302ad82a4b028830daa030c73",
+    "authorDate": "2024-04-23T00:56:52+08:00",
+    "subject": "chore: fix function names in comment (pull request #860 from camcui/master)",
+    "body": "chore: fix function names in comment",
+    "issueRefs": [
+      "#860"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b35b559d400c9a6ab92c3df9a8864a2ff0e187db",
+    "authorDate": "2024-04-12T13:54:08+08:00",
+    "subject": "chore: fix function names in comment",
+    "body": "Signed-off-by: camcui <cuishua@sina.cn>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go",
+      "tools/asynq/cmd/root.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8df0bfa5834b2e33380ad244925df2fcab1467a9",
+    "authorDate": "2024-03-15T13:32:19+08:00",
+    "subject": "Merge pull request #843 from mrusme/fix-bsd",
+    "body": "Fix go:build for BSD",
+    "issueRefs": [
+      "#843"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b25d10b61d545dcfa98efdecd946f84889e40319",
+    "authorDate": "2024-03-14T20:26:33+05:00",
+    "subject": "Fixed go:build for BSD",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "signals_unix.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "38f7499b715bf84eb8cb00f340036f09ae7d8f6b",
+    "authorDate": "2024-02-23T00:17:12-06:00",
+    "subject": "fix(typo): delete-all to deleteall (#827)",
+    "body": "* typo: delete-all to deleteall\r\n\r\n* docs: update tools/asynq/readme.md\r\n\r\n* fix archiveall runall\r\n\r\n---------\r\n\r\nCo-authored-by: Mohamed Sohail <sohailsameja@gmail.com>",
+    "issueRefs": [
+      "#827"
+    ],
+    "touchedFiles": [
+      "tools/asynq/readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0a73fc6201cc94cca2687972ddffefebfbdae07a",
+    "authorDate": "2024-01-29T10:37:18+03:00",
+    "subject": "Bump go.uber.org/goleak from 1.1.12 to 1.3.0 (#770)",
+    "body": "Bumps [go.uber.org/goleak](https://github.com/uber-go/goleak) from 1.1.12 to 1.3.0.\r\n- [Release notes](https://github.com/uber-go/goleak/releases)\r\n- [Changelog](https://github.com/uber-go/goleak/blob/master/CHANGELOG.md)\r\n- [Commits](https://github.com/uber-go/goleak/compare/v1.1.12...v1.3.0)\r\n\r\n---\r\nupdated-dependencies:\r\n- dependency-name: go.uber.org/goleak\r\n  dependency-type: direct:production\r\n  update-type: version-update:semver-minor\r\n...\r\n\r\nSigned-off-by: dependabot[bot] <support@github.com>\r\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#770"
+    ],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "1e0bf88bf33dab71f326dc9912783c5de2e699d2",
+    "authorDate": "2023-08-01T18:37:35+08:00",
+    "subject": "fix: listLeaseExpiredCmd doesn't ignore possibly empty value of task in lua script",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d0041c55a37579b3f5fab5ada00157555082c1ce",
+    "authorDate": "2023-07-30T15:50:55+08:00",
+    "subject": "fix(274): ignore empty data to append to msgs",
+    "body": "fix issue 274",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1ec90810dbb02cc2ca8be541a3c2f590bd34b978",
+    "authorDate": "2023-12-07T11:14:35+03:00",
+    "subject": "chore: Update redis to v9 in x/go.mod (#795)",
+    "body": "Squashed commit of the following:\n\ncommit 6e3656db222a3f9347ee4806ef065a1b9b01a214\nAuthor: Mohammed Sohail <sohailsameja@gmail.com>\nDate:   Thu Dec 7 11:12:41 2023 +0300\n\n    pkg(x): go version update -> 1.20\n\ncommit 2931df37081ff64abcd8a647014925ad2b9461eb\nAuthor: Amaury <1293565+amaury1729@users.noreply.github.com>\nDate:   Wed Dec 6 17:47:03 2023 +0100\n\n    fix tests\n\ncommit 11227804cbfc71a01af1c06782210ccfd560ed5d\nAuthor: Amaury <1293565+amaury1729@users.noreply.github.com>\nDate:   Wed Dec 6 16:40:32 2023 +0100\n\n    chore: Update redis to v9 in x/go.mod",
+    "issueRefs": [
+      "#795"
+    ],
+    "touchedFiles": [
+      "x/go.mod",
+      "x/go.sum",
+      "x/rate/semaphore.go",
+      "x/rate/semaphore_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6ed70adf3be95f17164c2da2cfb8d17f15a28c59",
+    "authorDate": "2023-04-08T08:10:57+00:00",
+    "subject": "fix: breaking build below go < 1.18",
+    "body": "* see https://github.com/redis/go-redis/pull/2458 for more info",
+    "issueRefs": [],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8b057b8767602728efbf5ff93a0cfc5dc72b7119",
+    "authorDate": "2023-03-31T07:26:59+00:00",
+    "subject": "tests: restore ignore goleak.IgnoreTopFunction",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server_test.go"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "c72bfef0942f6fd71142ec803c020324a538b2e9",
+    "authorDate": "2023-03-22T10:11:14+07:00",
+    "subject": "fix unit test",
+    "body": "Signed-off-by: Mohammed Sohail <sohailsameja@gmail.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "inspector_test.go",
+      "internal/rdb/inspect_test.go",
+      "internal/rdb/rdb_test.go",
+      "internal/testutil/testutil.go",
+      "x/rate/semaphore_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cc777ebdaa62b69bd6e985fa97117b854e7d1cd6",
+    "authorDate": "2023-01-05T15:23:05+08:00",
+    "subject": "fix some typos",
+    "body": "Signed-off-by: cui fliter <imcusg@gmail.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "readme.md",
+      "heartbeat_test.go",
+      "internal/rdb/rdb.go",
+      "internal/testutil/testutil.go",
+      "recoverer.go",
+      "tools/asynq/cmd/dash/draw.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bafed907e98d78a123297eab1dcb422529cfecad",
+    "authorDate": "2023-01-02T13:17:18-08:00",
+    "subject": "Fix redis script error",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0b8cfad7034159dadccf95e56b96305c0d2a4f7a",
+    "authorDate": "2022-12-18T20:27:02-08:00",
+    "subject": "(cli:fix) Read --cluster flag from config file",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tools/asynq/cmd/root.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c08f142b5666b5983db9bd84764b7917b953d3a2",
+    "authorDate": "2022-09-09T10:27:02+08:00",
+    "subject": "fix redis sentinel url parse",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "asynq.go",
+      "asynq_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c70ff6a335eed05735427567e8e9549745f43204",
+    "authorDate": "2022-06-27T04:10:06+08:00",
+    "subject": "fix a missing ticker.stop()",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "scheduler.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a04ba6411dde1487afd79da42ec7651b8e2aa373",
+    "authorDate": "2022-06-22T20:57:11-07:00",
+    "subject": "Fix dash command flags",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tools/asynq/cmd/dash.go",
+      "tools/asynq/cmd/dash/dash.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "30d409371b71a866c2e9e2d213b35e4cd071b123",
+    "authorDate": "2022-05-17T11:14:15+07:00",
+    "subject": "Fix comment typos",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "asynq.go",
+      "context.go",
+      "inspector.go",
+      "internal/base/base.go",
+      "internal/context/context.go",
+      "internal/errors/errors.go",
+      "scheduler.go",
+      "server.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "aefd27614685358efd37f337f6d743c8ff063029",
+    "authorDate": "2022-05-08T19:17:22+02:00",
+    "subject": "Upgrade goleak version",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum",
+      "server_test.go"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "c438339c3d0fd7bd18e25acf442fd65797cfab81",
+    "authorDate": "2022-04-12T06:22:42-07:00",
+    "subject": "Fix date in changelog",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "CHANGELOG.md"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "bc271266701370d698ea4d233e0b32c6f459b5d0",
+    "authorDate": "2022-03-26T14:33:03-07:00",
+    "subject": "Fix memory usage lua script",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/inspect.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0cfa7f47baed2855df3ba24ce6dc9adaa857f2e5",
+    "authorDate": "2022-03-23T16:21:45-07:00",
+    "subject": "Fix memory_usage lua script",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/inspect.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "47af17cfb4f1e02a2ee6c6113b5e2f891a733c16",
+    "authorDate": "2022-03-16T16:31:19-07:00",
+    "subject": "Fix RDB.CurrentStats to report the correct queue size",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/inspect.go",
+      "internal/rdb/inspect_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "eb064c2bab2e2f226be72becc244ae8df1c8d311",
+    "authorDate": "2022-03-15T17:03:09-07:00",
+    "subject": "Fix AggregationCheck with unlimited size to clear group name from all-groups set",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go",
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e63f41fb24fd3ada433cc7bb204ca66869366db6",
+    "authorDate": "2022-03-11T15:54:47-08:00",
+    "subject": "Fix DeleteAggregationSet",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go",
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "562506c7baf6c196b3beb049a7a406071ec2a4ad",
+    "authorDate": "2022-03-10T15:59:58-08:00",
+    "subject": "Fix client to return error when nil task is passed",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "client.go",
+      "client_test.go",
+      "internal/testbroker/testbroker.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4b35eb0e1a276185c8c481d462dfba1469f212bd",
+    "authorDate": "2022-03-10T11:54:47-08:00",
+    "subject": "Fix RDB.AggregationCheck when run against an empty group",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go",
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4542b52da8048495dad500ca9a8d9c5fd1c8bc96",
+    "authorDate": "2022-03-09T06:01:37-08:00",
+    "subject": "Check for aggregation at an interval <= gracePeriod",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "aggregator.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "7e5efb0e307054984277cb2b0802d3cec7af4a3e",
+    "authorDate": "2022-02-20T05:40:09-08:00",
+    "subject": "Drop GT option from RDB.ExtendLease",
+    "body": "GT option in ZAdd is supported for redis v6.2.0 or above.\nThis Change fixes redis version compatibility (currently v4.0+)",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go",
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "cabf8d36273ced35d2df62cde4001b43ab7748bd",
+    "authorDate": "2022-02-19T06:21:56-08:00",
+    "subject": "Fix changelog",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "CHANGELOG.md"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "ec560afb0167e146f763d1d2e7fbed4884f9eeb6",
+    "authorDate": "2022-02-16T20:42:08-08:00",
+    "subject": "Fix processor test",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "processor_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "59927509d8550a4fb7ce819222c24681c8a572e6",
+    "authorDate": "2022-02-16T06:17:08-08:00",
+    "subject": "Remove timeout and deadline fields under task key",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go",
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "5490d2c6257a86600ea5b198b97b27e6e0ab076f",
+    "authorDate": "2022-02-16T06:51:09-08:00",
+    "subject": "Fix tests",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/context/context_test.go",
+      "processor_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "25832e5e952cea0256c047650efe3826e6464f60",
+    "authorDate": "2022-01-12T09:10:56-08:00",
+    "subject": "Fix bug related to concurrently executing server state changes",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "heartbeat.go",
+      "heartbeat_test.go",
+      "internal/base/base.go",
+      "internal/base/base_test.go",
+      "scheduler.go",
+      "server.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "aa26f3819ede4887846e235733b92f4e685c2af2",
+    "authorDate": "2022-01-05T09:07:42-08:00",
+    "subject": "Fix flaky tests",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "inspector_test.go",
+      "internal/rdb/inspect.go",
+      "internal/rdb/inspect_test.go",
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c1f08106da7cb29eb5663979ab753a6d58483e48",
+    "authorDate": "2021-12-27T14:40:10+01:00",
+    "subject": "fix: missing import statement in example code",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8dfabfccb3be1bfa4847480b7605749b4cdac463",
+    "authorDate": "2021-12-19T07:06:37-08:00",
+    "subject": "Fix build",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ddfc6747a1613df48e6b8d0660e642557157a3de",
+    "authorDate": "2021-12-13T15:39:42-03:00",
+    "subject": "Fix typo in Server doc",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "531d1ef0894b5d247204c0d5d738d441853a1208",
+    "authorDate": "2021-11-09T15:43:04-08:00",
+    "subject": "Fix godoc around errors returned from Inspector",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "inspector.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4638405cbdb39574eab9fc9c07c0f7d750dcb75e",
+    "authorDate": "2021-09-12T16:56:22-07:00",
+    "subject": "Fix flaky test",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3ae0e7f528fa89acddd25fe551792adbfdf359e5",
+    "authorDate": "2021-08-28T02:17:03+04:30",
+    "subject": "Fix readme",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "73f930313cef4434c7a62f54bece8051788fa89c",
+    "authorDate": "2021-07-29T11:20:51-03:00",
+    "subject": "Fixes links",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bff2a05d592b8918bfec7c76c4a6664154fb5310",
+    "authorDate": "2021-07-18T09:24:57-07:00",
+    "subject": "Fix examples in readme",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ff6768f9bb44c92ad8f7c523fb80a98d24f0571e",
+    "authorDate": "2021-07-04T06:20:36-07:00",
+    "subject": "Fix recoverer to run task recovering logic every minute",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "recoverer.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "27baf6de0d5acded5df964919237649407cac266",
+    "authorDate": "2021-06-14T12:31:09-07:00",
+    "subject": "Fix error in readme",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1bd0bee1e5b85705a00886c5b0fcf07829f711bf",
+    "authorDate": "2021-06-14T12:20:44-07:00",
+    "subject": "Fix CLI build",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tools/asynq/cmd/task.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e01c6379c8c26c2d115fd94583121f9342491fd6",
+    "authorDate": "2021-06-13T15:03:46-07:00",
+    "subject": "Fix lua script for redis-cluster mode",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/inspect.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "68dd6d9a9d156f819ec4a4703c8d5a966811b499",
+    "authorDate": "2021-06-09T06:06:43-07:00",
+    "subject": "(fix): Clear unique lock when task is deleted via Inspector",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/asynqtest/asynqtest.go",
+      "internal/base/base.go",
+      "internal/rdb/inspect.go",
+      "internal/rdb/inspect_test.go",
+      "internal/rdb/rdb.go",
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6cce31a134bc951c3ff8a4a425f34a1233712d27",
+    "authorDate": "2021-06-03T06:58:07-07:00",
+    "subject": "Fix recoverer test",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/asynqtest/asynqtest.go",
+      "internal/rdb/rdb_test.go",
+      "processor_test.go",
+      "recoverer_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "385323b6794cc4652e7b2d01f3913662019979d1",
+    "authorDate": "2021-05-23T20:46:22-07:00",
+    "subject": "Minor fix in queue command",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "inspector.go",
+      "tools/asynq/cmd/queue.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "77604af265f0907b286f98f9426b068012b1b432",
+    "authorDate": "2021-05-23T11:19:29-07:00",
+    "subject": "Fix asynq CLI build",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tools/asynq/cmd/cron.go",
+      "tools/asynq/cmd/migrate.go",
+      "tools/asynq/cmd/queue.go",
+      "tools/asynq/cmd/root.go",
+      "tools/asynq/cmd/task.go",
+      "tools/go.mod",
+      "tools/go.sum"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "68839dc9d361ee805299a53bada7a48b92a65c00",
+    "authorDate": "2021-05-22T17:46:23-07:00",
+    "subject": "Fix lua scripts for redis cluster",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/inspect.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b9c2572203dbb8252c2a6724b539546f55e3df4b",
+    "authorDate": "2021-03-12T16:23:08-08:00",
+    "subject": "Refactor redis keys and store messages in protobuf",
+    "body": "Changes:\n- Task messages are stored under \"asynq:{<qname>}:t:<task_id>\" key in redis, value is a HASH type and message are stored under \"msg\" key in the hash. The hash also stores \"deadline\", \"timeout\".\n- Redis LIST and ZSET stores task message IDs\n- Task messages are serialized using protocol buffer",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/inspect.go",
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "1812d05d21cb45c3f110faf16080fce5a829059c",
+    "authorDate": "2021-05-10T21:19:57-07:00",
+    "subject": "Fix build",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "client.go",
+      "inspeq/inspector.go",
+      "inspeq/inspector_test.go",
+      "processor.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8117ce89720529865e75365ac3ea093a7e62f6bc",
+    "authorDate": "2021-05-09T19:20:54-07:00",
+    "subject": "Minor fixes",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/base/base.go",
+      "internal/rdb/rdb.go",
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7af3981929d1289fb2ce189db817a46b09177292",
+    "authorDate": "2021-03-12T16:23:08-08:00",
+    "subject": "Refactor redis keys and store messages in protobuf",
+    "body": "Changes:\n- Task messages are stored under \"asynq:{<qname>}:t:<task_id>\" key in redis, value is a HASH type and message are stored under \"msg\" key in the hash. The hash also stores \"deadline\", \"timeout\".\n- Redis LIST and ZSET stores task message IDs\n- Task messages are serialized using protocol buffer",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".gitignore",
+      "CHANGELOG.md",
+      "Makefile",
+      "readme.md",
+      "client_test.go",
+      "forwarder.go",
+      "forwarder_test.go",
+      "go.mod",
+      "go.sum",
+      "inspeq/inspector.go",
+      "inspeq/inspector_test.go",
+      "internal/asynqtest/asynqtest.go",
+      "internal/base/base.go",
+      "internal/base/base_test.go",
+      "internal/proto/asynq.pb.go",
+      "internal/proto/asynq.proto",
+      "internal/rdb/benchmark_test.go",
+      "internal/rdb/inspect.go",
+      "internal/rdb/inspect_test.go",
+      "internal/rdb/rdb.go",
+      "internal/rdb/rdb_test.go",
+      "internal/testbroker/testbroker.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "544c301a8b2db02bf311e3588495fbc30ef5df38",
+    "authorDate": "2021-04-04T12:49:19-07:00",
+    "subject": "Fix bug in RDB.memoryUsage",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/inspect.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "901105a8d7c3b38a28e453a95921636c96ccad6d",
+    "authorDate": "2021-03-24T16:44:33-07:00",
+    "subject": "Add dial, read, write timeout options to RedisConnOpt",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "asynq.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "aa936466b34294f9464a4beb872266b8636e1818",
+    "authorDate": "2021-03-05T14:28:22-08:00",
+    "subject": "Minor fix",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "asynq.go",
+      "server_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8eafa03ca7f277cdd855b6f659832196f2d02961",
+    "authorDate": "2021-01-28T19:37:17-08:00",
+    "subject": "Fix doc indentation",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "inspeq/doc.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "430b01c9aa98489fb40287650613e8531483dbb6",
+    "authorDate": "2021-01-28T19:27:58-08:00",
+    "subject": "Fix CLI build",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tools/asynq/cmd/cron.go",
+      "tools/asynq/cmd/queue.go",
+      "tools/asynq/cmd/root.go",
+      "tools/asynq/cmd/task.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6529a1e0b1289d01f13229f450a5a0904e162a2c",
+    "authorDate": "2021-01-25T22:32:37-08:00",
+    "subject": "Fix scheduler",
+    "body": "* Delete scheduler history data when scheduler stops\r\n\r\n* Fix history trimming bug",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/inspect_test.go",
+      "internal/rdb/rdb.go",
+      "scheduler.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d331ff055daa22529ff1e3b8fe8ea6272827b824",
+    "authorDate": "2021-01-14T06:26:01-08:00",
+    "subject": "Minor doc fixes",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "CHANGELOG.md",
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "196d66f2211cacf43053bfaeba4bd59bc26b59e8",
+    "authorDate": "2020-12-26T14:35:25-08:00",
+    "subject": "Fix ListSchedulerEnqueueEvents to list recent events first",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/inspect.go",
+      "internal/rdb/inspect_test.go",
+      "tools/asynq/cmd/cron.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dfdf530a24f5d85108e4ab3446568ebd377733f0",
+    "authorDate": "2020-11-28T11:57:33-08:00",
+    "subject": "Fix cron history command usage string",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tools/asynq/cmd/cron.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8f9d5a33523783e0f636e26f0b51937e3163fcbe",
+    "authorDate": "2021-01-14T00:44:01+01:00",
+    "subject": "When a scheduler enqueues a task, log to DEBUG, not INFO. Fixes #223.",
+    "body": "",
+    "issueRefs": [
+      "Fixes #223"
+    ],
+    "touchedFiles": [
+      "scheduler.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c4dc993241ba15d3daf8ef124e06393ab6338d7f",
+    "authorDate": "2020-12-20T23:09:51+09:00",
+    "subject": "fix: resolve go vet lint",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "inspector.go",
+      "inspector_test.go",
+      "internal/base/base_test.go",
+      "internal/rdb/inspect.go",
+      "internal/rdb/inspect_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "37dfd746d432ad15fb9f0652ed1cf6c10d57a461",
+    "authorDate": "2020-12-17T23:05:16+09:00",
+    "subject": "fix: syntax error in readme example",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8d6e4167abbcb435334c7a156457e1a1f832980e",
+    "authorDate": "2020-11-25T06:11:00-08:00",
+    "subject": "Fix a typo in readme",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dcd873fa2a85c5930861065aeed9b0837ca6a4bc",
+    "authorDate": "2020-11-22T11:50:57-08:00",
+    "subject": "fix: Wait for specified time duration before shutdown",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "CHANGELOG.md",
+      "processor.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8312515e6457bc5aa92ce905a8c2b36257fb043e",
+    "authorDate": "2020-10-10T06:46:47-07:00",
+    "subject": "Update Option interface",
+    "body": "- Added `String()`, `Type()`, and `Value()` methods to the interface to\n  aid with debugging and error handling.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "CHANGELOG.md",
+      "client.go",
+      "internal/base/base.go",
+      "scheduler.go",
+      "scheduler_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a2d4ead98906003e88618d74a5223406ec161f87",
+    "authorDate": "2020-09-14T21:45:30-07:00",
+    "subject": "Fix comments in Config",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "eb739a0258dee74ceaad6729a17be9cdb5270ad9",
+    "authorDate": "2020-09-01T05:25:08-07:00",
+    "subject": "Fix flaky test",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "heartbeat_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "572eb338d53217b4d38ca575bb228c17096435df",
+    "authorDate": "2020-08-28T06:04:17-07:00",
+    "subject": "Fix flaky ProcessorRetry test",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/asynqtest/asynqtest.go",
+      "processor_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ee1afd12f5d9e9bfa5cc5ba4790abc022c26759f",
+    "authorDate": "2020-08-28T05:37:40-07:00",
+    "subject": "Fix done lua script",
+    "body": "If UniqueKey is an empty string, do not provide the key to Lua script\nbecause that will cause CROSSSLOT error in redis cluster (since it\ndoesn't have any hash tag).",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3ac548e97c96e894133dae16024ce593f309241e",
+    "authorDate": "2020-08-27T07:19:21-07:00",
+    "subject": "Fix dequeue Lua script to use a single hash tag",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fad0696828496d5eeb561d8ba7b78f58502de449",
+    "authorDate": "2020-08-19T05:45:02-07:00",
+    "subject": "Fix errors in inspector tests",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "inspector_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4037b41479f205d5eb971924f7d4447622b3513d",
+    "authorDate": "2020-08-19T05:32:05-07:00",
+    "subject": "Fix client tests",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "client_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "83bdca522078b544f59d2134d5facd90f3bdc276",
+    "authorDate": "2020-08-18T06:46:19-07:00",
+    "subject": "Fix test build errors",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "inspector_test.go",
+      "processor_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3f26122ac0ce4f43c8a4efba1d475b3e8628b2f4",
+    "authorDate": "2020-08-18T06:01:38-07:00",
+    "subject": "Fix more build errors",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "client_test.go",
+      "inspector_test.go",
+      "processor.go",
+      "processor_test.go",
+      "recoverer_test.go",
+      "scheduler_test.go",
+      "syncer_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2a181815017c2259fdcd01de37af3ed401e9817a",
+    "authorDate": "2020-08-17T20:49:55-07:00",
+    "subject": "Fix inspector build error",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "inspector.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4b81b91d3e8e3d5c9a8d513ef0e86c87214a1e4d",
+    "authorDate": "2020-08-10T06:13:06-07:00",
+    "subject": "Minor fix",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e8fdbc5a724921b14405d4a2c05c0211212e35be",
+    "authorDate": "2020-07-28T22:00:54-07:00",
+    "subject": "Fix history command",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tools/asynq/cmd/history.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6978e93080af86747fc8ffbdebad0db39e77e1dd",
+    "authorDate": "2020-07-26T13:16:13-07:00",
+    "subject": "Fix flaky test",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "inspector_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "92d77bbc6e2e1e16c375979ec6872532ff9fdc60",
+    "authorDate": "2020-07-26T07:01:19-07:00",
+    "subject": "Minor comment fix",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/asynqtest/asynqtest.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7e942ec24133b96b19e1e7a10fc6f470b9d17e73",
+    "authorDate": "2020-06-22T08:33:58-07:00",
+    "subject": "Use int64 type for Timeout and Deadline in TaskMessage",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "client.go",
+      "client_test.go",
+      "internal/base/base.go",
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "7c7de0d8e0bf1ba88c34b2081d41291304c0363b",
+    "authorDate": "2020-06-19T06:21:25-07:00",
+    "subject": "Fix processor",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/base/base.go",
+      "internal/base/base_test.go",
+      "processor.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "716d3d987eeaf3c0c41b0b0d68e5d43b764864cd",
+    "authorDate": "2020-06-16T21:12:50-07:00",
+    "subject": "Use default timeout of 30mins if both timeout and deadline are not provided",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "client.go",
+      "client_test.go",
+      "context.go",
+      "context_test.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "0527b934328b6185d2893610a2b34930d6c814da",
+    "authorDate": "2020-06-16T21:11:54-07:00",
+    "subject": "Change TaskMessage Timeout and Deadline to int",
+    "body": "* This change breaks existing tasks in Redis",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/asynqtest/asynqtest.go",
+      "internal/base/base.go",
+      "internal/base/base_test.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "4e5f5969108de59ffd2574471cd2e3399a2f4914",
+    "authorDate": "2020-06-14T05:31:24-07:00",
+    "subject": "Fix Client.Enqueue to always call enqueue",
+    "body": "Closes https://github.com/hibiken/asynq/issues/158",
+    "issueRefs": [],
+    "touchedFiles": [
+      "client.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7f30fa2bb6819b9aef47cf77f6a0cd73e3338d5d",
+    "authorDate": "2020-06-13T06:09:54-07:00",
+    "subject": "Fix requeue logic in processor",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/base/base.go",
+      "internal/rdb/rdb.go",
+      "internal/rdb/rdb_test.go",
+      "internal/testbroker/testbroker.go",
+      "processor.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a2abeedaa0c521a01f378c016e5bb4cb73a7f0ec",
+    "authorDate": "2020-06-11T20:58:27-07:00",
+    "subject": "Fix JSON number ovewflow issue",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/base/base.go",
+      "internal/base/base_test.go",
+      "internal/rdb/rdb.go",
+      "payload.go",
+      "payload_test.go",
+      "processor_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8af4cbad51ffc3db8eea5619794027bb4c4c9130",
+    "authorDate": "2020-06-05T21:23:28-07:00",
+    "subject": "Fix data race in test",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "processor_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "e236d55477c4d4fe38c15a7687829c203ce093fb",
+    "authorDate": "2020-06-04T06:35:50-07:00",
+    "subject": "Fix cli build",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tools/asynq/cmd/workers.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fb38086590079ced61ac87bf2e5a4fdeefa0aeca",
+    "authorDate": "2020-05-11T07:02:26-07:00",
+    "subject": "Clean up log messages",
+    "body": "Moved development purpose log messages to DEBUG level.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "asynq_test.go",
+      "heartbeat.go",
+      "processor.go",
+      "scheduler.go",
+      "server.go",
+      "subscriber.go",
+      "syncer.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0289bc7a106d7cbaa19143434b38a65c3321fad1",
+    "authorDate": "2020-05-11T07:02:26-07:00",
+    "subject": "Clean up log messages",
+    "body": "Moved development purpose log messages to DEBUG level.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "asynq_test.go",
+      "heartbeat.go",
+      "processor.go",
+      "scheduler.go",
+      "server.go",
+      "subscriber.go",
+      "syncer.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "42453280f49e98cc7ac810cb61dc2e08a0616baf",
+    "authorDate": "2020-04-16T08:58:44-07:00",
+    "subject": "Fix subscriber to not panic when it cannot establish pubsub channel on startup",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "subscriber.go",
+      "subscriber_test.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "4df372b3699029a953dad21b59f0ad57392326e1",
+    "authorDate": "2020-04-15T07:15:01-07:00",
+    "subject": "Allow user to configure shutdown timeout",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "processor.go",
+      "processor_test.go",
+      "server.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "c688b8f4f958210000d4fac747fb563fd73c1d87",
+    "authorDate": "2020-04-14T09:20:09-07:00",
+    "subject": "Fix test for base package",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/base/base_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7e96e893fe89814f17df465eb1ed79c216085168",
+    "authorDate": "2020-04-10T08:47:43-07:00",
+    "subject": "(fix): Change log messages depending on signals being handled",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "background.go",
+      "signals_unix.go",
+      "signals_windows.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "60b887b8e3891a712074aa00798a3e9ef88c0c7e",
+    "authorDate": "2020-04-05T12:14:42-07:00",
+    "subject": "Fix singnal handling for different systems",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "background.go",
+      "go.mod",
+      "signals_unix.go",
+      "signals_windows.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9b4438347ef23b9b400875723caf9f6d6fc14545",
+    "authorDate": "2020-03-21T11:44:26-07:00",
+    "subject": "Fix comment",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c33dd447ac75fd7f9a2fb1e155d46f36eccb28f0",
+    "authorDate": "2020-03-18T06:49:39-07:00",
+    "subject": "Allow client to enqueue a task with unique option",
+    "body": "Changes:\n\n- Added Unique option for clients\n- Require go v.13 or above (to use new errors wrapping functions)\n- Fixed adding queue key to all-queues set (asynq:queues) when scheduling.",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".travis.yml",
+      "CHANGELOG.md",
+      "readme.md",
+      "client.go",
+      "client_test.go",
+      "internal/base/base.go",
+      "internal/rdb/rdb.go",
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "1b7d557c66feff43340dfa3bc5c5b60348d251b9",
+    "authorDate": "2020-03-14T08:48:24+08:00",
+    "subject": "fix typo",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tools/asynqmon/cmd/workers.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "30b68728d41021ca8a82dfdbb239fe87e7caff4b",
+    "authorDate": "2020-03-14T08:50:27+08:00",
+    "subject": "chore(lint): fix from gofmt -s",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/base/base_test.go",
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e78d5e4171a90d57bc68c5373a073a0dd6a9492e",
+    "authorDate": "2020-02-16T21:13:36-08:00",
+    "subject": "Enable the race detector in CI builds",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".travis.yml"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "0cc486a9753475c5d626b9369c423af1bae47705",
+    "authorDate": "2020-02-16T21:09:16-08:00",
+    "subject": "Fix data race in syncer test",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "syncer_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "906f231e6cfef63e35d1267cc9eb24b2859d4149",
+    "authorDate": "2020-02-16T14:42:21-08:00",
+    "subject": "Fix data race in subscriber test",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "background.go",
+      "subscriber_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "133bb6c2c671340a413bc0a860397520a469fd8b",
+    "authorDate": "2020-02-11T21:59:46-08:00",
+    "subject": "Update docs for context and timeout",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "readme.md",
+      "doc.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "39459b4412f72e5776b2047f1d61325b7e23d2e6",
+    "authorDate": "2020-02-11T21:53:59-08:00",
+    "subject": "Allow user to specify timeout per task",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "client.go",
+      "client_test.go",
+      "internal/base/base.go",
+      "processor.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "7af69c8d3c6a02cd3a732cc728ada51b31d1fbe5",
+    "authorDate": "2020-02-06T20:46:59-08:00",
+    "subject": "[ci skip] Fix comments",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "asynq.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6fbaa2ed6c0fae51f6ad0fdfefaeefbb56e0d87e",
+    "authorDate": "2020-01-26T13:55:23-08:00",
+    "subject": "(fix): RestoreUnfinished to select correct queue",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "CHANGELOG.md",
+      "internal/rdb/rdb.go",
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "166497748be98c53c8926321d2825f4c5eea22e1",
+    "authorDate": "2020-01-26T13:41:06-08:00",
+    "subject": "(fix): Requeue to select correct queue",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go",
+      "internal/rdb/rdb_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "58d2ed94e7d596e1413c8125a69d9a0fb8863ee5",
+    "authorDate": "2020-01-23T06:05:18-08:00",
+    "subject": "[ci skip] Fix typo",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "207a6d2d1af361e8df840fd5268d8314e151586a",
+    "authorDate": "2020-01-18T10:17:39-08:00",
+    "subject": "Fix benchmark tests",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "asynq_test.go",
+      "background.go",
+      "benchmark_test.go",
+      "syncer.go",
+      "syncer_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f66a65d6ca59c4b8307a1ff2e659ff847b8074ae",
+    "authorDate": "2020-01-16T21:01:27-08:00",
+    "subject": "Fix tests",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "background_test.go",
+      "client_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "97316d6766aeb9781bd46e215db3e818fd654132",
+    "authorDate": "2020-01-11T10:02:13-08:00",
+    "subject": "Fix flaky tests",
+    "body": "Some tests were failing due to mismatch in Score in ZSetEntry.\nChanged ZSetEntry Score to float64 type so that we can use\ncmpopts.EquateApprox to allow for margin when comparing.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "client_test.go",
+      "internal/asynqtest/asynqtest.go",
+      "internal/rdb/inspect_test.go",
+      "internal/rdb/rdb_test.go",
+      "processor_test.go",
+      "scheduler_test.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "aaa813dfdc9d82d20baa0dce640d7704e5a0e076",
+    "authorDate": "2019-12-26T21:40:04-08:00",
+    "subject": "Critical fix",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "payload_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d222dfd7498d7ce89f33d026206150590ba7a2c1",
+    "authorDate": "2019-12-27T10:46:47-08:00",
+    "subject": "Merge pull request #29 from hibiken/feature/github_tmpl",
+    "body": "Update issue templates",
+    "issueRefs": [
+      "#29"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0c6ee9cf5e138b8d297def7f6a494c248822e7c5",
+    "authorDate": "2019-12-27T10:45:45-08:00",
+    "subject": "Update issue templates",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".github/ISSUE_TEMPLATE/bug_report.md",
+      ".github/ISSUE_TEMPLATE/feature_request.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fb24d158aee671d3effad17a423669220d9fbe1b",
+    "authorDate": "2019-12-25T21:29:20-08:00",
+    "subject": "fix: CurrentState without processed/failed data",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/inspect.go",
+      "internal/rdb/inspect_test.go",
+      "tools/asynqmon/cmd/stats.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "698fdcfcb25df156568f3c3099449bf1a85e7280",
+    "authorDate": "2019-12-25T19:57:23-08:00",
+    "subject": "fix: Change max dead tasks count to 100",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "12fc336889acea9476b6d33d7c77f5395244657c",
+    "authorDate": "2019-12-16T06:54:06-08:00",
+    "subject": "Merge pull request #16 from hibiken/feature/signals",
+    "body": "Add timeout to shutdown when TERM signal is received",
+    "issueRefs": [
+      "#16"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "eb3216d35440076d16b2d7ff9973fc7c5dcd802b",
+    "authorDate": "2019-12-16T06:40:52-08:00",
+    "subject": "Fix: Use buffered channel of size 1 to avoid goroutine leaks",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "processor.go"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "989b2b6d559df30b1f526b6f6eb73cc78e45fb63",
+    "authorDate": "2019-12-15T21:00:09-08:00",
+    "subject": "Add timeout to worker goroutines when TERM signal is received",
+    "body": "Wait for a certain amount of time to allow for worker goroutines to\nfinish. If the goroutines don't finish with the timeout duration,\nprocessor will quit the goroutines and restore any unfinished tasks from\nthe in_progress queue back to the default queue.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "poller_test.go",
+      "processor.go",
+      "retry.go",
+      "retry_test.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "e5686894d3da77e92a8a293a9ae51b7b9ed0977a",
+    "authorDate": "2019-12-15T20:05:56-08:00",
+    "subject": "Fix: Do not use lua cjson library to encode task to json",
+    "body": "Go and Lua json libraries encodes json differently (e.g. order of\nkey/value) and caused a bug when removing tasks that was previously\nencoded by Lua json library and redis was receiving a string generated\nby Go json library.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bbd8fb901f60d5af9750fb82014cb0015884e1a7",
+    "authorDate": "2019-12-08T14:17:57-08:00",
+    "subject": "[ci skip] Fix typos",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/inspect.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9941c9e3033f1a286d8dbb264408e82961384cbc",
+    "authorDate": "2019-12-07T19:59:12-08:00",
+    "subject": "Minor fixes",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tools/asynqmon/cmd/ls.go",
+      "tools/asynqmon/cmd/root.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0382fc1d08db239b3ee400c8ac0a625d0ad99173",
+    "authorDate": "2019-12-07T08:47:17-08:00",
+    "subject": "Fix readme",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "readme.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c1d049718279b659892d6fdbea65cd17c9519d1f",
+    "authorDate": "2019-12-06T22:29:40-08:00",
+    "subject": "Remove debug log",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "internal/rdb/rdb.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "af1dcf5044be0f9093c158372b0f214d2539caaa",
+    "authorDate": "2019-12-04T07:18:15-08:00",
+    "subject": "Fix monitor command",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "cmd/asynqmon/main.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ad1291e0a1b3e3bcd531a6a3b68b95e1e6497ebe",
+    "authorDate": "2019-11-29T20:49:18-08:00",
+    "subject": "Add test for background to verify no goroutine leaks",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "background.go",
+      "background_test.go",
+      "go.mod",
+      "go.sum"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "0db4b8a34f97ac8fefba3c91dbb75ed6244aba18",
+    "authorDate": "2019-11-27T14:26:04-08:00",
+    "subject": "fix:Remove task from in_progress when worker goroutine finishes",
+    "body": "There was a bug related to the logic of removing task from\n\"asynq:in_progress\" list when worker is finished. The task was not\nproperly removed from the list when the taskMessage gets modified before\nthe deferred call. More specifically when task was scheduled for retry\nthe message was modified and therefore LREM could not properly removed\nthe message from \"asynq:in_progress\" list.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "processor.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5eaf606a0d7e5e999c19ba54ac332a33dfef74a4",
+    "authorDate": "2019-11-23T17:09:57-08:00",
+    "subject": "fix: Nil out handler reference after all workers have finished",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "background.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c84287d7ab00a7c04bc5d133d999fab0e1f3d299",
+    "authorDate": "2019-11-21T20:22:55-08:00",
+    "subject": "Minor fixes",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "launcher.go",
+      "poller.go",
+      "processor.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e238d3835dd6532e2b0351c24c2d29efe85b6da1",
+    "authorDate": "2019-11-19T07:38:09-08:00",
+    "subject": "Gracefully shutdown all scheduled goroutines on (*Launcher).Stop",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "manager.go",
+      "poller.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "3daef02632e706f65792f17e2c3d8048e1410d0a",
+    "authorDate": "2019-11-18T07:42:26-08:00",
+    "subject": "Fix bug around releasing semaphore token",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "asynq.go"
+    ],
+    "fixCategory": "other"
+  }
+]

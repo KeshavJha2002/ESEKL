@@ -1,0 +1,79 @@
+[
+  {
+    "filePath": "internal/rdb/rdb_test.go",
+    "testFunction": "TestBatchEnqueue",
+    "subScenarioName": "enqueue multiple tasks",
+    "line": 174,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"enqueue multiple tasks\" in TestBatchEnqueue"
+  },
+  {
+    "filePath": "internal/rdb/rdb_test.go",
+    "testFunction": "TestBatchEnqueue",
+    "subScenarioName": "empty batch",
+    "line": 213,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"empty batch\" in TestBatchEnqueue"
+  },
+  {
+    "filePath": "internal/rdb/rdb_test.go",
+    "testFunction": "TestBatchEnqueue",
+    "subScenarioName": "duplicate IDs skipped",
+    "line": 225,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"duplicate IDs skipped\" in TestBatchEnqueue"
+  },
+  {
+    "filePath": "internal/rdb/rdb_test.go",
+    "testFunction": "TestBatchEnqueue",
+    "subScenarioName": "scheduled tasks",
+    "line": 248,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"scheduled tasks\" in TestBatchEnqueue"
+  },
+  {
+    "filePath": "internal/rdb/rdb_test.go",
+    "testFunction": "TestBatchEnqueue",
+    "subScenarioName": "pipeline error from cancelled context",
+    "line": 297,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"pipeline error from cancelled context\" in TestBatchEnqueue"
+  },
+  {
+    "filePath": "internal/rdb/rdb_test.go",
+    "testFunction": "TestEnqueueQueueCache",
+    "subScenarioName": "remove-queue",
+    "line": 336,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"remove-queue\" in TestEnqueueQueueCache"
+  },
+  {
+    "filePath": "periodic_task_manager_test.go",
+    "testFunction": "TestNewPeriodicTaskManager",
+    "subScenarioName": "error",
+    "line": 79,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"error\" in TestNewPeriodicTaskManager"
+  }
+]

@@ -1,0 +1,68 @@
+[
+  {
+    "id": "REKU-REDPANDA-001",
+    "repository": "redpanda",
+    "domain": "Queue, Broker & Distributed Workflow Systems",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Ingestion pipelines enforce bounded admission waiters using Seastar memory limiters, rejecting excess requests immediately with fast-shedding 503 errors when memory thresholds are exceeded.",
+    "mechanism": "Bounded Memory Limiter Fast-Shedding Backpressure",
+    "applicabilityConditions": [
+      "Requires C++ Seastar asynchronous reactor framework with explicit memory accounting."
+    ],
+    "evidenceIds": [
+      "OBS-REDPANDA-003"
+    ],
+    "commonKeywords": [
+      "bounded_admission",
+      "fast_503_shedding",
+      "memory_limiter",
+      "publish_backpressure"
+    ],
+    "uniqueKeywords": [
+      "seastar_memory_limiter",
+      "redpanda_transform",
+      "admission_waiters"
+    ],
+    "localContext": "Redpanda prevents out-of-memory crashes and unmetered connection buffering by tracking allocated transform and produce buffer memory; when saturation occurs, admission gates shed incoming load rather than queuing indefinitely.",
+    "sourceProvenance": {
+      "filePath": "src/v/transform/memory_limiter.cc",
+      "lineRange": [
+        30,
+        55
+      ],
+      "queryOrCodeSnippet": "if (current_memory + request_size > max_memory) { return errc::resource_exhausted; }",
+      "symbol": "memory_limiter"
+    },
+    "testProvenance": {
+      "filePath": "src/v/transform/tests/memory_limiter_test.cc",
+      "testName": "test_memory_limiter_saturation"
+    },
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "TEST_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "substrate": "raft",
+    "linkedDomainEkus": [
+      "EKU-QUEUE-010",
+      "EKU-QUEUE-019"
+    ],
+    "linkedClaims": [
+      "CLM-010",
+      "CLM-019"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [],
+      "stateStorage": [
+        "raft"
+      ],
+      "ownershipModel": [
+        "lease_based"
+      ],
+      "substrate": [
+        "raft"
+      ]
+    }
+  }
+]

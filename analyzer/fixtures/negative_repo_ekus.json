@@ -1,0 +1,155 @@
+[
+  {
+    "fixtureId": "NEG-REKU-001",
+    "description": "Broken evidenceId not in observations or historical failures",
+    "expectedErrorCategory": "BROKEN_EVIDENCE_ID",
+    "payload": {
+      "id": "REKU-TEST-001",
+      "repository": "river",
+      "abstractionLevel": "REPO_LOCAL",
+      "mechanism": "Relational Dequeue",
+      "applicabilityConditions": ["Postgres"],
+      "evidenceIds": ["OBS-NONEXISTENT-999"],
+      "epistemicLabels": ["SOURCE_OBSERVED"],
+      "sourceProvenance": {
+        "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+        "queryOrCodeSnippet": "SELECT * FROM river_job;"
+      },
+      "commonKeywords": ["skip_locked"],
+      "uniqueKeywords": ["river_job"],
+      "localContext": "Valid local context string test."
+    }
+  },
+  {
+    "fixtureId": "NEG-REKU-002",
+    "description": "Missing sourceProvenance when SOURCE_OBSERVED is declared",
+    "expectedErrorCategory": "MISSING_SOURCE_PROVENANCE",
+    "payload": {
+      "id": "REKU-TEST-002",
+      "repository": "river",
+      "abstractionLevel": "REPO_LOCAL",
+      "mechanism": "Relational Dequeue",
+      "applicabilityConditions": ["Postgres"],
+      "evidenceIds": ["OBS-RIVER-001"],
+      "epistemicLabels": ["SOURCE_OBSERVED"],
+      "commonKeywords": ["skip_locked"],
+      "uniqueKeywords": ["test_unique"],
+      "localContext": "Valid local context string test."
+    }
+  },
+  {
+    "fixtureId": "NEG-REKU-003",
+    "description": "Repository not registered in corpus manifest",
+    "expectedErrorCategory": "UNREGISTERED_REPOSITORY",
+    "payload": {
+      "id": "REKU-TEST-003",
+      "repository": "unknown_repo_xyz",
+      "abstractionLevel": "REPO_LOCAL",
+      "mechanism": "Test",
+      "applicabilityConditions": ["Test"],
+      "evidenceIds": ["OBS-RIVER-001"],
+      "epistemicLabels": ["SOURCE_OBSERVED"],
+      "sourceProvenance": {
+        "filePath": "test.go",
+        "queryOrCodeSnippet": "test"
+      },
+      "commonKeywords": ["test"],
+      "uniqueKeywords": ["test_unique"],
+      "localContext": "Valid context."
+    }
+  },
+  {
+    "fixtureId": "NEG-REKU-005",
+    "description": "Invalid substrate enum value",
+    "expectedErrorCategory": "INVALID_SUBSTRATE",
+    "payload": {
+      "id": "REKU-TEST-005",
+      "repository": "river",
+      "substrate": "unsupported_substrate_xyz"
+    }
+  },
+  {
+    "fixtureId": "NEG-REKU-006",
+    "description": "Missing or empty linkedDomainEkus",
+    "expectedErrorCategory": "MISSING_LINKED_DOMAIN_EKUS",
+    "payload": {
+      "id": "REKU-TEST-006",
+      "repository": "river",
+      "linkedDomainEkus": []
+    }
+  },
+  {
+    "fixtureId": "NEG-REKU-007",
+    "description": "Schema rejection on malformed lineRange array",
+    "expectedErrorCategory": "SCHEMA_VALIDATION_ERROR",
+    "payload": {
+      "id": "REKU-TEST-007",
+      "repository": "river",
+      "domain": "Queue",
+      "substrate": "postgres",
+      "objectType": "BEHAVIORAL_INVARIANT",
+      "claim": "Test",
+      "mechanism": "Test",
+      "applicabilityConditions": ["test"],
+      "evidenceIds": ["OBS-RIVER-001"],
+      "commonKeywords": ["test"],
+      "uniqueKeywords": ["test"],
+      "localContext": "Test local context string here.",
+      "linkedDomainEkus": ["EKU-QUEUE-001"],
+      "linkedClaims": ["CLM-001"],
+      "sourceProvenance": {
+        "filePath": "test.go",
+        "lineRange": [10]
+      },
+      "epistemicLabels": ["SOURCE_OBSERVED"],
+      "abstractionLevel": "REPO_LOCAL",
+      "status": "ACTIVE"
+    }
+  },
+  {
+    "fixtureId": "NEG-REKU-008",
+    "description": "Schema rejection on empty commonKeywords array",
+    "expectedErrorCategory": "SCHEMA_VALIDATION_ERROR",
+    "payload": {
+      "id": "REKU-TEST-008",
+      "repository": "river",
+      "domain": "Queue",
+      "substrate": "postgres",
+      "objectType": "BEHAVIORAL_INVARIANT",
+      "claim": "Test",
+      "mechanism": "Test",
+      "applicabilityConditions": ["test"],
+      "evidenceIds": ["OBS-RIVER-001"],
+      "commonKeywords": [],
+      "uniqueKeywords": ["test"],
+      "localContext": "Test local context string here.",
+      "linkedDomainEkus": ["EKU-QUEUE-001"],
+      "linkedClaims": ["CLM-001"],
+      "epistemicLabels": ["SOURCE_OBSERVED"],
+      "abstractionLevel": "REPO_LOCAL",
+      "status": "ACTIVE"
+    }
+  },
+  {
+    "fixtureId": "NEG-REKU-012",
+    "description": "HISTORY_SUPPORTED label without HIST-* evidence or historyProvenance",
+    "expectedErrorCategory": "UNBACKED_HISTORY_LABEL",
+    "payload": {
+      "id": "REKU-TEST-012",
+      "epistemicLabels": ["HISTORY_SUPPORTED"],
+      "evidenceIds": ["OBS-RIVER-001"],
+      "historyProvenance": null
+    }
+  },
+  {
+    "fixtureId": "NEG-REKU-013",
+    "description": "keywordFacets value not list of strings",
+    "expectedErrorCategory": "INVALID_KEYWORD_FACETS_TYPE",
+    "payload": {
+      "id": "REKU-TEST-013",
+      "keywordFacets": {
+        "concurrencyControl": "skip_locked"
+      }
+    }
+  }
+]

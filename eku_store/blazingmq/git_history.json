@@ -1,0 +1,586 @@
+[
+  {
+    "commitHash": "a5b313cbb4c12a4b90790bc488710345a40a52e9",
+    "authorDate": "2026-08-21T15:18:25-04:00",
+    "subject": "Fix[mqbc::StorageMgr]: Validate E_PUSH sender and partitionId (#1721)",
+    "body": "Signed-off-by: Yuan Jing Vincent Yan <yyan82@bloomberg.net>",
+    "issueRefs": [
+      "#1721"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqbc/mqbc_storagemanager.cpp",
+      "src/groups/mqb/mqbc/mqbc_storagemanager.t.cpp",
+      "src/integration-tests/test_replica_data_request.py",
+      "src/python/blazingmq/dev/it/process/rawclient.py"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "b29e31f11208721869c664861f0a880c715472b6",
+    "authorDate": "2026-08-21T14:13:26-05:00",
+    "subject": "Fix[mqbs::FileStore]: terminate on replica write failure (#1723)",
+    "body": "Signed-off-by: Srinath Satuluri <satulurisrinath@gmail.com>",
+    "issueRefs": [
+      "#1723"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqbs/mqbs_filestore.cpp"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ec967e44e1333843072b44793d295bcd2bd478bc",
+    "authorDate": "2026-08-20T16:17:29-04:00",
+    "subject": "Fix[mqbc::StorageMgr]: Validate partitionId in state requests (#1722)",
+    "body": "Signed-off-by: Yuan Jing Vincent Yan <yyan82@bloomberg.net>",
+    "issueRefs": [
+      "#1722"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqbc/mqbc_storagemanager.cpp"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "f9b62ae13f2a173fffc032aa2c3a5d51d7bfb1b9",
+    "authorDate": "2026-08-19T16:32:09-04:00",
+    "subject": "UT: fix build `d_channel` -> `d_channel_sp` (#1720)",
+    "body": "Signed-off-by: Evgeny Malygin <emalygin@bloomberg.net>",
+    "issueRefs": [
+      "#1720"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqba/mqba_clientsession.t.cpp"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "0f4fb34cffba6f949bafb1c817aeb166b7184323",
+    "authorDate": "2026-08-19T15:17:41-04:00",
+    "subject": "Fix[mqb]: handle same queueId + different URI openQueue (#1662)",
+    "body": "Signed-off-by: Evgeny Malygin <emalygin@bloomberg.net>",
+    "issueRefs": [
+      "#1662"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqba/mqba_clientsession.t.cpp",
+      "src/groups/mqb/mqbblp/mqbblp_queuesessionmanager.cpp"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "0b897781788038d4e1dd50559818df22176c39dd",
+    "authorDate": "2026-08-17T14:11:34-04:00",
+    "subject": "Fix[MQB]: downgrade `RootQueueEngine` error log on ShutdownV2",
+    "body": "`RootQueueEngine::releaseHandle` logs `#QUEUE_IMPROPER_BEHAVIOR` at\n`ERROR` when a handle is released while still registered as a consumer.\nUnder shutdown V2 this is the normal flow, not client misbehavior.\n\n`Application::initiateShutdown` calls `ClientSession::initiateShutdown`\non every downstream session, including proxies, which moves them out of\nthe `e_RUNNING` state.  `ClientSession::tearDownImpl` then computes\n`doDeconfigure = (d_operationState == e_RUNNING)`, so\n`Queue::dropHandleDispatched` skips the null-`streamParameters`\nconfigure and goes straight to `releaseHandle`.  As a result, every\nshutdown of a proxy consumer handle emits this error once per consumer\nsubstream.\n\nAn identical log from `RelayQueueEngine` was fixed in #624 with the\nsame reasoning; this makes the same change to `RootQueueEngine`.\n\nSigned-off-by: Christopher Beard <cbeard9@bloomberg.net>",
+    "issueRefs": [
+      "#624"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqbblp/mqbblp_rootqueueengine.cpp"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "e0c56f41973f0497a411e133eb6035f7912048fd",
+    "authorDate": "2026-08-12T17:16:55-04:00",
+    "subject": "Refactor[mqbauthz]: rename BasicAuthorizer to DefaultAuthorizer",
+    "body": "Mechanical rename of this component. The new name better states the\npurpose of the authorizer in the system and reduces confusion with its\nrelation to `BasicAuthenticator`.\n\nAlso fixes a `MQBAUTHN.*` log category typo, should be `MQBAUTHZ.*`.\n\nSigned-off-by: Christopher Beard <cbeard9@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/mqb/mqbauthz/mqbauthz_authorizationcontroller.cpp",
+      "src/groups/mqb/mqbauthz/mqbauthz_authorizationcontroller.g.cpp",
+      "src/groups/mqb/mqbauthz/mqbauthz_authorizationcontroller.h",
+      "src/groups/mqb/mqbauthz/mqbauthz_defaultauthorizer.cpp",
+      "src/groups/mqb/mqbauthz/mqbauthz_defaultauthorizer.g.cpp",
+      "src/groups/mqb/mqbauthz/mqbauthz_defaultauthorizer.h",
+      "src/groups/mqb/mqbauthz/mqbauthz_pluginlibrary.cpp",
+      "src/groups/mqb/mqbauthz/package/mqbauthz.mem"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "e3b9da8941f53ee74cecd9ebdec7f0caf6faa101",
+    "authorDate": "2026-08-12T15:28:06-04:00",
+    "subject": "Fix[mqbs]: do not gc broadcast",
+    "body": "Signed-off-by: Evgeny Malygin <emalygin@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/mqb/mqbs/mqbs_inmemorystorage.cpp",
+      "src/groups/mqb/mqbs/mqbs_inmemorystorage.h"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "d1829c5791f2740d41be1689eef9b1f6d99296cb",
+    "authorDate": "2026-08-13T11:42:52-05:00",
+    "subject": "Fix[mqbnet]: return identity by value with mutex guard (#1709)",
+    "body": "`identity()` returned a const reference to `d_identity`, but `setChannel()` and `resetChannel()` write that member from the IO thread, so a caller on another thread could read a partially-written object. \n\nReturn by value and guard the three access sites with a `mutable bslmt::Mutex`. The lock is scoped narrowly in `setChannel()` and `resetChannel()` and released before `notifyObserversOfNodeStateChange()` to avoid deadlock through the observer chain.\n\nSigned-off-by: Srinath Satuluri <satulurisrinath@gmail.com>",
+    "issueRefs": [
+      "#1709"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqbnet/mqbnet_cluster.h",
+      "src/groups/mqb/mqbnet/mqbnet_cluster.t.cpp",
+      "src/groups/mqb/mqbnet/mqbnet_clusterimp.cpp",
+      "src/groups/mqb/mqbnet/mqbnet_clusterimp.h",
+      "src/groups/mqb/mqbnet/mqbnet_mockcluster.h"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "00cfdb2edec53d23a44492c71a8d96f8e6c7286a",
+    "authorDate": "2026-08-12T18:15:25-04:00",
+    "subject": "Fix: Add accessor calls to the uri fuzztest (#1656)",
+    "body": "There was no values being read in the initial fuzztest. Even though a\nlot of these accessor calls are likely not going to find anything due\nto their simplicity, it's still worth fuzz testing the class because\nthe URI comes directly from the client.\n\nSigned-off-by: Jake Jendzurski <jakeski2015@gmail.com>",
+    "issueRefs": [
+      "#1656"
+    ],
+    "touchedFiles": [
+      "src/standalones/s_bmqfuzz/s_bmqfuzz_bmqt_uri.fuzz.cpp"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2353e71fe6bdb361f681510b8dfe2d5833273ba9",
+    "authorDate": "2026-08-11T17:52:56-04:00",
+    "subject": "Fix[mqba::Application]: failed start() should not crash stop()",
+    "body": "`stop()` dereferenced `d_transportManager_mp`, `d_clusterCatalog_mp`,\nand `d_dispatcher_mp` unconditionally, but these are null if `start()`\nfails early (e.g. a bad plugin name) so the function crashed.\n\nExtract that shutdown code into `stopTransportAndClusters()` and only\ncall it in `stop()` if `d_transportManager_mp` exists.\n\nSigned-off-by: Christopher Beard <cbeard9@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/mqb/mqba/mqba_application.cpp",
+      "src/groups/mqb/mqba/mqba_application.h",
+      "src/groups/mqb/mqba/mqba_application.t.cpp"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "b8a8a514d78723ff93358fb6ab1dafc993200dd2",
+    "authorDate": "2026-08-12T10:10:55-04:00",
+    "subject": "Fix[mqbauthz::AuthorizationController]: validate authorizer plugin name",
+    "body": "`createConfiguredAuthorizer()` accepted any registered\n`AuthorizerPluginFactory` regardless of the configured name, so a\ntypo'd or nonexistent plugin name silently defaulted to whatever\nfactory was found first instead of failing.\n\nMatch `AuthenticationController` behavior which matches by\n`name()` to find the right factory and add tests for known/unknown\nplugin names.\n\nAlso fixes a lifetime issue for `builtInPlugins`.\n\nSigned-off-by: Christopher Beard <cbeard9@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/mqb/mqbauthz/mqbauthz_authorizationcontroller.cpp",
+      "src/groups/mqb/mqbauthz/mqbauthz_authorizationcontroller.g.cpp",
+      "src/groups/mqb/mqbauthz/mqbauthz_authorizationcontroller.h"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "12d33ff0ebeb0d2bb3cd8c6e4fc5933beaaae074",
+    "authorDate": "2026-08-07T19:11:52-04:00",
+    "subject": "Test[mqba]: rename d_channel/d_authorizer to _sp suffix in TestBenches",
+    "body": "Matches the _sp naming convention used elsewhere for shared pointers\nin mqba_adminsession.t.cpp and mqba_clientsession.t.cpp.\n\nSigned-off-by: Christopher Beard <cbeard9@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/mqb/mqba/mqba_adminsession.t.cpp",
+      "src/groups/mqb/mqba/mqba_clientsession.t.cpp"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "bb48144dcd9a6f6b874732038f8d1f45f66edb90",
+    "authorDate": "2026-08-07T14:35:49-04:00",
+    "subject": "Fix[mqba::SessionNegotiator]: Move connection authorization to onClientIdentityMessage",
+    "body": "Signed-off-by: Christopher Beard <cbeard9@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/mqb/mqba/mqba_sessionnegotiator.cpp",
+      "src/groups/mqb/mqba/mqba_sessionnegotiator.h"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "4b6c7b2ace6e7adcd19e632a259cb8350426cac6",
+    "authorDate": "2026-08-07T18:25:08-04:00",
+    "subject": "Revert \"Fix[mqbc::StorageUtil]: Require active primary for FSM storage events\" (#1699)",
+    "body": "Signed-off-by: Yuan Jing Vincent Yan <yyan82@bloomberg.net>",
+    "issueRefs": [
+      "#1699"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqbblp/mqbblp_storagemanager.cpp",
+      "src/groups/mqb/mqbc/mqbc_storagemanager.cpp",
+      "src/groups/mqb/mqbc/mqbc_storageutil.cpp",
+      "src/groups/mqb/mqbc/mqbc_storageutil.h"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "84db3b29ca170ca3990a1a114c7608dede2fc9a5",
+    "authorDate": "2026-08-07T17:05:22-04:00",
+    "subject": "Docs: fix incorrect/misleading comments (#1698)",
+    "body": "Signed-off-by: Evgeny Malygin <emalygin@bloomberg.net>",
+    "issueRefs": [
+      "#1698"
+    ],
+    "touchedFiles": [
+      "src/applications/bmqstoragetool/m_bmqstoragetool_cslrecordprinter.h",
+      "src/applications/bmqstoragetool/m_bmqstoragetool_recordprinter.h",
+      "src/groups/bmq/bmqu/bmqu_jsonprinter.h"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "90b5fc90a44d0a329c431cbca97d975aa18ba457",
+    "authorDate": "2026-08-05T15:43:33+00:00",
+    "subject": "Fix: Incorrect number of args in an IT debug log",
+    "body": "Signed-off-by: Taylor Foxhall <tfoxhall@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/python/blazingmq/dev/it/cluster.py"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "ebaf63862ba621ade2f16760dcab6e11188d821c",
+    "authorDate": "2026-08-04T17:28:15-04:00",
+    "subject": "Fix: Fuzz test builds rebuild all BMQ dependencies on each build (#1689)",
+    "body": "No matter what was done, building fuzztests was also building all\ndependencies required on each build, even when all of the object files\nwere up to date and built. This issue stems from the string append to\nTOOLCHAIN_DEBUG_FLAGS with the -fsanitize fuzzer flag. This happened on\neach build. The flag reads and assigns itself to the value from the\ncached value of CMAKE_CXX_FLAGS_DEBUG, which is the previous build's\nflags (includeing the -fsanitize=FUZZER_FLAG). The TOOLCHAIN_DEBUG_FLAG\neventually gets an additional -fsanitize=FUZZER_FLAG before being set\nagain, and then gets saved with two fuzzer flags. This repeats the more\nand more times you build.\n\nThe fix in this commit makes it so that TOOLCHAIN_CXX_FLAGS always\nstarts as a clean version of the BMQ_BASE_CXX_FLAGS_DEBUG (which is also\nfor the first build CMAKE_CXX_FLAGS_DEBUG), that initially has no\n-fsanitize=FUZZER_FLAG. This allows cmake to use the same flags across\nbuilds, not requiring rebuilds for all dependency files when running the\nsame terminal commands (or the build-fuzz.sh script).\n\nSigned-off-by: Jake Jendzurski <jakeski2015@gmail.com>",
+    "issueRefs": [
+      "#1689"
+    ],
+    "touchedFiles": [
+      "docker/sanitizers/clang-libcxx-sanitizer.cmake"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cc8cc7a5ab22b2ac3d4796cde6b21d6e8c5aaa02",
+    "authorDate": "2026-08-04T11:12:22-04:00",
+    "subject": "Fix[mqbc::StorageUtil]: Require active primary for FSM storage events (#1688)",
+    "body": "Signed-off-by: Yuan Jing Vincent Yan <yyan82@bloomberg.net>",
+    "issueRefs": [
+      "#1688"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqbblp/mqbblp_storagemanager.cpp",
+      "src/groups/mqb/mqbc/mqbc_storagemanager.cpp",
+      "src/groups/mqb/mqbc/mqbc_storageutil.cpp",
+      "src/groups/mqb/mqbc/mqbc_storageutil.h"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "79f87d3a6544e60519c4d1817a5c887f6e9b1df6",
+    "authorDate": "2026-08-03T17:33:46-04:00",
+    "subject": "Fix[mqbs::FileStore]: Track write-head leaseId on applied records (#1687)",
+    "body": "Signed-off-by: Yuan Jing Vincent Yan <yyan82@bloomberg.net>",
+    "issueRefs": [
+      "#1687"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqbs/mqbs_filestore.cpp",
+      "src/groups/mqb/mqbs/mqbs_filestore.t.cpp"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "83f776ce0583065ba4bbc6a734ec24253e54f7e3",
+    "authorDate": "2026-08-03T16:53:48-04:00",
+    "subject": "Fix[mqb]: Always call onHandleConfiguredDispatched (#1685)",
+    "body": "Signed-off-by: dorjesinpo <129227380+dorjesinpo@users.noreply.github.com>",
+    "issueRefs": [
+      "#1685"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqbblp/mqbblp_relayqueueengine.cpp"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "943313698e8e23c3e0a083b11c619bce9a72dd25",
+    "authorDate": "2026-08-03T14:59:46-04:00",
+    "subject": "Fix[mqbc::StorageManager]: Send ACTIVE advisory on PrimaryStateRequest (#1680)",
+    "body": "Signed-off-by: Yuan Jing Vincent Yan <yyan82@bloomberg.net>",
+    "issueRefs": [
+      "#1680"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqbc/mqbc_partitionstatetable.h",
+      "src/groups/mqb/mqbc/mqbc_storagemanager.cpp",
+      "src/groups/mqb/mqbc/mqbc_storagemanager.h"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "0166ec1de8d7257eaab554bbc65e4afae0f7fcbd",
+    "authorDate": "2026-07-31T15:43:35-04:00",
+    "subject": "Fix[mqba::AdminSession]: handle in-flight events on teardown",
+    "body": "Signed-off-by: Evgeny Malygin <emalygin@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/mqb/mqba/mqba_adminsession.cpp",
+      "src/groups/mqb/mqba/mqba_adminsession.h"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "a495f02b12b07050b735481424b9ebfe4e102a7a",
+    "authorDate": "2026-07-31T10:58:16-04:00",
+    "subject": "Fix[mqb]: improve non-printable handling in negotiation/session logs",
+    "body": "Restrict negotiation messages (and derived fields) to printable\ncharacters in logs.\n\nAdditionally, add a BSLS_REVIEW check for negotiation messages\ncontaining non-printable characters in anticipation of enforcing that\nstring fields are limited to printable ASCII characters.\n\nSigned-off-by: Christopher Beard <cbeard9@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/bmq/bmqp/bmqp_ctrlmsg.xsd",
+      "src/groups/bmq/bmqp/bmqp_ctrlmsg_messages.h",
+      "src/groups/bmq/bmqu/bmqu_stringutil.cpp",
+      "src/groups/bmq/bmqu/bmqu_stringutil.h",
+      "src/groups/bmq/bmqu/bmqu_stringutil.t.cpp",
+      "src/groups/mqb/mqba/mqba_sessionnegotiator.cpp"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "be0f434ffb134f034a195dbe29eaa11705ce0770",
+    "authorDate": "2026-07-31T15:00:19-04:00",
+    "subject": "Fix[mqbblp::ClusterCatalog]: add missing precondition check for raw pointer",
+    "body": "Signed-off-by: Evgeny Malygin <emalygin@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/mqb/mqbblp/mqbblp_clustercatalog.cpp"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "2fe48b415a77c98727be78520a4d6a0b36c81e92",
+    "authorDate": "2026-07-31T14:59:49-04:00",
+    "subject": "Fix[mqbblp::ClusterCatalog]: get d_clusters.size() under mutex",
+    "body": "Signed-off-by: Evgeny Malygin <emalygin@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/mqb/mqbblp/mqbblp_clustercatalog.cpp"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "e7d19e8940ba5378341a947bbdca92b7c1de2f6b",
+    "authorDate": "2026-07-31T11:43:34-04:00",
+    "subject": "CI: fix prometheus concurrent restart (#1672)",
+    "body": "- Start 2 independent prometheus instances (push, pull)\n- Move prometheus CI configs to CI folder\n\nSigned-off-by: Evgeny Malygin <emalygin@bloomberg.net>",
+    "issueRefs": [
+      "#1672"
+    ],
+    "touchedFiles": [
+      ".github/workflows/build.yaml",
+      ".github/workflows/ext/prometheus_localhost_pull.yaml",
+      ".github/workflows/ext/prometheus_localhost_push.yaml",
+      "src/plugins/bmqprometheus/tests/bmqprometheus_prometheusstatconsumer_test.py"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "5a4fce4ab5c70d15b6901e88aeb5b494a775e614",
+    "authorDate": "2026-07-30T13:09:30-04:00",
+    "subject": "Fix[mqbblp::Domain::registerQueue]: logging d_queues.size() without mutex",
+    "body": "`Domain::registerQueue` logs `d_queues.size()` without holding a mutex.\n\nFixed by storing size for logging under the mutex.\n\nSigned-off-by: Evgeny Malygin <emalygin@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/mqb/mqbblp/mqbblp_domain.cpp"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "008e5f5aaac8a5b72d39948914a670e5af75b2d2",
+    "authorDate": "2026-07-30T13:08:40-04:00",
+    "subject": "Fix[mqbblp::Domain::processCommand]: make d_queues snapshot under mutex",
+    "body": "`Domain::processCommand` makes a copy of `d_queues` without holding a mutex\nfrom ADMIN thread. `d_queues` might be changed or rehashed from the cluster\ndispatcher thread at the same time.\n\nFixed by making a snapshot under the mutex.\n\nSigned-off-by: Evgeny Malygin <emalygin@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/mqb/mqbblp/mqbblp_domain.cpp"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "7f4e4dfbc41c1710398813784bb5a6e3bff3f7ab",
+    "authorDate": "2026-07-30T13:05:07-04:00",
+    "subject": "Fix[mqbblp::Domain]: iterating d_queues without mutex; raw ptr bind",
+    "body": "Fixes the following bugs:\n\n**Bug 1**:\n`mqbblp::Domain::configure` iterated the `d_queues` map on the admin thread without\nholding `d_mutex`, while `registerQueue`/`unregisterQueue` mutate the same map (insert/erase)\nunder `d_mutex` on the cluster dispatcher thread. A `DOMAINS RECONFIGURE` overlapping a queue\nopen/close is a data race - a rehash on insert could invalidate the concurrent\niterator (crash / garbage read).\n\nFixed by making a snapshot under the mutex.\n\n**Bug 2**:\nThe reconfigure path also bound a raw `mqbi::Queue*` (`it->second.get()`) into an async\ndispatcher functor, opening a use-after-free window between enqueue and execution\nif the queue was unregistered in the meantime.\n\nFixed by holding a `weak_ptr` in queues snapshot (no raw pointer stored on this level).\n\nSigned-off-by: Evgeny Malygin <emalygin@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/mqb/mqbblp/mqbblp_domain.cpp",
+      "src/groups/mqb/mqbblp/mqbblp_domain.h"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "bcf1a9d87bb89d977bbcff2fec2b7475b55d1d43",
+    "authorDate": "2026-07-30T13:02:20-04:00",
+    "subject": "UT[mqbblp::Domain]: introduce test driver",
+    "body": "Add `mqbblp_domain.t.cpp` test driver:\n- `test1_breathingTest` — construct / configure / reconfigure / teardown.\n- `test2_concurrentConfigureAndRegisterQueue` — one thread reconfigures continuously\nwhile the main thread registers thousands of distinct queues, exercising the exact overlap.\n- `test3_reconfigureSkipsUnregisteredQueue` — deterministically (via the mock dispatcher's\nenqueueOnly mode) unregisters and destroys a queue after the reconfigure is posted but\nbefore it runs, asserting the dispatched work skips the dead queue (weak_ptr gone) and\nreconfigures the survivor exactly once — proving no raw/owning reference outlives the queue.\n- `test4_concurrentProcessCommandAndRegisterQueue` — one thread issues `INFO` commands\ncontinuously while the main thread register thousands of distinct queues, exercising\nthe `processCommand` overlap.\n\nSigned-off-by: Evgeny Malygin <emalygin@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/mqb/mqbblp/mqbblp_domain.t.cpp"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "c0f2728500983ba676566d427dfc68059b1c4b53",
+    "authorDate": "2026-07-29T15:19:50-04:00",
+    "subject": "Fix[bmqt] fix SessionOptions authn cb allocator usage",
+    "body": "Signed-off-by: Christopher Beard <cbeard9@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/bmq/bmqt/bmqt_sessionoptions.cpp",
+      "src/groups/bmq/bmqt/bmqt_sessionoptions.h",
+      "src/groups/bmq/bmqt/bmqt_sessionoptions.t.cpp"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "9ee0a6e7fc037dd5e9364e633cacbadd728c0628",
+    "authorDate": "2026-07-29T17:36:43-04:00",
+    "subject": "Fix[mqbs::FileStore]: Log actual receipt PSN in sendImplicitReceipt (#1667)",
+    "body": "Signed-off-by: Yuan Jing Vincent Yan <yyan82@bloomberg.net>",
+    "issueRefs": [
+      "#1667"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqbs/mqbs_filestore.cpp"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "417d414ef3c3146dcb713223080be0845e92bab1",
+    "authorDate": "2026-07-29T13:14:48-04:00",
+    "subject": "Fix[mqbnet]: active-node PANIC alarms during shutdown",
+    "body": "During shutdown, proxies often emit a false cluster availability alarm.\n\n  ERROR mqbnet_clusteractivenodemanager.cpp PANIC [CLUSTER_ACTIVE_NODE]\n  ClusterProxy (foo): no node available !!!\n\nThe root cause is shutdown ordering:\n\n1. `initiateShutdown` runs and each `ClusterProxy` sets `d_isStopping`.\n2. The broker stops `TransportManager` *before* the `ClusterCatalog`,\n   so every cluster node channel gets closed while the proxy is still\n   registered as a node state observer.\n3. Each channel close triggers `ClusterActiveNodeManager::onNodeDown`.\n   When the current active node drops it re-selects another node. The\n   remaining nodes' down events are still queued and the nodes\n   therefore still appear available.\n4. This repeats until the last node drops, `onNewActiveNode(0)` finds\n   no candidates and raises the PANIC alarm.\n5. `ClusterProxy`'s `d_isStopping` guard logic sit below the alarm in\n   `onActiveNodeUp` and `onActiveNodeDown`, so they suppress the\n   reaction to the event but not the alarm itself.\n\nTo fix, make `ClusterActiveNodeManager` shutdown-aware.\n\n- `ClusterProxy` tells the `ClusterActiveNodeManager` when it enters the\n  stopping state (in `initiateShutdownDispatched`) so that no PANIC\n  alarm is logged when the last node drops.\n- Add unit test covering the shutdown case.\n\nSigned-off-by: Christopher Beard <cbeard9@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/mqb/mqbblp/mqbblp_clusterproxy.cpp",
+      "src/groups/mqb/mqbnet/mqbnet_clusteractivenodemanager.cpp",
+      "src/groups/mqb/mqbnet/mqbnet_clusteractivenodemanager.h",
+      "src/groups/mqb/mqbnet/mqbnet_clusteractivenodemanager.t.cpp"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "475145b13b7032cae90e2521477c353f1972627e",
+    "authorDate": "2026-07-29T17:04:06+00:00",
+    "subject": "Fix: Add maxOutputSize to decompress fuzz test (#1661)",
+    "body": "Signed-off-by: Patrick M. Niedzielski <pniedzielski@bloomberg.net>",
+    "issueRefs": [
+      "#1661"
+    ],
+    "touchedFiles": [
+      "src/standalones/s_bmqfuzz/s_bmqfuzz_bmqp_compression_decompress.fuzz.cpp"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "5d2e957cb140cbdee7d2fd42a7d528a09da0bb1f",
+    "authorDate": "2026-07-27T16:42:13-04:00",
+    "subject": "Doc: Use Markdown rather than Unicode quotes",
+    "body": "In place of Markdown backticks in bmqt and bmqu’s package\ndocumentation, both of these files had Unicode quoting, meaning the\npackages would not be rendered in monospace.  This patch fixes these\ntwo instances of Unicode quotes.\n\nSigned-off-by: Patrick M. Niedzielski <pniedzielski@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/bmq/bmqt/README.dox",
+      "src/groups/bmq/bmqu/README.dox"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "c7064f160b22ee4960920a68d02e0b6d4bc2f987",
+    "authorDate": "2026-07-27T17:00:46-04:00",
+    "subject": "Fix[mqbnet]: keep a weak ptr to a channel for reauthn (#1644)",
+    "body": "Signed-off-by: Evgeny Malygin <emalygin@bloomberg.net>",
+    "issueRefs": [
+      "#1644"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqbnet/mqbnet_authenticationcontext.cpp",
+      "src/groups/mqb/mqbnet/mqbnet_authenticationcontext.h"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "8cc67ce4307c73d082713353e4b3b280806af591",
+    "authorDate": "2026-07-27T16:59:38-04:00",
+    "subject": "Fix[mqbnet::InitialConnectionContext]: propagate close to authn (#1639)",
+    "body": "The channel might be in the middle of opening when the broker stops.\nIn this case, `InitialConnectionContext` and `AuthenticationContext` both exist for this channel, and we might have scheduled reuthn callback.\nBug: `InitialConnectionContext::onClose` doesn't propagate close to `AuthenticationContext`. As a result, we don't remove scheduled event for reauthn from scheduler, and this leads to shutdown crash.\n\nSigned-off-by: Evgeny Malygin <emalygin@bloomberg.net>",
+    "issueRefs": [
+      "#1639"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqba/mqba_authenticator.cpp",
+      "src/groups/mqb/mqbnet/mqbnet_authenticationcontext.cpp",
+      "src/groups/mqb/mqbnet/mqbnet_authenticationcontext.h",
+      "src/groups/mqb/mqbnet/mqbnet_authenticationcontext.t.cpp",
+      "src/groups/mqb/mqbnet/mqbnet_initialconnectioncontext.cpp",
+      "src/groups/mqb/mqbnet/mqbnet_initialconnectioncontext.h",
+      "src/groups/mqb/mqbnet/mqbnet_initialconnectioncontext.t.cpp",
+      "src/groups/mqb/mqbnet/mqbnet_tcpsessionfactory.cpp"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "2fb8d00c63bdb0eebd8d18bded5d02520c1c84bd",
+    "authorDate": "2026-07-27T16:36:06-04:00",
+    "subject": "Doc: Rename mwcma package documentation to bmqma",
+    "body": "This patch fixes a leftover of the MWC -> BMQ rename, which left\n`mwcma.txt` as the package documentation file.\n\nSigned-off-by: Patrick M. Niedzielski <pniedzielski@bloomberg.net>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/groups/bmq/bmqma/doc/bmqma.txt"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "fb2004a43eb3d99fead92b2694717f095354b181",
+    "authorDate": "2026-07-27T09:55:32-05:00",
+    "subject": "Fix[bmqio]: return peerUri by value to eliminate data race (#1641)",
+    "body": "Return `peerUri` by value instead of by const reference so the caller is not left holding an unprotected reference after the lock drops. This changes the base `Channel` interface and all four implementations. In `ResolvingChannelFactory_Channel`, the constructor previously took the address of the return value for the `AtomicPointer` pattern, so a stored copy is used instead. Also fixes two latent `StringRef` dangles that only worked because `peerUri` returned a reference to a stable member.\n\nSigned-off-by: Srinath Satuluri <satulurisrinath@gmail.com>",
+    "issueRefs": [
+      "#1641"
+    ],
+    "touchedFiles": [
+      "src/groups/bmq/bmqio/bmqio_channel.h",
+      "src/groups/bmq/bmqio/bmqio_decoratingchannelpartialimp.h",
+      "src/groups/bmq/bmqio/bmqio_ntcchannel.cpp",
+      "src/groups/bmq/bmqio/bmqio_ntcchannel.h",
+      "src/groups/bmq/bmqio/bmqio_ntcchannel.t.cpp",
+      "src/groups/bmq/bmqio/bmqio_ntcchannelfactory.t.cpp",
+      "src/groups/bmq/bmqio/bmqio_resolvingchannelfactory.cpp",
+      "src/groups/bmq/bmqio/bmqio_resolvingchannelfactory.h",
+      "src/groups/bmq/bmqio/bmqio_testchannel.cpp",
+      "src/groups/bmq/bmqio/bmqio_testchannel.h",
+      "src/groups/mqb/mqba/mqba_adminsession.t.cpp",
+      "src/groups/mqb/mqba/mqba_application.cpp",
+      "src/groups/mqb/mqba/mqba_application.h",
+      "src/groups/mqb/mqbnet/mqbnet_session.h",
+      "src/groups/mqb/mqbnet/mqbnet_tcpsessionfactory.g.cpp"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "fa52349d46744cc11ca4679e30f437fd55749ff6",
+    "authorDate": "2026-07-27T10:21:45-04:00",
+    "subject": "Fix[mqbc::IncoreCSL]: Gate e_UPDATE until a snapshot is applied (#1635)",
+    "body": "Signed-off-by: Yuan Jing Vincent Yan <yyan82@bloomberg.net>",
+    "issueRefs": [
+      "#1635"
+    ],
+    "touchedFiles": [
+      "src/groups/mqb/mqbc/mqbc_incoreclusterstateledger.cpp",
+      "src/groups/mqb/mqbc/mqbc_incoreclusterstateledger.h",
+      "src/groups/mqb/mqbc/mqbc_incoreclusterstateledger.t.cpp"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "96e1dfbfad04dc0a864c0ba202dcf9b16193337a",
+    "authorDate": "2026-07-24T13:59:37-04:00",
+    "subject": "Fix[bmqp]: Guard Storage/Recovery iterators against zero-progress loop (#1640)",
+    "body": "Signed-off-by: Yuan Jing Vincent Yan <yyan82@bloomberg.net>",
+    "issueRefs": [
+      "#1640"
+    ],
+    "touchedFiles": [
+      "src/groups/bmq/bmqp/bmqp_recoverymessageiterator.cpp",
+      "src/groups/bmq/bmqp/bmqp_recoverymessageiterator.t.cpp",
+      "src/groups/bmq/bmqp/bmqp_storagemessageiterator.cpp",
+      "src/groups/bmq/bmqp/bmqp_storagemessageiterator.t.cpp"
+    ],
+    "fixCategory": "memory_leak"
+  }
+]

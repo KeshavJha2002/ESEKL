@@ -1,0 +1,821 @@
+{
+  "repoName": "taskforcesh/bullmq",
+  "domain": "message_queues",
+  "gitCommitHash": "c06b51cd3aacd0d9ee65e2544220c89f24d2479c",
+  "analyzedAt": "2026-08-22T15:10:00.000Z",
+  "overview": {
+    "purpose": "High-performance, Redis-backed distributed message queue and job orchestration framework supporting atomic state transitions, token-fenced distributed leasing, parent-child dependency workflows, delayed scheduling, deduplication, and sandboxed child process execution.",
+    "architectureType": "Redis-backed client-worker queue with token-fenced leasing, Lua-mediated atomic state transitions, mark-and-sweep stall detection, and child process isolation",
+    "keyDifferentiators": [
+      "Atomic Lua-mediated state transitions: All queue state transitions (wait, active, delayed, completed, failed, paused, waiting-children) execute as atomic single-roundtrip Redis Lua scripts, eliminating distributed consensus overhead.",
+      "Token-fenced distributed leasing: Workers acquire unique UUID ownership tokens upon dequeue and renew locks via periodic batch heartbeats; state finalization strictly validates the ownership token in Lua before releasing locks.",
+      "Parent-child dependency flows: FlowProducer enables tree-structured job DAGs where parent tasks remain in waiting-children state until all child dependencies atomically report completion or handled failure.",
+      "Decentralized two-phase mark-and-sweep stall recovery: Workers periodically mark active jobs in a Redis set and sweep unrenewed expired locks back to wait or failed states without requiring a central coordinator.",
+      "Sandboxed execution via ChildPool: Isolates long-running, CPU-intensive, or memory-heavy tasks in separate Node.js processes or worker threads with automated lifecycle management and SIGKILL recovery."
+    ]
+  },
+  "components": [
+    {
+      "name": "Queue",
+      "role": "Job Enqueueing and Administrative Broker Interface",
+      "primaryFiles": [
+        "src/classes/queue.ts",
+        "src/classes/queue-base.ts",
+        "src/classes/queue-getters.ts"
+      ],
+      "publicInterfaces": [
+        "add(name: string, data: any, opts?: JobsOptions): Promise<Job>",
+        "addBulk(jobs: Array<{ name: string; data: any; opts?: BulkJobOptions }>): Promise<Job[]>",
+        "pause(): Promise<void>",
+        "resume(): Promise<void>",
+        "clean(grace: number, limit: number, type?: 'completed' | 'wait' | 'active' | 'paused' | 'delayed' | 'failed'): Promise<string[]>",
+        "obliterate(opts?: ObliterateOpts): Promise<void>",
+        "getJob(jobId: string): Promise<Job | undefined>",
+        "getJobs(types: JobType[], start?: number, end?: number, asc?: boolean): Promise<Job[]>"
+      ],
+      "dependencies": [
+        "RedisQueueBackend",
+        "Job",
+        "JobScheduler",
+        "QueueGetters",
+        "QueueKeys"
+      ],
+      "stateManaged": [
+        "bull:<qname>:id (Job ID counter)",
+        "bull:<qname>:meta (Queue metadata and paused/maxed flags)",
+        "bull:<qname>:wait (FIFO/LIFO waiting list)",
+        "bull:<qname>:paused (Paused waiting list)",
+        "bull:<qname>:marker (Stream notification marker)"
+      ],
+      "evidence": {
+        "filePath": "src/classes/queue.ts",
+        "lineRange": [143, 260],
+        "symbol": "Queue",
+        "observation": "Queue acts as the primary job enqueueing and queue administrative interface, delegating persistence, job counters, and queue state to RedisQueueBackend.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Worker",
+      "role": "Task Consumer, Concurrency Engine and Stall Recoverer",
+      "primaryFiles": [
+        "src/classes/worker.ts",
+        "src/classes/main-worker.ts"
+      ],
+      "publicInterfaces": [
+        "run(): Promise<void>",
+        "pause(doNotWaitActive?: boolean): Promise<void>",
+        "resume(): Promise<void>",
+        "close(force?: boolean): Promise<void>",
+        "startStalledCheckTimer(): Promise<void>",
+        "getNextJob(token: string, opts?: GetNextJobOptions): Promise<Job | undefined>"
+      ],
+      "dependencies": [
+        "RedisQueueBackend",
+        "LockManager",
+        "Job",
+        "ChildPool",
+        "AsyncFifoQueue"
+      ],
+      "stateManaged": [
+        "bull:<qname>:active (List of currently executing job IDs)",
+        "bull:<qname>:stalled (Set of candidate stalled job IDs)",
+        "bull:<qname>:stalled-check (Mutex key for stall sweep concurrency)",
+        "In-flight concurrency semaphore and AsyncFifoQueue"
+      ],
+      "evidence": {
+        "filePath": "src/classes/worker.ts",
+        "lineRange": [196, 310],
+        "symbol": "Worker",
+        "observation": "Worker orchestrates the main dequeue loop, concurrency-bounded execution, lock tracking via LockManager, and periodic mark-and-sweep stalled job recovery.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Job",
+      "role": "Task Envelope, Execution Context and State Transition Controller",
+      "primaryFiles": [
+        "src/classes/job.ts"
+      ],
+      "publicInterfaces": [
+        "Job.create(queue, name, data, opts): Promise<Job>",
+        "moveToCompleted(returnValue: any, token: string, fetchNext?: boolean): Promise<void | any[]>",
+        "moveToFailed(err: Error, token: string, fetchNext?: boolean): Promise<void | any[]>",
+        "moveToWait(token?: string): Promise<number>",
+        "moveToDelayed(timestamp: number, token?: string): Promise<void>",
+        "moveToWaitingChildren(token: string, opts?: MoveToWaitingChildrenOpts): Promise<boolean>",
+        "changeDelay(delay: number): Promise<void>",
+        "changePriority(opts: { priority?: number; lifo?: boolean }): Promise<void>",
+        "updateProgress(progress: JobProgress): Promise<void>",
+        "waitUntilFinished(queueEvents: QueueEvents, ttl?: number): Promise<any>"
+      ],
+      "dependencies": [
+        "RedisQueueBackend",
+        "Backoffs",
+        "MinimalQueue"
+      ],
+      "stateManaged": [
+        "bull:<qname>:<jobId> (Hash containing data, opts, name, timestamp, processedOn, finishedOn, returnvalue, failedReason, stacktrace, progress, parentKey, deid, ats, atm, stc)",
+        "bull:<qname>:<jobId>:lock (String key holding worker ownership token)",
+        "bull:<qname>:<jobId>:logs (List of execution log entries)",
+        "bull:<qname>:<jobId>:dependencies (Set of unresolved child job keys)",
+        "bull:<qname>:<jobId>:processed (Hash of completed child return values)"
+      ],
+      "evidence": {
+        "filePath": "src/classes/job.ts",
+        "lineRange": [54, 180],
+        "symbol": "Job",
+        "observation": "Job encapsulates the job state envelope and transition operations, invoking backend scripts for token-checked completions, failures, progress updates, and dependency tracking.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "LockManager",
+      "role": "Heartbeat-Driven Distributed Lease Renewer and Job Canceller",
+      "primaryFiles": [
+        "src/classes/lock-manager.ts"
+      ],
+      "publicInterfaces": [
+        "start(): void",
+        "close(): Promise<void>",
+        "trackJob(jobId: string, token: string, ts: number, shouldCreateController?: boolean): AbortController | undefined",
+        "untrackJob(jobId: string): void",
+        "cancelJob(jobId: string, reason?: string): boolean",
+        "cancelAllJobs(reason?: string): void",
+        "getActiveJobCount(): number",
+        "getTrackedJobIds(): string[]"
+      ],
+      "dependencies": [
+        "LockManagerWorkerContext",
+        "AbortController"
+      ],
+      "stateManaged": [
+        "trackedJobs Map<string, { token: string, ts: number, abortController?: AbortController }>",
+        "lockRenewalTimer (NodeJS.Timeout)"
+      ],
+      "evidence": {
+        "filePath": "src/classes/lock-manager.ts",
+        "lineRange": [17, 95],
+        "symbol": "LockManager",
+        "observation": "Periodically batches and executes extendLocks Lua script for all active jobs nearing half their lockRenewTime expiration, and aborts jobs on cancellation.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "FlowProducer",
+      "role": "Hierarchical Workflow and Parent-Child Dependency Engine",
+      "primaryFiles": [
+        "src/classes/flow-producer.ts"
+      ],
+      "publicInterfaces": [
+        "add(flow: FlowJob, opts?: FlowOpts): Promise<JobNode>",
+        "addBulk(flows: FlowJob[], opts?: FlowOpts): Promise<JobNode[]>",
+        "getFlow(opts: NodeOpts): Promise<JobNode | undefined>"
+      ],
+      "dependencies": [
+        "RedisQueueBackend",
+        "Job",
+        "QueueKeys"
+      ],
+      "stateManaged": [
+        "bull:<parentQ>:<parentId>:dependencies (Set of child job keys)",
+        "bull:<parentQ>:<parentId>:processed (Hash mapping child job keys to results)",
+        "bull:<parentQ>:waiting-children (Sorted set of parent jobs awaiting dependencies)"
+      ],
+      "evidence": {
+        "filePath": "src/classes/flow-producer.ts",
+        "lineRange": [96, 175],
+        "symbol": "FlowProducer",
+        "observation": "Constructs and atomically persists hierarchical job dependency trees where child nodes must successfully complete before parent nodes transition to wait state.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "ChildPool & Sandbox",
+      "role": "Process-Isolated Worker Subsystem and Thread Pool",
+      "primaryFiles": [
+        "src/classes/child-pool.ts",
+        "src/classes/child.ts",
+        "src/classes/child-processor.ts",
+        "src/classes/sandbox.ts"
+      ],
+      "publicInterfaces": [
+        "retain(processFile: string): Promise<Child>",
+        "release(child: Child): void",
+        "remove(child: Child): void",
+        "kill(child: Child, signal?: string): Promise<void>",
+        "clean(): Promise<void>"
+      ],
+      "dependencies": [
+        "child_process",
+        "worker_threads"
+      ],
+      "stateManaged": [
+        "retained: Record<number, Child>",
+        "free: Record<string, Child[]>"
+      ],
+      "evidence": {
+        "filePath": "src/classes/child-pool.ts",
+        "lineRange": [19, 88],
+        "symbol": "ChildPool",
+        "observation": "Manages a pool of isolated Node.js child processes or worker threads for sandboxed job execution, handling process lifecycle, message IPC, and failure cleanup.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "JobScheduler",
+      "role": "Cron and Recurring Schedule Dispatcher",
+      "primaryFiles": [
+        "src/classes/job-scheduler.ts"
+      ],
+      "publicInterfaces": [
+        "upsertJobScheduler(jobSchedulerId: string, repeatOpts: RepeatOptions, name: string, data?: any, opts?: JobsOptions): Promise<JobSchedulerJson>",
+        "removeJobScheduler(jobSchedulerId: string): Promise<number>",
+        "getJobSchedulers(start?: number, end?: number, asc?: boolean): Promise<JobSchedulerJson[]>"
+      ],
+      "dependencies": [
+        "RedisQueueBackend",
+        "cron-parser"
+      ],
+      "stateManaged": [
+        "bull:<qname>:repeat (Sorted set of scheduled execution timestamps)",
+        "bull:<qname>:repeat:<schedulerId> (Hash storing schedule options and template)"
+      ],
+      "evidence": {
+        "filePath": "src/classes/job-scheduler.ts",
+        "lineRange": [50, 120],
+        "symbol": "JobScheduler",
+        "observation": "Calculates cron and interval schedules, maintaining scheduler definitions in Redis and enqueueing delayed job instances atomically.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "QueueEvents",
+      "role": "Redis Stream Event Listener and Global Notification Hub",
+      "primaryFiles": [
+        "src/classes/queue-events.ts",
+        "src/classes/queue-events-producer.ts"
+      ],
+      "publicInterfaces": [
+        "on(event: string, listener: (...args: any[]) => void): this",
+        "close(): Promise<void>",
+        "waitUntilReady(): Promise<RedisClient>"
+      ],
+      "dependencies": [
+        "RedisConnection",
+        "XREAD / Streams"
+      ],
+      "stateManaged": [
+        "bull:<qname>:events (Redis Stream)",
+        "lastId (Stream reading cursor)"
+      ],
+      "evidence": {
+        "filePath": "src/classes/queue-events.ts",
+        "lineRange": [60, 150],
+        "symbol": "QueueEvents",
+        "observation": "Consumes Redis event streams (bull:<qname>:events) via blocking XREAD to dispatch typed global queue events (waiting, active, completed, failed, stalled, progress, drained).",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    }
+  ],
+  "stateMachines": [
+    {
+      "name": "TaskLifecycle",
+      "states": [
+        "Wait",
+        "Active",
+        "Delayed",
+        "Prioritized",
+        "WaitingChildren",
+        "Completed",
+        "Failed",
+        "Paused"
+      ],
+      "initialState": "Wait",
+      "terminalStates": [
+        "Completed",
+        "Failed"
+      ],
+      "transitions": [
+        {
+          "from": "Wait",
+          "to": "Active",
+          "event": "Worker Dequeue (moveToActive)",
+          "guardConditions": [
+            "Worker concurrency slot available",
+            "Queue not paused or rate-limited",
+            "Queue marker consumed"
+          ],
+          "mechanism": "Redis Lua script moveToActive-11.lua executes RPOPLPUSH from wait key to active key, sets lock with SET PX NX, sets processedOn and pb fields, increments ats counter, and appends active event to event stream.",
+          "evidence": {
+            "filePath": "src/commands/moveToActive-11.lua",
+            "lineRange": [74, 91],
+            "observation": "Moves jobId from wait list to active list via RPOPLPUSH, invokes prepareJobForProcessing to set lock key with worker token and lockDuration.",
+            "luaOrCodeBehavior": "rcall('RPOPLPUSH', waitKey, activeKey); rcall('SET', lockKey, token, 'PX', lockDuration); rcall('HMSET', jobKey, 'processedOn', processedOn); rcall('HINCRBY', jobKey, 'ats', 1); rcall('XADD', eventStreamKey, '*', 'event', 'active')",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Active",
+          "to": "Completed",
+          "event": "Job Completion (moveToFinished / moveToCompleted)",
+          "guardConditions": [
+            "Worker owns valid lock token",
+            "No unresolved child dependencies (SCARD == 0)",
+            "No unsuccessful children (ZCARD == 0)"
+          ],
+          "mechanism": "Redis Lua script moveToFinished-14.lua validates token via removeLock, removes jobId from active list via LREM, adds to completed sorted set via ZADD, updates returnvalue and finishedOn, decrements parent dependencies if parent exists, and emits completed event.",
+          "evidence": {
+            "filePath": "src/commands/moveToFinished-14.lua",
+            "lineRange": [77, 126],
+            "observation": "Validates token match, removes lock, removes jobId from active list via LREM, and transitions job to completed set while notifying parent dependencies.",
+            "luaOrCodeBehavior": "removeLock(jobIdKey, stalledKey, token, jobId); rcall('LREM', activeKey, -1, jobId); rcall('ZADD', completedKey, timestamp, jobId); rcall('HSET', jobIdKey, 'returnvalue', val, 'finishedOn', ts); rcall('XADD', eventStreamKey, '*', 'event', 'completed')",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Active",
+          "to": "Failed",
+          "event": "Job Failure (moveToFinished / moveToFailed when retries exhausted)",
+          "guardConditions": [
+            "Worker owns valid lock token",
+            "Attempts exhausted (attemptsMade >= attempts) or UnrecoverableError thrown"
+          ],
+          "mechanism": "Redis Lua script moveToFinished-14.lua validates lock token via removeLock, removes jobId from active list, adds to failed sorted set via ZADD, sets failedReason and stacktrace, increments atm counter, and emits failed and retries-exhausted events.",
+          "evidence": {
+            "filePath": "src/commands/moveToFinished-14.lua",
+            "lineRange": [77, 205],
+            "observation": "Verifies lock ownership, removes from active, adds to failed set, updates attemptsMade via HINCRBY, and emits failed and retries-exhausted stream events.",
+            "luaOrCodeBehavior": "removeLock(jobIdKey, stalledKey, token, jobId); rcall('LREM', activeKey, -1, jobId); rcall('ZADD', failedKey, timestamp, jobId); rcall('HSET', jobIdKey, 'failedReason', reason, 'finishedOn', ts); rcall('HINCRBY', jobIdKey, 'atm', 1)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Active",
+          "to": "Delayed",
+          "event": "Retry with Backoff / Manual moveToDelayed",
+          "guardConditions": [
+            "Worker owns valid lock token",
+            "attemptsMade < attempts",
+            "Backoff delay > 0"
+          ],
+          "mechanism": "Redis Lua script moveToDelayed-12.lua validates lock token, removes from active list via LREM, calculates score (timestamp + delay) * 0x1000, inserts into delayed sorted set via ZADD, adds delay marker, and emits delayed event.",
+          "evidence": {
+            "filePath": "src/commands/moveToDelayed-12.lua",
+            "lineRange": [60, 110],
+            "observation": "Removes lock, removes from active list, computes 64-bit delayed score timestamp * 0x1000 + sub-priority, and inserts into delayed zset.",
+            "luaOrCodeBehavior": "removeLock(jobIdKey, stalledKey, token, jobId); rcall('LREM', activeKey, -1, jobId); rcall('ZADD', delayedKey, score, jobId); addDelayMarkerIfNeeded(markerKey, delayedKey); rcall('XADD', eventStreamKey, '*', 'event', 'delayed')",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Active",
+          "to": "Wait",
+          "event": "Immediate Retry / Rate-limit Backpressure (retryJob / moveJobFromActiveToWait)",
+          "guardConditions": [
+            "Worker owns valid lock token",
+            "attemptsMade < attempts",
+            "Zero backoff delay"
+          ],
+          "mechanism": "Redis Lua script retryJob-11.lua or moveJobFromActiveToWait-9.lua validates lock token, removes from active list via LREM, pushes jobId to wait list (LPUSH/RPUSH based on lifo), increments atm, and emits waiting event.",
+          "evidence": {
+            "filePath": "src/commands/retryJob-11.lua",
+            "lineRange": [40, 90],
+            "observation": "Verifies token, removes lock, removes from active list, and re-enqueues into wait list.",
+            "luaOrCodeBehavior": "removeLock(jobIdKey, stalledKey, token, jobId); rcall('LREM', activeKey, -1, jobId); rcall('RPUSH', waitKey, jobId); rcall('HINCRBY', jobIdKey, 'atm', 1); rcall('XADD', eventStreamKey, '*', 'event', 'waiting')",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Active",
+          "to": "WaitingChildren",
+          "event": "Parent Waits For Flow Subtasks (moveToWaitingChildren)",
+          "guardConditions": [
+            "Worker owns valid lock token",
+            "Job has pending dependencies (SCARD dependenciesKey > 0)",
+            "Job has no failed children (ZCARD unsuccessfulKey == 0)"
+          ],
+          "mechanism": "Redis Lua script moveToWaitingChildren-7.lua validates lock token, removes from active list via LREM, inserts jobId into waiting-children sorted set via ZADD score timestamp, and emits waiting-children event.",
+          "evidence": {
+            "filePath": "src/commands/moveToWaitingChildren-7.lua",
+            "lineRange": [58, 92],
+            "observation": "Releases lock, removes from active list, adds to waiting-children zset with timestamp score, and emits waiting-children stream event.",
+            "luaOrCodeBehavior": "removeLock(jobKey, stalledKey, token, jobId); rcall('LREM', activeKey, -1, jobId); rcall('ZADD', waitingChildrenKey, score, jobId); rcall('XADD', eventStreamKey, '*', 'event', 'waiting-children')",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "WaitingChildren",
+          "to": "Wait",
+          "event": "All Children Completed (updateParentDepsIfNeeded / moveParentToWait)",
+          "guardConditions": [
+            "Parent dependencies set empty (SCARD parentDependenciesKey == 0)",
+            "Parent job exists in waiting-children zset"
+          ],
+          "mechanism": "Redis Lua script include moveParentToWait.lua removes parentId from waiting-children zset via ZREM, checks parent priority/delay, and pushes parentId to wait list (or prioritized zset), emitting waiting event.",
+          "evidence": {
+            "filePath": "src/commands/includes/moveParentToWait.lua",
+            "lineRange": [11, 44],
+            "observation": "Atomically pops parent from waiting-children set and pushes to wait list or prioritized zset once all child dependencies finish.",
+            "luaOrCodeBehavior": "rcall('ZREM', parentWaitingChildrenKey, parentId); rcall('RPUSH', parentWaitKey, parentId); rcall('XADD', parentQueueKey .. ':events', '*', 'event', 'waiting')",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Active",
+          "to": "Wait",
+          "event": "Stalled Task Recovery (moveStalledJobsToWait)",
+          "guardConditions": [
+            "Lock key missing (EXISTS jobKey:lock == 0)",
+            "stalledCounter <= maxStalledCount"
+          ],
+          "mechanism": "Redis Lua script moveStalledJobsToWait-9.lua checks members in stalledKey; if lock key is expired/missing, removes jobId from active list, increments stc counter, moves job to wait list, and emits stalled event.",
+          "evidence": {
+            "filePath": "src/commands/moveStalledJobsToWait-9.lua",
+            "lineRange": [65, 110],
+            "observation": "2-phase sweep removes active job without lock, increments stalled counter (stc), re-enqueues into wait list, and emits stalled event.",
+            "luaOrCodeBehavior": "if rcall('EXISTS', jobKey .. ':lock') == 0 then rcall('LREM', activeKey, 1, jobId); rcall('HINCRBY', jobKey, 'stc', 1); moveJobToWait(...); rcall('XADD', eventStreamKey, '*', 'event', 'stalled')",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Delayed",
+          "to": "Wait",
+          "event": "Delay Timer Expired (promoteDelayedJobs / promote)",
+          "guardConditions": [
+            "Delayed score <= current timestamp (score <= timestamp * 0x1000)"
+          ],
+          "mechanism": "Redis Lua script include promoteDelayedJobs.lua queries delayed zset with ZRANGEBYSCORE, removes expired jobs from delayed zset via ZREM, and pushes to wait list (or prioritized zset), emitting waiting event.",
+          "evidence": {
+            "filePath": "src/commands/includes/promoteDelayedJobs.lua",
+            "lineRange": [10, 50],
+            "observation": "Evaluates delayed sorted set scores against Redis server timestamp and moves mature jobs into the wait list.",
+            "luaOrCodeBehavior": "local jobs = rcall('ZRANGEBYSCORE', delayedKey, 0, score, 'LIMIT', 0, 1000); rcall('ZREM', delayedKey, unpack(jobs)); addJobInTargetList(waitKey, markerKey, 'RPUSH', ...); rcall('XADD', eventStreamKey, '*', 'event', 'waiting')",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Prioritized",
+          "to": "Active",
+          "event": "Worker Priority Dequeue (moveJobFromPrioritizedToActive)",
+          "guardConditions": [
+            "Wait list empty",
+            "Prioritized zset has items",
+            "Worker slot available"
+          ],
+          "mechanism": "Redis Lua script moveToActive-11.lua calls moveJobFromPrioritizedToActive (using ZPOPMIN on prioritized key), moves jobId to active list, acquires lock, and initializes job processing.",
+          "evidence": {
+            "filePath": "src/commands/includes/moveJobFromPrioritizedToActive.lua",
+            "lineRange": [1, 25],
+            "observation": "Pops highest-priority job from prioritized sorted set and pushes to active list.",
+            "luaOrCodeBehavior": "local result = rcall('ZPOPMIN', prioritizedKey, 1); if #result > 0 then rcall('RPUSH', activeKey, result[1]); return result[1] end",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-01",
+      "atomicStatement": "moveToFinished rejects completion with return code -6 when the supplied worker lock token does not match the token stored in key bull:<qname>:<jobId>:lock, and returns code -2 if the lock key does not exist.",
+      "enforcingMechanism": "removeLock Lua helper function in moveToFinished-14.lua (GET lockKey comparison against token)",
+      "sourceLocation": {
+        "filePath": "src/commands/includes/removeLock.lua",
+        "lineRange": [1, 20]
+      },
+      "testEvidence": {
+        "filePath": "tests/job.test.ts",
+        "testFunction": "when job is not in active state / marks the job as completed",
+        "lineRange": [618, 725],
+        "observation": "Verifies that completion is rejected and error is thrown when token or active state is invalid."
+      },
+      "historicalContext": {
+        "commitHash": "c06b51cd3aacd0d9ee65e2544220c89f24d2479c",
+        "issueOrPr": "Core Architecture",
+        "context": "Fundamental fencing token invariant ensuring that expired/stalled workers cannot corrupt job completion."
+      }
+    },
+    {
+      "id": "INV-02",
+      "atomicStatement": "moveStalledJobsToWait sets the deferred failure reason 'job stalled more than allowable limit' in hash field defa and forces job transition to failed state once the stalled counter stc exceeds maxStalledCount for non-repeatable jobs.",
+      "enforcingMechanism": "Redis Lua script moveStalledJobsToWait-9.lua (HINCRBY stc check against maxStalledJobCount and scheduler key existence probe)",
+      "sourceLocation": {
+        "filePath": "src/commands/moveStalledJobsToWait-9.lua",
+        "lineRange": [75, 100]
+      },
+      "testEvidence": {
+        "filePath": "tests/stalled_jobs.test.ts",
+        "testFunction": "when stalled jobs stall more than allowable stalled limit moves jobs to failed",
+        "lineRange": [167, 244],
+        "observation": "Verifies that after maxStalledCount (0), stalled jobs fail with 'job stalled more than allowable limit' and attemptsStarted is incremented."
+      },
+      "historicalContext": {
+        "commitHash": "d1fcda5f9c4f53b56846a73421d6eb9a32603aa4",
+        "issueOrPr": "#4222",
+        "context": "Fixed infinite stalling loops by verifying scheduler existence before exempting repeatable jobs."
+      }
+    },
+    {
+      "id": "INV-03",
+      "atomicStatement": "Job priorities are strictly clamped to a maximum value of 2^21 - 1 (2,097,151) so that (priority * 2^32 + counter % 2^32) does not exceed 2^53 - 1, preserving IEEE 754 float precision and FIFO order within the same priority level.",
+      "enforcingMechanism": "TypeScript PRIORITY_LIMIT constant in job.ts and getPriorityScore Lua helper bit-packing",
+      "sourceLocation": {
+        "filePath": "src/commands/includes/getPriorityScore.lua",
+        "lineRange": [5, 9]
+      },
+      "testEvidence": {
+        "filePath": "tests/job.test.ts",
+        "testFunction": "enforces priority max of 2^21-1",
+        "lineRange": [40, 110],
+        "observation": "Asserts that setting priority > 2,097,151 is rejected or clamped to prevent precision collapse in Redis sorted set scores."
+      },
+      "historicalContext": {
+        "commitHash": "418de1e51db09ffc8e95bac35015a1057d8a7271",
+        "issueOrPr": "#4261",
+        "context": "Prevented FIFO ordering collapse at high priority values due to Redis double-precision float score limitations."
+      }
+    },
+    {
+      "id": "INV-04",
+      "atomicStatement": "A parent job in waiting-children state cannot transition to wait or prioritized state until every child key in bull:<parentQ>:<parentId>:dependencies is removed via SREM, upon which the parent is moved to wait in the same Lua atomic execution.",
+      "enforcingMechanism": "updateParentDepsIfNeeded.lua and moveParentToWaitIfNoPendingDependencies.lua triggered from moveToFinished-14.lua",
+      "sourceLocation": {
+        "filePath": "src/commands/includes/moveParentToWaitIfNoPendingDependencies.lua",
+        "lineRange": [7, 14]
+      },
+      "testEvidence": {
+        "filePath": "tests/flow.test.ts",
+        "testFunction": "when removeOnFail is true in last pending child moves parent to wait without getting stuck",
+        "lineRange": [68, 120],
+        "observation": "Verifies that parent job is atomically transitioned to wait only when all child dependencies have resolved."
+      },
+      "historicalContext": {
+        "commitHash": "ab7009da8a732d8d5e8f13228e1ef81806422128",
+        "issueOrPr": "#4548",
+        "context": "Refined flow parent dependency option propagation from root parent nodes."
+      }
+    },
+    {
+      "id": "INV-05",
+      "atomicStatement": "LockManager periodically queries all active jobs and executes extendLocks-1.lua for all jobs whose last renewal timestamp exceeds half of lockRenewTime, refreshing Redis lock key TTLs to lockDuration and removing extended job IDs from the stalled set.",
+      "enforcingMechanism": "LockManager startLockExtenderTimer and extendLocks-1.lua SET PX conditional on token match",
+      "sourceLocation": {
+        "filePath": "src/classes/lock-manager.ts",
+        "lineRange": [97, 127]
+      },
+      "testEvidence": {
+        "filePath": "tests/lock_manager.test.ts",
+        "testFunction": "should extend locks for tracked jobs",
+        "lineRange": [228, 268],
+        "observation": "Verifies that tracked jobs have their locks automatically renewed before expiration and unrenewed locks trigger lockRenewalFailed events."
+      },
+      "historicalContext": {
+        "commitHash": "c06b51cd3aacd0d9ee65e2544220c89f24d2479c",
+        "issueOrPr": "Lock Subsystem",
+        "context": "Consolidated worker lock renewal into a centralized, efficient batch timer subsystem."
+      }
+    },
+    {
+      "id": "INV-06",
+      "atomicStatement": "When adding a job with deduplication options and keepLastIfActive enabled while an identical deduplication ID is active, BullMQ buffers the latest job payload in proto-job metadata without creating a duplicate active job, requeuing it automatically upon completion of the active instance.",
+      "enforcingMechanism": "deduplicateJob.lua, storeDeduplicatedNextJob.lua, and requeueDeduplicatedJob.lua invoked during addStandardJob and moveToFinished",
+      "sourceLocation": {
+        "filePath": "src/commands/includes/deduplicateJob.lua",
+        "lineRange": [26, 60]
+      },
+      "testEvidence": {
+        "filePath": "tests/deduplication.test.ts",
+        "testFunction": "preserves custom jobId when requeuing keepLastIfActive proto-jobs",
+        "lineRange": [50, 150],
+        "observation": "Asserts that duplicate jobs added while active are collapsed and executed once after active job finishes, preserving custom job IDs."
+      },
+      "historicalContext": {
+        "commitHash": "6e4972e8fd721035d680ca291049134c3876f8ba",
+        "issueOrPr": "#4190",
+        "context": "Fixed custom jobId loss during keepLastIfActive deduplication requeuing."
+      }
+    },
+    {
+      "id": "INV-07",
+      "atomicStatement": "If a child process or worker thread in ChildPool throws an error or exits before successfully finishing initialization, ChildPool issues an immediate SIGKILL and removes it permanently from the pool rather than returning it to the free list.",
+      "enforcingMechanism": "ChildPool.retain error catch block in src/classes/child-pool.ts",
+      "sourceLocation": {
+        "filePath": "src/classes/child-pool.ts",
+        "lineRange": [68, 87]
+      },
+      "testEvidence": {
+        "filePath": "tests/child-pool.test.ts",
+        "testFunction": "kills child processes that fail init and prevents reuse of dead children",
+        "lineRange": [30, 90],
+        "observation": "Verifies that a child process failing initialization is killed with SIGKILL and never reused for subsequent jobs."
+      },
+      "historicalContext": {
+        "commitHash": "7dd064ec794ff2f8f67a859caf11cd5554ad75e4",
+        "issueOrPr": "#4284",
+        "context": "Resolved bug #4283 where failed child initializations resulted in zombie processes repeatedly failing all queued tasks."
+      }
+    }
+  ],
+  "failureModesAndDefenses": [
+    {
+      "failureMode": "Worker process crash or network partition during job processing (Orphaned / Stalled Jobs)",
+      "detectionMechanism": "Decentralized 2-phase mark-and-sweep: active jobs are added to the stalled set on each check; after stalledInterval, any job in the stalled set whose lock key bull:<qname>:<jobId>:lock has expired (EXISTS == 0) is flagged as stalled.",
+      "recoveryAction": "moveStalledJobsToWait-9.lua sweeps the expired job out of the active list, increments the stalled counter stc, and returns it to the wait list (or marks defa failed if stc > maxStalledCount), emitting a stalled stream event.",
+      "sourceEvidence": {
+        "filePath": "src/commands/moveStalledJobsToWait-9.lua",
+        "lineRange": [53, 111],
+        "observation": "Atomically re-enqueues jobs missing lock keys back to wait list and emits stalled event."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "#4222",
+        "rootCause": "Deleted scheduler left repeatable child jobs orphaned without ever reaching max stalled threshold.",
+        "fixDescription": "Added scheduler existence check in moveStalledJobsToWait-9.lua to fail orphaned jobs whose schedulers were deleted."
+      },
+      "prescribedMitigation": "Configure stalledInterval and lockDuration according to expected task duration and set maxStalledCount >= 1 to prevent poison-pill infinite crash loops."
+    },
+    {
+      "failureMode": "Extended Node.js event loop lag or GC pause exceeding lock duration (Dual Execution Risk)",
+      "detectionMechanism": "LockManager fails to renew lock before lockDuration expires; peer worker's stalled checker sweeps the job and assigns it to a second worker.",
+      "recoveryAction": "When the original lagging worker finally resumes and attempts moveToCompleted/moveToFailed, moveToFinished-14.lua detects lock mismatch/absence via removeLock and returns error code -6 or -2, rejecting state modification and aborting completion.",
+      "sourceEvidence": {
+        "filePath": "src/commands/includes/removeLock.lua",
+        "lineRange": [1, 19],
+        "observation": "removeLock returns -6 when lock token differs or -2 when lock key is missing, rejecting completion."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "Core Architecture",
+        "rootCause": "Event loop block or GC freeze causing lock expiration while job processing continues in memory.",
+        "fixDescription": "Enforced atomic token-checked lock release inside Lua scripts before any state modification."
+      },
+      "prescribedMitigation": "Implement downstream database idempotency tokens / fencing tokens; offload heavy CPU work to sandboxed worker threads using ChildPool."
+    },
+    {
+      "failureMode": "Redis Sentinel failover or abrupt socket disconnect during blocking waitForJob",
+      "detectionMechanism": "Blocking connection (BZPOPMIN) hangs or enters disconnected state without receiving socket EOF during Sentinel master re-election.",
+      "recoveryAction": "Worker's waitForJob catch handler invokes backend.reconnectBlocking() to re-establish the dedicated blocking transport before retrying the dequeue loop.",
+      "sourceEvidence": {
+        "filePath": "src/classes/worker.ts",
+        "lineRange": [823, 843],
+        "observation": "Catches socketless Sentinel disconnects and explicitly calls reconnectBlocking() on the dedicated blocking connection."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "#4384",
+        "rootCause": "Sentinel failover caused blocking client to become stuck in a disconnected state without recovery.",
+        "fixDescription": "Added explicit reconnectBlocking() in worker error handling loop."
+      },
+      "prescribedMitigation": "Maintain separate Redis connections for blocking commands and standard commands, with automated transport recovery on failover events."
+    },
+    {
+      "failureMode": "Poison-pill task crashing child process in sandboxed execution",
+      "detectionMechanism": "Child process emits 'exit' event or throws during child.init() / process execution.",
+      "recoveryAction": "ChildPool immediately cleans references, invokes SIGKILL, deletes retained child entry, and surfaces the failure to Worker as an unhandled error so the job is marked failed.",
+      "sourceEvidence": {
+        "filePath": "src/classes/child-pool.ts",
+        "lineRange": [68, 87],
+        "observation": "ChildPool catches initialization/runtime failure, executes SIGKILL, and purges the child instance."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "#4284",
+        "rootCause": "Failed child initializations remained in the free pool as zombie processes, failing all subsequent jobs.",
+        "fixDescription": "Purged dead/refused child processes with SIGKILL immediately upon init failure."
+      },
+      "prescribedMitigation": "Always isolate untrusted or memory-intensive tasks in sandboxed processes and enforce hard SIGKILL timeouts on unresponsive workers."
+    },
+    {
+      "failureMode": "Redis cluster hash-slot misalignment across multi-key operations",
+      "detectionMechanism": "Redis cluster returns CROSSSLOT error when executing Lua scripts or multi-key operations spanning different key prefixes.",
+      "recoveryAction": "BullMQ encloses all queue key prefixes in Redis hash tags {bull:<qname>} (e.g. {bull:myqueue}:wait, {bull:myqueue}:active), guaranteeing that all keys for a given queue hash to the exact same cluster node.",
+      "sourceEvidence": {
+        "filePath": "src/classes/queue-keys.ts",
+        "lineRange": [1, 60],
+        "observation": "Generates Redis hash tags {prefix:name} for all queue-specific data structures."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "#4186",
+        "rootCause": "Cluster topology changes and multi-key commands caused slot mismatches when hash tags were not strictly unified.",
+        "fixDescription": "Enforced uniform hash-tagging across all queue keys and scripts."
+      },
+      "prescribedMitigation": "Enforce strict hash-tagging on all queue-related keys in Redis cluster environments."
+    }
+  ],
+  "historicalEvolution": [
+    {
+      "milestoneOrBug": "Enforcement of Priority Maximum (2^21 - 1) to Prevent IEEE 754 Float Score Precision Loss",
+      "commitHash": "418de1e51db09ffc8e95bac35015a1057d8a7271",
+      "issueOrPr": "#4261",
+      "rootCause": "Redis sorted set scores are 64-bit IEEE double floats with 53 bits of precision. The bit-packing formula (priority * 2^32 + counter % 2^32) exceeded 2^53 - 1 when priority > 2,097,151, causing precision collapse in the low-order counter bits and destroying FIFO ordering among equal-priority jobs.",
+      "architecturalFix": "Enforced PRIORITY_LIMIT = 2^21 - 1 in Job options validation and documentation, ensuring the packed score always remains strictly within the lossless 53-bit integer range.",
+      "affectedFiles": [
+        "src/classes/job.ts",
+        "src/interfaces/base-job-options.ts",
+        "tests/job.test.ts"
+      ],
+      "evidence": {
+        "filePath": "src/classes/job.ts",
+        "observation": "Defined export const PRIORITY_LIMIT = 2 ** 21 - 1 and added bounds checking."
+      }
+    },
+    {
+      "milestoneOrBug": "Dedicated Blocking Client Recovery After Sentinel Failover Disconnect",
+      "commitHash": "93649b8694a155a7c6fcd596f772e43b86285f1f",
+      "issueOrPr": "#4384",
+      "rootCause": "During Redis Sentinel failover or abrupt socket disconnections while waiting on BZPOPMIN, the dedicated blocking connection was aborted by the watchdog but left in a disconnected transport state, causing the worker loop to hang or throw unhandled connection errors continuously.",
+      "architecturalFix": "Added explicit backend.reconnectBlocking() recovery logic in the worker's waitForJob error handler to ensure the blocking transport is reconnected before resuming dequeue attempts.",
+      "affectedFiles": [
+        "src/classes/worker.ts",
+        "src/classes/redis-connection.ts",
+        "tests/worker.test.ts"
+      ],
+      "evidence": {
+        "filePath": "src/classes/worker.ts",
+        "observation": "Added await this.backend.reconnectBlocking() in waitForJob catch block."
+      }
+    },
+    {
+      "milestoneOrBug": "Purging Zombie Child Processes in ChildPool on Initialization Failure",
+      "commitHash": "7dd064ec794ff2f8f67a859caf11cd5554ad75e4",
+      "issueOrPr": "#4284",
+      "rootCause": "When a sandboxed child process or worker thread threw an exception during initialization, the failed process was not killed and remained eligible for reuse, turning into a zombie worker that instantly failed every subsequent job assigned to it.",
+      "architecturalFix": "Added catch block in ChildPool.retain to issue an immediate SIGKILL to the defective child and purge it from the pool before re-throwing the initialization error.",
+      "affectedFiles": [
+        "src/classes/child-pool.ts",
+        "src/classes/child-processor.ts",
+        "tests/child-pool.test.ts"
+      ],
+      "evidence": {
+        "filePath": "src/classes/child-pool.ts",
+        "observation": "Wrapped child.init() in try/catch and added this.kill(child, 'SIGKILL') upon failure."
+      }
+    },
+    {
+      "milestoneOrBug": "Preservation of Custom jobId When Requeueing keepLastIfActive Deduplication Jobs",
+      "commitHash": "6e4972e8fd721035d680ca291049134c3876f8ba",
+      "issueOrPr": "#4190",
+      "rootCause": "When a deduplicated job with keepLastIfActive: true arrived while an active instance was executing, the buffered proto-job failed to preserve the caller's custom jobId, causing the subsequent requeued job to receive an auto-generated numeric ID upon finalization.",
+      "architecturalFix": "Updated storeDeduplicatedNextJob.lua and requeueDeduplicatedJob.lua to serialize and restore the custom jobId across the deduplication lifecycle.",
+      "affectedFiles": [
+        "src/commands/includes/storeDeduplicatedNextJob.lua",
+        "src/commands/includes/requeueDeduplicatedJob.lua",
+        "tests/deduplication.test.ts"
+      ],
+      "evidence": {
+        "filePath": "src/commands/includes/requeueDeduplicatedJob.lua",
+        "observation": "Extracted and forwarded custom jobId during proto-job promotion in Lua."
+      }
+    },
+    {
+      "milestoneOrBug": "Bounding Stalled Job Retries for Deleted Schedulers",
+      "commitHash": "d1fcda5f9c4f53b56846a73421d6eb9a32603aa4",
+      "issueOrPr": "#4222",
+      "rootCause": "Repeatable jobs were unconditionally exempted from maxStalledCount failure. If a scheduler was deleted while one of its child instances was active and stalled, the stalled job was perpetually moved back to wait, resulting in an infinite stall-retry loop.",
+      "architecturalFix": "Added scheduler hash key existence verification in moveStalledJobsToWait-9.lua; if the parent scheduler hash does not exist and stalledCount > maxStalledCount, the job is failed with 'job stalled more than allowable limit'.",
+      "affectedFiles": [
+        "src/commands/moveStalledJobsToWait-9.lua",
+        "tests/job_scheduler.test.ts"
+      ],
+      "evidence": {
+        "filePath": "src/commands/moveStalledJobsToWait-9.lua",
+        "observation": "Probed repeatKey:jobSchedulerId existence before deciding whether to exempt stalled job from failure."
+      }
+    }
+  ],
+  "unresolvedContradictionsAndBypasses": [
+    {
+      "claimOrGuarantee": "Worker holds exclusive mutual exclusion during task execution.",
+      "contradictionOrBypass": "If worker execution blocks or experiences a GC pause longer than lockDuration without renewing the lock, the mark-and-sweep stalled checker reassigns the job to a second worker. While moveToFinished rejects the first worker's eventual completion via token check (-6), both workers execute business logic concurrently in user space against un-fenced external systems (at-least-once dual execution).",
+      "codeLocation": "src/commands/moveStalledJobsToWait-9.lua:L69-L103 and src/commands/includes/removeLock.lua:L1-L18",
+      "evidence": "The lock token is validated only upon Redis state transition, not during intermediate I/O performed by the worker process."
+    },
+    {
+      "claimOrGuarantee": "FlowProducer atomically coordinates multi-queue workflows.",
+      "contradictionOrBypass": "While single-queue flow trees are executed atomically via addFlow Lua script, cross-queue flows across Redis cluster instances cannot be executed atomically in a single script due to Redis cluster cross-slot limitations, requiring sequential script executions that are vulnerable to partial tree persistence if the client crashes mid-operation.",
+      "codeLocation": "src/classes/flow-producer.ts:L300-L380",
+      "evidence": "Cross-queue parent-child linkages in cluster environments span distinct hash slots {bull:queueA} vs {bull:queueB}."
+    },
+    {
+      "claimOrGuarantee": "ChildPool subprocess isolation prevents event loop blockage.",
+      "contradictionOrBypass": "While subprocess execution isolates JavaScript CPU execution, large job payload parameters and return values must undergo full JSON serialization/deserialization across the Node.js IPC channel, creating main process event loop micro-stalls and doubling memory consumption under high payload volumes.",
+      "codeLocation": "src/classes/child-processor.ts:L50-L100 and src/classes/sandbox.ts:L20-L55",
+      "evidence": "IPC messages pass through process.send() with structured clone / JSON serialization in the parent process."
+    }
+  ],
+  "adversarialCritique": {
+    "boundaryConditions": [
+      "Synchronous un-yielded CPU computation in Node.js event loop exceeding lockDuration + lockRenewTime causes automatic job stalling and dual execution by peer workers.",
+      "Redis Sentinel master failover during multi-command pipeline execution can drop uncommitted pipeline stages, requiring idempotent retry loops.",
+      "NTP clock skew between client application nodes and Redis server host can distort scheduled delay scores in delayed sorted sets.",
+      "Redis cluster multi-queue flows span distinct hash slots and cannot execute within a single atomic Lua script."
+    ],
+    "untestedAssumptions": [
+      "Assumes that user processor functions check AbortSignal or complete within lockDuration without hanging indefinitely on un-instrumented socket I/O.",
+      "Assumes that Redis memory is sufficient to store complete job payloads and parent-child dependency sets without triggering Redis maxmemory eviction policies that could silently drop lock keys or job hashes.",
+      "Assumes monotonic clock consistency for lock renewal intervals on worker hosts."
+    ],
+    "acceptedTradeOffs": [
+      "At-least-once delivery over strict exactly-once processing: Prioritizes throughput and crash recovery over distributed consensus (e.g. 2PC / Raft), requiring downstream handlers to be idempotent.",
+      "Lua script atomicity over distributed storage independence: Deeply couples queue semantics to Redis single-threaded script execution, making backend migration to generic SQL or non-Redis stores non-trivial.",
+      "Polling/sweeping stall detection over distributed heartbeats: Accepts stalledInterval latency (default 30s) before detecting dead workers to avoid high network heartbeat overhead."
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "$comment": "Template for adding a Repo-Local EKU to eku_store/repo_ekus/<repo>.json",
+  "id": "REKU-<REPO>-<001>",
+  "repository": "repo-name",
+  "domain": "Queue, Broker & Distributed Workflow Systems",
+  "substrate": "postgres | redis | sqlite | memory | file | raft | amqp | native",
+  "objectType": "BEHAVIORAL_INVARIANT | IMPLEMENTATION_PATTERN | FAILURE_RECOVERY_MECHANISM",
+  "claim": "Precise mechanical statement of what this repository mechanism guarantees.",
+  "mechanism": "Concrete technical mechanism name (e.g. Relational Lock-Free Dequeue)",
+  "applicabilityConditions": [
+    "Requires PostgreSQL 9.5+ or compatible MVCC relational store supporting row-level SKIP LOCKED."
+  ],
+  "evidenceIds": [
+    "OBS-<REPO>-001"
+  ],
+  "commonKeywords": [
+    "skip_locked",
+    "row_locking",
+    "mvcc_dequeue"
+  ],
+  "uniqueKeywords": [
+    "repo_specific_symbol",
+    "driver_name"
+  ],
+  "keywordFacets": {
+    "concurrencyControl": ["row_level_skipping"],
+    "stateStorage": ["relational_mvcc_table"],
+    "ownershipModel": ["lease_time_fencing"],
+    "failureRecovery": ["two_phase_sweep"],
+    "scheduling": ["priority_scheduled_at"],
+    "shutdownDrain": ["context_cancellation"],
+    "substrate": ["postgres"]
+  },
+  "localContext": "Architectural explanation of why this mechanism exists in this specific repository.",
+  "linkedDomainEkus": [
+    "EKU-QUEUE-007"
+  ],
+  "linkedClaims": [
+    "CLM-007"
+  ],
+  "sourceProvenance": {
+    "filePath": "relative/path/to/source.ext",
+    "lineRange": [10, 25],
+    "queryOrCodeSnippet": "SELECT * FROM jobs FOR UPDATE SKIP LOCKED;"
+  },
+  "testProvenance": {
+    "filePath": "relative/path/to/test.ext",
+    "testName": "TestFunctionName"
+  },
+  "epistemicLabels": [
+    "SOURCE_OBSERVED",
+    "TEST_OBSERVED"
+  ],
+  "abstractionLevel": "REPO_LOCAL",
+  "status": "ACTIVE"
+}

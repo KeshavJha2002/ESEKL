@@ -1,0 +1,1112 @@
+[
+  {
+    "filePath": "pgmq-extension/client-tests/basic_notify_test.py",
+    "testFunction": "test_pgmq_basic_notification",
+    "subScenarioName": "pgmq basic notification",
+    "line": 39,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_pgmq_basic_notification"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/extended_notify_test.py",
+    "testFunction": "test_enable_disable_notifications",
+    "subScenarioName": "enable disable notifications",
+    "line": 203,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_enable_disable_notifications"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/extended_notify_test.py",
+    "testFunction": "test_enable_notify_variations",
+    "subScenarioName": "enable notify variations",
+    "line": 243,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_enable_notify_variations"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/extended_notify_test.py",
+    "testFunction": "test_throttling_mechanism",
+    "subScenarioName": "throttling mechanism",
+    "line": 283,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_throttling_mechanism"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/extended_notify_test.py",
+    "testFunction": "test_no_throttling_when_zero",
+    "subScenarioName": "no throttling when zero",
+    "line": 329,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_no_throttling_when_zero"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/extended_notify_test.py",
+    "testFunction": "test_throttling_with_different_intervals",
+    "subScenarioName": "throttling with different intervals",
+    "line": 359,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_throttling_with_different_intervals"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/extended_notify_test.py",
+    "testFunction": "test_idempotent_enable_disable",
+    "subScenarioName": "idempotent enable disable",
+    "line": 400,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_idempotent_enable_disable"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/extended_notify_test.py",
+    "testFunction": "test_negative_throttle_validation",
+    "subScenarioName": "negative throttle validation",
+    "line": 434,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_negative_throttle_validation"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/extended_notify_test.py",
+    "testFunction": "test_drop_queue_cleans_throttle_table",
+    "subScenarioName": "drop queue cleans throttle table",
+    "line": 454,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_drop_queue_cleans_throttle_table"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/read_grouped_head_test.py",
+    "testFunction": "test_read_grouped_head",
+    "subScenarioName": "read grouped head",
+    "line": 76,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_read_grouped_head"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_valid_simple_routing_key",
+    "subScenarioName": "valid simple routing key",
+    "line": 165,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_valid_simple_routing_key"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_valid_routing_key_with_hyphens",
+    "subScenarioName": "valid routing key with hyphens",
+    "line": 173,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_valid_routing_key_with_hyphens"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_valid_routing_key_with_underscores",
+    "subScenarioName": "valid routing key with underscores",
+    "line": 181,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_valid_routing_key_with_underscores"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_valid_single_segment_routing_key",
+    "subScenarioName": "valid single segment routing key",
+    "line": 191,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_valid_single_segment_routing_key"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_empty_routing_key",
+    "subScenarioName": "invalid empty routing key",
+    "line": 199,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_empty_routing_key"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_null_routing_key",
+    "subScenarioName": "invalid null routing key",
+    "line": 207,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_null_routing_key"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_routing_key_starts_with_dot",
+    "subScenarioName": "invalid routing key starts with dot",
+    "line": 215,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_routing_key_starts_with_dot"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_routing_key_ends_with_dot",
+    "subScenarioName": "invalid routing key ends with dot",
+    "line": 223,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_routing_key_ends_with_dot"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_routing_key_consecutive_dots",
+    "subScenarioName": "invalid routing key consecutive dots",
+    "line": 231,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_routing_key_consecutive_dots"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_routing_key_with_wildcards",
+    "subScenarioName": "invalid routing key with wildcards",
+    "line": 239,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_routing_key_with_wildcards"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_routing_key_with_special_chars",
+    "subScenarioName": "invalid routing key with special chars",
+    "line": 247,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_routing_key_with_special_chars"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_routing_key_with_space",
+    "subScenarioName": "invalid routing key with space",
+    "line": 255,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_routing_key_with_space"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_routing_key_too_long",
+    "subScenarioName": "invalid routing key too long",
+    "line": 263,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_routing_key_too_long"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_valid_pattern_with_star",
+    "subScenarioName": "valid pattern with star",
+    "line": 281,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_valid_pattern_with_star"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_valid_pattern_with_hash",
+    "subScenarioName": "valid pattern with hash",
+    "line": 289,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_valid_pattern_with_hash"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_valid_pattern_star_at_start",
+    "subScenarioName": "valid pattern star at start",
+    "line": 297,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_valid_pattern_star_at_start"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_valid_pattern_hash_at_start",
+    "subScenarioName": "valid pattern hash at start",
+    "line": 305,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_valid_pattern_hash_at_start"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_valid_pattern_mixed_wildcards",
+    "subScenarioName": "valid pattern mixed wildcards",
+    "line": 313,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_valid_pattern_mixed_wildcards"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_valid_pattern_exact_match",
+    "subScenarioName": "valid pattern exact match",
+    "line": 321,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_valid_pattern_exact_match"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_valid_pattern_only_hash",
+    "subScenarioName": "valid pattern only hash",
+    "line": 329,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_valid_pattern_only_hash"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_valid_pattern_only_star",
+    "subScenarioName": "valid pattern only star",
+    "line": 337,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_valid_pattern_only_star"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_empty_pattern",
+    "subScenarioName": "invalid empty pattern",
+    "line": 345,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_empty_pattern"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_null_pattern",
+    "subScenarioName": "invalid null pattern",
+    "line": 353,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_null_pattern"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_pattern_starts_with_dot",
+    "subScenarioName": "invalid pattern starts with dot",
+    "line": 361,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_pattern_starts_with_dot"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_pattern_ends_with_dot",
+    "subScenarioName": "invalid pattern ends with dot",
+    "line": 369,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_pattern_ends_with_dot"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_pattern_consecutive_dots",
+    "subScenarioName": "invalid pattern consecutive dots",
+    "line": 377,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_pattern_consecutive_dots"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_pattern_consecutive_stars",
+    "subScenarioName": "invalid pattern consecutive stars",
+    "line": 385,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_pattern_consecutive_stars"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_pattern_consecutive_hashes",
+    "subScenarioName": "invalid pattern consecutive hashes",
+    "line": 393,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_pattern_consecutive_hashes"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_pattern_adjacent_wildcards_star_hash",
+    "subScenarioName": "invalid pattern adjacent wildcards star hash",
+    "line": 401,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_pattern_adjacent_wildcards_star_hash"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_pattern_adjacent_wildcards_hash_star",
+    "subScenarioName": "invalid pattern adjacent wildcards hash star",
+    "line": 411,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_pattern_adjacent_wildcards_hash_star"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_pattern_special_chars",
+    "subScenarioName": "invalid pattern special chars",
+    "line": 421,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_pattern_special_chars"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_invalid_pattern_too_long",
+    "subScenarioName": "invalid pattern too long",
+    "line": 429,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_pattern_too_long"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_bind_topic_creates_binding",
+    "subScenarioName": "bind topic creates binding",
+    "line": 447,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_bind_topic_creates_binding"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_bind_topic_idempotent",
+    "subScenarioName": "bind topic idempotent",
+    "line": 464,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_bind_topic_idempotent"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_bind_topic_multiple_patterns",
+    "subScenarioName": "bind topic multiple patterns",
+    "line": 484,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_bind_topic_multiple_patterns"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_bind_topic_same_pattern_different_queues",
+    "subScenarioName": "bind topic same pattern different queues",
+    "line": 504,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_bind_topic_same_pattern_different_queues"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_bind_topic_invalid_pattern",
+    "subScenarioName": "bind topic invalid pattern",
+    "line": 529,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_bind_topic_invalid_pattern"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_bind_topic_empty_queue_name",
+    "subScenarioName": "bind topic empty queue name",
+    "line": 546,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_bind_topic_empty_queue_name"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_unbind_topic_removes_binding",
+    "subScenarioName": "unbind topic removes binding",
+    "line": 555,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_unbind_topic_removes_binding"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_unbind_topic_nonexistent_returns_false",
+    "subScenarioName": "unbind topic nonexistent returns false",
+    "line": 580,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_unbind_topic_nonexistent_returns_false"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_drop_queue_cascades_bindings",
+    "subScenarioName": "drop queue cascades bindings",
+    "line": 598,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_drop_queue_cascades_bindings"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_routing_exact_match",
+    "subScenarioName": "routing exact match",
+    "line": 628,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_routing_exact_match"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_routing_star_wildcard",
+    "subScenarioName": "routing star wildcard",
+    "line": 645,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_routing_star_wildcard"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_routing_hash_wildcard",
+    "subScenarioName": "routing hash wildcard",
+    "line": 667,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_routing_hash_wildcard"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_routing_star_vs_hash_difference",
+    "subScenarioName": "routing star vs hash difference",
+    "line": 693,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_routing_star_vs_hash_difference"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_routing_multiple_queues",
+    "subScenarioName": "routing multiple queues",
+    "line": 720,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_routing_multiple_queues"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_routing_no_matches",
+    "subScenarioName": "routing no matches",
+    "line": 763,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_routing_no_matches"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_routing_hash_at_start",
+    "subScenarioName": "routing hash at start",
+    "line": 780,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_routing_hash_at_start"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_routing_catch_all",
+    "subScenarioName": "routing catch all",
+    "line": 805,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_routing_catch_all"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_send_topic_single_queue",
+    "subScenarioName": "send topic single queue",
+    "line": 838,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_topic_single_queue"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_send_topic_multiple_queues",
+    "subScenarioName": "send topic multiple queues",
+    "line": 860,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_topic_multiple_queues"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_send_topic_no_matches",
+    "subScenarioName": "send topic no matches",
+    "line": 892,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_topic_no_matches"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_send_topic_with_headers",
+    "subScenarioName": "send topic with headers",
+    "line": 913,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_topic_with_headers"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_send_topic_with_delay",
+    "subScenarioName": "send topic with delay",
+    "line": 940,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_topic_with_delay"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_send_topic_invalid_routing_key",
+    "subScenarioName": "send topic invalid routing key",
+    "line": 974,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_topic_invalid_routing_key"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_send_topic_null_message",
+    "subScenarioName": "send topic null message",
+    "line": 982,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_topic_null_message"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_send_topic_negative_delay",
+    "subScenarioName": "send topic negative delay",
+    "line": 991,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_topic_negative_delay"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_send_topic_overloaded_functions",
+    "subScenarioName": "send topic overloaded functions",
+    "line": 1003,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_topic_overloaded_functions"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_send_topic_selective_routing",
+    "subScenarioName": "send topic selective routing",
+    "line": 1038,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_topic_selective_routing"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_pattern_rejects_parentheses",
+    "subScenarioName": "pattern rejects parentheses",
+    "line": 1095,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_pattern_rejects_parentheses"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_pattern_rejects_square_brackets",
+    "subScenarioName": "pattern rejects square brackets",
+    "line": 1102,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_pattern_rejects_square_brackets"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_pattern_rejects_dollar",
+    "subScenarioName": "pattern rejects dollar",
+    "line": 1109,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_pattern_rejects_dollar"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_routing_key_rejects_regex_metacharacters",
+    "subScenarioName": "routing key rejects regex metacharacters",
+    "line": 1118,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_routing_key_rejects_regex_metacharacters"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_compiled_regex_escapes_dots",
+    "subScenarioName": "compiled regex escapes dots",
+    "line": 1129,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_compiled_regex_escapes_dots"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_compiled_regex_star_wildcard",
+    "subScenarioName": "compiled regex star wildcard",
+    "line": 1149,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_compiled_regex_star_wildcard"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_compiled_regex_hash_wildcard",
+    "subScenarioName": "compiled regex hash wildcard",
+    "line": 1169,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_compiled_regex_hash_wildcard"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_compiled_regex_mixed_pattern",
+    "subScenarioName": "compiled regex mixed pattern",
+    "line": 1189,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_compiled_regex_mixed_pattern"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_dot_not_matching_arbitrary_characters",
+    "subScenarioName": "dot not matching arbitrary characters",
+    "line": 1213,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_dot_not_matching_arbitrary_characters"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/topics_test.py",
+    "testFunction": "test_hyphen_in_pattern_safe",
+    "subScenarioName": "hyphen in pattern safe",
+    "line": 1234,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_hyphen_in_pattern_safe"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_phase_is_set",
+    "subScenarioName": "phase is set",
+    "line": 215,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_phase_is_set"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_create_queues",
+    "subScenarioName": "create queues",
+    "line": 219,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_create_queues"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_send_messages",
+    "subScenarioName": "send messages",
+    "line": 237,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_messages"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_send_batch",
+    "subScenarioName": "send batch",
+    "line": 280,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_batch"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_verify_pre_state",
+    "subScenarioName": "verify pre state",
+    "line": 292,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_verify_pre_state"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_record_version",
+    "subScenarioName": "record version",
+    "line": 325,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_record_version"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_phase_is_set",
+    "subScenarioName": "phase is set",
+    "line": 341,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_phase_is_set"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_version_changed",
+    "subScenarioName": "version changed",
+    "line": 345,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_version_changed"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_queues_still_exist",
+    "subScenarioName": "queues still exist",
+    "line": 352,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_queues_still_exist"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_messages_survive",
+    "subScenarioName": "messages survive",
+    "line": 359,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_messages_survive"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_message_content_intact",
+    "subScenarioName": "message content intact",
+    "line": 367,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_message_content_intact"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_archive_survives",
+    "subScenarioName": "archive survives",
+    "line": 384,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_archive_survives"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_metrics_work",
+    "subScenarioName": "metrics work",
+    "line": 390,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_metrics_work"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_unlogged_queue_survives",
+    "subScenarioName": "unlogged queue survives",
+    "line": 397,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_unlogged_queue_survives"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_send_new_message",
+    "subScenarioName": "send new message",
+    "line": 409,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_new_message"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_send_with_headers",
+    "subScenarioName": "send with headers",
+    "line": 419,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_with_headers"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_read_messages",
+    "subScenarioName": "read messages",
+    "line": 430,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_read_messages"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_delete_message",
+    "subScenarioName": "delete message",
+    "line": 436,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_delete_message"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_archive_message",
+    "subScenarioName": "archive message",
+    "line": 446,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_archive_message"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_pop_message",
+    "subScenarioName": "pop message",
+    "line": 458,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_pop_message"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_set_vt",
+    "subScenarioName": "set vt",
+    "line": 470,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_set_vt"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_send_batch",
+    "subScenarioName": "send batch",
+    "line": 484,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_batch"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_purge_queue",
+    "subScenarioName": "purge queue",
+    "line": 496,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_purge_queue"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_create_new_queue_post_upgrade",
+    "subScenarioName": "create new queue post upgrade",
+    "line": 511,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_create_new_queue_post_upgrade"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_drop_pre_upgrade_queue",
+    "subScenarioName": "drop pre upgrade queue",
+    "line": 537,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_drop_pre_upgrade_queue"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_partitioned_queue_exists",
+    "subScenarioName": "partitioned queue exists",
+    "line": 559,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_partitioned_queue_exists"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_partitioned_messages_survive",
+    "subScenarioName": "partitioned messages survive",
+    "line": 565,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_partitioned_messages_survive"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_partitioned_send_and_read",
+    "subScenarioName": "partitioned send and read",
+    "line": 576,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_partitioned_send_and_read"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_partitioned_delete",
+    "subScenarioName": "partitioned delete",
+    "line": 588,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_partitioned_delete"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_partitioned_archive",
+    "subScenarioName": "partitioned archive",
+    "line": 598,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_partitioned_archive"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_partitioned_metrics",
+    "subScenarioName": "partitioned metrics",
+    "line": 608,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_partitioned_metrics"
+  },
+  {
+    "filePath": "pgmq-extension/client-tests/upgrade_test.py",
+    "testFunction": "test_drop_partitioned_queue",
+    "subScenarioName": "drop partitioned queue",
+    "line": 614,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_drop_partitioned_queue"
+  }
+]

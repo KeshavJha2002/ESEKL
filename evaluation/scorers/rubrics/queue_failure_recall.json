@@ -1,0 +1,162 @@
+{
+  "$schema": "../hidden_key.schema.json",
+  "suiteId": "RUBRIC-QUEUE-FAILURES-V4",
+  "suiteTitle": "Queue Second-Order Failure Mode Recall (v4 Discoveries)",
+  "description": "Hardened rubric evaluating recall of seven second-order queue failure modes using multi-facet semantic matching.",
+  "dimensions": {
+    "evidence_recall_weight": 0.35,
+    "contract_coverage_weight": 0.25,
+    "failure_scenario_weight": 0.20,
+    "validation_test_weight": 0.10,
+    "counterexample_weight": 0.10
+  },
+  "hiddenKeys": [
+    {
+      "id": "KEY-001",
+      "description": "Fenced domain result promotion and transactional outbox emission guarded against superseded workers.",
+      "acceptable_phrasings": [
+        "fenced domain",
+        "result promotion",
+        "outbox",
+        "token fencing",
+        "side-effect",
+        "generation token",
+        "superseded worker"
+      ],
+      "required_evidence_ids": ["CLM-015", "OBS-BULLMQ-002", "OBS-LITEQUEUE-002"],
+      "must_include_contract_terms": ["generation", "token", "fence", "outbox", "promotion"],
+      "must_include_failure_trigger": ["pause", "gc", "stale", "superseded", "zombie"],
+      "must_include_validation_shape": ["0 rows", "reject", "rollback", "conflict"],
+      "disallowed_generic_matches": ["use locks", "be careful with workers"],
+      "business_contract_expected": "Authoritative business writes, ledger entries, or outbox records must be fenced by the current execution generation token.",
+      "failure_scenario_expected": "Paused worker wakes after lease expiry and attempts domain writes during concurrent execution by replacement worker.",
+      "validation_test_expected": "Inject worker delay, wait for lease expiry, let replacement worker succeed, verify original worker's write is rejected with 0 rows mutated.",
+      "weight": 1.0
+    },
+    {
+      "id": "KEY-002",
+      "description": "River state-only finalization edge condition (state='running' without worker generation token check).",
+      "acceptable_phrasings": [
+        "state-only",
+        "state = 'running'",
+        "river",
+        "unfenced completion",
+        "tokenless finalization"
+      ],
+      "required_evidence_ids": ["OBS-RIVER-006", "HIST-RIVER-003"],
+      "must_include_contract_terms": ["state", "running", "token", "finalization"],
+      "must_include_failure_trigger": ["cancellation", "lease expired", "uninterrupted", "slow worker"],
+      "must_include_validation_shape": ["execute without renewer", "verify completion sql"],
+      "disallowed_generic_matches": ["database status"],
+      "business_contract_expected": "Storage engine must enforce ownership tokens or document state-only finalization limitations to prevent un-interrupted stale completes.",
+      "failure_scenario_expected": "Slow worker executes without cancellation check and completes job row despite lease expiration.",
+      "validation_test_expected": "Execute job without renewer, verify whether completion SQL succeeds on state='running' alone.",
+      "weight": 1.0
+    },
+    {
+      "id": "KEY-003",
+      "description": "Authoritative storage-time recovery vs caller-supplied VM-local 'now' timestamp footgun.",
+      "acceptable_phrasings": [
+        "caller-supplied",
+        "now()",
+        "storage-side time",
+        "vm clock",
+        "clock drift",
+        "ntp skew"
+      ],
+      "required_evidence_ids": ["CLM-016", "OBS-PGMQ-001", "OBS-RIVER-007"],
+      "must_include_contract_terms": ["storage-side", "clock_timestamp", "server time", "caller-supplied"],
+      "must_include_failure_trigger": ["clock drift", "skew", "ntp", "step clock"],
+      "must_include_validation_shape": ["step vm clock", "recovery schedule unchanged"],
+      "disallowed_generic_matches": ["use timestamps"],
+      "business_contract_expected": "Lease evaluation and recovery sweeps must rely solely on storage engine server time, forbidding application-supplied timestamps in production queries.",
+      "failure_scenario_expected": "Worker VM clock drifts forward/backward by 30 seconds, causing premature rescue or stalled job starvation.",
+      "validation_test_expected": "Step client VM clock by +/- 60 seconds while keeping database clock steady; assert recovery schedule remains unchanged.",
+      "weight": 1.0
+    },
+    {
+      "id": "KEY-004",
+      "description": "Separate tracking of attempts-started, attempts-completed, and worker-loss/stalled counters.",
+      "acceptable_phrasings": [
+        "attempts-started",
+        "attempts-made",
+        "worker-loss",
+        "stalled counter",
+        "distinct counter",
+        "attempt vs failure"
+      ],
+      "required_evidence_ids": ["CLM-017", "OBS-BULLMQ-004"],
+      "must_include_contract_terms": ["attempt", "failure", "counter", "claim time"],
+      "must_include_failure_trigger": ["sigkill", "oom", "crash before handler"],
+      "must_include_validation_shape": ["incremented at claim", "counted toward dlq"],
+      "disallowed_generic_matches": ["retry counter"],
+      "business_contract_expected": "System must maintain separate counters for total dequeue attempts, application-level handler failures, and unacknowledged worker crashes.",
+      "failure_scenario_expected": "Repeated worker SIGKILLs cause poison jobs to be re-attempted indefinitely if only explicit error handler catches increment counters.",
+      "validation_test_expected": "SIGKILL worker during active execution; verify attempt counter is incremented at claim time or marked during recovery sweep.",
+      "weight": 1.0
+    },
+    {
+      "id": "KEY-005",
+      "description": "Poison payload isolation from repeatable/scheduler job stall exemptions.",
+      "acceptable_phrasings": [
+        "repeatable job",
+        "scheduler stall",
+        "stall exemption",
+        "maxStalledCount",
+        "poison payload",
+        "unrecoverable error"
+      ],
+      "required_evidence_ids": ["CLM-018", "OBS-BULLMQ-005"],
+      "must_include_contract_terms": ["repeatable", "scheduler", "exemption", "dlq", "poison"],
+      "must_include_failure_trigger": ["corrupt payload", "infinite loop", "unparseable"],
+      "must_include_validation_shape": ["bypass exemption", "route to dlq"],
+      "disallowed_generic_matches": ["cron job"],
+      "business_contract_expected": "Hard payload crashes and poison pill errors must bypass scheduler stall exemptions and route directly to dead-letter quarantine.",
+      "failure_scenario_expected": "Corrupt cron task payload crashes worker parser on every iteration, creating an infinite crash loop if maxStalledCount is ignored for repeatable tasks.",
+      "validation_test_expected": "Submit unparseable payload to a repeatable cron queue; verify task fails to DLQ after N attempts rather than looping infinitely.",
+      "weight": 1.0
+    },
+    {
+      "id": "KEY-006",
+      "description": "Bounded admission waiters and explicit storage stall rejection (waiter queues as independent resource limits).",
+      "acceptable_phrasings": [
+        "admission waiter",
+        "waiter queue",
+        "memory semaphore",
+        "fast failure",
+        "SYSTEM_BUSY",
+        "rejection threshold"
+      ],
+      "required_evidence_ids": ["CLM-019", "OBS-REDPANDA-003", "OBS-ROCKETMQ-002"],
+      "must_include_contract_terms": ["waiter", "semaphore", "fast failure", "rejection", "bounded"],
+      "must_include_failure_trigger": ["io stall", "disk freeze", "lock duration", "saturation"],
+      "must_include_validation_shape": ["reject overflow", "no memory leak", "system_busy"],
+      "disallowed_generic_matches": ["queue messages"],
+      "business_contract_expected": "Concurrency semaphores must enforce hard capacity bounds on queued waiters, immediately rejecting surplus requests when storage stalls.",
+      "failure_scenario_expected": "Storage engine I/O stalls; thousands of incoming requests pile up in memory waiting for semaphores, causing process OOM crash.",
+      "validation_test_expected": "Simulate 5-second disk flush freeze with 10k concurrent producer requests; verify broker rejects overflow with transient error without memory growth.",
+      "weight": 1.0
+    },
+    {
+      "id": "KEY-007",
+      "description": "Decoupled worker-drain and broker-socket shutdown contracts (renewer termination vs TCP drain deadlines).",
+      "acceptable_phrasings": [
+        "worker-drain",
+        "broker-socket",
+        "renewer lifetime",
+        "socket close deadline",
+        "lame duck",
+        "graceful shutdown"
+      ],
+      "required_evidence_ids": ["CLM-020", "OBS-NATS-002", "OBS-RIVER-005", "HIST-NSQ-001"],
+      "must_include_contract_terms": ["renewer", "socket", "drain", "deadline", "shutdown"],
+      "must_include_failure_trigger": ["sigterm", "rolling restart", "slow client", "stuck renewer"],
+      "must_include_validation_shape": ["socket closes within", "worker drains within", "renewer stops"],
+      "disallowed_generic_matches": ["stop gracefully"],
+      "business_contract_expected": "Shutdown sequences must decouple in-flight worker job completion deadlines from broker TCP socket termination timeouts.",
+      "failure_scenario_expected": "Worker halt stops task fetcher but leaves background lease renewers running indefinitely on stuck tasks, or broker blocks on slow TCP client drain.",
+      "validation_test_expected": "Send SIGTERM while a 30-second job is running and slow client is connected; verify socket closes within 2s and worker drains within 30s.",
+      "weight": 1.0
+    }
+  ]
+}

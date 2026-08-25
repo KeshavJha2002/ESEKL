@@ -1,0 +1,100 @@
+{
+  "$schema": "../hidden_key.schema.json",
+  "suiteId": "RUBRIC-BUSINESS-ABSTRACTION",
+  "suiteTitle": "Business Abstraction to Architectural Contract Rubric",
+  "description": "Evaluates how effectively an agent translates non-technical business promises into rigorous engineering contracts, failure boundaries, and empirical caveats using multi-facet semantic matching.",
+  "dimensions": {
+    "evidence_recall_weight": 0.20,
+    "contract_coverage_weight": 0.30,
+    "failure_scenario_weight": 0.20,
+    "validation_test_weight": 0.15,
+    "counterexample_weight": 0.15
+  },
+  "hiddenKeys": [
+    {
+      "id": "KEY-001",
+      "description": "Fenced Domain/Payment Projection: Business promise of exactly-once execution translated into at-least-once delivery with storage-fenced domain projections.",
+      "acceptable_phrasings": [
+        "exactly-once",
+        "at-least-once",
+        "idempotent",
+        "fenced projection",
+        "outbox",
+        "double charge",
+        "payment finalization"
+      ],
+      "required_evidence_ids": ["CLM-015", "EKU-QUEUE-015"],
+      "must_include_contract_terms": ["fenced", "projection", "idempotency", "token", "ledger"],
+      "must_include_failure_trigger": ["gc pause", "duplicate worker", "timeout", "split-brain"],
+      "must_include_validation_shape": ["exactly once", "0 rows", "reject duplicate"],
+      "disallowed_generic_matches": ["make it reliable"],
+      "business_contract_expected": "Payments are delivered at-least-once; duplicate or zombie completions are prevented from double-posting by database-level ownership token fencing.",
+      "failure_scenario_expected": "Worker experiences GC pause after initiating external payment API; replacement worker retries while initial worker resumes and attempts ledger commit.",
+      "validation_test_expected": "Induce split-brain worker execution; verify ledger record is created exactly once and duplicate write is rejected.",
+      "weight": 1.0
+    },
+    {
+      "id": "KEY-002",
+      "description": "Explicit 'What Not To Promise' Caveats: Surfaces clear boundaries to business stakeholders (e.g. wall-clock guarantees vs queue backlogs, infinite retries on corrupt payloads).",
+      "acceptable_phrasings": [
+        "what not to promise",
+        "do not promise",
+        "caveat",
+        "anti-pattern",
+        "boundary",
+        "business risk"
+      ],
+      "required_evidence_ids": ["CLM-004", "CLM-006", "EKU-QUEUE-018"],
+      "must_include_contract_terms": ["what not to promise", "caveat", "boundary", "risk", "anti-pattern"],
+      "must_include_failure_trigger": ["unmetered spike", "burst", "corrupt payload"],
+      "must_include_validation_shape": ["communicate delay", "shed load", "reject"],
+      "disallowed_generic_matches": ["ensure high quality"],
+      "business_contract_expected": "Do not promise instantaneous processing under unmetered ingestion; do not promise infinite retries for unparseable input payloads.",
+      "failure_scenario_expected": "Business promises 5-second completion SLA during 100x spike with fixed worker fleet, leading to cascading SLA breach.",
+      "validation_test_expected": "Saturate queue to 10x capacity; verify system communicates queue latency degradation rather than dropping messages silently.",
+      "weight": 1.0
+    },
+    {
+      "id": "KEY-003",
+      "description": "Dual Retry Counters: Distinguishes business logic retries (payment network blip) from poison payload parsing crashes.",
+      "acceptable_phrasings": [
+        "retry counter",
+        "transient vs permanent",
+        "poison pill",
+        "dead letter",
+        "dlq",
+        "crash recovery"
+      ],
+      "required_evidence_ids": ["CLM-017", "EKU-QUEUE-017"],
+      "must_include_contract_terms": ["retry", "poison", "dead letter", "dlq", "counter"],
+      "must_include_failure_trigger": ["corrupt document", "parsing crash", "sigkill"],
+      "must_include_validation_shape": ["route to dlq", "claim time increment"],
+      "disallowed_generic_matches": ["retry on error"],
+      "business_contract_expected": "Transient business exceptions retry with exponential backoff; unhandled process crashes increment hard attempt bounds toward DLQ quarantine.",
+      "failure_scenario_expected": "Corrupt document PDF triggers C-extension crash on worker; job loops forever if crash is not counted as an attempt.",
+      "validation_test_expected": "Enqueue corrupted document; assert worker crash is recorded at claim time and job enters DLQ after max attempts.",
+      "weight": 1.0
+    },
+    {
+      "id": "KEY-004",
+      "description": "Storage Saturation Fast Failure: Fast rejection and client backpressure under database/storage lock stalls.",
+      "acceptable_phrasings": [
+        "fast failure",
+        "backpressure",
+        "storage stall",
+        "admission control",
+        "rate limit",
+        "system busy"
+      ],
+      "required_evidence_ids": ["CLM-019", "EKU-QUEUE-019"],
+      "must_include_contract_terms": ["backpressure", "fast failure", "admission", "429", "503", "system_busy"],
+      "must_include_failure_trigger": ["storage stall", "database lock", "pool exhaustion"],
+      "must_include_validation_shape": ["fail fast", "reject within", "preserve health"],
+      "disallowed_generic_matches": ["handle errors"],
+      "business_contract_expected": "Ingestion endpoints return HTTP 429/503 when storage queue depth exceeds safety watermark to preserve database health.",
+      "failure_scenario_expected": "Database failover induces 10-second write lock; API servers hold open thousands of client connections and exhaust connection pools.",
+      "validation_test_expected": "Simulate storage connection stall; assert ingestion fails fast within 200ms rather than buffering unbounded requests.",
+      "weight": 1.0
+    }
+  ]
+}

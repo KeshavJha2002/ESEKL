@@ -1,0 +1,134 @@
+[
+  {
+    "id": "REKU-PGMQ-001",
+    "repository": "pgmq",
+    "domain": "Queue, Broker & Distributed Workflow Systems",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Message visibility timeouts are evaluated in PostgreSQL database time (clock_timestamp()), ensuring message leases are immune to worker host clock skew.",
+    "mechanism": "PostgreSQL Storage-Time Visibility Timeout Dequeue",
+    "applicabilityConditions": [
+      "Requires PostgreSQL 10+ with standard SQL transaction support."
+    ],
+    "evidenceIds": [
+      "OBS-PGMQ-001"
+    ],
+    "commonKeywords": [
+      "visibility_timeout",
+      "storage_time_lease",
+      "postgres_clock",
+      "clock_skew_defense"
+    ],
+    "uniqueKeywords": [
+      "pgmq_read",
+      "vt_timestamp",
+      "clock_timestamp"
+    ],
+    "localContext": "PGMQ calculates lease expiration using PostgreSQL's internal clock_timestamp() function during READ operations, setting vt = clock_timestamp() + interval so client system time is never consulted.",
+    "sourceProvenance": {
+      "filePath": "pgmq-rs/src/queue/sql.rs",
+      "lineRange": [
+        25,
+        45
+      ],
+      "queryOrCodeSnippet": "SELECT msg_id, read_ct, enqueued_at, vt, message FROM pgmq.read($1, $2, $3);",
+      "symbol": "READ"
+    },
+    "testProvenance": {
+      "filePath": "pgmq-rs/tests/test_sql.rs",
+      "testName": "test_sql_read"
+    },
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "TEST_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "substrate": "postgres",
+    "linkedDomainEkus": [
+      "EKU-QUEUE-001",
+      "EKU-QUEUE-007"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-007"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "postgres_clock",
+        "clock_skew_defense"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "lease_based"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    }
+  },
+  {
+    "id": "REKU-PGMQ-002",
+    "repository": "pgmq",
+    "domain": "Queue, Broker & Distributed Workflow Systems",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Task completion and archival execute via DELETE / ARCHIVE with exact message ID matching inside relational transactions, guaranteeing atomic outbox finalization.",
+    "mechanism": "Relational Archive & Fenced Deletion on Task Completion",
+    "applicabilityConditions": [
+      "Requires PostgreSQL relational transactional deletion."
+    ],
+    "evidenceIds": [
+      "OBS-PGMQ-002"
+    ],
+    "commonKeywords": [
+      "fenced_deletion",
+      "archive_outbox",
+      "transactional_finalization"
+    ],
+    "uniqueKeywords": [
+      "pgmq_archive",
+      "pgmq_delete",
+      "msg_id_match"
+    ],
+    "localContext": "PGMQ finalizes completed messages by either archiving them to an audit table or executing a transactional DELETE msg_id = $1, ensuring processed domain results are committed with zero ghost rows.",
+    "sourceProvenance": {
+      "filePath": "pgmq-rs/src/queue/sql.rs",
+      "lineRange": [
+        50,
+        70
+      ],
+      "queryOrCodeSnippet": "DELETE FROM pgmq.q_$1 WHERE msg_id = $2 RETURNING msg_id;",
+      "symbol": "DELETE"
+    },
+    "testProvenance": {
+      "filePath": "pgmq-rs/tests/test_sql.rs",
+      "testName": "test_sql_archive_delete"
+    },
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "TEST_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "substrate": "postgres",
+    "linkedDomainEkus": [
+      "EKU-QUEUE-010"
+    ],
+    "linkedClaims": [
+      "CLM-010"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "lease_based"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    }
+  }
+]

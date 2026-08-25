@@ -1,0 +1,23 @@
+{
+  "$comment": "Template for classifying a new repository against a domain EKU in eku_store/synthesized_queue_ekus.json",
+  "domainEkuId": "EKU-QUEUE-007",
+  "repository": "repo-name",
+  "classification": "SUPPORTS | ALTERNATIVE_MECHANISM | COUNTEREXAMPLE | NOT_APPLICABLE | INSUFFICIENT_EVIDENCE",
+  "linkedRepoEkus": [
+    "REKU-<REPO>-001"
+  ],
+  "commonKeywordGroups": [
+    "row_locking",
+    "mvcc_concurrency"
+  ],
+  "uniqueKeywordGroups": [
+    "repo_specific_syntax"
+  ],
+  "mechanismFamilies": [
+    "relational_row_locks"
+  ],
+  "substrateFamilies": [
+    "postgres"
+  ],
+  "justification": "Detailed explanation of why this repository supports, provides an alternative to, or contradicts the domain invariant."
+}

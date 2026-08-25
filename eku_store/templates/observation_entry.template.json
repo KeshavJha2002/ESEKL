@@ -1,0 +1,11 @@
+{
+  "$comment": "Template for adding an atomic code observation to eku_store/evidence/observations.json",
+  "id": "OBS-<REPO>-<001>",
+  "repo": "repo-name",
+  "filePath": "relative/path/to/source/file.ext",
+  "lineRange": [10, 25],
+  "snippetSha256": "64-character-sha256-hash-of-exact-lines",
+  "testName": "TestFunctionName_or_describe_block",
+  "description": "Concrete technical description of the observed mechanism, locking invariant, or state transition.",
+  "observedBehavior": "Precise mechanical behavior guaranteed by the code at this location."
+}

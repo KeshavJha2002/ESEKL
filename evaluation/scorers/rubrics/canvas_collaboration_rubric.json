@@ -1,0 +1,80 @@
+{
+  "suiteId": "RUBRIC-CANVAS-COLLABORATION-001",
+  "version": "1.0.0",
+  "name": "Collaborative Canvas Rendering & Speculative Cancellation Rubric",
+  "domain": "Queue, Broker & Distributed Workflow Systems",
+  "hiddenKeys": [
+    {
+      "id": "KEY-001",
+      "description": "Epoch/Generation-Scoped State Mutation Fencing (EKU-QUEUE-010 / CLM-010)",
+      "targetInvariants": [
+        "EKU-QUEUE-010",
+        "CLM-010",
+        "EKU-QUEUE-015"
+      ],
+      "acceptable_phrasings": [
+        "WHERE doc_id = $2 AND revision_epoch = $3",
+        "WHERE doc_epoch = $expected_epoch",
+        "WHERE id = $1 AND exec_generation = $2",
+        "revision_epoch",
+        "doc_epoch",
+        "exec_generation",
+        "0 affected rows",
+        "superseded revision",
+        "epoch fencing"
+      ],
+      "pointWeight": 2.5
+    },
+    {
+      "id": "KEY-002",
+      "description": "Lock-Free MVCC Row Skipping Dequeue (EKU-QUEUE-007 / CLM-007)",
+      "targetInvariants": [
+        "EKU-QUEUE-007",
+        "CLM-007"
+      ],
+      "acceptable_phrasings": [
+        "SKIP LOCKED",
+        "FOR UPDATE SKIP LOCKED",
+        "lock-free mvcc",
+        "row-level skipping",
+        "head-of-line queue stalls"
+      ],
+      "pointWeight": 2.5
+    },
+    {
+      "id": "KEY-003",
+      "description": "Decoupled Worker Drain & Abort Signaling (EKU-QUEUE-020 / CLM-020)",
+      "targetInvariants": [
+        "EKU-QUEUE-020",
+        "CLM-020"
+      ],
+      "acceptable_phrasings": [
+        "AbortSignal",
+        "context.Context",
+        "cancellation context",
+        "cancel context",
+        "interrupt CPU rasterization",
+        "abort listener"
+      ],
+      "pointWeight": 2.5
+    },
+    {
+      "id": "KEY-004",
+      "description": "Epistemic Discipline / Not-Applicable Handling",
+      "targetInvariants": [
+        "EKU-QUEUE-015",
+        "CLM-015"
+      ],
+      "acceptable_phrasings": [
+        "NOT_APPLICABLE",
+        "not applicable",
+        "epistemic discipline",
+        "idempotent visual projection",
+        "idempotent projection",
+        "not an ACID monetary transaction",
+        "omits multi-phase two-phase-commit"
+      ],
+      "pointWeight": 2.5
+    }
+  ]
+}

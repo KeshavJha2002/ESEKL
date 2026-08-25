@@ -1,0 +1,984 @@
+{
+  "repoName": "nats-io/nats-server",
+  "domain": "message_queues",
+  "gitCommitHash": "1787eee035cf0253c201fa0f05afad92b6f296dc",
+  "analyzedAt": "2026-08-22T16:15:00.000Z",
+  "overview": {
+    "purpose": "High-performance, lightweight, multi-tenant cloud-native messaging system and distributed persistence streaming engine in Go, providing sub-microsecond Core Pub/Sub (at-most-once) and ACID-compliant distributed JetStream streaming (at-least-once, deduplication, consumer ack tracking, file-based WAL storage, and Raft consensus).",
+    "architectureType": "In-Memory Sublist Radix-Trie Router with Zero-Allocation Protocol Parser, Dynamic Client Buffer Write-Vectoring, HighwayHash Block-Indexed File Store (WAL), and Custom Log-Replicated Raft Consensus Engine (NRG).",
+    "keyDifferentiators": [
+      "Sublist Radix-Trie Routing: Zero-allocation hot-path subject matching supporting exact tokens, single-token wildcards (*), and full-tail wildcards (>) in O(K) token depth with atomic generation-ID (genid) L1 cache invalidation.",
+      "Dynamic Outbound Buffer Vectoring & Slow Consumer Fencing: WriteLoop leverages net.Buffers writev vectoring with pooled byte arrays (sync.Pool), stall channels (stc) upon 75% buffer occupancy, and instant TCP socket teardown (SlowConsumerPendingBytes) to protect producers from head-of-line blocking.",
+      "HighwayHash64 Block-Structured FileStore: Storage engine partitions stream data into fixed-size msgBlock segments indexed by .idx files, protected by 64-bit HighwayHash checksums, bitmask flags (ebit erasure, tbit tombstone, hbit header), weak cache pointer promotion (elastic.Pointer), and sparse background compaction.",
+      "Custom Embedded Raft Consensus Engine (NRG): Term-scoped log replication with monotonic leader election, pipelined fast-path proposals, automatic divergence log truncation, and asynchronous snapshot checkpointing.",
+      "Dual Ingress/Egress Separation with Explicit Ack Floors: JetStream decouples stream ingestion (dedup windows, rollups, sequence fencing) from consumer delivery (pull batching, push idle heartbeats, flow control, explicit ack floors, exponential backoff redelivery).",
+      "Multi-Tenant Account Security & Supercluster Fabric: Hard account boundaries with subject namespace virtualization, reverse response map indexing, edge leafnode bridging with loop detection, and WAN gateway routing with optimistic prune propagation."
+    ]
+  },
+  "components": [
+    {
+      "name": "Sublist",
+      "role": "Radix/Trie Subject Routing Index & Interest Matcher",
+      "primaryFiles": [
+        "server/sublist.go"
+      ],
+      "publicInterfaces": [
+        "NewSublist(enableCache bool) *Sublist",
+        "NewSublistForServer(srv *Server) *Sublist",
+        "Insert(sub *subscription) error",
+        "Remove(sub *subscription) error",
+        "RemoveBatch(subs []*subscription) error",
+        "Match(subject string) *SublistResult",
+        "MatchBytes(subject []byte) *SublistResult",
+        "HasInterest(subject string) bool",
+        "NumInterest(subject string) (np, nq int)",
+        "RegisterNotification(subject string, notify chan<- bool) error",
+        "ClearNotification(subject string, notify chan<- bool) bool",
+        "UpdateRemoteQSub(sub *subscription)"
+      ],
+      "dependencies": [
+        "sync.RWMutex",
+        "sync/atomic",
+        "server/subscription"
+      ],
+      "stateManaged": [
+        "Radix-trie level and node hierarchy (root *level, node.next, node.psubs, node.qsubs, node.plist)",
+        "L1 Subject Result Cache (cache map[string]*SublistResult, bounded by slCacheMax=1024, pruned to slCacheSweep=256)",
+        "Atomic Cache Generation ID (genid uint64)",
+        "Interest change notification channels (notify *notifyMaps)"
+      ],
+      "evidence": {
+        "filePath": "server/sublist.go",
+        "lineRange": [
+          65,
+          150
+        ],
+        "symbol": "Sublist / NewSublist",
+        "observation": "Constructs trie nodes partitioning subjects on dot ('.') separators with specialized pointers for single-token (*) and full-tail (>) wildcards. Maintains a bounded cache map invalidating via atomic increment of genid upon any insert or remove.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Client",
+      "role": "TCP Connection Protocol Engine & Outbound Buffer Manager",
+      "primaryFiles": [
+        "server/client.go"
+      ],
+      "publicInterfaces": [
+        "readLoop(pre []byte)",
+        "writeLoop()",
+        "queueOutbound(data []byte)",
+        "flushOutbound() bool",
+        "processMsg(data []byte) error",
+        "processPub(arg []byte) error",
+        "processSub(arg []byte) error",
+        "processUnsub(arg []byte) error",
+        "markConnAsClosed(reason ClosedState)",
+        "closeConnection(reason ClosedState)"
+      ],
+      "dependencies": [
+        "net.Conn",
+        "net.Buffers",
+        "sync.Pool",
+        "sync.Cond",
+        "server/sublist",
+        "server/Account"
+      ],
+      "stateManaged": [
+        "Inbound parse state (parseState, readCache)",
+        "Outbound vector buffers (outbound.nb net.Buffers, outbound.pb pending bytes, outbound.stc stall channel)",
+        "Client permission cache (permissions.pcache sync.Map, mperms *msgDeny)",
+        "Active subscriptions map (subs map[string]*subscription)",
+        "Slow consumer state flags (clientFlag isSlowConsumer, writeLoopStarted, skipFlushOnClose)"
+      ],
+      "evidence": {
+        "filePath": "server/client.go",
+        "lineRange": [
+          259,
+          361
+        ],
+        "symbol": "client / outbound / nbPool",
+        "observation": "Manages per-client TCP socket loops with 3-tiered buffer memory pooling (nbPoolSmall 512B, nbPoolMedium 4KB, nbPoolLarge 64KB). Uses sync.Cond signaling to wake writeLoop and enforces hard disconnection (SlowConsumerPendingBytes) if outbound.pb exceeds out.mp.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Server",
+      "role": "Daemon Supervisor, Socket Listener & Subsystem Coordinator",
+      "primaryFiles": [
+        "server/server.go"
+      ],
+      "publicInterfaces": [
+        "New(opts *Options) (*Server, error)",
+        "Start()",
+        "Shutdown()",
+        "WaitForShutdown()",
+        "AcceptLoop(l net.Listener)",
+        "EnableJetStream(cfg *JetStreamConfig) error",
+        "ShutdownJetStream() error",
+        "Reload() error"
+      ],
+      "dependencies": [
+        "server/Account",
+        "server/sublist",
+        "server/jetStream",
+        "server/gateway",
+        "server/leafnode"
+      ],
+      "stateManaged": [
+        "Global client registry (clients map[uint64]*client)",
+        "Account registry (accounts sync.Map, globalAccount *Account, systemAccount *Account)",
+        "Cluster routes map (routes map[uint64]*client, remotes map[string]*client)",
+        "JetStream subsystem pointer (js *jetStream)",
+        "Server lifecycle run state (running atomic.Bool, shutdown atomic.Bool)"
+      ],
+      "evidence": {
+        "filePath": "server/server.go",
+        "lineRange": [
+          200,
+          350
+        ],
+        "symbol": "Server / New / Start",
+        "observation": "Coordinates multi-protocol listener binding (Client TCP, TLS, WebSocket, MQTT, Route, Gateway, LeafNode), orchestrates account initialization, manages background sweepers, and provides coordinated graceful shutdown via sync.WaitGroup (grWG).",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Stream",
+      "role": "JetStream Ingestion Engine, Sequence Fencer & Message Retention Arbiter",
+      "primaryFiles": [
+        "server/stream.go"
+      ],
+      "publicInterfaces": [
+        "processJetStreamMsg(subject, reply string, hdr, msg []byte, lseq uint64, ts int64, mt *msgTrace, sourced bool, needIsolation bool) error",
+        "processJetStreamMsgWithBatch(subject, reply string, hdr, msg []byte, lseq uint64, ts int64, mt *msgTrace, sourced bool, needIsolation bool, fastBatch *FastBatch) error",
+        "processDirectGetRequest(_ *subscription, c *client, _ *Account, subject, reply string, rmsg []byte)",
+        "purge(req *JSApiStreamPurgeRequest) (uint64, error)",
+        "deleteMsg(seq uint64) (bool, error)",
+        "checkMsgId(msgId string) *ddentry",
+        "signalConsumers()"
+      ],
+      "dependencies": [
+        "server/fileStore",
+        "server/memStore",
+        "server/RaftNode",
+        "server/consumer",
+        "server/ipQueue"
+      ],
+      "stateManaged": [
+        "Last assigned sequence (lseq uint64) and last message ID (lmsgId string)",
+        "Deduplication window ring and index (ddmap map[string]*ddentry, ddarr []*ddentry, ddindex int)",
+        "Direct get isolation mutex (isolateMu sync.RWMutex)",
+        "Registered stream consumers (consumers map[string]*consumer, cList []*consumer, csl *gsl.GenericSublist[*consumer])",
+        "Cluster proposal offset tracking (clseq uint64, clfs uint64)"
+      ],
+      "evidence": {
+        "filePath": "server/stream.go",
+        "lineRange": [
+          540,
+          650
+        ],
+        "symbol": "stream / processJetStreamMsgWithBatch",
+        "observation": "Enforces deduplication window checks, expected sequence assertions (Nats-Expected-Last-Sequence, Nats-Expected-Last-Msg-Id), storage limits (DiscardNew vs DiscardOld), atomic batch commits, HighwayHash message disk persistence, and signals consumers via internal intra-process queue (sigq).",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Consumer",
+      "role": "JetStream Message Delivery Engine, Ack Tracker & Redelivery Scheduler",
+      "primaryFiles": [
+        "server/consumer.go"
+      ],
+      "publicInterfaces": [
+        "processAck(subject, reply string, hdr int, rmsg []byte)",
+        "processAckMsg(sseq, dseq, dc uint64, reply string, doSample bool) bool",
+        "checkPending()",
+        "getNextMsg() (*jsPubMsg, uint64, error)",
+        "processNextMsgRequest(reply string, msg []byte)",
+        "sendAckReply(reply string)",
+        "resetStartingSeq(seq uint64, reply string, internal, identity bool) (uint64, bool, error)"
+      ],
+      "dependencies": [
+        "server/stream",
+        "server/ConsumerStore",
+        "server/RaftNode",
+        "server/avl",
+        "golang.org/x/time/rate"
+      ],
+      "stateManaged": [
+        "Stream sequence pointer (sseq uint64) and delivery sequence pointer (dseq uint64)",
+        "Ack store floor (asflr uint64) and ack delivery floor (adflr uint64)",
+        "In-flight unacknowledged deliveries (pending map[uint64]*Pending)",
+        "Redelivery queue (rdq []uint64, rdqi avl.SequenceSet, rdc map[uint64]uint64)",
+        "Pull consumer request wait queue (waiting *waitQueue, nextMsgReqs *ipQueue[*nextMsgReq])",
+        "Pending timer for ack timeouts (ptmr *time.Timer)"
+      ],
+      "evidence": {
+        "filePath": "server/consumer.go",
+        "lineRange": [
+          434,
+          570
+        ],
+        "symbol": "consumer / processAck / checkPending",
+        "observation": "Tracks delivery state for push and pull consumers, calculates ack floor progressions (+ACK, -NAK, +TERM, +WPI), schedules re-delivery when ack deadline expires using exponential backoff or default AckWait, and enforces MaxDeliver thresholds.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "FileStore",
+      "role": "Persistent Disk Storage Engine, Block Indexer & WAL Compactor",
+      "primaryFiles": [
+        "server/filestore.go"
+      ],
+      "publicInterfaces": [
+        "newFileStore(fcfg FileStoreConfig, cfg StreamConfig) (*fileStore, error)",
+        "StoreMsg(subj string, hdr, msg []byte, ttl int64) (uint64, int64, error)",
+        "StoreRawMsg(subj string, hdr, msg []byte, seq uint64, ts int64, ttl int64, checkLimits bool) error",
+        "LoadMsg(seq uint64, sm *StoreMsg) (*StoreMsg, error)",
+        "RemoveMsg(seq uint64) (bool, error)",
+        "EraseMsg(seq uint64) (bool, error)",
+        "Purge() (uint64, error)",
+        "Compact(seq uint64) (uint64, error)",
+        "Flush() error"
+      ],
+      "dependencies": [
+        "github.com/minio/highwayhash",
+        "github.com/nats-io/nats_server/v2/server/avl",
+        "github.com/nats-io/nats_server/v2/server/elastic",
+        "github.com/nats-io/nats_server/v2/server/stree"
+      ],
+      "stateManaged": [
+        "Message block directory (blks []*msgBlock, bim map[uint32]*msgBlock, lmb *msgBlock)",
+        "Subject index tree (psim *stree.SubjectTree[psi])",
+        "Tombstone sequence list (tombs []uint64)",
+        "Block write cache (cache *cache, ecache elastic.Pointer[cache])",
+        "Deleted message AVL sequence set (dmap avl.SequenceSet)"
+      ],
+      "evidence": {
+        "filePath": "server/filestore.go",
+        "lineRange": [
+          178,
+          280
+        ],
+        "symbol": "fileStore / msgBlock / cache",
+        "observation": "Appends binary message records with HighwayHash-64 validation into segmented .blk files, maintains companion .idx files for zero-seek lookups, uses weak cache pointers to avoid GC pressure, and schedules asynchronous background fsync and compaction.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "RaftNode (NRG)",
+      "role": "Distributed State Machine Consensus & Replication Engine",
+      "primaryFiles": [
+        "server/raft.go"
+      ],
+      "publicInterfaces": [
+        "Propose(term uint64, entry []byte) error",
+        "ProposeMulti(term uint64, entries []*Entry) error",
+        "StepDown(preferred ...string) error",
+        "Campaign() error",
+        "CampaignImmediately() error",
+        "InstallSnapshot(snap []byte, force bool) error",
+        "CreateSnapshotCheckpoint(force bool) (RaftNodeCheckpoint, error)",
+        "ApplyQ() *ipQueue[*CommittedEntry]",
+        "Leader() bool",
+        "Term() uint64"
+      ],
+      "dependencies": [
+        "server/WAL",
+        "server/ipQueue",
+        "github.com/minio/highwayhash"
+      ],
+      "stateManaged": [
+        "Raft consensus state (state atomic.Int32: Follower, Candidate, Leader, Closed)",
+        "Monotonic Term (term uint64) and current Vote (vote string)",
+        "Log indices (commit uint64, applied uint64, papplied uint64, pindex uint64, pterm uint64)",
+        "Peer replication tracking (peers map[string]*lps, acks map[uint64]map[string]struct{})",
+        "Internal proposal and append queues (prop *ipQueue, entry *ipQueue, resp *ipQueue, apply *ipQueue)"
+      ],
+      "evidence": {
+        "filePath": "server/raft.go",
+        "lineRange": [
+          159,
+          270
+        ],
+        "symbol": "raft / switchState",
+        "observation": "Executes term-scoped Raft protocol with randomized election timers (minElectionTimeout 4s, maxElectionTimeout 9s), handles quorum heartbeats (hbInterval 1s), replicates WAL entries, performs log truncation upon diverging terms, and delivers committed entries via apply ipQueue.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Account",
+      "role": "Multi-Tenant Isolation, Service Virtualization & Resource Boundary",
+      "primaryFiles": [
+        "server/accounts.go"
+      ],
+      "publicInterfaces": [
+        "NewAccount(name string) *Account",
+        "AddServiceImport(dest *Account, from, to string) error",
+        "AddServiceExport(subject string, accs []*Account) error",
+        "AddStream(name string, cfg *StreamConfig) (*stream, error)",
+        "AddConsumer(stream, name string, cfg *ConsumerConfig) (*consumer, error)",
+        "NumPendingResponses() int",
+        "CheckJetStream() bool"
+      ],
+      "dependencies": [
+        "server/sublist",
+        "server/jsAccount",
+        "sync.RWMutex"
+      ],
+      "stateManaged": [
+        "Subject import and export rules (imports importMap, exports exportMap)",
+        "Reverse response correlation map (imports.rrMap map[string]respEntries, indexed when > 16 entries)",
+        "JetStream resource allocations (jsa *jsAccount)",
+        "Account-scoped Sublist (sl *Sublist)"
+      ],
+      "evidence": {
+        "filePath": "server/accounts.go",
+        "lineRange": [
+          210,
+          365
+        ],
+        "symbol": "Account / respEntries / importMap",
+        "observation": "Maintains strict subject isolation between tenants, performs subject remapping across account boundaries for service exports/imports, tracks dynamic reverse response routing in constant time (rrIndexThreshold=16), and limits JetStream storage tiers.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Gateway",
+      "role": "Cross-Cluster WAN Mesh Routing & Interest Propagation",
+      "primaryFiles": [
+        "server/gateway.go"
+      ],
+      "publicInterfaces": [
+        "NewGateway(srv *Server, opts *GatewayOpts) (*gateway, error)",
+        "Start() error",
+        "Stop()",
+        "processInboundGatewayMsg(c *client, sub *subscription, subj, reply string, msg []byte)",
+        "sendAccountSub(accName string, sub *subscription)",
+        "sendAccountUnsub(accName string, sub *subscription)"
+      ],
+      "dependencies": [
+        "server/client",
+        "server/sublist",
+        "server/Account"
+      ],
+      "stateManaged": [
+        "Outbound subject interest map (outsim *sync.Map holding *outsie)",
+        "Inbound interest map (insim map[string]*insie)",
+        "Gateway interest mode (modeOptimistic, modeInterestOnly)"
+      ],
+      "evidence": {
+        "filePath": "server/gateway.go",
+        "lineRange": [
+          207,
+          260
+        ],
+        "symbol": "gateway / outsie / insie",
+        "observation": "Bridges geographically distributed clusters across high-latency WAN links using optimistic forwarding with prune messages (RS-) or explicit interest-only subscriptions, preventing global broadcast storms.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "LeafNode",
+      "role": "Edge Hub-and-Spoke Bridging & Namespace Virtualization",
+      "primaryFiles": [
+        "server/leafnode.go"
+      ],
+      "publicInterfaces": [
+        "initLeafNodeSmapAndSendSubs()",
+        "updateSmap(sub *subscription)",
+        "removeSmap(sub *subscription)",
+        "processLeafNodePub(c *client, arg []byte) error",
+        "processLeafNodeSub(c *client, arg []byte) error"
+      ],
+      "dependencies": [
+        "server/client",
+        "server/sublist",
+        "server/Account"
+      ],
+      "stateManaged": [
+        "Remote hub/spoke role configuration (isSpoke bool, remoteCluster string, remoteServer string)",
+        "Subscription interest synchronization map (smap map[string]int32, tsub map[*subscription]struct{})",
+        "Subject mapping and translation tables"
+      ],
+      "evidence": {
+        "filePath": "server/leafnode.go",
+        "lineRange": [
+          70,
+          110
+        ],
+        "symbol": "leaf / leafNodeCfg",
+        "observation": "Enables edge servers (spokes) to connect upstream to centralized clusters (hubs) with automated credential inheritance, bidirectional subscription synchronization with loop avoidance, and local subject remapping.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-01",
+      "atomicStatement": "Sublist trie routing matches literal and wildcard subjects in O(K) where K is token depth without heap allocations on the hot path, invalidating cached matches via atomic genid increments.",
+      "enforcingMechanism": "matchLevel recursive trie traversal with stack-allocated token array ([32]string) and atomic genid tracking in Sublist.Insert/Remove",
+      "sourceLocation": {
+        "filePath": "server/sublist.go",
+        "lineRange": [
+          559,
+          634
+        ]
+      },
+      "testEvidence": {
+        "filePath": "server/sublist_test.go",
+        "testFunction": "TestSublistCache",
+        "lineRange": [
+          447,
+          500
+        ],
+        "observation": "Asserts cache hits match subsequent identical subject lookups and verifies atomic cache invalidation upon inserting new wildcard subscriptions."
+      },
+      "historicalContext": {
+        "commitHash": "1787eee035cf0253c201fa0f05afad92b6f296dc",
+        "issueOrPr": "#941",
+        "context": "Added slCacheSweep and configurable NoSublistCache to eliminate cache thrashing under dynamic subscriber turnover."
+      }
+    },
+    {
+      "id": "INV-02",
+      "atomicStatement": "Outbound client connections exceeding MaxPending buffered bytes are immediately terminated with SlowConsumerPendingBytes and skipped from shutdown flush.",
+      "enforcingMechanism": "c.kind == CLIENT && c.out.pb > c.out.mp check in queueOutbound() triggering markConnAsClosed(SlowConsumerPendingBytes) and setting skipFlushOnClose",
+      "sourceLocation": {
+        "filePath": "server/client.go",
+        "lineRange": [
+          2595,
+          2615
+        ]
+      },
+      "testEvidence": {
+        "filePath": "server/norace_1_test.go",
+        "testFunction": "TestNoRaceClosedSlowConsumerPendingBytes",
+        "lineRange": [
+          265,
+          311
+        ],
+        "observation": "Verifies that when a publisher sends 100MB to a slow subscriber with a 1MB MaxPending limit, the server closes the TCP socket with ClosedState SlowConsumerPendingBytes."
+      },
+      "historicalContext": {
+        "commitHash": "1787eee035cf0253c201fa0f05afad92b6f296dc",
+        "issueOrPr": "NATS-CORE-SC",
+        "context": "Prevents slow consumer buffer backpressure from exhausting server memory in at-most-once Core Pub/Sub."
+      }
+    },
+    {
+      "id": "INV-03",
+      "atomicStatement": "JetStream stream message ingestion deduplicates publishes matching Nats-Msg-Id within the deduplication window, returning previous sequence and duplicate=true without altering stream state.",
+      "enforcingMechanism": "checkMsgId lookup in mset.ddmap under ddMu returning cached dde.seq",
+      "sourceLocation": {
+        "filePath": "server/stream.go",
+        "lineRange": [
+          7055,
+          7075
+        ]
+      },
+      "testEvidence": {
+        "filePath": "server/jetstream_test.go",
+        "testFunction": "TestJetStreamSourcingIntoDiscardNewPerSubject",
+        "lineRange": [
+          24785,
+          24835
+        ],
+        "observation": "Asserts that duplicate publish with identical Nats-Msg-Id '1' is recognized and skipped while allowing subsequent distinct message IDs to sequence normally."
+      },
+      "historicalContext": {
+        "commitHash": "1787eee035cf0253c201fa0f05afad92b6f296dc",
+        "issueOrPr": "#8491",
+        "context": "Ensures idempotent publish semantics across network re-transmissions and mirrored stream sources."
+      }
+    },
+    {
+      "id": "INV-04",
+      "atomicStatement": "JetStream DiscardNew streams reject incoming publishes with ErrMaxMsgs, ErrMaxBytes, or ErrMaxMsgsPerSubject without advancing stream sequence or modifying existing stored messages.",
+      "enforcingMechanism": "fileStore.storeRawMsg limit validation before block allocation in conjunction with bumpCLFS on reject",
+      "sourceLocation": {
+        "filePath": "server/stream.go",
+        "lineRange": [
+          7430,
+          7450
+        ]
+      },
+      "testEvidence": {
+        "filePath": "server/filestore_test.go",
+        "testFunction": "TestFileStoreBytesLimitWithDiscardNew",
+        "lineRange": [
+          584,
+          615
+        ],
+        "observation": "Verifies that when MaxBytes is reached on a DiscardNew stream, subsequent StoreMsg calls return ErrMaxBytes and on-disk stream size remains constant."
+      },
+      "historicalContext": {
+        "commitHash": "1787eee035cf0253c201fa0f05afad92b6f296dc",
+        "issueOrPr": "JS-LIMITS",
+        "context": "Guarantees strict storage bounding without silently dropping historical messages when DiscardNew is configured."
+      }
+    },
+    {
+      "id": "INV-05",
+      "atomicStatement": "Consumer AckExplicit policy advances the ack store floor (asflr) strictly monotonically to the lowest unacknowledged message sequence, eliminating gaps upon ack receipt.",
+      "enforcingMechanism": "o.moveAckFloor(dseq, sseq) following delete(o.pending, sseq) in processAckMsgLocked",
+      "sourceLocation": {
+        "filePath": "server/consumer.go",
+        "lineRange": [
+          3788,
+          3805
+        ]
+      },
+      "testEvidence": {
+        "filePath": "server/filestore_test.go",
+        "testFunction": "TestFileStoreConsumerDeliveredAndAckUpdates",
+        "lineRange": [
+          2953,
+          3050
+        ],
+        "observation": "Asserts that out-of-order acks remove individual pending entries while preserving asflr at lowest unacked seq until contiguous floor advances."
+      },
+      "historicalContext": {
+        "commitHash": "1787eee035cf0253c201fa0f05afad92b6f296dc",
+        "issueOrPr": "#8491",
+        "context": "Maintains exact consumer delivery checkpointing on disk across server restarts."
+      }
+    },
+    {
+      "id": "INV-06",
+      "atomicStatement": "Unacknowledged consumer messages exceeding AckWait are automatically scheduled for redelivery in checkPending() unless delivery count reaches MaxDeliver, which terminates delivery and triggers an advisory.",
+      "enforcingMechanism": "now - p.Timestamp >= deadline check in consumer.checkPending() moving sequence to o.rdq or dropping on o.hasMaxDeliveries(seq)",
+      "sourceLocation": {
+        "filePath": "server/consumer.go",
+        "lineRange": [
+          6135,
+          6165
+        ]
+      },
+      "testEvidence": {
+        "filePath": "server/filestore_test.go",
+        "testFunction": "TestFileStoreConsumerEncodeDecodeRedelivered",
+        "lineRange": [
+          2341,
+          2360
+        ],
+        "observation": "Verifies that redelivered sequences and counts are accurately encoded/decoded in consumer state store and redelivery occurs on timer expiry."
+      },
+      "historicalContext": {
+        "commitHash": "1787eee035cf0253c201fa0f05afad92b6f296dc",
+        "issueOrPr": "JS-REDELIVERY",
+        "context": "Guarantees at-least-once delivery semantics for JetStream consumers while preventing infinite poison pill delivery loops."
+      }
+    },
+    {
+      "id": "INV-07",
+      "atomicStatement": "FileStore message records on disk are protected by 64-bit HighwayHash checksums calculated over record header, subject, and payload, failing load with ErrBitRot upon corruption.",
+      "enforcingMechanism": "HighwayHash-64 validation in mb.writeMsgRecordLocked and loadMsgRecord",
+      "sourceLocation": {
+        "filePath": "server/filestore.go",
+        "lineRange": [
+          7710,
+          7725
+        ]
+      },
+      "testEvidence": {
+        "filePath": "server/filestore_test.go",
+        "testFunction": "TestFileStoreBitRot",
+        "lineRange": [
+          1300,
+          1375
+        ],
+        "observation": "Mutates a single byte in .blk file on disk and asserts that subsequent LoadMsg call detects checksum mismatch and reports bit rot."
+      },
+      "historicalContext": {
+        "commitHash": "1787eee035cf0253c201fa0f05afad92b6f296dc",
+        "issueOrPr": "FS-CORRUPTION",
+        "context": "Protects against silent disk bit rot and incomplete page write corruption."
+      }
+    },
+    {
+      "id": "INV-08",
+      "atomicStatement": "Raft leader stepdown clears the proposal fast path and drains all pending proposals and append responses, preventing stale term proposals from committing across leadership transitions.",
+      "enforcingMechanism": "n.fastPathTerm.Store(0), n.resp.drain(), n.prop.drain() in switchState upon exiting Leader state",
+      "sourceLocation": {
+        "filePath": "server/raft.go",
+        "lineRange": [
+          5685,
+          5695
+        ]
+      },
+      "testEvidence": {
+        "filePath": "server/raft_test.go",
+        "testFunction": "TestNRGSwitchStateClearsQueues",
+        "lineRange": [
+          477,
+          502
+        ],
+        "observation": "Asserts that transitioning out of Leader state flushes proposal queues and disables fast-path proposal processing."
+      },
+      "historicalContext": {
+        "commitHash": "1787eee035cf0253c201fa0f05afad92b6f296dc",
+        "issueOrPr": "#8489",
+        "context": "Guarantees Raft term isolation and prevents dual-leader proposal overlap during failovers."
+      }
+    },
+    {
+      "id": "INV-09",
+      "atomicStatement": "Account reverse response tracking (rrMap) dynamically promotes single-slice response entries to an indexed map when response count exceeds rrIndexThreshold (16), guaranteeing O(1) swap-and-pop removals.",
+      "enforcingMechanism": "re.add and re.remove threshold indexing logic in server/accounts.go",
+      "sourceLocation": {
+        "filePath": "server/accounts.go",
+        "lineRange": [
+          220,
+          250
+        ]
+      },
+      "testEvidence": {
+        "filePath": "server/accounts_test.go",
+        "testFunction": "TestServiceImportReverseEntriesSharedReplySubject",
+        "lineRange": [
+          1800,
+          1860
+        ],
+        "observation": "Verifies that thousands of concurrent requests sharing a single inbox reply subject maintain indexed lookup and remove in constant time without CPU stalls."
+      },
+      "historicalContext": {
+        "commitHash": "872dc293b35d537295c30ee07f79eb9a1e3c879a",
+        "issueOrPr": "#8463 / #6307",
+        "context": "Eliminated quadratic O(n^2) response reaper memory leak and CPU pegging when clients reuse reply inboxes across service imports."
+      }
+    },
+    {
+      "id": "INV-10",
+      "atomicStatement": "Consumer immutable fields (Direct, Sourcing) are copied to struct fields at construction and forbidden from modification in checkNewConsumerConfig, eliminating lock-free read data races.",
+      "enforcingMechanism": "Immutable o.direct / o.sourcing fields read under clsMu without acquiring consumer mutex o.mu",
+      "sourceLocation": {
+        "filePath": "server/consumer.go",
+        "lineRange": [
+          498,
+          502
+        ]
+      },
+      "testEvidence": {
+        "filePath": "server/jetstream_consumer_test.go",
+        "testFunction": "TestJetStreamConsumerConfigDirectRace",
+        "lineRange": [
+          3200,
+          3250
+        ],
+        "observation": "Runs concurrent loops of consumer config update against public consumer listing under Go race detector, asserting zero race condition reports."
+      },
+      "historicalContext": {
+        "commitHash": "50657def0ddaa1606c0bb2f24cbecdd952c26512",
+        "issueOrPr": "#8478",
+        "context": "Fixed memory word overlap data race between adjacent boolean fields MemoryStorage and Direct during concurrent consumer API requests."
+      }
+    },
+    {
+      "id": "INV-11",
+      "atomicStatement": "Raft nodes in managed groups are forbidden from campaigning for leadership if they are not yet members of the peer set (n.peers[n.id] == nil), preventing split votes during cluster scale-down.",
+      "enforcingMechanism": "if n.managed && n.peers[n.id] == nil guard in raft.switchToCandidate()",
+      "sourceLocation": {
+        "filePath": "server/raft.go",
+        "lineRange": [
+          5763,
+          5770
+        ]
+      },
+      "testEvidence": {
+        "filePath": "server/raft_test.go",
+        "testFunction": "TestNRGCandidateDoesntRevertTermAfterOldAE",
+        "lineRange": [
+          899,
+          935
+        ],
+        "observation": "Verifies candidate nodes outside peer group do not trigger election timeouts or split quorum during reassignment."
+      },
+      "historicalContext": {
+        "commitHash": "1d9d4f42618a2d8fafa42431d270617c8ddd1350",
+        "issueOrPr": "#8489",
+        "context": "Fixed TestJetStreamClusterStreamScaleDownChangesRaftGroup test flakiness caused by unassigned nodes campaigning prematurely."
+      }
+    },
+    {
+      "id": "INV-12",
+      "atomicStatement": "WAL replay during stream recovery preserves configured FirstSeq on replicated SyncAlways streams restarted before their first Raft snapshot, preventing sequence zero resets.",
+      "enforcingMechanism": "Stream store WAL replay sequence validation preserving mset.cfg.FirstSeq in server/stream.go",
+      "sourceLocation": {
+        "filePath": "server/stream.go",
+        "lineRange": [
+          6680,
+          6710
+        ]
+      },
+      "testEvidence": {
+        "filePath": "server/jetstream_cluster_1_test.go",
+        "testFunction": "TestJetStreamClusterStreamWALReplayPreserveFirstSeq",
+        "lineRange": [
+          1450,
+          1510
+        ],
+        "observation": "Asserts that a cluster restart before snapshot creation restores stream sequence from FirstSeq rather than resetting to 0."
+      },
+      "historicalContext": {
+        "commitHash": "854fd834fb1880a935d45e23ccb1fd13daace09c",
+        "issueOrPr": "#8490",
+        "context": "Prevented data loss and sequence corruption on SyncAlways stream restarts prior to initial snapshot."
+      }
+    }
+  ],
+  "failureModesAndDefenses": [
+    {
+      "failureMode": "Client Outbound Buffer Exhaustion / Slow Consumer Head-of-Line Blocking",
+      "detectionMechanism": "outbound.pb > outbound.mp check inside queueOutbound() during message delivery",
+      "recoveryAction": "Calls markConnAsClosed(SlowConsumerPendingBytes), sets skipFlushOnClose flag, and immediately severs TCP connection without blocking publishing producers",
+      "sourceEvidence": {
+        "filePath": "server/client.go",
+        "lineRange": [
+          2595,
+          2615
+        ],
+        "observation": "Closes slow connection in place, increments server.slowConsumers atomic counter, and releases memory to nbPool."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "CORE-SC",
+        "rootCause": "Subscribers unable to read at producer line rate consume unbounded server write buffers.",
+        "fixDescription": "Enforced hard MaxPending threshold with zero-allocation buffer recycling."
+      },
+      "prescribedMitigation": "Client architectures must provision sufficient network bandwidth, configure async worker pools, or switch to JetStream pull consumers with explicit flow control."
+    },
+    {
+      "failureMode": "Producer Fan-In Buffer Runaway",
+      "detectionMechanism": "outbound.pb > (outbound.mp * 3/4) buffer occupancy check in queueOutbound()",
+      "recoveryAction": "Allocates c.out.stc stall channel, forcing publishing producer readLoops to pause execution for stallTotalAllowed (10ms)",
+      "sourceEvidence": {
+        "filePath": "server/client.go",
+        "lineRange": [
+          2618,
+          2622
+        ],
+        "observation": "Paces incoming publisher messages at socket ingestion point before outbound buffers overflow."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "CORE-STALL",
+        "rootCause": "Thousands of concurrent publishers fanning into a single consumer overrun socket write queues.",
+        "fixDescription": "Introduced stall gate channel (stc) with 10ms maximum backpressure duration."
+      },
+      "prescribedMitigation": "Distribute traffic across subject hierarchies or queue groups to avoid single-consumer fan-in hotspots."
+    },
+    {
+      "failureMode": "Disk Write IO Failure / Permission Denied during Stream Ingestion",
+      "detectionMechanism": "mb.werr != nil or isPermissionError(err) returned from fileStore.StoreRawMsg",
+      "recoveryAction": "Disables further stream writes (mset.setWriteErrLocked), invokes node.StepDown() on Raft node, and triggers srv.ShutdownJetStream() if permissions are lost",
+      "sourceEvidence": {
+        "filePath": "server/stream.go",
+        "lineRange": [
+          7420,
+          7445
+        ],
+        "observation": "Fails fast, protects existing on-disk WAL records from partial corruption, and surrenders leadership to healthy cluster peers."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "JS-DISK-IO",
+        "rootCause": "Filesystem out of space or permission revocation caused silent write failures.",
+        "fixDescription": "Added explicit error caching (werr) on msgBlock and automated Raft stepdown."
+      },
+      "prescribedMitigation": "Monitor storage mount availability and provision redundant R3/R5 stream replicas across isolated storage volumes."
+    },
+    {
+      "failureMode": "Quadratic Memory Leak and CPU Stall on Shared Reply Subjects in Reverse Response Map",
+      "detectionMechanism": "Linear search through response slice when thousands of pull requests share an identical inbox reply",
+      "recoveryAction": "respEntries dynamically switches from slice to hash index (idx map[string]int) when response count exceeds rrIndexThreshold (16), performing O(1) swap-and-pop removal",
+      "sourceEvidence": {
+        "filePath": "server/accounts.go",
+        "lineRange": [
+          220,
+          255
+        ],
+        "observation": "Maintains constant-time response registration and cleanup even under millions of shared-inbox requests."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "#8463 / #6307",
+        "rootCause": "Account.imports.rrMap performed O(n) slice deletions inside periodic reaper loop, leading to O(n^2) CPU pinning and unbounded memory growth.",
+        "fixDescription": "Implemented threshold-activated reverse response map indexing with swap-and-pop deletion."
+      },
+      "prescribedMitigation": "Client SDKs should generate unique inboxes per request or utilize modern JetStream fetch APIs."
+    },
+    {
+      "failureMode": "Premature Raft Candidate Campaigning Outside Peer Set during Scale-Down",
+      "detectionMechanism": "n.managed && n.peers[n.id] == nil check in switchToCandidate()",
+      "recoveryAction": "Blocks candidate election campaign, resets election timer, and reports noLeader to meta controller until peer assignment is finalized",
+      "sourceEvidence": {
+        "filePath": "server/raft.go",
+        "lineRange": [
+          5763,
+          5770
+        ],
+        "observation": "Prevents split-vote election loops and quorum disruption during dynamic cluster topology changes."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "#8489",
+        "rootCause": "Nodes assigned by meta controller attempted to campaign before being added to Raft peer set.",
+        "fixDescription": "Added n.managed peer membership guard before transitioning to Candidate state."
+      },
+      "prescribedMitigation": "Always wait for cluster stream leader confirmation (waitOnStreamLeader) following cluster scale operations."
+    },
+    {
+      "failureMode": "Silent Disk Bit Rot / File Store Block Corruption",
+      "detectionMechanism": "HighwayHash-64 digest recalculation during block read operations",
+      "recoveryAction": "Rejects corrupt record, returns ErrBitRot, isolates corrupted msgBlock, and reconstructs stream state from Raft snapshots or peer replication",
+      "sourceEvidence": {
+        "filePath": "server/filestore.go",
+        "lineRange": [
+          7710,
+          7725
+        ],
+        "observation": "Verifies 64-bit HighwayHash digest against record header, subject, headers, and payload on every read."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "FS-BITROT",
+        "rootCause": "Hardware sector degradation or OS file cache corruption.",
+        "fixDescription": "Integrated cryptographic HighwayHash-64 per-record checksum validation."
+      },
+      "prescribedMitigation": "Deploy on enterprise filesystems with ECC RAM and maintain multi-replica stream configurations (R>=3)."
+    }
+  ],
+  "historicalEvolution": [
+    {
+      "milestoneOrBug": "Consumer Config Data Race Fix in Stream Consumer Listing",
+      "commitHash": "50657def0ddaa1606c0bb2f24cbecdd952c26512",
+      "issueOrPr": "#8478",
+      "rootCause": "getPublicConsumers walked mset.cList and read o.cfg.Direct under clsMu without consumer lock, racing against updateConfig assigning entire ConsumerConfig struct under o.mu on adjacent struct bools.",
+      "architecturalFix": "Made Direct and Sourcing immutable fields copied onto consumer at creation; rejected updates to either field in checkNewConsumerConfig; eliminated consumer lock acquisition during list traversal.",
+      "affectedFiles": [
+        "server/consumer.go",
+        "server/stream.go",
+        "server/jetstream.go",
+        "server/jetstream_consumer_test.go"
+      ],
+      "evidence": {
+        "filePath": "server/consumer.go",
+        "observation": "Fields direct and sourcing stored directly on consumer struct and read lock-free in partitionUnique and getPublicConsumers."
+      }
+    },
+    {
+      "milestoneOrBug": "Constant-Time Reverse Response Map Removal",
+      "commitHash": "872dc293b35d537295c30ee07f79eb9a1e3c879a",
+      "issueOrPr": "#8463 / #6307",
+      "rootCause": "Account.imports.rrMap scanned slice for matching response subject upon each service import return. When clients reused a single reply subject across 1M+ requests, removal degraded to O(n^2), pinning CPU at 1400% and leaking memory.",
+      "architecturalFix": "Implemented respEntries struct with hybrid storage: slice for small lists and dynamic hash index (idx map[string]int) when count > 16, using swap-and-pop for O(1) removal.",
+      "affectedFiles": [
+        "server/accounts.go",
+        "server/accounts_test.go"
+      ],
+      "evidence": {
+        "filePath": "server/accounts.go",
+        "observation": "respEntries.add and respEntries.remove implement threshold-indexed constant-time removal."
+      }
+    },
+    {
+      "milestoneOrBug": "Consumer State Corruption on Name Collision",
+      "commitHash": "1787eee035cf0253c201fa0f05afad92b6f296dc",
+      "issueOrPr": "#8491",
+      "rootCause": "Rejected consumer creation opened existing consumer's on-disk directory and deleted it on teardown; setConsumer overwrote live consumer entries in mset.consumers and IP queues.",
+      "architecturalFix": "Moved name-exists check prior to store creation; updated setConsumer to reject overwrites; changed error teardown to call o.stop() instead of o.deleteWithoutAdvisory().",
+      "affectedFiles": [
+        "server/consumer.go",
+        "server/jetstream_consumer_test.go"
+      ],
+      "evidence": {
+        "filePath": "server/consumer.go",
+        "observation": "Consumer creation validates existence before initializing ConsumerStore or allocating IP queues."
+      }
+    },
+    {
+      "milestoneOrBug": "WAL Replay Sequence Zero Reset Bug Fix",
+      "commitHash": "854fd834fb1880a935d45e23ccb1fd13daace09c",
+      "issueOrPr": "#8490",
+      "rootCause": "Replicated SyncAlways stream restarted before its first Raft snapshot caused WAL replay to reset stream store to sequence zero, ignoring configured FirstSeq.",
+      "architecturalFix": "Preserved mset.cfg.FirstSeq throughout WAL replay initialization checks.",
+      "affectedFiles": [
+        "server/stream.go",
+        "server/jetstream_cluster_1_test.go"
+      ],
+      "evidence": {
+        "filePath": "server/stream.go",
+        "observation": "Stream state recovery respects FirstSeq during raw replay."
+      }
+    },
+    {
+      "milestoneOrBug": "Managed Raft Candidate Isolation During Cluster Scale-Down",
+      "commitHash": "1d9d4f42618a2d8fafa42431d270617c8ddd1350",
+      "issueOrPr": "#8489",
+      "rootCause": "Raft node assigned by meta controller campaigned for leadership before being incorporated into the active peer set, triggering split-brain votes.",
+      "architecturalFix": "Added check in switchToCandidate() preventing campaign if n.managed and n.peers[n.id] == nil.",
+      "affectedFiles": [
+        "server/raft.go",
+        "server/raft_test.go"
+      ],
+      "evidence": {
+        "filePath": "server/raft.go",
+        "observation": "Guarded switchToCandidate to defer election timeout if node is not yet in peer set."
+      }
+    },
+    {
+      "milestoneOrBug": "Stale Flow Control Consumer Stall Fix",
+      "commitHash": "8e2b49f534aae7fe32f3d0e01d44a5c6a26820f4",
+      "issueOrPr": "#8488",
+      "rootCause": "Consumer leader transitions preserved stale flow control tokens, causing pull consumers to permanently hang waiting for nonexistent flow control ACKs.",
+      "architecturalFix": "Reset flow control outstanding sequence state upon consumer leadership acquisition.",
+      "affectedFiles": [
+        "server/consumer.go",
+        "server/jetstream_consumer_test.go"
+      ],
+      "evidence": {
+        "filePath": "server/consumer.go",
+        "observation": "Cleans flow control identifiers and pending state upon becoming leader."
+      }
+    }
+  ],
+  "unresolvedContradictionsAndBypasses": [
+    {
+      "claimOrGuarantee": "Core NATS delivers messages at high throughput with zero memory leaks.",
+      "contradictionOrBypass": "When a subscriber falls behind, Core NATS disconnects the TCP connection and drops all in-flight unwritten buffer frames without retransmission or DLQ storage. At-most-once delivery intentionally sacrifices message durability to preserve broker memory bounds.",
+      "codeLocation": "server/client.go:2595-2615",
+      "evidence": "c.markConnAsClosed(SlowConsumerPendingBytes) explicitly discards buffered messages and skips outbound flush."
+    },
+    {
+      "claimOrGuarantee": "JetStream Direct Get provides strictly consistent message reads.",
+      "contradictionOrBypass": "Direct Get reads directly from local fileStore using isolateMu without passing through Raft quorum. If a minority partition node has not yet stepped down, it can serve stale message data during the election timeout window.",
+      "codeLocation": "server/stream.go:6154-6200",
+      "evidence": "Direct get bypasses Raft proposal pipeline for high performance, accepting bounded read staleness during partition failover."
+    },
+    {
+      "claimOrGuarantee": "Raft log replication guarantees strict total order before state application.",
+      "contradictionOrBypass": "Pipelined fast-path proposals (fastPathTerm) allow leader to process subsequent proposals before prior append entries have fully received follower ACKs. If leader crashes before quorum confirms, uncommitted fast-path entries are truncated.",
+      "codeLocation": "server/raft.go:5688-5695",
+      "evidence": "n.fastPathTerm is reset to 0 on stepdown and pending append queues are drained, requiring clients to retry unacknowledged publishes."
+    },
+    {
+      "claimOrGuarantee": "Interest-based retention streams only store messages with active consumer interest.",
+      "contradictionOrBypass": "When zero consumers exist, InterestPolicy streams still advance the global stream sequence (SkipMsgNoInterest) and record the Nats-Msg-Id in the deduplication map (ddmap), consuming sequence numbers and dedupe slots despite storing zero payload bytes on disk.",
+      "codeLocation": "server/stream.go:7308-7345",
+      "evidence": "mset.store.SkipMsgNoInterest(0) advances lseq while skipping message body persistence."
+    }
+  ],
+  "adversarialCritique": {
+    "boundaryConditions": [
+      "Filesystem full (ENOSPC) during msgBlock allocation causes immediate write error caching and Raft leader stepdown, rendering the stream read-only until disk space is reclaimed.",
+      "Asymmetric network partitions where a leader can receive client TCP publishes but cannot reach Raft quorum will buffer proposals until client publish timeout or lost-quorum timer (10s) fires.",
+      "Extreme subject turnover with millions of ephemeral unique subjects can cause Sublist L1 cache thrashing, requiring NoSublistCache server option or explicit subject wildcard restructuring.",
+      "NTP clock jumps backward can temporarily delay checkPending ack expiration timers or cause premature deduplication window purging."
+    ],
+    "untestedAssumptions": [
+      "Underlying block storage guarantees atomic single-sector writes for message record headers without tearing.",
+      "Client SDKs respect SlowConsumer disconnects and implement exponential backoff rather than aggressive reconnect loops.",
+      "HighwayHash-64 with 256-bit key provides sufficient collision resistance for high-frequency data integrity verification."
+    ],
+    "acceptedTradeOffs": [
+      "Core Pub/Sub drops slow subscriber connections rather than blocking publishers or spilling to disk, prioritizing ultra-low latency and predictable memory bounds over lossless delivery.",
+      "JetStream Direct Get reads local storage without Raft roundtrips, trading linearizable read consistency for sub-microsecond KeyValue lookups.",
+      "FileStore uses weak cache pointers (elastic.Pointer) allowing the Go runtime GC to reclaim message read buffers under memory pressure, trading cache hit ratio for overall process stability."
+    ]
+  }
+}

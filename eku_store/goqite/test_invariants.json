@@ -1,0 +1,354 @@
+[
+  {
+    "filePath": "goqite_test.go",
+    "testFunction": "TestQueue_New",
+    "subScenarioName": "panics if db is nil",
+    "line": 48,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"panics if db is nil\" in TestQueue_New"
+  },
+  {
+    "filePath": "goqite_test.go",
+    "testFunction": "TestQueue_New",
+    "subScenarioName": "panics if name is empty",
+    "line": 57,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"panics if name is empty\" in TestQueue_New"
+  },
+  {
+    "filePath": "goqite_test.go",
+    "testFunction": "TestQueue_New",
+    "subScenarioName": "panics if max receive is negative",
+    "line": 66,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"panics if max receive is negative\" in TestQueue_New"
+  },
+  {
+    "filePath": "goqite_test.go",
+    "testFunction": "TestQueue_New",
+    "subScenarioName": "panics if timeout is negative",
+    "line": 75,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"panics if timeout is negative\" in TestQueue_New"
+  },
+  {
+    "filePath": "goqite_test.go",
+    "testFunction": "TestQueue_New",
+    "subScenarioName": "panics if SQL flavor is too high",
+    "line": 84,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"panics if SQL flavor is too high\" in TestQueue_New"
+  },
+  {
+    "filePath": "goqite_test.go",
+    "testFunction": "TestQueue_New",
+    "subScenarioName": "panics if SQL flavor is negative",
+    "line": 94,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"panics if SQL flavor is negative\" in TestQueue_New"
+  },
+  {
+    "filePath": "goqite_test.go",
+    "testFunction": "TestQueue_Receive",
+    "subScenarioName": "does not receive a message from a different queue",
+    "line": 221,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"does not receive a message from a different queue\" in TestQueue_Receive"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler",
+    "subScenarioName": "errors if cannot decode request",
+    "line": 52,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"errors if cannot decode request\" in TestNewHandler"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler_Get",
+    "subScenarioName": "receives nothing if there is no message",
+    "line": 69,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"receives nothing if there is no message\" in TestNewHandler_Get"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler_Get",
+    "subScenarioName": "errors if cannot receive from queue",
+    "line": 77,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"errors if cannot receive from queue\" in TestNewHandler_Get"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler_Get",
+    "subScenarioName": "can wait for a message",
+    "line": 85,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"can wait for a message\" in TestNewHandler_Get"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler_Get",
+    "subScenarioName": "errors if timeout is invalid",
+    "line": 95,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"errors if timeout is invalid\" in TestNewHandler_Get"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler_Get",
+    "subScenarioName": "errors if interval is invalid",
+    "line": 109,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"errors if interval is invalid\" in TestNewHandler_Get"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler_Post",
+    "subScenarioName": "posts and receives a message",
+    "line": 125,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"posts and receives a message\" in TestNewHandler_Post"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler_Post",
+    "subScenarioName": "errors if delay is negative",
+    "line": 139,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"errors if delay is negative\" in TestNewHandler_Post"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler_Post",
+    "subScenarioName": "errors if cannot send to queue",
+    "line": 149,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"errors if cannot send to queue\" in TestNewHandler_Post"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler_Put",
+    "subScenarioName": "can extend a message timeout",
+    "line": 161,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"can extend a message timeout\" in TestNewHandler_Put"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler_Put",
+    "subScenarioName": "errors if delay is zero",
+    "line": 185,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"errors if delay is zero\" in TestNewHandler_Put"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler_Put",
+    "subScenarioName": "errors if id is empty",
+    "line": 196,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"errors if id is empty\" in TestNewHandler_Put"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler_Put",
+    "subScenarioName": "errors if cannot extend in queue",
+    "line": 206,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"errors if cannot extend in queue\" in TestNewHandler_Put"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler_Delete",
+    "subScenarioName": "deletes a message",
+    "line": 219,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"deletes a message\" in TestNewHandler_Delete"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler_Delete",
+    "subScenarioName": "errors if id is empty",
+    "line": 238,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"errors if id is empty\" in TestNewHandler_Delete"
+  },
+  {
+    "filePath": "http/handler_test.go",
+    "testFunction": "TestNewHandler_Delete",
+    "subScenarioName": "errors if cannot delete from queue",
+    "line": 246,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"errors if cannot delete from queue\" in TestNewHandler_Delete"
+  },
+  {
+    "filePath": "jobs/runner_test.go",
+    "testFunction": "TestRunner_Register",
+    "subScenarioName": "can register a new job",
+    "line": 22,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"can register a new job\" in TestRunner_Register"
+  },
+  {
+    "filePath": "jobs/runner_test.go",
+    "testFunction": "TestRunner_Register",
+    "subScenarioName": "panics if the same job is registered twice",
+    "line": 29,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"panics if the same job is registered twice\" in TestRunner_Register"
+  },
+  {
+    "filePath": "jobs/runner_test.go",
+    "testFunction": "TestRunner_Start",
+    "subScenarioName": "can run a named job",
+    "line": 48,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"can run a named job\" in TestRunner_Start"
+  },
+  {
+    "filePath": "jobs/runner_test.go",
+    "testFunction": "TestRunner_Start",
+    "subScenarioName": "doesn't run a different job",
+    "line": 67,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"doesn't run a different job\" in TestRunner_Start"
+  },
+  {
+    "filePath": "jobs/runner_test.go",
+    "testFunction": "TestRunner_Start",
+    "subScenarioName": "panics if the job is not registered",
+    "line": 90,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"panics if the job is not registered\" in TestRunner_Start"
+  },
+  {
+    "filePath": "jobs/runner_test.go",
+    "testFunction": "TestRunner_Start",
+    "subScenarioName": "does not panic if job panics",
+    "line": 109,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"does not panic if job panics\" in TestRunner_Start"
+  },
+  {
+    "filePath": "jobs/runner_test.go",
+    "testFunction": "TestRunner_Start",
+    "subScenarioName": "extends a job's timeout if it takes longer than the default timeout",
+    "line": 125,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"extends a job's timeout if it takes longer than the default timeout\" in TestRunner_Start"
+  },
+  {
+    "filePath": "jobs/runner_test.go",
+    "testFunction": "TestRunner_Start",
+    "subScenarioName": "processes jobs with higher priority first",
+    "line": 145,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"processes jobs with higher priority first\" in TestRunner_Start"
+  },
+  {
+    "filePath": "jobs/runner_test.go",
+    "testFunction": "TestCreateTx",
+    "subScenarioName": "can create a job inside a transaction",
+    "line": 177,
+    "assertionTypes": [
+      "t.Run",
+      "testing"
+    ],
+    "inferredInvariant": "Guarantees scenario behavior: \"can create a job inside a transaction\" in TestCreateTx"
+  }
+]

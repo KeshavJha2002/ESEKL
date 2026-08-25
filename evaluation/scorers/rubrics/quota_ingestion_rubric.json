@@ -1,0 +1,78 @@
+{
+  "suiteId": "RUBRIC-QUOTA-INGESTION-001",
+  "version": "1.0.0",
+  "name": "Multi-Tenant Telemetry Ingestion & Flow Control Rubric",
+  "domain": "Queue, Broker & Distributed Workflow Systems",
+  "hiddenKeys": [
+    {
+      "id": "KEY-001",
+      "description": "Credit-Based Flow Control & Tenant Bounded Quotas (EKU-QUEUE-005 / CLM-005)",
+      "targetInvariants": [
+        "EKU-QUEUE-005",
+        "CLM-005"
+      ],
+      "acceptable_phrasings": [
+        "credit-based flow control",
+        "credit allocation",
+        "RDY",
+        "flow control",
+        "consumer-pull credit",
+        "pause producer sockets",
+        "starvation"
+      ],
+      "pointWeight": 2.5
+    },
+    {
+      "id": "KEY-002",
+      "description": "Fast Admission Rejection (HTTP 429/503) on Storage Saturation (EKU-QUEUE-006 / CLM-006 / EKU-QUEUE-019)",
+      "targetInvariants": [
+        "EKU-QUEUE-006",
+        "CLM-006",
+        "EKU-QUEUE-019"
+      ],
+      "acceptable_phrasings": [
+        "HTTP 429",
+        "HTTP 503",
+        "fail fast",
+        "bounded semaphores",
+        "storage saturation",
+        "admission rejection",
+        "SYSTEM_BUSY",
+        "SYSTEM_OVERLOAD"
+      ],
+      "pointWeight": 2.5
+    },
+    {
+      "id": "KEY-003",
+      "description": "Tenant Partition Isolation Without Head-of-Line Blocking (EKU-QUEUE-011 / CLM-011)",
+      "targetInvariants": [
+        "EKU-QUEUE-011",
+        "CLM-011"
+      ],
+      "acceptable_phrasings": [
+        "partition",
+        "head-of-line blocking",
+        "tenant-isolated",
+        "isolated partitions",
+        "partition buffers"
+      ],
+      "pointWeight": 2.5
+    },
+    {
+      "id": "KEY-004",
+      "description": "Decoupled Worker Drain & Graceful Renewer Shutdown (EKU-QUEUE-020 / CLM-020)",
+      "targetInvariants": [
+        "EKU-QUEUE-020",
+        "CLM-020"
+      ],
+      "acceptable_phrasings": [
+        "drain deadline",
+        "decoupled worker drain",
+        "graceful drain",
+        "in-flight batch",
+        "finish current batch"
+      ],
+      "pointWeight": 2.5
+    }
+  ]
+}

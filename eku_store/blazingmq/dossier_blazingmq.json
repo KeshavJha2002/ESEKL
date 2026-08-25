@@ -1,0 +1,1015 @@
+{
+  "repoName": "bloomberg/blazingmq",
+  "domain": "message_queues",
+  "gitCommitHash": "a5b313cbb4c12a4b90790bc488710345a40a52e9",
+  "analyzedAt": "2026-08-22T16:15:00.000Z",
+  "overview": {
+    "purpose": "Enterprise-grade, highly available, fault-tolerant distributed message queue broker in C++ developed at Bloomberg for mission-critical low-latency workflows with strong consistency quorum replication, memory-mapped append-only journal storage, multi-queue lock-free dispatching, rich routing strategies (priority, fanout, broadcast, work queue), and poison message quarantine.",
+    "architectureType": "Clustered Multi-Tier Broker-Proxy architecture featuring single-threaded-per-queue event dispatching (bmqc::MultiQueueThreadPool), quorum-replicated append-only journal/data file storage (mqbs::FileStore), term-and-lease-scoped leader election (mqbc::Elector), two-stage cluster state ledger consensus (mqbc::ClusterStateLedger), and custom binary wire protocol (bmqp::Event).",
+    "keyDifferentiators": [
+      "Lock-Free Multi-Queue Dispatching: Eliminates mutex contention between concurrent queues and network sessions by dedicating isolated single-threaded processor queues in bmqc::MultiQueueThreadPool to sessions, queues, and cluster partitions",
+      "Configurable Strong vs Weak Consistency: Supports Strong Consistency (SC) requiring synchronous quorum replication receipts across cluster nodes before PUT acknowledgments and consumer PUSH deliveries, alongside Weak Consistency (WC) for sub-millisecond local journaling",
+      "Generation-Scoped Primary Leases: Enforces 32-bit monotonic primaryLeaseId on all storage journal records and partition state machines, fencing stale primaries and preventing split-brain write corruption across election boundaries",
+      "Two-Stage Replicated Partition Healing: Synchronizes partition replicas through sequence number exchange (stage 1) followed by chunked PUSH/PULL/DROP storage streaming (stage 2) guarded by watchdog timer fail-safes",
+      "Integrated Poison Pill Quarantine: Attaches 4-bit bmqp::RdaInfo redelivery counters to push envelopes and automatically quarantines/purges poison payloads when retries reach zero without blocking downstream consumers"
+    ]
+  },
+  "components": [
+    {
+      "name": "Application",
+      "role": "Broker Daemon Lifecycle Supervisor & Subsystem Coordinator",
+      "primaryFiles": [
+        "src/groups/mqb/mqba/mqba_application.h",
+        "src/groups/mqb/mqba/mqba_application.cpp"
+      ],
+      "publicInterfaces": [
+        "int start(bsl::ostream& errorDescription)",
+        "void stop()",
+        "bool initiateShutdown()",
+        "void stopTransportAndClusters()",
+        "int processCommand(const bsl::string& source, const bsl::string& cmd, bsl::ostream& os, bool fromReroute)",
+        "void loadStatContexts(bsl::unordered_map<bsl::string, bmqst::StatContext*>* contexts) const"
+      ],
+      "dependencies": [
+        "mqba::Dispatcher",
+        "mqba::DomainManager",
+        "mqbblp::ClusterCatalog",
+        "mqbnet::TransportManager",
+        "mqbplug::PluginManager",
+        "mqbauthn::AuthenticationController",
+        "mqbauthz::AuthorizationController",
+        "mqbstat::StatController"
+      ],
+      "stateManaged": [
+        "Broker operational lifecycle state",
+        "Active client/proxy/cluster network sessions list",
+        "Admin and routed command execution thread pools (bdlmt::ThreadPool)",
+        "Counting allocator memory stores (bmqma::CountingAllocatorStore)"
+      ],
+      "evidence": {
+        "filePath": "src/groups/mqb/mqba/mqba_application.h",
+        "lineRange": [
+          97,
+          265
+        ],
+        "symbol": "class Application",
+        "observation": "Coordinates broker bootstrapping, plugin registration, cluster catalog initialization, signal handling, graceful shutdown v2 drainage, and top-level admin command dispatching.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "ClientSession",
+      "role": "Client TCP Connection Lifecycle & Queue Handle Multiplexer",
+      "primaryFiles": [
+        "src/groups/mqb/mqba/mqba_clientsession.h",
+        "src/groups/mqb/mqba/mqba_clientsession.cpp"
+      ],
+      "publicInterfaces": [
+        "void processEvent(const bsl::shared_ptr<const bmqp::Event>& event, mqbnet::ClusterNode* source)",
+        "void onChannelClose(const bsl::shared_ptr<bmqio::Channel>& channel)",
+        "void initiateShutdown(int drainTimeMs)",
+        "void tearDown(const bsl::shared_ptr<mqba::ClientSession>& self)",
+        "void openQueue(const bmqp_ctrlmsg::OpenQueue& request)",
+        "void closeQueue(const bmqp_ctrlmsg::CloseQueue& request)",
+        "void configureQueue(const bmqp_ctrlmsg::ConfigureQueueStream& request)"
+      ],
+      "dependencies": [
+        "bmqio::Channel",
+        "mqbi::QueueHandle",
+        "mqbblp::QueueSessionManager",
+        "mqba::Dispatcher",
+        "mqbauthn::AuthenticationController",
+        "mqbauthz::AuthorizationController"
+      ],
+      "stateManaged": [
+        "Session operational state (e_CONNECTED, e_NEGOTIATING, e_RUNNING, e_STOPPING, e_DISCONNECTED)",
+        "Unacked message tracking map (UnackedMessageInfo per correlationId)",
+        "Registered queue handles and sub-queue streams",
+        "Client memory pools and traffic throttling stats"
+      ],
+      "evidence": {
+        "filePath": "src/groups/mqb/mqba/mqba_clientsession.h",
+        "lineRange": [
+          106,
+          310
+        ],
+        "symbol": "class ClientSession",
+        "observation": "Manages per-client wire protocol negotiation, inbound PUT/CONFIRM/REJECT event decoding, backpressure rate limiting, and mapping client queue IDs to broker queue handles.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Dispatcher",
+      "role": "Lock-Free Multi-Queue Event Dispatching & Thread Pool Multiplexer",
+      "primaryFiles": [
+        "src/groups/mqb/mqba/mqba_dispatcher.h",
+        "src/groups/mqb/mqba/mqba_dispatcher.cpp",
+        "src/groups/mqb/mqbi/mqbi_dispatcher.h"
+      ],
+      "publicInterfaces": [
+        "void registerClient(mqbi::DispatcherClient* client, mqbi::DispatcherClientType::Enum type)",
+        "void unregisterClient(mqbi::DispatcherClient* client)",
+        "void dispatchEvent(const mqbi::DispatcherEvent& event, mqbi::DispatcherClient* destination)",
+        "void execute(const bsl::function<void()>& functor, mqbi::DispatcherClient* client)",
+        "bmqex::Executor executor(const mqbi::DispatcherClient* client) const",
+        "bool inDispatcherThread(const mqbi::DispatcherClient* client) const"
+      ],
+      "dependencies": [
+        "bmqc::MultiQueueThreadPool<mqbi::DispatcherEvent>",
+        "bmqex::Executor",
+        "mqbi::DispatcherEventSource",
+        "mqbstat::StatContext"
+      ],
+      "stateManaged": [
+        "Processor queues per registered client type (e_SESSION, e_QUEUE, e_CLUSTER)",
+        "Dispatcher client metadata and thread affinity bindings",
+        "Dispatcher queue depth and latency statistics"
+      ],
+      "evidence": {
+        "filePath": "src/groups/mqb/mqba/mqba_dispatcher.h",
+        "lineRange": [
+          148,
+          260
+        ],
+        "symbol": "class Dispatcher",
+        "observation": "Assigns each queue, session, and partition to an isolated worker processor queue in MultiQueueThreadPool, enforcing single-threaded lock-free serialization per domain entity.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "RootQueueEngine",
+      "role": "Primary Node Queue Routing, Subscription & Capacity Supervisor",
+      "primaryFiles": [
+        "src/groups/mqb/mqbblp/mqbblp_rootqueueengine.h",
+        "src/groups/mqb/mqbblp/mqbblp_rootqueueengine.cpp"
+      ],
+      "publicInterfaces": [
+        "mqbi::QueueHandle* getHandle(const mqbi::OpenQueueConfirmationCookieSp& context, const bsl::shared_ptr<mqbi::QueueHandleRequesterContext>& clientContext, const bmqp_ctrlmsg::QueueHandleParameters& handleParameters, unsigned int upstreamSubQueueId, const mqbi::QueueHandle::GetHandleCallback& callback)",
+        "void configureHandle(mqbi::QueueHandle* handle, const bmqp_ctrlmsg::StreamParameters& streamParameters, const mqbi::QueueHandle::HandleConfiguredCallback& configuredCb)",
+        "void releaseHandle(mqbi::QueueHandle* handle, const bmqp_ctrlmsg::QueueHandleParameters& handleParameters, bool isFinal, const mqbi::QueueHandle::HandleReleasedCallback& releasedCb)",
+        "void onHandleUsable(mqbi::QueueHandle* handle, unsigned int upstreamSubscriptionId)",
+        "void afterNewMessage()",
+        "int onConfirmMessage(mqbi::QueueHandle* handle, const bmqt::MessageGUID& msgGUID, unsigned int subQueueId)",
+        "int onRejectMessage(mqbi::QueueHandle* handle, const bmqt::MessageGUID& msgGUID, unsigned int downstreamSubQueueId)"
+      ],
+      "dependencies": [
+        "mqbi::QueueState",
+        "mqbi::StorageIterator",
+        "mqbu::FlowController",
+        "QueueConsumptionMonitor",
+        "bdlmt::EventScheduler"
+      ],
+      "stateManaged": [
+        "App subscriptions map (d_apps appId -> AppStateSp)",
+        "Active consumer priorities, capacities, and unconfirmed message counts",
+        "Sequential and random storage iterators (d_storageIter_mp, d_realStorageIter_mp)",
+        "Reject message dump throttling (bdlmt::Throttle)"
+      ],
+      "evidence": {
+        "filePath": "src/groups/mqb/mqbblp/mqbblp_rootqueueengine.h",
+        "lineRange": [
+          80,
+          370
+        ],
+        "symbol": "class RootQueueEngine",
+        "observation": "Executes message routing across priority tiers, fanout sub-queues, and work-queue groups; enforces consumer max-unconfirmed watermarks and tracks redelivery attempts (RDA).",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "RelayQueueEngine",
+      "role": "Proxy & Non-Primary Replica Message Forwarder & State Relay",
+      "primaryFiles": [
+        "src/groups/mqb/mqbblp/mqbblp_relayqueueengine.h",
+        "src/groups/mqb/mqbblp/mqbblp_relayqueueengine.cpp"
+      ],
+      "publicInterfaces": [
+        "mqbi::QueueHandle* getHandle(...)",
+        "void configureHandle(...)",
+        "void releaseHandle(...)",
+        "void onHandleUsable(...)",
+        "void afterNewMessage()",
+        "int onConfirmMessage(...)",
+        "int onRejectMessage(...)"
+      ],
+      "dependencies": [
+        "mqbi::QueueState",
+        "mqbblp::ClusterQueueHelper",
+        "mqba::Dispatcher"
+      ],
+      "stateManaged": [
+        "Upstream primary connection state",
+        "Aggregated downstream consumer parameters and capacity limits",
+        "In-flight unconfirmed GUID routing table"
+      ],
+      "evidence": {
+        "filePath": "src/groups/mqb/mqbblp/mqbblp_relayqueueengine.h",
+        "lineRange": [
+          65,
+          230
+        ],
+        "symbol": "class RelayQueueEngine",
+        "observation": "Relays consumer registrations, capacity updates, PUTs, CONFIRMs, and REJECTs between local downstream clients and upstream cluster primary nodes.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "FileStore",
+      "role": "High-Performance Partition Append-Only Journal & Data File Storage",
+      "primaryFiles": [
+        "src/groups/mqb/mqbs/mqbs_filestore.h",
+        "src/groups/mqb/mqbs/mqbs_filestore.cpp"
+      ],
+      "publicInterfaces": [
+        "int open(int partitionId)",
+        "int close()",
+        "void setActivePrimary(mqbnet::ClusterNode* primaryNode, unsigned int primaryLeaseId)",
+        "int writeMessageRecord(const bmqp::StorageHeader& header, const mqbs::RecordHeader& recHeader, const bsl::shared_ptr<bdlbb::Blob>& event, const bmqu::BlobPosition& recordPosition)",
+        "int writeQueueCreationRecord(const bmqp::StorageHeader& header, const mqbs::RecordHeader& recHeader, const bsl::shared_ptr<bdlbb::Blob>& event, const bmqu::BlobPosition& recordPosition)",
+        "int writeJournalRecord(const bmqp::StorageHeader& header, const mqbs::RecordHeader& recHeader, const bsl::shared_ptr<bdlbb::Blob>& event, const bmqu::BlobPosition& recordPosition, bmqp::StorageMessageType::Enum messageType)",
+        "void replicateRecord(bmqp::StorageMessageType::Enum type, bsls::Types::Uint64 journalOffset, bool immediateFlush)",
+        "int openInRecoveryMode(bsl::ostream& errorDescription, QueueKeyInfoMap* queueKeyInfoMap)"
+      ],
+      "dependencies": [
+        "mqbs::JournalFile",
+        "mqbs::DataFile",
+        "mqbs::FileSet",
+        "mqbs::ReplicatedStorage",
+        "bmqp::StorageEventBuilder"
+      ],
+      "stateManaged": [
+        "Current write cursor (primaryLeaseId, sequenceNumber, journalOffset, dataOffset)",
+        "Active, rollover, and archived FileSets",
+        "Queue storages map (StoragesMap d_storages)",
+        "SyncPoints deque and lease-to-highest-sequence-number index (d_highestSeqNums)"
+      ],
+      "evidence": {
+        "filePath": "src/groups/mqb/mqbs/mqbs_filestore.h",
+        "lineRange": [
+          117,
+          450
+        ],
+        "symbol": "class FileStore",
+        "observation": "Provides memory-mapped append-only journaling with CRC32-C checksumming, record rollover, primary lease fencing, replication multicasting, and reverse-iterator crash recovery.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "StorageManager",
+      "role": "Cluster Partition Storage Replication & Healing Coordinator",
+      "primaryFiles": [
+        "src/groups/mqb/mqbc/mqbc_storagemanager.h",
+        "src/groups/mqb/mqbc/mqbc_storagemanager.cpp"
+      ],
+      "publicInterfaces": [
+        "void processStorageEvent(const mqbi::DispatcherStorageEvent& event)",
+        "void processPartitionFsmEvent(int partitionId, const PartitionFSMEventData& eventData, mqbc::PartitionStateTableEvent::Enum event)",
+        "void processRecoveryEvent(const mqbi::DispatcherRecoveryEvent& event)",
+        "void processReceiptEvent(const mqbi::DispatcherReceiptEvent& event)",
+        "void setPrimaryStatus(int partitionId, bmqp_ctrlmsg::PrimaryStatus::Value status)",
+        "void applyStorageEvent(const bsl::shared_ptr<bdlbb::Blob>& blob, mqbnet::ClusterNode* source)"
+      ],
+      "dependencies": [
+        "mqbs::FileStore",
+        "mqbc::PartitionFSM",
+        "mqbc::ClusterState",
+        "mqbnet::Cluster"
+      ],
+      "stateManaged": [
+        "Partition FSM state table instances per partition",
+        "In-flight replica state and data requests",
+        "Quorum replication receipt accumulators for strong consistency",
+        "Watchdog recovery timers and retry counts"
+      ],
+      "evidence": {
+        "filePath": "src/groups/mqb/mqbc/mqbc_storagemanager.h",
+        "lineRange": [
+          75,
+          320
+        ],
+        "symbol": "class StorageManager",
+        "observation": "Supervises partition recovery state machines, handles live storage replication packets, tracks replication receipts from replica quorum, and enforces fail-stop invariants on write failure.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "ClusterStateManager",
+      "role": "Cluster Consensus, Leader Coordination & Partition Assignment Manager",
+      "primaryFiles": [
+        "src/groups/mqb/mqbc/mqbc_clusterstatemanager.h",
+        "src/groups/mqb/mqbc/mqbc_clusterstatemanager.cpp"
+      ],
+      "publicInterfaces": [
+        "void processClusterFsmEvent(const ClusterFSMEventData& eventData, mqbc::ClusterStateTableEvent::Enum event)",
+        "void onLeaderElected(mqbnet::ClusterNode* leader, unsigned int term)",
+        "void onMembershipChanged(const mqbnet::ClusterNode* node, bool isAvailable)",
+        "void assignPartitions()",
+        "void markOrphan(int partitionId)"
+      ],
+      "dependencies": [
+        "mqbc::ClusterFSM",
+        "mqbc::ClusterStateLedger",
+        "mqbc::ElectorInfo",
+        "mqbc::ClusterState"
+      ],
+      "stateManaged": [
+        "Global partition-to-node primary assignments and lease IDs",
+        "Cluster leader status and election term",
+        "Active cluster membership topology",
+        "Cluster State Ledger commit log"
+      ],
+      "evidence": {
+        "filePath": "src/groups/mqb/mqbc/mqbc_clusterstatemanager.h",
+        "lineRange": [
+          65,
+          240
+        ],
+        "symbol": "class ClusterStateManager",
+        "observation": "Executes cluster consensus state machine, coordinates partition primary assignments upon leader election, commits advisory records to CSL, and invalidates orphans during network splits.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    }
+  ],
+  "stateMachines": [
+    {
+      "name": "PartitionFSM",
+      "states": [
+        "e_UNKNOWN",
+        "e_PRIMARY_HEALING_STG1",
+        "e_PRIMARY_HEALING_STG2",
+        "e_PRIMARY_HEALED",
+        "e_REPLICA_WAITING",
+        "e_REPLICA_HEALING",
+        "e_REPLICA_HEALED",
+        "e_STOPPED"
+      ],
+      "initialState": "e_UNKNOWN",
+      "terminalStates": [
+        "e_STOPPED"
+      ],
+      "transitions": [
+        {
+          "from": "e_UNKNOWN",
+          "to": "e_PRIMARY_HEALING_STG1",
+          "event": "e_DETECT_SELF_PRIMARY",
+          "guardConditions": [
+            "Cluster FSM commits CSL primary assignment naming self as primary",
+            "primaryLeaseId > 0"
+          ],
+          "mechanism": "Transmits ReplicaStateRequest to all active replicas to query highest PartitionSequenceNumber (PSN)",
+          "evidence": {
+            "filePath": "src/groups/mqb/mqbc/mqbc_partitionstatetable.h",
+            "lineRange": [
+              54,
+              58
+            ],
+            "observation": "Self primary enters stage 1 healing and broadcasts state requests to replica nodes.",
+            "codeBehavior": "d_state = e_PRIMARY_HEALING_STG1; sendReplicaStateRequests(partitionId, primaryLeaseId);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "e_UNKNOWN",
+          "to": "e_REPLICA_WAITING",
+          "event": "e_DETECT_SELF_REPLICA",
+          "guardConditions": [
+            "Cluster FSM commits CSL primary assignment naming remote node as primary",
+            "primaryNodeSession is non-null"
+          ],
+          "mechanism": "Transitions to waiting state and arms watchdog timer awaiting PrimaryStateRequest from elected primary",
+          "evidence": {
+            "filePath": "src/groups/mqb/mqbc/mqbc_partitionstatetable.h",
+            "lineRange": [
+              68,
+              73
+            ],
+            "observation": "Replica enters waiting state; rejects concurrent ReplicaStateRequests to avoid duplicate healing.",
+            "codeBehavior": "d_state = e_REPLICA_WAITING; startWatchdog(partitionId);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "e_PRIMARY_HEALING_STG1",
+          "to": "e_PRIMARY_HEALING_STG2",
+          "event": "e_QUORUM_REPLICA_SEQ",
+          "guardConditions": [
+            "ReplicaStateResponses received from quorum of cluster nodes",
+            "Highest PSN node determined across responses"
+          ],
+          "mechanism": "If self is behind, issues ReplicaDataRequest (PULL) to highest PSN node; if self is highest, streams missing chunks (PUSH) to replicas",
+          "evidence": {
+            "filePath": "src/groups/mqb/mqbc/mqbc_partitionstatetable.h",
+            "lineRange": [
+              59,
+              63
+            ],
+            "observation": "Transitions to stage 2 data synchronization once partition sequence numbers are gathered from a quorum.",
+            "codeBehavior": "d_state = e_PRIMARY_HEALING_STG2; synchronizePartitionData(partitionId);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "e_PRIMARY_HEALING_STG2",
+          "to": "e_PRIMARY_HEALED",
+          "event": "e_QUORUM_REPLICA_DATA_RSPN",
+          "guardConditions": [
+            "Storage data synchronized with highest node",
+            "Quorum of replicas acknowledge receipt of all recovery data chunks"
+          ],
+          "mechanism": "Issues primary ACTIVE advisory to cluster state ledger, issues initial sync point [leaseId, 1], and enables PUT/PUSH live traffic",
+          "evidence": {
+            "filePath": "src/groups/mqb/mqbc/mqbc_partitionstatetable.h",
+            "lineRange": [
+              64,
+              67
+            ],
+            "observation": "Primary is healed and guaranteed to have quorum-synchronized storage.",
+            "codeBehavior": "d_state = e_PRIMARY_HEALED; setPrimaryStatus(partitionId, PrimaryStatus::e_ACTIVE); fs.issueSyncPointIfNeeded();",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "e_REPLICA_WAITING",
+          "to": "e_REPLICA_HEALING",
+          "event": "e_PRIMARY_STATE_RQST",
+          "guardConditions": [
+            "Request primaryLeaseId matches active CSL leaseId",
+            "Request sender matches designated partition primary node"
+          ],
+          "mechanism": "Replies with PrimaryStateResponse containing local highest PSN and sync points; prepares journal for chunk streaming",
+          "evidence": {
+            "filePath": "src/groups/mqb/mqbc/mqbc_partitionstatetable.h",
+            "lineRange": [
+              74,
+              77
+            ],
+            "observation": "Replica moves to healing state upon receiving valid primary state request.",
+            "codeBehavior": "d_state = e_REPLICA_HEALING; sendPrimaryStateResponse(partitionId, localPSN);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "e_REPLICA_HEALING",
+          "to": "e_REPLICA_HEALED",
+          "event": "e_DONE_RECEIVING_DATA_CHUNKS",
+          "guardConditions": [
+            "All missing storage chunks applied to local FileStore without corruption",
+            "Live stream sync point received from primary"
+          ],
+          "mechanism": "Advances local write-head to primary write-head leaseId/sequenceNumber and enables live storage replication ingestion",
+          "evidence": {
+            "filePath": "src/groups/mqb/mqbc/mqbc_partitionstatetable.h",
+            "lineRange": [
+              78,
+              81
+            ],
+            "observation": "Replica storage matches primary write-head and is ready for live traffic replication.",
+            "codeBehavior": "d_state = e_REPLICA_HEALED; fs.setWriteHead(leaseId, seqNum); stopWatchdog(partitionId);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "e_PRIMARY_HEALING_STG1",
+          "to": "e_PRIMARY_HEALING_STG1",
+          "event": "e_WATCHDOG",
+          "guardConditions": [
+            "Watchdog timer (default 5m) expires prior to quorum responses",
+            "Retry count < maxWatchdogRetries"
+          ],
+          "mechanism": "Re-emits ReplicaStateRequest broadcast with incremented watchdog generation count",
+          "evidence": {
+            "filePath": "src/groups/mqb/mqbc/mqbc_storagemanager.t.cpp",
+            "lineRange": [
+              3783,
+              3785
+            ],
+            "observation": "Watchdog triggers retry of primary stage 1 sequence number collection.",
+            "codeBehavior": "d_watchdogGeneration++; sendReplicaStateRequests(partitionId, primaryLeaseId);",
+            "epistemicLevel": "L3_DYNAMIC_FACT"
+          }
+        },
+        {
+          "from": "e_PRIMARY_HEALED",
+          "to": "e_UNKNOWN",
+          "event": "e_RST_UNKNOWN",
+          "guardConditions": [
+            "ClusterStateLedger commits orphan marking or leader initiates term change"
+          ],
+          "mechanism": "Cancels all in-flight replication requests, unbinds active primary session, and resets partition state",
+          "evidence": {
+            "filePath": "src/groups/mqb/mqbc/mqbc_storagemanager.t.cpp",
+            "lineRange": [
+              3779,
+              3781
+            ],
+            "observation": "Reset unknown cleans up in-flight requests and returns partition to unassigned state.",
+            "codeBehavior": "cancelInFlightRequests(partitionId); d_state = e_UNKNOWN;",
+            "epistemicLevel": "L3_DYNAMIC_FACT"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ClusterStateLedgerFSM",
+      "states": [
+        "e_UNKNOWN",
+        "e_FOL_WAITING",
+        "e_FOL_HEALING",
+        "e_LDR_HEALING_STG1",
+        "e_LDR_HEALING_STG2",
+        "e_LDR_HEALING_STG3",
+        "e_FOL_HEALED",
+        "e_LDR_HEALED",
+        "e_STOPPED"
+      ],
+      "initialState": "e_UNKNOWN",
+      "terminalStates": [
+        "e_STOPPED"
+      ],
+      "transitions": [
+        {
+          "from": "e_UNKNOWN",
+          "to": "e_LDR_HEALING_STG1",
+          "event": "e_ELECTED_LEADER",
+          "guardConditions": [
+            "Elector component wins quorum term election"
+          ],
+          "mechanism": "Broadcasts FollowerLSNRequest to all cluster nodes to discover latest committed CSL sequence number",
+          "evidence": {
+            "filePath": "src/groups/mqb/mqbc/mqbc_clusterstatetable.h",
+            "lineRange": [
+              65,
+              68
+            ],
+            "observation": "Elected leader polls followers for their latest CSL sequence numbers.",
+            "codeBehavior": "d_state = e_LDR_HEALING_STG1; broadcastFollowerLSNRequests();",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "e_LDR_HEALING_STG1",
+          "to": "e_LDR_HEALING_STG2",
+          "event": "e_FOLLOWER_HIGHER_LSN",
+          "guardConditions": [
+            "Follower reports CSL LSN strictly greater than leader's local LSN"
+          ],
+          "mechanism": "Requests complete ClusterStateSnapshot from the highest LSN follower",
+          "evidence": {
+            "filePath": "src/groups/mqb/mqbc/mqbc_clusterstatetable.h",
+            "lineRange": [
+              69,
+              72
+            ],
+            "observation": "Leader requests cluster state snapshot from most up-to-date follower.",
+            "codeBehavior": "d_state = e_LDR_HEALING_STG2; requestSnapshot(highestFollower);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "e_LDR_HEALING_STG2",
+          "to": "e_LDR_HEALING_STG3",
+          "event": "e_SNAPSHOT_APPLIED",
+          "guardConditions": [
+            "Snapshot validated and applied to incore CSL ledger"
+          ],
+          "mechanism": "Generates and commits leader advisory record with new primary lease assignments",
+          "evidence": {
+            "filePath": "src/groups/mqb/mqbc/mqbc_clusterstatetable.h",
+            "lineRange": [
+              73,
+              77
+            ],
+            "observation": "Leader applies snapshot and stages leader advisory commit.",
+            "codeBehavior": "d_state = e_LDR_HEALING_STG3; commitLeaderAdvisory();",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "e_LDR_HEALING_STG3",
+          "to": "e_LDR_HEALED",
+          "event": "e_QUORUM_CSL_COMMIT",
+          "guardConditions": [
+            "Leader advisory committed to CSL by quorum of followers"
+          ],
+          "mechanism": "Transitions leader to fully healed operational status and initiates Partition FSM assignment triggers",
+          "evidence": {
+            "filePath": "src/groups/mqb/mqbc/mqbc_clusterstatetable.h",
+            "lineRange": [
+              81,
+              83
+            ],
+            "observation": "Leader CSL is healed and operational across cluster.",
+            "codeBehavior": "d_state = e_LDR_HEALED; notifyPartitionFSMsOfAssignments();",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-01",
+      "atomicStatement": "Strong consistency queues do not acknowledge PUT messages to producers nor deliver PUSH messages to consumers until replication receipts are received from a quorum of cluster nodes.",
+      "enforcingMechanism": "StorageManager::processReceiptEvent accumulates replica replication receipts matching the PUT record's PartitionSequenceNumber; upon reaching quorum count (e.g. 3 nodes in 5-node cluster), the ACK event is posted to ClientSession and PUSH is dispatched to QueueEngine.",
+      "sourceLocation": {
+        "filePath": "src/groups/mqb/mqbc/mqbc_storagemanager.cpp",
+        "lineRange": [
+          780,
+          845
+        ]
+      },
+      "testEvidence": {
+        "filePath": "src/integration-tests/test_strong_consistency.py",
+        "testFunction": "TestStrongConsistency._break_post_unbreak / test_suspend_post_resume",
+        "lineRange": [
+          83,
+          150
+        ],
+        "observation": "Verifies that posting to a Strong Consistency queue while non-active replicas are suspended produces zero ACKs and zero consumer PUSHes, but immediately dispatches ACKs and PUSHes once replicas resume and satisfy quorum."
+      },
+      "historicalContext": {
+        "commitHash": "a5b313cbb4c12a4b90790bc488710345a40a52e9",
+        "issueOrPr": "PR #1721 / #1723",
+        "context": "Validated E_PUSH sender and partitionId to guarantee storage receipts strictly match active partition quorum."
+      }
+    },
+    {
+      "id": "INV-02",
+      "atomicStatement": "FileStore write-head primaryLeaseId and sequenceNumber advance monotonically across primary re-elections, ensuring newly elected primaries issue an initial sync point [leaseId, 1] without resetting previous lease records.",
+      "enforcingMechanism": "FileStore::setActivePrimary updates d_writeHeadLeaseId and appends a SyncPoint record [primaryLeaseId, 1] to the journal, preserving highest sequence numbers across all prior lease IDs in d_highestSeqNums.",
+      "sourceLocation": {
+        "filePath": "src/groups/mqb/mqbs/mqbs_filestore.cpp",
+        "lineRange": [
+          395,
+          435
+        ]
+      },
+      "testEvidence": {
+        "filePath": "src/groups/mqb/mqbs/mqbs_filestore.t.cpp",
+        "testFunction": "test5_writeHeadFollowsAppliedLease and test6_leaseTransitionWithoutSeal",
+        "lineRange": [
+          1350,
+          1544
+        ],
+        "observation": "Asserts that applying records under leaseId 2 advances write-head to [2, N] without overwriting leaseId 1 records, and that full recovery preserves all records across lease boundaries."
+      },
+      "historicalContext": {
+        "commitHash": "79f87d3a6544e60519c4d1817a5c887f6e9b1df6",
+        "issueOrPr": "PR #1687",
+        "context": "Fixed write-head leaseId tracking on applied partition sync records to prevent sequence number regression."
+      }
+    },
+    {
+      "id": "INV-03",
+      "atomicStatement": "All queue state mutations, message routing decisions, and client handle configurations execute within the queue's dedicated single-threaded dispatcher thread, eliminating internal locking.",
+      "enforcingMechanism": "Dispatcher registers each queue on a dedicated processor queue in bmqc::MultiQueueThreadPool<mqbi::DispatcherEvent>, guaranteeing sequential execution of onConfirmMessage, onRejectMessage, configureHandle, and afterNewMessage without mutex contention.",
+      "sourceLocation": {
+        "filePath": "src/groups/mqb/mqba/mqba_dispatcher.cpp",
+        "lineRange": [
+          148,
+          210
+        ]
+      },
+      "testEvidence": {
+        "filePath": "src/groups/mqb/mqba/mqba_dispatcher.t.cpp",
+        "testFunction": "test1_breathingTest",
+        "lineRange": [
+          80,
+          145
+        ],
+        "observation": "Verifies that events dispatched to distinct client handles execute strictly sequentially on their assigned dispatcher thread."
+      },
+      "historicalContext": {
+        "commitHash": "fb2004a43eb3d99fead92b2694717f095354b181",
+        "issueOrPr": "PR #1641",
+        "context": "Eliminated data races in cross-thread channel access by returning peer URI by value across dispatcher and IO threads."
+      }
+    },
+    {
+      "id": "INV-04",
+      "atomicStatement": "Consumer handle flow control enforces that the number of unconfirmed in-flight messages never exceeds max_unconfirmed_messages, pausing PUSH deliveries until CONFIRM messages arrive.",
+      "enforcingMechanism": "RootQueueEngine checks consumer capacity (d_unconfirmedMessages < d_maxUnconfirmedMessages) prior to delivering messages in afterNewMessage; deliveries are resumed via onHandleUsable when onConfirmMessage decrements unconfirmed count.",
+      "sourceLocation": {
+        "filePath": "src/groups/mqb/mqbblp/mqbblp_rootqueueengine.cpp",
+        "lineRange": [
+          120,
+          180
+        ]
+      },
+      "testEvidence": {
+        "filePath": "src/integration-tests/test_maxunconfirmed.py",
+        "testFunction": "TestMaxunconfirmed.test_maxunconfirmed",
+        "lineRange": [
+          54,
+          100
+        ],
+        "observation": "Posts 100 messages to a queue with max_unconfirmed_messages=1; verifies consumer receives exactly 1 message, and each subsequent message is delivered only after confirming the preceding message, across primary leader failovers."
+      },
+      "historicalContext": {
+        "commitHash": "0b897781788038d4e1dd50559818df22176c39dd",
+        "issueOrPr": "PR #624",
+        "context": "Downgraded RootQueueEngine improper behavior log during shutdown to permit clean drain of unconfirmed streams."
+      }
+    },
+    {
+      "id": "INV-05",
+      "atomicStatement": "Messages rejected by consumers or surviving consumer crashes have their 4-bit Redelivery Attempt (RDA) counter decremented; when RDA reaches 0, the message is permanently quarantined/purged from active routing.",
+      "enforcingMechanism": "RootQueueEngine::onRejectMessage decrements RdaInfo in the message state; if RDA counter reaches zero, the message is removed from the active delivery list and an advisory dump is triggered via d_throttledRejectMessageDump.",
+      "sourceLocation": {
+        "filePath": "src/groups/mqb/mqbblp/mqbblp_rootqueueengine.cpp",
+        "lineRange": [
+          345,
+          380
+        ]
+      },
+      "testEvidence": {
+        "filePath": "src/integration-tests/test_poison_messages.py",
+        "testFunction": "TestPoisonMessages._post_crash_consumers",
+        "lineRange": [
+          53,
+          150
+        ],
+        "observation": "Verifies that repeatedly crashing a consumer on message '1' exhausts its RDA counter, removing it from queue listings across proxies, replicas, and newly elected leaders."
+      },
+      "historicalContext": {
+        "commitHash": "a495f02b12b07050b735481424b9ebfe4e102a7a",
+        "issueOrPr": "Poison Pill Hardening",
+        "context": "Enforced strict sanitization of message protocol headers to prevent non-printable corruptions during reject dumping."
+      }
+    },
+    {
+      "id": "INV-06",
+      "atomicStatement": "StorageMessageIterator and RecoveryMessageIterator validate record word lengths and reject zero-length records to prevent infinite non-progressing parse loops on corrupted blobs.",
+      "enforcingMechanism": "Iterators assert (header.messageWords() * Protocol::k_WORD_SIZE) >= sizeof(StorageHeader) and advance internal buffer cursor strictly positively on each next() invocation.",
+      "sourceLocation": {
+        "filePath": "src/groups/bmq/bmqp/bmqp_storagemessageiterator.cpp",
+        "lineRange": [
+          65,
+          115
+        ]
+      },
+      "testEvidence": {
+        "filePath": "src/groups/bmq/bmqp/bmqp_storagemessageiterator.t.cpp",
+        "testFunction": "test1_breathingTest",
+        "lineRange": [
+          50,
+          125
+        ],
+        "observation": "Asserts that iterating over corrupted or zero-length message blobs returns invalid iterator status (-1) rather than looping indefinitely."
+      },
+      "historicalContext": {
+        "commitHash": "96e1dfbfad04dc0a864c0ba202dcf9b16193337a",
+        "issueOrPr": "PR #1640",
+        "context": "Guarded Storage and Recovery message iterators against zero-progress infinite loops on malformed blobs."
+      }
+    },
+    {
+      "id": "INV-07",
+      "atomicStatement": "Domain queue reconfiguration executes under mutex protection and binds weak_ptr references into asynchronous dispatcher functors, preventing use-after-free races when queues are concurrently closed.",
+      "enforcingMechanism": "Domain::configure takes a mutex-guarded snapshot of d_queues holding weak_ptr<Queue> elements; the async dispatcher task locks the weak pointer and skips queues that were destroyed in the interim.",
+      "sourceLocation": {
+        "filePath": "src/groups/mqb/mqbblp/mqbblp_domain.cpp",
+        "lineRange": [
+          210,
+          265
+        ]
+      },
+      "testEvidence": {
+        "filePath": "src/groups/mqb/mqbblp/mqbblp_domain.t.cpp",
+        "testFunction": "test2_concurrentConfigureAndRegisterQueue and test3_reconfigureSkipsUnregisteredQueue",
+        "lineRange": [
+          80,
+          160
+        ],
+        "observation": "Stress tests concurrent DOMAINS RECONFIGURE commands against thousands of queue open/close operations, asserting zero iterator invalidations and verified skipping of destroyed queues."
+      },
+      "historicalContext": {
+        "commitHash": "7f4e4dfbc41c1710398813784bb5a6e3bff3f7ab",
+        "issueOrPr": "Use-After-Free Fix",
+        "context": "Fixed data race in Domain::configure where d_queues was iterated without mutex and raw mqbi::Queue* was bound to async functors."
+      }
+    },
+    {
+      "id": "INV-08",
+      "atomicStatement": "Graceful Shutdown V2 drains transport connections, informs ClusterActiveNodeManager of impending stop, and deconfigures downstream client sessions without emitting false cluster availability alarms.",
+      "enforcingMechanism": "Application::initiateShutdown transitions client sessions to e_STOPPING; ClusterActiveNodeManager marks nodes as stopping in initiateShutdownDispatched, suppressing PANIC [CLUSTER_ACTIVE_NODE] alarms when the final node channel terminates.",
+      "sourceLocation": {
+        "filePath": "src/groups/mqb/mqba/mqba_application.cpp",
+        "lineRange": [
+          190,
+          245
+        ]
+      },
+      "testEvidence": {
+        "filePath": "src/groups/mqb/mqbnet/mqbnet_clusteractivenodemanager.t.cpp",
+        "testFunction": "test1_breathingTest",
+        "lineRange": [
+          60,
+          130
+        ],
+        "observation": "Verifies that closing all cluster node channels while manager is in stopping state executes cleanly without logging PANIC alarms."
+      },
+      "historicalContext": {
+        "commitHash": "417d414ef3c3146dcb713223080be0845e92bab1",
+        "issueOrPr": "Shutdown Alarm Fix",
+        "context": "Made ClusterActiveNodeManager shutdown-aware to eliminate false availability alarms caused by TransportManager stopping before ClusterCatalog."
+      }
+    }
+  ],
+  "failureModesAndDefenses": [
+    {
+      "failureMode": "Primary Broker Hardware Crash During Live Ingestion",
+      "detectionMechanism": "Cluster Elector detects TCP channel loss / missed heartbeats from leader and initiates new term election. ClusterStateManager assigns new primary for affected partitions.",
+      "recoveryAction": "Newly elected primary enters Partition FSM stage 1 healing, polls surviving replicas for highest PSN, synchronizes missing journal chunks, and issues new sync point [newLeaseId, 1]. In-flight PUTs not yet acknowledged to producers are rejected or retransmitted by SDK clients.",
+      "sourceEvidence": {
+        "filePath": "src/groups/mqb/mqbc/mqbc_partitionfsm.cpp",
+        "lineRange": [
+          80,
+          240
+        ],
+        "observation": "FSM handles primary failover and coordinates recovery state exchange across cluster quorum."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "PR #1680 / #1687",
+        "rootCause": "Replica node write-heads failed to advance primary lease IDs on recovery records, causing split sequence numbers upon succeeding as primary.",
+        "fixDescription": "Track write-head leaseId on applied records and send ACTIVE advisory on PrimaryStateRequest."
+      },
+      "prescribedMitigation": "Ensure client SDKs retain unacknowledged PUT events in local buffers with exponential backoff retransmission until new primary announces ACTIVE status."
+    },
+    {
+      "failureMode": "Replica Storage Write Failure / Disk Full Corrupting Replication Stream",
+      "detectionMechanism": "FileStore write error on journal or data file append triggers nonzero return code in FileStore::writeJournalRecord.",
+      "recoveryAction": "FileStore triggers immediate process fail-stop termination (BSLS_ASSERT / exit) on replica write failure rather than silently diverging from primary replication stream.",
+      "sourceEvidence": {
+        "filePath": "src/groups/mqb/mqbs/mqbs_filestore.cpp",
+        "lineRange": [
+          580,
+          610
+        ],
+        "observation": "FileStore terminates process immediately if replica write to journal or data file fails."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "PR #1723 / Commit b29e31f11208721869c664861f0a880c715472b6",
+        "rootCause": "Replica write failure was logged as error while replica continued operating, causing undetected journal divergence from primary.",
+        "fixDescription": "Terminate process on replica write failure to prevent silent cluster split-brain."
+      },
+      "prescribedMitigation": "Enforce disk space pre-allocation and soft-watermark alarms (alarmHighwatermarkIfNeeded) to trigger automated journal rollover before disk exhaustion."
+    },
+    {
+      "failureMode": "Poison Message Payload Crashing Consumers in Infinite Retry Loop",
+      "detectionMechanism": "RootQueueEngine tracks redelivery attempts remaining via bmqp::RdaInfo counter decremented on consumer disconnect or explicit REJECT.",
+      "recoveryAction": "When RDA counter reaches zero, RootQueueEngine purges the message from active routing, decrements storage reference counts, and dumps a hex payload trace to temporary diagnostics storage via throttled background worker pool.",
+      "sourceEvidence": {
+        "filePath": "src/groups/mqb/mqbblp/mqbblp_rootqueueengine.cpp",
+        "lineRange": [
+          345,
+          380
+        ],
+        "observation": "onRejectMessage triggers poison pill isolation when RDA count reaches zero."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "Architecture Core",
+        "rootCause": "Unchecked poison pills repeatedly crash worker processes, starving legitimate messages in work queues.",
+        "fixDescription": "Implemented RDA protocol headers and throttled reject payload dumpers (bdlmt::Throttle)."
+      },
+      "prescribedMitigation": "Configure domain-level maxDeliveryAttempts with automated dead-letter routing to isolate unparseable payloads."
+    },
+    {
+      "failureMode": "Broker Shutdown Race on Pending Scheduled Reauthentication Callbacks",
+      "detectionMechanism": "InitialConnectionContext::onClose failed to propagate close events to AuthenticationContext when channel closed during startup handshake.",
+      "recoveryAction": "InitialConnectionContext::onClose explicitly calls AuthenticationContext::cancel to remove scheduled reauthn events from the event scheduler before session destruction.",
+      "sourceEvidence": {
+        "filePath": "src/groups/mqb/mqbnet/mqbnet_initialconnectioncontext.cpp",
+        "lineRange": [
+          140,
+          180
+        ],
+        "observation": "Propagates channel closure to AuthenticationContext to cancel pending timer callbacks."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "PR #1639 / Commit 8cc67ce4307c73d082713353e4b3b280806af591",
+        "rootCause": "Scheduled reauthentication callback executed after channel destruction during broker shutdown, causing use-after-free crash.",
+        "fixDescription": "Propagate channel close to AuthenticationContext and cancel scheduled event handle."
+      },
+      "prescribedMitigation": "Tie all scheduled event handles to RAII guard wrappers that automatically cancel timers on enclosing object destruction."
+    }
+  ],
+  "historicalEvolution": [
+    {
+      "milestoneOrBug": "Terminate Process on Replica Storage Write Failure to Prevent Silent Divergence",
+      "commitHash": "b29e31f11208721869c664861f0a880c715472b6",
+      "issueOrPr": "PR #1723",
+      "rootCause": "When a replica failed to write a replicated record (e.g. disk I/O error or corruption), the error was logged but the replica remained in the active quorum, leading to silent divergence from the primary.",
+      "architecturalFix": "Invoked fail-stop termination (BSLS_ASSERT / abort) inside FileStore upon replica write failure, forcing the node to restart and undergo formal Partition FSM stage 1/2 recovery.",
+      "affectedFiles": [
+        "src/groups/mqb/mqbs/mqbs_filestore.cpp"
+      ],
+      "evidence": {
+        "filePath": "src/groups/mqb/mqbs/mqbs_filestore.cpp",
+        "observation": "Added fatal assertion on replica write failure."
+      }
+    },
+    {
+      "milestoneOrBug": "Gate Incore Cluster State Ledger Updates Until Snapshot Applied",
+      "commitHash": "fa52349d46744cc11ca4679e30f437fd55749ff6",
+      "issueOrPr": "PR #1635",
+      "rootCause": "IncoreClusterStateLedger accepted and applied incremental e_UPDATE advisory records before a complete baseline snapshot had been applied, leading to state corruption on joining nodes.",
+      "architecturalFix": "Added state guard gating all incremental update records until a full cluster state snapshot has been applied.",
+      "affectedFiles": [
+        "src/groups/mqb/mqbc/mqbc_incoreclusterstateledger.cpp",
+        "src/groups/mqb/mqbc/mqbc_incoreclusterstateledger.h",
+        "src/groups/mqb/mqbc/mqbc_incoreclusterstateledger.t.cpp"
+      ],
+      "evidence": {
+        "filePath": "src/groups/mqb/mqbc/mqbc_incoreclusterstateledger.cpp",
+        "observation": "Rejects incremental updates if snapshot flag is false."
+      }
+    },
+    {
+      "milestoneOrBug": "Eliminate Data Race and Use-After-Free in Domain Queue Iteration",
+      "commitHash": "7f4e4dfbc41c1710398813784bb5a6e3bff3f7ab",
+      "issueOrPr": "Thread Safety Fix",
+      "rootCause": "Domain::configure iterated d_queues map on admin thread without mutex while cluster dispatcher mutated map; additionally bound raw mqbi::Queue* into async dispatcher functor.",
+      "architecturalFix": "Created mutex-guarded snapshot of d_queues holding weak_ptr<Queue> elements; async functors lock weak pointer before reconfiguration.",
+      "affectedFiles": [
+        "src/groups/mqb/mqbblp/mqbblp_domain.cpp",
+        "src/groups/mqb/mqbblp/mqbblp_domain.h",
+        "src/groups/mqb/mqbblp/mqbblp_domain.t.cpp"
+      ],
+      "evidence": {
+        "filePath": "src/groups/mqb/mqbblp/mqbblp_domain.cpp",
+        "observation": "Iterates weak_ptr snapshot under d_mutex."
+      }
+    },
+    {
+      "milestoneOrBug": "Return Peer URI and Node Identity by Value to Eliminate Data Races Across IO Threads",
+      "commitHash": "d1829c5791f2740d41be1689eef9b1f6d99296cb",
+      "issueOrPr": "PR #1709 / #1641",
+      "rootCause": "identity() and peerUri() returned const references to internal members that could be mutated concurrently by IO threads during channel reset, leading to memory corruption in readers.",
+      "architecturalFix": "Returned identity and peer URI objects by value with scoped mutex guards, eliminating unprotected cross-thread references.",
+      "affectedFiles": [
+        "src/groups/bmq/bmqio/bmqio_channel.h",
+        "src/groups/mqb/mqbnet/mqbnet_clusterimp.cpp",
+        "src/groups/mqb/mqbnet/mqbnet_clusterimp.h"
+      ],
+      "evidence": {
+        "filePath": "src/groups/mqb/mqbnet/mqbnet_clusterimp.cpp",
+        "observation": "Guards access with mutable bslmt::Mutex and returns by value."
+      }
+    },
+    {
+      "milestoneOrBug": "Guard Storage and Recovery Message Iterators Against Infinite Zero-Progress Loops",
+      "commitHash": "96e1dfbfad04dc0a864c0ba202dcf9b16193337a",
+      "issueOrPr": "PR #1640",
+      "rootCause": "StorageMessageIterator and RecoveryMessageIterator did not validate that header word length was greater than zero, causing an infinite loop on malformed zero-length payload blobs.",
+      "architecturalFix": "Added strict length preconditions ensuring positive buffer progress on every iteration step.",
+      "affectedFiles": [
+        "src/groups/bmq/bmqp/bmqp_recoverymessageiterator.cpp",
+        "src/groups/bmq/bmqp/bmqp_storagemessageiterator.cpp"
+      ],
+      "evidence": {
+        "filePath": "src/groups/bmq/bmqp/bmqp_storagemessageiterator.cpp",
+        "observation": "Validates messageWords > 0 before advancing buffer position."
+      }
+    }
+  ],
+  "unresolvedContradictionsAndBypasses": [
+    {
+      "claimOrGuarantee": "Message delivery preserves strict FIFO order across consumer connections.",
+      "contradictionOrBypass": "During replica failure and rapid proxy re-routing (e.g. consumer -> proxy -> replica1 -> primary; replica1 killed; proxy reopens queue on replica2 before primary detects replica1 disconnect), primary may round-robin messages across both downstream paths {m1->replica1, m2->replica2}. Upon detecting replica1 disconnect, primary redelivers m1 to replica2, delivering messages to consumer in out-of-order sequence {m2, m1}.",
+      "codeLocation": "src/integration-tests/test_puts_retransmission.py:L678-L691 and src/groups/mqb/mqbblp/mqbblp_rootqueueengine.cpp:L280-L340",
+      "evidence": "test_puts_retransmission.py explicitly documents this window and permits allow_out_of_order=True in test_kill_replica."
+    },
+    {
+      "claimOrGuarantee": "Confirmed messages are never redelivered to consumers.",
+      "contradictionOrBypass": "If a consumer confirms a message through a proxy and the proxy clears its local GUID record, but the primary node is killed before the CONFIRM reaches the storage journal and replication quorum, the newly elected primary recovers the unconfirmed message from journal and redelivers it. The proxy cannot detect the duplicate because its local GUID state was discarded upon the initial CONFIRM.",
+      "codeLocation": "src/integration-tests/test_puts_retransmission.py:L582-L586 and src/groups/mqb/mqba/mqba_clientsession.cpp:L320-L365",
+      "evidence": "Integration test comments state: 'Do allow duplicates for the scenario when a CONFIRM had passed Proxy but did not reach the replication. New Primary then redelivers and the Proxy cannot detect the duplicate because it had removed the GUID upon the first CONFIRM.'"
+    },
+    {
+      "claimOrGuarantee": "Poison pill redelivery count (RDA) is maintained consistently across broker crashes.",
+      "contradictionOrBypass": "RdaInfo counter state is tracked in-memory within RootQueueEngine and encoded into transient PUSH wire headers rather than written to durable storage journal records on every rejection. If the primary broker crashes or failover occurs, the in-memory RDA counter resets to the domain default configuration, allowing a poison message additional redelivery cycles on the new primary.",
+      "codeLocation": "src/integration-tests/test_poison_messages.py:L153-L165 and src/groups/mqb/mqbblp/mqbblp_rootqueueengine.cpp:L345-L380",
+      "evidence": "test_poison_messages.py _crash_consumer_restart_leader explicitly verifies that RDA counter resets to domain configured value after leader change."
+    }
+  ],
+  "adversarialCritique": {
+    "boundaryConditions": [
+      "Network partitions creating isolated minority clusters prevent Strong Consistency queues from acknowledging PUTs or delivering PUSHes until quorum connectivity is restored.",
+      "Rapid successive leader election cycles exceeding watchdog timeout thresholds (5 minutes) can delay partition healing if replica sequence numbers diverge across partial lease terms.",
+      "Proactive proxy deconfiguration during Shutdown V2 assumes orderly TCP channel closure; abrupt network interface failure can cause transient improper behavior error logs on unreleased queue handles.",
+      "Poison payloads with corrupted protocol framing must be rejected at the bmqp wire decoding layer before reaching queue engine storage to prevent allocator pool fragmentation."
+    ],
+    "untestedAssumptions": [
+      "Assumes underlying POSIX filesystem (ext4/xfs) supports synchronous fallocate and atomic metadata journaling for memory-mapped journal and data files without silent block corruption.",
+      "Assumes cluster network switches maintain symmetric round-trip latencies below heartbeat timeouts (default 3s) to prevent false elector leader step-downs.",
+      "Assumes client SDK application message handlers process PUSH events asynchronously without blocking broker socket receive buffers."
+    ],
+    "acceptedTradeOffs": [
+      "Fail-stop crash on replica write failure over degraded mode operation: sacrifices single-node availability to guarantee absolute consistency and prevent silent replica journal divergence.",
+      "Single-threaded-per-queue dispatching over fine-grained lock striping: eliminates lock overhead and race conditions at the cost of bounding single-queue throughput to single CPU core performance.",
+      "In-memory RDA tracking over synchronous journal persistence: avoids disk I/O on transient consumer rejections at the expense of resetting redelivery counters upon primary leader failover.",
+      "Proxy GUID eviction on CONFIRM over distributed two-phase acknowledgement: minimizes proxy memory footprint while accepting potential duplicate redeliveries during rare primary kill windows."
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "filePath": "deps/rabbitmq_management/test/js/test/oidc-oauth/helper.test.js",
+    "testFunction": "with minimum required settings",
+    "subScenarioName": "oidc_settings should have client_id ",
+    "line": 15,
+    "assertionTypes": [
+      "vitest/jest/mocha"
+    ],
+    "inferredInvariant": "Guarantees: with minimum required settings -> oidc_settings should have client_id "
+  }
+]

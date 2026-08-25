@@ -1,0 +1,1103 @@
+{
+  "repoName": "hibiken/asynq",
+  "domain": "message_queues",
+  "gitCommitHash": "d135f1439bee74e989b7f9b41ecd542cc87f024a",
+  "analyzedAt": "2026-08-22T15:05:59.362Z",
+  "overview": {
+    "purpose": "Simple, reliable, and efficient distributed task queue in Go backed by Redis for asynchronous job execution with at-least-once delivery semantics.",
+    "architectureType": "Redis-backed Client-Server task queue with distributed lease expiration, periodic heartbeater renewals, centralized sweep recoverer, and PubSub out-of-band cancellation.",
+    "keyDifferentiators": [
+      "Lease-based active task tracking in a Redis sorted set (score = Unix expiration timestamp) periodically renewed by a heartbeater goroutine rather than persistent connection-bound locks",
+      "Weighted and strict priority queue scheduling using greatest-common-divisor normalization and pseudo-random queue selection",
+      "Task grouping with configurable aggregation triggers (grace period, max delay, max size) executed via atomic Lua check-and-stage scripts",
+      "Decentralized PubSub-based task cancellation allowing out-of-band context revocation across distributed worker processes",
+      "Pipeline-based batch enqueueing with Lua script preloading (EVALSHA) to eliminate NOSCRIPT failures on cold Redis instances"
+    ]
+  },
+  "components": [
+    {
+      "name": "Client",
+      "role": "Task Producer & Enqueue API",
+      "primaryFiles": [
+        "client.go"
+      ],
+      "publicInterfaces": [
+        "NewClient(r RedisConnOpt) *Client",
+        "NewClientFromRedisClient(c redis.UniversalClient) *Client",
+        "Enqueue(task *Task, opts ...Option) (*TaskInfo, error)",
+        "EnqueueContext(ctx context.Context, task *Task, opts ...Option) (*TaskInfo, error)",
+        "BatchEnqueueContext(ctx context.Context, tasks []*Task, opts ...Option) []BatchEnqueueResult",
+        "Close() error"
+      ],
+      "dependencies": [
+        "internal/rdb.RDB",
+        "internal/base.Broker"
+      ],
+      "stateManaged": [
+        "TaskMessage metadata",
+        "Unique deduplication lock TTLs",
+        "Scheduled execution timestamps",
+        "Task aggregation group memberships"
+      ],
+      "evidence": {
+        "filePath": "client.go",
+        "lineRange": [
+          385,
+          457
+        ],
+        "symbol": "Client.EnqueueContext",
+        "observation": "Composes user-specified options (retries, timeouts, deadlines, uniqueness TTL, group keys, retention), marshals TaskMessage, and routes to immediate enqueue, future schedule, or aggregation group.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Server",
+      "role": "Server Lifecycle & Worker Pool Supervisor",
+      "primaryFiles": [
+        "server.go"
+      ],
+      "publicInterfaces": [
+        "NewServer(r RedisConnOpt, cfg Config) *Server",
+        "NewServerFromRedisClient(c redis.UniversalClient, cfg Config) *Server",
+        "Start(handler Handler) error",
+        "Run(handler Handler) error",
+        "Stop()",
+        "Shutdown()",
+        "Ping() error"
+      ],
+      "dependencies": [
+        "processor",
+        "heartbeater",
+        "syncer",
+        "recoverer",
+        "forwarder",
+        "subscriber",
+        "janitor",
+        "aggregator",
+        "healthchecker",
+        "internal/rdb.RDB"
+      ],
+      "stateManaged": [
+        "Server operational lifecycle states (srvStateNew, srvStateActive, srvStateStopped, srvStateClosed)",
+        "Subsystem goroutine synchronization (sync.WaitGroup)"
+      ],
+      "evidence": {
+        "filePath": "server.go",
+        "lineRange": [
+          680,
+          754
+        ],
+        "symbol": "Server.Start and Server.Shutdown",
+        "observation": "Coordinates concurrent startup and ordered graceful shutdown of forwarder, processor, recoverer, syncer, subscriber, janitor, aggregator, healthchecker, and heartbeater goroutines.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Processor",
+      "role": "Task Consumer & Worker Execution Engine",
+      "primaryFiles": [
+        "processor.go"
+      ],
+      "publicInterfaces": [
+        "newProcessor(params processorParams) *processor",
+        "start(wg *sync.WaitGroup)",
+        "stop()",
+        "shutdown()"
+      ],
+      "dependencies": [
+        "internal/base.Broker",
+        "internal/base.Cancelations",
+        "internal/base.Lease",
+        "syncer",
+        "heartbeater"
+      ],
+      "stateManaged": [
+        "Worker concurrency semaphore channel (sema)",
+        "In-flight task context cancellations",
+        "Task execution outcomes (succeeded, retry, archive, revoke, timeout)"
+      ],
+      "evidence": {
+        "filePath": "processor.go",
+        "lineRange": [
+          170,
+          258
+        ],
+        "symbol": "processor.exec",
+        "observation": "Acquires a concurrency token from sema channel, dequeues task via broker, creates time-bounded Lease and context, launches worker goroutine with panic recovery, and routes completion/failure.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Broker / RDB",
+      "role": "Redis Storage Engine & Atomic Lua Execution",
+      "primaryFiles": [
+        "internal/rdb/rdb.go",
+        "internal/rdb/inspect.go",
+        "internal/base/base.go"
+      ],
+      "publicInterfaces": [
+        "Enqueue(ctx context.Context, msg *base.TaskMessage) error",
+        "EnqueueUnique(ctx context.Context, msg *base.TaskMessage, ttl time.Duration) error",
+        "BatchEnqueue(ctx context.Context, items []base.BatchEnqueueItem) (int, error)",
+        "Dequeue(qnames ...string) (*base.TaskMessage, time.Time, error)",
+        "Done(ctx context.Context, msg *base.TaskMessage) error",
+        "MarkAsComplete(ctx context.Context, msg *base.TaskMessage) error",
+        "Requeue(ctx context.Context, msg *base.TaskMessage) error",
+        "Schedule(ctx context.Context, msg *base.TaskMessage, processAt time.Time) error",
+        "Retry(ctx context.Context, msg *base.TaskMessage, processAt time.Time, errMsg string, isFailure bool) error",
+        "Archive(ctx context.Context, msg *base.TaskMessage, errMsg string) error",
+        "ForwardIfReady(qnames ...string) error",
+        "ExtendLease(qname string, ids ...string) (time.Time, error)",
+        "ListLeaseExpired(cutoff time.Time, qnames ...string) ([]*base.TaskMessage, error)",
+        "WriteServerState(info *base.ServerInfo, workers []*base.WorkerInfo, ttl time.Duration) error"
+      ],
+      "dependencies": [
+        "github.com/redis/go-redis/v9"
+      ],
+      "stateManaged": [
+        "Redis Keys: pending list, active list, scheduled ZSET, retry ZSET, archived ZSET, completed ZSET, lease ZSET, task hashes (asynq:{<q>}:t:<id>), group ZSETs, server/worker metadata"
+      ],
+      "evidence": {
+        "filePath": "internal/rdb/rdb.go",
+        "lineRange": [
+          85,
+          140
+        ],
+        "symbol": "enqueueCmd / RDB.Enqueue",
+        "observation": "Atomic Lua script verifies task hash non-existence, sets task metadata hash with state 'pending', and pushes task ID to queue pending list.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Heartbeater",
+      "role": "Liveness Monitor & Lease Renewer",
+      "primaryFiles": [
+        "heartbeat.go"
+      ],
+      "publicInterfaces": [
+        "newHeartbeater(params heartbeaterParams) *heartbeater",
+        "start(wg *sync.WaitGroup)",
+        "shutdown()"
+      ],
+      "dependencies": [
+        "internal/base.Broker",
+        "processor"
+      ],
+      "stateManaged": [
+        "Active worker registry (map[string]*workerInfo)",
+        "Server state snapshots in Redis (asynq:servers, asynq:workers)",
+        "In-flight task lease validity"
+      ],
+      "evidence": {
+        "filePath": "heartbeat.go",
+        "lineRange": [
+          145,
+          202
+        ],
+        "symbol": "heartbeater.beat",
+        "observation": "Iterates active workers, checks local lease validity, issues broker.ExtendLease (ZADD XX score=now+30s), resets in-memory lease deadline, and writes server/worker state with TTL.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Recoverer",
+      "role": "Orphaned Task & Lease Expiration Sweeper",
+      "primaryFiles": [
+        "recoverer.go"
+      ],
+      "publicInterfaces": [
+        "newRecoverer(params recovererParams) *recoverer",
+        "start(wg *sync.WaitGroup)",
+        "shutdown()"
+      ],
+      "dependencies": [
+        "internal/base.Broker"
+      ],
+      "stateManaged": [
+        "Periodic sweep timer (default interval 1m)",
+        "Recovery of dead worker tasks to retry or archived queues",
+        "Reclamation of stale aggregation sets"
+      ],
+      "evidence": {
+        "filePath": "recoverer.go",
+        "lineRange": [
+          89,
+          104
+        ],
+        "symbol": "recoverer.recoverLeaseExpiredTasks",
+        "observation": "Scans lease ZSET for scores older than now - 30 seconds (tolerating 30s clock skew) and moves expired tasks to retry or archive with ErrLeaseExpired.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Forwarder",
+      "role": "Delayed & Retry Task Dispatcher",
+      "primaryFiles": [
+        "forwarder.go"
+      ],
+      "publicInterfaces": [
+        "newForwarder(params forwarderParams) *forwarder",
+        "start(wg *sync.WaitGroup)",
+        "shutdown()"
+      ],
+      "dependencies": [
+        "internal/base.Broker"
+      ],
+      "stateManaged": [
+        "Periodic polling timer (default interval 5s)",
+        "Migration of due tasks from scheduled/retry ZSETs to pending list or group ZSETs"
+      ],
+      "evidence": {
+        "filePath": "forwarder.go",
+        "lineRange": [
+          73,
+          77
+        ],
+        "symbol": "forwarder.exec",
+        "observation": "Invokes broker.ForwardIfReady across configured queues, executing forwardCmd Lua script to batch-move ready tasks (score <= now) up to 100 at a time.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Subscriber",
+      "role": "Out-of-Band Task Cancellation Listener",
+      "primaryFiles": [
+        "subscriber.go"
+      ],
+      "publicInterfaces": [
+        "newSubscriber(params subscriberParams) *subscriber",
+        "start(wg *sync.WaitGroup)",
+        "shutdown()"
+      ],
+      "dependencies": [
+        "internal/base.Broker",
+        "internal/base.Cancelations"
+      ],
+      "stateManaged": [
+        "Redis PubSub subscription connection on asynq:cancel",
+        "Mapping of active task IDs to context.CancelFunc"
+      ],
+      "evidence": {
+        "filePath": "subscriber.go",
+        "lineRange": [
+          52,
+          90
+        ],
+        "symbol": "subscriber.start",
+        "observation": "Maintains persistent subscription to asynq:cancel, receiving cancellation task IDs and triggering matching local context.CancelFunc instances.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Syncer",
+      "role": "Asynchronous State Sync Buffer & Retry Queue",
+      "primaryFiles": [
+        "syncer.go"
+      ],
+      "publicInterfaces": [
+        "newSyncer(params syncerParams) *syncer",
+        "start(wg *sync.WaitGroup)",
+        "shutdown()"
+      ],
+      "dependencies": [
+        "internal/log.Logger"
+      ],
+      "stateManaged": [
+        "Buffered sync requests channel (requestsCh)",
+        "Pending sync request retry slice with expiration deadlines"
+      ],
+      "evidence": {
+        "filePath": "syncer.go",
+        "lineRange": [
+          55,
+          87
+        ],
+        "symbol": "syncer.start",
+        "observation": "Buffers failed state mutations (Done, MarkAsComplete, Retry, Archive) and retries them every 5 seconds until individual request deadlines expire.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Janitor",
+      "role": "Completed Task Retention Garbage Collector",
+      "primaryFiles": [
+        "janitor.go"
+      ],
+      "publicInterfaces": [
+        "newJanitor(params janitorParams) *janitor",
+        "start(wg *sync.WaitGroup)",
+        "shutdown()"
+      ],
+      "dependencies": [
+        "internal/base.Broker"
+      ],
+      "stateManaged": [
+        "Periodic retention check timer (default 8s)",
+        "Batch deletion of expired completed tasks from completed ZSET and task hashes"
+      ],
+      "evidence": {
+        "filePath": "janitor.go",
+        "lineRange": [
+          79,
+          86
+        ],
+        "symbol": "janitor.exec",
+        "observation": "Periodically calls broker.DeleteExpiredCompletedTasks, executing deleteExpiredCompletedTasksCmd Lua script in batches of 100.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Aggregator",
+      "role": "Task Group Batching & Aggregation Engine",
+      "primaryFiles": [
+        "aggregator.go"
+      ],
+      "publicInterfaces": [
+        "newAggregator(params aggregatorParams) *aggregator",
+        "start(wg *sync.WaitGroup)",
+        "shutdown()"
+      ],
+      "dependencies": [
+        "internal/base.Broker",
+        "Client"
+      ],
+      "stateManaged": [
+        "Group check interval timer (default min(7s, gracePeriod))",
+        "Aggregation semaphore (max 3 concurrent checks)",
+        "Staged aggregation sets (asynq:{<q>}:g:<gname>:<setID>)"
+      ],
+      "evidence": {
+        "filePath": "aggregator.go",
+        "lineRange": [
+          130,
+          176
+        ],
+        "symbol": "aggregator.aggregate",
+        "observation": "Executes aggregationCheckCmd Lua script, reads staged task messages, invokes user GroupAggregator function, enqueues merged task, and deletes the aggregation set.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Scheduler & PeriodicTaskManager",
+      "role": "Cron Scheduling & Periodic Task Synchronization",
+      "primaryFiles": [
+        "scheduler.go",
+        "periodic_task_manager.go"
+      ],
+      "publicInterfaces": [
+        "NewScheduler(r RedisConnOpt, opts *SchedulerOpts) *Scheduler",
+        "Register(cronspec string, task *Task, opts ...Option) (string, error)",
+        "Unregister(entryID string) error",
+        "Start() error",
+        "Shutdown()",
+        "NewPeriodicTaskManager(opts PeriodicTaskManagerOpts) (*PeriodicTaskManager, error)"
+      ],
+      "dependencies": [
+        "github.com/robfig/cron/v3",
+        "Client",
+        "internal/rdb.RDB"
+      ],
+      "stateManaged": [
+        "Cron job registration map (idmap)",
+        "Scheduler heartbeat snapshots in Redis (asynq:schedulers:{id})",
+        "Enqueue event history (asynq:scheduler_history:{entryID})"
+      ],
+      "evidence": {
+        "filePath": "scheduler.go",
+        "lineRange": [
+          181,
+          204
+        ],
+        "symbol": "enqueueJob.Run",
+        "observation": "Fires cron trigger, enqueues task via Client.Enqueue, and records enqueue event in Redis sorted set history (max 1000 events).",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    }
+  ],
+  "stateMachines": [
+    {
+      "name": "TaskLifecycle",
+      "states": [
+        "Pending",
+        "Active",
+        "Scheduled",
+        "Retry",
+        "Archived",
+        "Completed",
+        "Aggregating"
+      ],
+      "initialState": "Pending",
+      "terminalStates": [
+        "Completed",
+        "Archived"
+      ],
+      "transitions": [
+        {
+          "from": "Client (New)",
+          "to": "Pending",
+          "event": "Client.Enqueue (Immediate)",
+          "guardConditions": [
+            "task ID does not exist in Redis",
+            "unique key lock acquired if UniqueOpt specified"
+          ],
+          "mechanism": "enqueueCmd / enqueueUniqueCmd Lua script (HSET task hash state='pending', LPUSH pending)",
+          "evidence": {
+            "filePath": "internal/rdb/rdb.go",
+            "lineRange": [
+              98,
+              108
+            ],
+            "observation": "Lua script checks EXISTS KEYS[1] == 0, writes HSET with state pending and pending_since, and pushes task ID to pending list with LPUSH.",
+            "luaOrCodeBehavior": "redis.call('HSET', KEYS[1], 'msg', ARGV[1], 'state', 'pending', 'pending_since', ARGV[3]); redis.call('LPUSH', KEYS[2], ARGV[2]); return 1",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Client (New)",
+          "to": "Scheduled",
+          "event": "Client.Enqueue (ProcessAt / ProcessIn in future)",
+          "guardConditions": [
+            "processAt > current time",
+            "task ID does not exist in Redis"
+          ],
+          "mechanism": "scheduleCmd / scheduleUniqueCmd Lua script (HSET state='scheduled', ZADD scheduled <processAt> <id>)",
+          "evidence": {
+            "filePath": "internal/rdb/rdb.go",
+            "lineRange": [
+              759,
+              768
+            ],
+            "observation": "Lua script writes task hash with state 'scheduled' and inserts task ID into scheduled ZSET scored by Unix processAt timestamp.",
+            "luaOrCodeBehavior": "redis.call('HSET', KEYS[1], 'msg', ARGV[1], 'state', 'scheduled'); redis.call('ZADD', KEYS[2], ARGV[2], ARGV[3]); return 1",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Client (New)",
+          "to": "Aggregating",
+          "event": "Client.Enqueue (Group option specified)",
+          "guardConditions": [
+            "group key non-empty",
+            "task ID does not exist in Redis"
+          ],
+          "mechanism": "addToGroupCmd / addToGroupUniqueCmd Lua script (HSET state='aggregating', ZADD g:<gname> <now> <id>, SADD groups <gname>)",
+          "evidence": {
+            "filePath": "internal/rdb/rdb.go",
+            "lineRange": [
+              633,
+              644
+            ],
+            "observation": "Lua script records state 'aggregating' on task hash, adds task ID to group ZSET with score=now, and registers group in queue's groups set.",
+            "luaOrCodeBehavior": "redis.call('HSET', KEYS[1], 'msg', ARGV[1], 'state', 'aggregating', 'group', ARGV[4]); redis.call('ZADD', KEYS[2], ARGV[3], ARGV[2]); redis.call('SADD', KEYS[3], ARGV[4]); return 1",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Scheduled",
+          "to": "Pending",
+          "event": "Forwarder Tick (processAt <= now)",
+          "guardConditions": [
+            "task score <= current Unix timestamp",
+            "task does not specify group key"
+          ],
+          "mechanism": "forwardCmd Lua script (ZRANGEBYSCORE scheduled -inf now, LPUSH pending, ZREM scheduled, HSET state='pending')",
+          "evidence": {
+            "filePath": "internal/rdb/rdb.go",
+            "lineRange": [
+              1072,
+              1090
+            ],
+            "observation": "Batches up to 100 due tasks from scheduled ZSET, moves task ID to pending list via LPUSH, and sets state to 'pending'.",
+            "luaOrCodeBehavior": "redis.call('LPUSH', KEYS[2], id); redis.call('ZREM', KEYS[1], id); redis.call('HSET', taskKey, 'state', 'pending', 'pending_since', ARGV[3])",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Scheduled",
+          "to": "Aggregating",
+          "event": "Forwarder Tick (processAt <= now with group)",
+          "guardConditions": [
+            "task score <= current Unix timestamp",
+            "task hash specifies non-empty group field"
+          ],
+          "mechanism": "forwardCmd Lua script (ZRANGEBYSCORE scheduled -inf now, ZADD g:<group> now <id>, ZREM scheduled, HSET state='aggregating')",
+          "evidence": {
+            "filePath": "internal/rdb/rdb.go",
+            "lineRange": [
+              1076,
+              1082
+            ],
+            "observation": "Moves due scheduled group tasks from scheduled ZSET to group ZSET with state 'aggregating'.",
+            "luaOrCodeBehavior": "redis.call('ZADD', ARGV[4] .. group, ARGV[1], id); redis.call('ZREM', KEYS[1], id); redis.call('HSET', taskKey, 'state', 'aggregating')",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Pending",
+          "to": "Active",
+          "event": "Processor Dequeue",
+          "guardConditions": [
+            "queue is not paused (EXISTS paused == 0)",
+            "worker concurrency slot available (sema token acquired)",
+            "pending list has available task"
+          ],
+          "mechanism": "dequeueCmd Lua script (RPOPLPUSH pending active, HSET state='active', HDEL pending_since, ZADD lease (now+30s) <id>)",
+          "evidence": {
+            "filePath": "internal/rdb/rdb.go",
+            "lineRange": [
+              339,
+              350
+            ],
+            "observation": "Atomically pops task from pending list, pushes to active list, updates hash state to 'active', and assigns 30s lease in lease ZSET.",
+            "luaOrCodeBehavior": "local id = redis.call('RPOPLPUSH', KEYS[1], KEYS[3]); redis.call('HSET', key, 'state', 'active'); redis.call('HDEL', key, 'pending_since'); redis.call('ZADD', KEYS[4], ARGV[1], id); return redis.call('HGET', key, 'msg')",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Active",
+          "to": "Completed",
+          "event": "Handler Success with Retention > 0",
+          "guardConditions": [
+            "task execution returned nil error",
+            "retention duration > 0",
+            "local lease is valid"
+          ],
+          "mechanism": "markAsCompleteCmd / markAsCompleteUniqueCmd Lua script (LREM active, ZREM lease, ZADD completed (now+retention), HSET state='completed', INCR processed)",
+          "evidence": {
+            "filePath": "internal/rdb/rdb.go",
+            "lineRange": [
+              494,
+              516
+            ],
+            "observation": "Removes task ID from active list and lease ZSET, places in completed ZSET with score=now+retention, updates hash state to completed, and deletes uniqueness lock if present.",
+            "luaOrCodeBehavior": "redis.call('LREM', KEYS[1], 0, ARGV[1]); redis.call('ZREM', KEYS[2], ARGV[1]); redis.call('ZADD', KEYS[3], ARGV[3], ARGV[1]); redis.call('HSET', KEYS[4], 'msg', ARGV[4], 'state', 'completed'); redis.call('INCR', KEYS[5])",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Active",
+          "to": "Deleted (Done)",
+          "event": "Handler Success with Retention == 0 or RevokeTask",
+          "guardConditions": [
+            "task execution returned nil or RevokeTask error",
+            "retention duration == 0",
+            "local lease is valid"
+          ],
+          "mechanism": "doneCmd / doneUniqueCmd Lua script (LREM active, ZREM lease, DEL task hash, INCR processed, DEL unique key)",
+          "evidence": {
+            "filePath": "internal/rdb/rdb.go",
+            "lineRange": [
+              397,
+              418
+            ],
+            "observation": "Removes task ID from active list and lease ZSET, deletes task hash key completely, increments processed counters, and deletes uniqueness lock if applicable.",
+            "luaOrCodeBehavior": "redis.call('LREM', KEYS[1], 0, ARGV[1]); redis.call('ZREM', KEYS[2], ARGV[1]); redis.call('DEL', KEYS[3]); redis.call('INCR', KEYS[4]); redis.call('INCR', KEYS[5])",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Active",
+          "to": "Retry",
+          "event": "Handler Error / Recoverer Expiration (Retries Remaining)",
+          "guardConditions": [
+            "task handler returned error (not SkipRetry / RevokeTask)",
+            "Retried < Retry max count",
+            "local lease is valid (or triggered by centralized recoverer)"
+          ],
+          "mechanism": "retryCmd Lua script (LREM active, ZREM lease, ZADD retry <retryAt> <id>, HSET state='retry' msg=<encoded>, INCR processed, INCR failed)",
+          "evidence": {
+            "filePath": "internal/rdb/rdb.go",
+            "lineRange": [
+              884,
+              911
+            ],
+            "observation": "Removes task ID from active list and lease ZSET, adds to retry ZSET scored by calculated retry timestamp (exponential backoff), increments retried counter in hash, and increments failure stats.",
+            "luaOrCodeBehavior": "redis.call('LREM', KEYS[2], 0, ARGV[1]); redis.call('ZREM', KEYS[3], ARGV[1]); redis.call('ZADD', KEYS[4], ARGV[3], ARGV[1]); redis.call('HSET', KEYS[1], 'msg', ARGV[2], 'state', 'retry')",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Active",
+          "to": "Archived",
+          "event": "Handler Error / Recoverer Expiration (Retries Exhausted or SkipRetry)",
+          "guardConditions": [
+            "Retried >= Retry max count OR error is SkipRetry",
+            "local lease is valid (or triggered by centralized recoverer)"
+          ],
+          "mechanism": "archiveCmd Lua script (LREM active, ZREM lease, ZADD archived <diedAt> <id>, HSET state='archived', archive size trimming)",
+          "evidence": {
+            "filePath": "internal/rdb/rdb.go",
+            "lineRange": [
+              973,
+              1014
+            ],
+            "observation": "Removes task ID from active list and lease ZSET, adds to archived ZSET, sets state to 'archived', and trims archive by 90-day cutoff and max 10,000 tasks limit.",
+            "luaOrCodeBehavior": "redis.call('LREM', KEYS[2], 0, ARGV[1]); redis.call('ZREM', KEYS[3], ARGV[1]); redis.call('ZADD', KEYS[4], ARGV[3], ARGV[1]); redis.call('HSET', KEYS[1], 'msg', ARGV[2], 'state', 'archived')",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Active",
+          "to": "Pending",
+          "event": "Worker Drain Requeue (Server Shutdown Timeout)",
+          "guardConditions": [
+            "server shutdown triggered and worker receives abort signal",
+            "local lease is valid"
+          ],
+          "mechanism": "requeueCmd Lua script (LREM active, ZREM lease, RPUSH pending <id>, HSET state='pending')",
+          "evidence": {
+            "filePath": "internal/rdb/rdb.go",
+            "lineRange": [
+              598,
+              607
+            ],
+            "observation": "Pushes task ID to the tail of the pending list with RPUSH to allow fast reprocessing upon server restart.",
+            "luaOrCodeBehavior": "redis.call('LREM', KEYS[1], 0, ARGV[1]); redis.call('ZREM', KEYS[2], ARGV[1]); redis.call('RPUSH', KEYS[3], ARGV[1]); redis.call('HSET', KEYS[4], 'state', 'pending')",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Retry",
+          "to": "Pending",
+          "event": "Forwarder Tick (retryAt <= now)",
+          "guardConditions": [
+            "retry task score <= current Unix timestamp"
+          ],
+          "mechanism": "forwardCmd Lua script (ZRANGEBYSCORE retry -inf now, LPUSH pending, ZREM retry, HSET state='pending')",
+          "evidence": {
+            "filePath": "internal/rdb/rdb.go",
+            "lineRange": [
+              1072,
+              1090
+            ],
+            "observation": "Moves due retry tasks from retry ZSET to pending list via LPUSH and updates hash state to 'pending'.",
+            "luaOrCodeBehavior": "redis.call('LPUSH', KEYS[2], id); redis.call('ZREM', KEYS[1], id); redis.call('HSET', taskKey, 'state', 'pending', 'pending_since', ARGV[3])",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-01",
+      "atomicStatement": "Task dequeue atomically moves a task ID from the pending list to the active list and registers a 30-second lease score in the lease sorted set within a single Redis Lua script.",
+      "enforcingMechanism": "dequeueCmd Lua script combining unpaused guard check, RPOPLPUSH, HSET state='active', HDEL pending_since, and ZADD lease (now+30s) id.",
+      "sourceLocation": {
+        "filePath": "internal/rdb/rdb.go",
+        "lineRange": [
+          339,
+          386
+        ]
+      },
+      "testEvidence": {
+        "filePath": "internal/rdb/rdb_test.go",
+        "testFunction": "TestDequeue",
+        "lineRange": [
+          499,
+          645
+        ],
+        "observation": "Verifies that dequeue on populated pending list returns the task message and lease expiration timestamp exactly 30 seconds in future while mutating Redis pending, active, and lease structures atomically."
+      },
+      "historicalContext": {
+        "commitHash": "d135f1439bee74e989b7f9b41ecd542cc87f024a",
+        "issueOrPr": "Core Architecture",
+        "context": "Foundational atomic dequeue primitive preventing multiple workers from popping the same task concurrently."
+      }
+    },
+    {
+      "id": "INV-02",
+      "atomicStatement": "Task uniqueness locks utilize atomic Redis SET NX EX on key asynq:{<qname>}:unique:<tasktype>:<md5> to reject duplicate task ingestion within the configured TTL window with ErrDuplicateTask.",
+      "enforcingMechanism": "enqueueUniqueCmd, scheduleUniqueCmd, and addToGroupUniqueCmd Lua scripts executing SET KEYS[1] ARGV[1] NX EX ARGV[2] before task insertion.",
+      "sourceLocation": {
+        "filePath": "internal/rdb/rdb.go",
+        "lineRange": [
+          269,
+          322
+        ]
+      },
+      "testEvidence": {
+        "filePath": "internal/rdb/rdb_test.go",
+        "testFunction": "TestEnqueueUnique",
+        "lineRange": [
+          366,
+          458
+        ],
+        "observation": "Asserts that calling EnqueueUnique with an identical type, payload, and queue within TTL returns ErrDuplicateTask (-1 in Lua) and does not insert second task."
+      },
+      "historicalContext": {
+        "commitHash": "71ebcfa129854909f2dbce2619d57f9264d99a11",
+        "issueOrPr": "PR #1070 / #1084",
+        "context": "De-duplication architecture preventing duplicate job insertion during network retries."
+      }
+    },
+    {
+      "id": "INV-03",
+      "atomicStatement": "recoverLeaseExpiredTasks ignores active tasks whose lease score expired less than 30 seconds ago to tolerate NTP clock drift and minor network jitter.",
+      "enforcingMechanism": "recoverer.recoverLeaseExpiredTasks computes cutoff as time.Now().Add(-30 * time.Second) and passes cutoff to ListLeaseExpired (ZRANGEBYSCORE lease -inf cutoff).",
+      "sourceLocation": {
+        "filePath": "recoverer.go",
+        "lineRange": [
+          89,
+          104
+        ]
+      },
+      "testEvidence": {
+        "filePath": "recoverer_test.go",
+        "testFunction": "TestRecoverer",
+        "lineRange": [
+          18,
+          277
+        ],
+        "observation": "Test case 'with multiple active tasks, and one expired' asserts task with lease expired 2m ago is recovered to retry, while tasks expiring 20s in future remain untouched in active and lease sets."
+      },
+      "historicalContext": {
+        "commitHash": "d135f1439bee74e989b7f9b41ecd542cc87f024a",
+        "issueOrPr": "Lease Design",
+        "context": "30-second buffer specifically prevents aggressive re-execution of tasks running on machines with minor time skew."
+      }
+    },
+    {
+      "id": "INV-04",
+      "atomicStatement": "Active workers periodically extend their task leases in Redis by 30 seconds using ZADD XX on the queue lease sorted set during heartbeat intervals.",
+      "enforcingMechanism": "heartbeater.beat checks w.lease.IsValid() and issues broker.ExtendLease (ZAddXX lease score=now+30s), updating in-memory lease deadline.",
+      "sourceLocation": {
+        "filePath": "heartbeat.go",
+        "lineRange": [
+          145,
+          202
+        ]
+      },
+      "testEvidence": {
+        "filePath": "internal/rdb/rdb_test.go",
+        "testFunction": "TestExtendLease",
+        "lineRange": [
+          3002,
+          3108
+        ],
+        "observation": "Verifies that ExtendLease updates sorted set score for existing task IDs by exactly LeaseDuration (30s) and ignores non-existent task IDs via XX option."
+      },
+      "historicalContext": {
+        "commitHash": "7e5efb0e307054984277cb2b0802d3cec7af4a3e",
+        "issueOrPr": "Redis 4.0+ Compatibility",
+        "context": "Dropped GT option from ZAddXX to ensure backward compatibility with Redis < 6.2.0."
+      }
+    },
+    {
+      "id": "INV-05",
+      "atomicStatement": "Worker pool concurrency is bounded locally by a buffered channel counting semaphore of capacity Concurrency, preventing more than Concurrency workers from executing concurrently.",
+      "enforcingMechanism": "processor.exec sends token to p.sema before calling broker.Dequeue and releases token via <-p.sema upon task completion or dequeue failure.",
+      "sourceLocation": {
+        "filePath": "processor.go",
+        "lineRange": [
+          170,
+          203
+        ]
+      },
+      "testEvidence": {
+        "filePath": "processor_test.go",
+        "testFunction": "TestProcessorSuccessWithSingleQueue",
+        "lineRange": [
+          86,
+          153
+        ],
+        "observation": "Asserts all tasks are processed concurrently up to configured semaphore capacity and all tokens are returned upon shutdown."
+      },
+      "historicalContext": {
+        "commitHash": "eb3216d35440076d16b2d7ff9973fc7c5dcd802b",
+        "issueOrPr": "Goroutine Leak",
+        "context": "Ensures channel buffer size and semaphore token return prevent worker goroutine exhaustion."
+      }
+    },
+    {
+      "id": "INV-06",
+      "atomicStatement": "Task cancellation messages published to Redis PubSub channel asynq:cancel trigger asynchronous context cancellation for matching active task IDs on worker nodes.",
+      "enforcingMechanism": "subscriber.start receives task ID string from pubsub.Channel(), queries base.Cancelations map, and calls matching context.CancelFunc.",
+      "sourceLocation": {
+        "filePath": "subscriber.go",
+        "lineRange": [
+          52,
+          90
+        ]
+      },
+      "testEvidence": {
+        "filePath": "subscriber_test.go",
+        "testFunction": "TestSubscriber",
+        "lineRange": [
+          17,
+          71
+        ],
+        "observation": "Asserts registered cancel function is called when matching task ID is published to asynq:cancel and ignored for non-matching IDs."
+      },
+      "historicalContext": {
+        "commitHash": "dd3c923f4406085d36a8efb7299202a8133e0fd5",
+        "issueOrPr": "Fixes #1095 / PR #1104",
+        "context": "Fixed Redis connection leak on subscriber connection failure during retry loops."
+      }
+    },
+    {
+      "id": "INV-07",
+      "atomicStatement": "Failed state mutations during worker completion (Done, MarkAsComplete, Retry, Archive) are enqueued to an in-memory syncer channel and retried every 5 seconds until their lease deadline expires.",
+      "enforcingMechanism": "processor handleSucceededMessage and handleFailedMessage push syncRequest structs to syncRequestCh on broker error; syncer.start retries until req.deadline.Before(now).",
+      "sourceLocation": {
+        "filePath": "syncer.go",
+        "lineRange": [
+          55,
+          87
+        ]
+      },
+      "testEvidence": {
+        "filePath": "syncer_test.go",
+        "testFunction": "TestSyncerRetry",
+        "lineRange": [
+          59,
+          104
+        ],
+        "observation": "Verifies that transient Redis failures during task completion are queued and retried successfully on subsequent syncer ticks."
+      },
+      "historicalContext": {
+        "commitHash": "0cc486a9753475c5d626b9369c423af1bae47705",
+        "issueOrPr": "Data Race Fix",
+        "context": "Synchronizes worker completion state against intermittent network disconnects without blocking worker goroutines."
+      }
+    },
+    {
+      "id": "INV-08",
+      "atomicStatement": "BatchEnqueue executes independent Lua scripts inside a Redis pipeline with preloaded script hashes (EVALSHA), silently skipping existing task IDs without rolling back earlier items.",
+      "enforcingMechanism": "BatchEnqueue runs enqueueCmd.Load / scheduleCmd.Load to prevent NOSCRIPT errors inside pipeline, executes pipe.Exec, and rolls back queuesPublished cache on connection error.",
+      "sourceLocation": {
+        "filePath": "internal/rdb/rdb.go",
+        "lineRange": [
+          156,
+          251
+        ]
+      },
+      "testEvidence": {
+        "filePath": "internal/rdb/rdb_test.go",
+        "testFunction": "TestBatchEnqueue",
+        "lineRange": [
+          163,
+          311
+        ],
+        "observation": "Sub-scenario 'duplicate IDs skipped' asserts batch containing 3 tasks with 1 duplicate inserts exactly 2 tasks, returns count 2, and leaves existing task intact."
+      },
+      "historicalContext": {
+        "commitHash": "06a06970d687392f30bc577401c80488cf064994",
+        "issueOrPr": "Atomicity Doc & NOSCRIPT Fix",
+        "context": "Fixed NOSCRIPT error on fresh Redis instances caused by pipeline Script.Run omitting EVAL fallback."
+      }
+    }
+  ],
+  "failureModesAndDefenses": [
+    {
+      "failureMode": "Worker GC Pause / Network Cutoff Exceeding Lease Duration + 30s Margin Causes Dual Execution",
+      "detectionMechanism": "recoverer.recoverLeaseExpiredTasks scans asynq:{<q>}:lease for members with score <= now - 30s.",
+      "recoveryAction": "Recoverer transitions task from active to retry (or archived) queue. The stalled worker's local lease expires (l.IsValid() == false), canceling its Context. When the stalled worker attempts completion, doneCmd/markAsCompleteCmd fails with NOT FOUND.",
+      "sourceEvidence": {
+        "filePath": "recoverer.go",
+        "lineRange": [
+          89,
+          104
+        ],
+        "observation": "Recoverer extracts expired tasks and triggers broker.Retry or broker.Archive with ErrLeaseExpired error."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "Architecture Core",
+        "rootCause": "Absence of distributed lock heartbeat in crashed worker process leads to permanent task starvation in active queue without central sweeper.",
+        "fixDescription": "Implemented central recoverer with 30s clock skew tolerance and Lease abstraction to notify local worker."
+      },
+      "prescribedMitigation": "Add monotonic fencing tokens or lease generation numbers to active tasks so re-leased tasks reject state transitions from superseded workers even if re-enqueued under the same task ID."
+    },
+    {
+      "failureMode": "Redis PubSub Connection Leak on Subscriber Receive Error Exhausting Connection Pool",
+      "detectionMechanism": "Subscriber retry loop failed to close redis.PubSub when Receive() encountered network error following successful Subscribe().",
+      "recoveryAction": "Explicit pubsub.Close() invocation upon Receive() error prior to returning from CancelationPubSub().",
+      "sourceEvidence": {
+        "filePath": "internal/rdb/rdb.go",
+        "lineRange": [
+          1596,
+          1606
+        ],
+        "observation": "pubsub.Close() is called immediately when pubsub.Receive(ctx) returns a non-nil error."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "Fixes #1095 / PR #1104",
+        "rootCause": "When redis.Subscribe succeeded but Receive() failed, pubsub connection remained unclosed, leaking one Redis socket per retry iteration.",
+        "fixDescription": "Added pubsub.Close() before returning error in CancelationPubSub (commit dd3c923f4406085d36a8efb7299202a8133e0fd5)."
+      },
+      "prescribedMitigation": "Ensure all network resources opened during multi-step handshakes are closed via explicit error-path teardown."
+    },
+    {
+      "failureMode": "Pipeline NOSCRIPT Execution Failure on Cold Redis / SCRIPT FLUSH in BatchEnqueue",
+      "detectionMechanism": "go-redis Script.Run on a pipeline only sends EVALSHA without the automatic EVAL fallback that non-pipelined calls possess.",
+      "recoveryAction": "Preload required Lua scripts via Script.Load(ctx, r.client) before constructing the Redis pipeline.",
+      "sourceEvidence": {
+        "filePath": "internal/rdb/rdb.go",
+        "lineRange": [
+          165,
+          185
+        ],
+        "observation": "Preloads enqueueCmd and scheduleCmd to ensure SHA digests exist in Redis script cache before executing pipeline."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "Commit 06a06970d687392f30bc577401c80488cf064994",
+        "rootCause": "On freshly started Redis or after SCRIPT FLUSH, pipelined EVALSHA returned NOSCRIPT for all batched tasks.",
+        "fixDescription": "Added script preloading loop with Load() before pipeline command dispatch."
+      },
+      "prescribedMitigation": "Always preload Lua scripts explicitly when dispatching script invocations through Redis pipelines."
+    },
+    {
+      "failureMode": "Lua Arithmetic Crash on Non-Existent Key in Memory Usage Inspection Script",
+      "detectionMechanism": "MEMORY USAGE command returns nil for expired or deleted task keys, which Lua coerces to boolean false, causing arithmetic crash (attempt to perform arithmetic on a boolean value).",
+      "recoveryAction": "Added nil guards around all MEMORY USAGE calls and divide-by-zero checks on sample sizes in memoryUsageCmd.",
+      "sourceEvidence": {
+        "filePath": "internal/rdb/inspect.go",
+        "lineRange": [
+          262,
+          310
+        ],
+        "observation": "Checks if bytes then memory = memory + bytes end for active, pending, and scheduled task key samplings."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "Fixes #728 / #901 / PR #1092",
+        "rootCause": "Deleted task keys sampled by MEMORY USAGE returned nil/false, crashing /api/queues endpoint in asynqmon.",
+        "fixDescription": "Added nil guards around MEMORY USAGE calls in Lua (commit 2fd155e31da91ecbe2d3f3f8475eee485805cd41)."
+      },
+      "prescribedMitigation": "Type-check and nil-guard all Redis return values inside Lua scripts before performing numerical operations."
+    },
+    {
+      "failureMode": "Redis Sentinel URI Ignoring Database Number Routing Connections to Default DB 0",
+      "detectionMechanism": "parseRedisSentinelURI ignored the /<dbnumber> URI path segment.",
+      "recoveryAction": "Extracted DB number from URI path matching standalone parseRedisURI logic.",
+      "sourceEvidence": {
+        "filePath": "asynq.go",
+        "lineRange": [
+          130,
+          165
+        ],
+        "observation": "Parses path segment from redis-sentinel URI to configure target DB number in RedisClientOption."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "Closes #669 / PR #1100",
+        "rootCause": "Sentinel URIs connecting to DB other than 0 were silently routed to DB 0, corrupting or isolating task queues.",
+        "fixDescription": "Added path parsing for DB number in parseRedisSentinelURI (commit 07898eade0b221f1475cbcc0775e7619f965fce3)."
+      },
+      "prescribedMitigation": "Ensure uniform URI parsing specifications across all connection schemes (standalone, sentinel, cluster)."
+    }
+  ],
+  "historicalEvolution": [
+    {
+      "milestoneOrBug": "BatchEnqueue Pipeline Atomicity Documentation and Script Preloading NOSCRIPT Bug Fix",
+      "commitHash": "06a06970d687392f30bc577401c80488cf064994",
+      "issueOrPr": "BatchEnqueue Architecture",
+      "rootCause": "Script.Run on Redis pipelines only sends EVALSHA without EVAL fallback on NOSCRIPT, causing failure on cold Redis instances.",
+      "architecturalFix": "Preload Lua scripts before pipeline execution and document non-transactional nature (partial success possible, duplicate IDs silently skipped).",
+      "affectedFiles": [
+        "client.go",
+        "internal/base/base.go",
+        "internal/rdb/rdb.go"
+      ],
+      "evidence": {
+        "filePath": "internal/rdb/rdb.go",
+        "observation": "Preloads enqueueCmd and scheduleCmd via Script.Load and rolls back queuesPublished cache on pipeline failure."
+      }
+    },
+    {
+      "milestoneOrBug": "Redis PubSub Connection Leak on Subscriber Receive Error in CancelationPubSub",
+      "commitHash": "dd3c923f4406085d36a8efb7299202a8133e0fd5",
+      "issueOrPr": "Fixes #1095 / PR #1104",
+      "rootCause": "When redis.Subscribe succeeded but Receive() failed, pubsub connection was not closed, leaking a Redis socket on each retry iteration until pool exhaustion.",
+      "architecturalFix": "Explicitly close pubsub before returning error in CancelationPubSub and added TestCancelationPubSubReceiveError test case.",
+      "affectedFiles": [
+        "internal/rdb/rdb.go",
+        "internal/rdb/rdb_test.go"
+      ],
+      "evidence": {
+        "filePath": "internal/rdb/rdb.go",
+        "observation": "Calls pubsub.Close() before returning error on receive failure."
+      }
+    },
+    {
+      "milestoneOrBug": "Nil Boolean Guard for MEMORY USAGE in memoryUsageCmd Lua Script",
+      "commitHash": "2fd155e31da91ecbe2d3f3f8475eee485805cd41",
+      "issueOrPr": "Fixes #728 / #901 / PR #1092",
+      "rootCause": "MEMORY USAGE returned nil for deleted/expired keys, which Lua coerced to false, crashing arithmetic operations during queue stats computation in asynqmon.",
+      "architecturalFix": "Added nil guards around all three MEMORY USAGE invocations and divide-by-zero checks on sample counts in Lua.",
+      "affectedFiles": [
+        "internal/rdb/inspect.go"
+      ],
+      "evidence": {
+        "filePath": "internal/rdb/inspect.go",
+        "observation": "Wraps bytes arithmetic in if bytes then ... end blocks in memoryUsageCmd."
+      }
+    },
+    {
+      "milestoneOrBug": "Drop GT Option from RDB.ExtendLease for Redis Version Compatibility",
+      "commitHash": "7e5efb0e307054984277cb2b0802d3cec7af4a3e",
+      "issueOrPr": "Redis 4.0+ Support",
+      "rootCause": "GT option in ZAdd requires Redis v6.2.0+, breaking compatibility with older Redis deployments (v4.0+).",
+      "architecturalFix": "Replaced ZAddGT with standard ZAddXX in ExtendLease, trading monotonic score progression for engine compatibility.",
+      "affectedFiles": [
+        "internal/rdb/rdb.go",
+        "internal/rdb/rdb_test.go"
+      ],
+      "evidence": {
+        "filePath": "internal/rdb/rdb.go",
+        "observation": "Uses ZAddXX on LeaseKey without GT qualifier."
+      }
+    },
+    {
+      "milestoneOrBug": "Task Aggregation Check Interval Alignment with Grace Period",
+      "commitHash": "4542b52da8048495dad500ca9a8d9c5fd1c8bc96",
+      "issueOrPr": "Race Condition Patch",
+      "rootCause": "Aggregator only checked most recent entry against grace period; if aggregation check interval was larger than grace period, tasks could wait indefinitely.",
+      "architecturalFix": "Set aggregator polling interval to min(defaultAggregationCheckInterval, gracePeriod).",
+      "affectedFiles": [
+        "aggregator.go"
+      ],
+      "evidence": {
+        "filePath": "aggregator.go",
+        "observation": "Initializes interval = min(defaultAggregationCheckInterval, params.gracePeriod)."
+      }
+    }
+  ],
+  "unresolvedContradictionsAndBypasses": [
+    {
+      "claimOrGuarantee": "Worker has exclusive ownership during task execution.",
+      "contradictionOrBypass": "If worker execution blocks for longer than lease duration (30s) + clock skew margin (30s), recoverer reassigns task to retry/archived queue. If a second worker dequeues the re-enqueued task, the original worker's completion scripts (doneCmd, markAsCompleteCmd) lack token fencing (they only check LREM active 0 <id> and ZREM lease <id> without worker ID verification). The original stalled worker can remove the task from active and delete/complete it out from under the second worker.",
+      "codeLocation": "internal/rdb/rdb.go:L397-L454 and processor.go:L284-L325",
+      "evidence": "doneCmd and markAsCompleteCmd execute LREM against active list matching only task ID ARGV[1]. No worker token or epoch number is verified in Redis."
+    },
+    {
+      "claimOrGuarantee": "BatchEnqueue provides atomic task registration for all items in a batch.",
+      "contradictionOrBypass": "BatchEnqueue executes independent Lua scripts inside a Redis pipeline without MULTI/EXEC. If a task ID already exists in Redis, enqueueCmd returns 0 and skips insertion, yet BatchEnqueueContext returns Err == nil for the entire batch, masking the dropped duplicate.",
+      "codeLocation": "client.go:L465-L593 and internal/rdb/rdb.go:L142-L251",
+      "evidence": "BatchEnqueueContext constructs successful TaskInfo for every item that passed local validation without verifying whether the Lua script returned 1 or 0."
+    },
+    {
+      "claimOrGuarantee": "ExtendLease strictly advances lease expiration monotonically.",
+      "contradictionOrBypass": "Due to dropping the GT flag in ExtendLease (ZAddXX without GT) for Redis 4.0+ compatibility, an out-of-order network packet or delayed heartbeat can set the lease score in Redis to an earlier timestamp, regressing the lease expiration.",
+      "codeLocation": "internal/rdb/rdb.go:L1467-L1482",
+      "evidence": "r.client.ZAddXX(context.Background(), base.LeaseKey(qname), zs...) unconditionally overwrites the score with expireAt.Unix() regardless of current score value."
+    }
+  ],
+  "adversarialCritique": {
+    "boundaryConditions": [
+      "Process pauses or CPU starvation exceeding 60s cause the central recoverer to re-enqueue active tasks while worker goroutines continue running, leading to dual execution on non-idempotent task handlers.",
+      "Out-of-order network delivery during lease extension can regress lease timestamps in Redis due to absence of ZADD GT in ExtendLease.",
+      "Redis Sentinel failover during pipelined BatchEnqueue can cause partial batch ingestion where only a subset of tasks reach the new master.",
+      "Global Redis keys (asynq:servers, asynq:workers, asynq:cancel) do not use hash tags, requiring single-node or specialized proxy routing in Redis Cluster environments."
+    ],
+    "untestedAssumptions": [
+      "Assumes local worker system clocks and Redis server clocks remain synchronized within 30 seconds of drift; significant clock jumps invalidate lease and recovery timing.",
+      "Assumes user task handlers cooperatively respect context cancellation (ctx.Done()) upon lease expiration; non-cooperative handlers run until process termination.",
+      "Assumes in-memory queuesPublished sync.Map cache remains synchronized with Redis all-queues set across Redis flushes or cluster reconfigurations."
+    ],
+    "acceptedTradeOffs": [
+      "At-least-once delivery over strict exactly-once: duplicates can occur under network partitions, worker crashes, or extended GC pauses.",
+      "Non-transactional pipeline in BatchEnqueue over MULTI/EXEC to avoid blocking Redis single-threaded execution on large batches and avoid multi-key slot constraints in clustered Redis.",
+      "Polled dequeue over blocking pop (BLPOP/BRPOPLPUSH) to enable weighted priority and random queue selection, trading increased Redis command volume for flexible priority scheduling.",
+      "Redis 4.0+ backward compatibility over monotonic lease extension (ZADD XX without GT), trading strict monotonic advancement for broad engine compatibility."
+    ]
+  }
+}

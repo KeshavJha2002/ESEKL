@@ -1,0 +1,12 @@
+{
+  "$comment": "Template for adding a new repository to eku_store/corpus_manifest.json",
+  "id": "repo-name",
+  "name": "Human-Readable Repository Name",
+  "repo": "factory/repo-name",
+  "language": "go | typescript | python | rust | java | c++",
+  "storageEngine": "postgres | redis | sqlite | raft | native | memory",
+  "primaryAbstraction": "Relational Queue | KV Queue | Embedded Step Queue | Log Stream",
+  "license": "MIT | Apache-2.0 | BSD-3-Clause",
+  "pinnedCommit": "40-character-git-commit-sha",
+  "description": "Concise architectural description of the repository and its concurrency/storage model."
+}

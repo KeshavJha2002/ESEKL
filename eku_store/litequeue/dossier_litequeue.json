@@ -1,0 +1,834 @@
+{
+  "repoName": "litements/litequeue",
+  "domain": "message_queues",
+  "gitCommitHash": "9e286af166f1c483057e28ab5fb45e1c38943f21",
+  "analyzedAt": "2026-08-22T15:36:00.000Z",
+  "overview": {
+    "purpose": "Persistent, lightweight SQLite-backed queue in Python providing at-least-once message delivery, monotonic RFC 9562 UUIDv7 FIFO ordering, integer claim ID delivery fencing, producer idempotency keys, trigger-enforced capacity limits, and multi-connection thread isolation.",
+    "architectureType": "Single-table SQLite queue with Write-Ahead Logging (WAL), integer token-fenced message delivery claims, connection-pooled query-only read isolation, BEFORE INSERT trigger capacity constraints, and atomic SQL state transitions.",
+    "keyDifferentiators": [
+      "Single SQLite database file per queue architecture with strict startup validation rejecting extraneous schema tables to eliminate multi-table lock contention and schema drift",
+      "Integer claim ID delivery fencing: monotonic 64-bit integer counter incremented on each pop() that fences state transitions (done, mark_failed, retry) against late execution by stale workers without requiring network heartbeats or distributed consensus",
+      "Monotonic RFC 9562 UUIDv7 message IDs with millisecond timestamp and sub-millisecond counter/random bit collision resolution, enabling FIFO ordering via composite index (status, message_id) without temporary B-tree sorting",
+      "Producer idempotency keys scoped to the database file with partial unique indexing and atomic check-or-insert transaction handling, allowing replay verification under full queue conditions",
+      "Separation of concerns between a serialized write connection (guarded by threading.RLock) and a 10-connection query-only read pool with transactional visibility routing for the owning thread"
+    ]
+  },
+  "components": [
+    {
+      "name": "LiteQueue",
+      "role": "Queue Broker, Concurrency Engine & Public Interface",
+      "primaryFiles": [
+        "src/litequeue/__init__.py"
+      ],
+      "publicInterfaces": [
+        "__init__(filename: str | Path, maxsize: int | None = None, **kwargs: Any) -> None",
+        "put(data: str, *, idempotency_key: str | None = None) -> Message",
+        "pop() -> Message | None",
+        "peek() -> Message | None",
+        "get(message_id: str) -> Message | None",
+        "done(message_id: str, *, claim_id: int) -> bool",
+        "mark_failed(message_id: str, *, claim_id: int) -> bool",
+        "retry(message_id: str, *, claim_id: int) -> bool",
+        "retry_expired(threshold_seconds: int | float) -> int",
+        "list_locked(threshold_seconds: int | float) -> Iterator[Message]",
+        "list_failed() -> Iterator[Message]",
+        "ready_count() -> int",
+        "locked_count() -> int",
+        "done_count() -> int",
+        "failed_count() -> int",
+        "active_count() -> int",
+        "stored_count() -> int",
+        "qsize() -> int",
+        "empty() -> bool",
+        "full() -> bool",
+        "prune(include_failed: bool = True) -> None",
+        "vacuum() -> None",
+        "transaction(mode: str = 'DEFERRED') -> Generator[None]",
+        "close() -> None",
+        "get_sqlite_version() -> tuple[int, int, int]"
+      ],
+      "dependencies": [
+        "sqlite3",
+        "threading",
+        "time",
+        "litequeue.migrations.apply_migrations",
+        "litequeue.migrations.MIGRATIONS"
+      ],
+      "stateManaged": [
+        "SQLite database table 'Queue'",
+        "Queue_message_id_unique_idx (UNIQUE index on message_id)",
+        "Queue_status_message_id_idx (Composite index on status, message_id)",
+        "Queue_idempotency_key_unique_idx (Partial unique index on idempotency_key WHERE idempotency_key IS NOT NULL)",
+        "maxsize_control_Queue (BEFORE INSERT trigger enforcing ready message capacity limit)",
+        "_write_connection_lock (threading.RLock controlling write connection access)",
+        "_read_connections (Queue[sqlite3.Connection] managing 10 read-only pool connections)",
+        "_transaction_owner (Thread ID of active transaction owner)",
+        "_is_closed (Boolean lifecycle shutdown flag)"
+      ],
+      "evidence": {
+        "filePath": "src/litequeue/__init__.py",
+        "lineRange": [
+          264,
+          420
+        ],
+        "symbol": "LiteQueue.__init__",
+        "observation": "Initializes dedicated write connection and 10-slot read connection pool, enforces single-table schema invariant, applies pending migrations, configures WAL journal mode and PRAGMA settings, and installs maxsize trigger.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Message",
+      "role": "Task Envelope & Delivery State Value Object",
+      "primaryFiles": [
+        "src/litequeue/__init__.py"
+      ],
+      "publicInterfaces": [
+        "Message(data: str, message_id: str, status: MessageStatus, in_time: int, lock_time: int | None, done_time: int | None, idempotency_key: str | None = None, claim_id: int = 0)"
+      ],
+      "dependencies": [
+        "dataclasses.dataclass",
+        "litequeue.MessageStatus"
+      ],
+      "stateManaged": [
+        "data (Message payload string)",
+        "message_id (Monotonic UUIDv7 identifier string)",
+        "status (MessageStatus enum: READY=0, LOCKED=1, DONE=2, FAILED=3)",
+        "in_time (Unix epoch timestamp in integer nanoseconds)",
+        "lock_time (Unix epoch timestamp in integer nanoseconds or None)",
+        "done_time (Unix epoch timestamp in integer nanoseconds or None)",
+        "idempotency_key (Producer submission key string or None)",
+        "claim_id (Monotonic 64-bit integer delivery fencing token)"
+      ],
+      "evidence": {
+        "filePath": "src/litequeue/__init__.py",
+        "lineRange": [
+          121,
+          139
+        ],
+        "symbol": "Message",
+        "observation": "Defines an immutable frozen slotted dataclass representing a message row with integer nanosecond timestamps and integer delivery claim ID.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "MigrationManager",
+      "role": "Schema Versioning & Data Migration Controller",
+      "primaryFiles": [
+        "src/litequeue/migrations.py"
+      ],
+      "publicInterfaces": [
+        "apply_migrations(connection: sqlite3.Connection, migrations: dict[int, Migration]) -> None",
+        "get_user_version(connection: sqlite3.Connection) -> int"
+      ],
+      "dependencies": [
+        "sqlite3"
+      ],
+      "stateManaged": [
+        "PRAGMA user_version (Database schema revision counter: 1, 2, 3)",
+        "MIGRATIONS (Mapping from version integer to tuple of DDL/DML statements)"
+      ],
+      "evidence": {
+        "filePath": "src/litequeue/migrations.py",
+        "lineRange": [
+          116,
+          149
+        ],
+        "symbol": "apply_migrations",
+        "observation": "Executes pending schema migrations in ascending order inside explicit BEGIN IMMEDIATE transactions and verifies PRAGMA user_version matches latest version.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "ReadConnectionPool",
+      "role": "Query-Only Read Concurrency & Isolation Subsystem",
+      "primaryFiles": [
+        "src/litequeue/__init__.py"
+      ],
+      "publicInterfaces": [
+        "_read_connection() -> Generator[sqlite3.Connection]"
+      ],
+      "dependencies": [
+        "queue.Queue",
+        "sqlite3",
+        "threading"
+      ],
+      "stateManaged": [
+        "_read_connections (Fixed-size FIFO queue holding 10 sqlite3.Connection instances configured with PRAGMA query_only = ON)",
+        "_close_state_lock (threading.Lock protecting connection checkout during shutdown)"
+      ],
+      "evidence": {
+        "filePath": "src/litequeue/__init__.py",
+        "lineRange": [
+          617,
+          646
+        ],
+        "symbol": "LiteQueue._read_connection",
+        "observation": "Checks out read connections with PRAGMA query_only=ON for non-transaction threads while routing transaction owner thread directly to the write connection for uncommitted read visibility.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    }
+  ],
+  "stateMachines": [
+    {
+      "name": "MessageDeliveryLifecycle",
+      "states": [
+        "READY",
+        "LOCKED",
+        "DONE",
+        "FAILED",
+        "DELETED"
+      ],
+      "initialState": "READY",
+      "terminalStates": [
+        "DELETED"
+      ],
+      "transitions": [
+        {
+          "from": "Nonexistent",
+          "to": "READY",
+          "event": "Producer Put (Unkeyed or New Idempotency Key)",
+          "guardConditions": [
+            "data is a valid string",
+            "idempotency_key is string or None",
+            "ready count < maxsize (enforced by maxsize_control_Queue trigger)"
+          ],
+          "mechanism": "INSERT INTO Queue (data, message_id, idempotency_key, status, in_time, lock_time, done_time) VALUES (:data, :message_id, :idempotency_key, 0, :now, NULL, NULL)",
+          "evidence": {
+            "filePath": "src/litequeue/__init__.py",
+            "lineRange": [
+              517,
+              553
+            ],
+            "observation": "Inserts new row with generated UUIDv7 message_id, status=0 (READY), current nanosecond timestamp, and claim_id=0.",
+            "luaOrCodeBehavior": "INSERT INTO \"Queue\" (data, message_id, idempotency_key, status, in_time, lock_time, done_time) VALUES (:data, :message_id, :idempotency_key, 0, :now, NULL, NULL)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "READY",
+          "to": "LOCKED",
+          "event": "Worker Dequeue Pop",
+          "guardConditions": [
+            "at least one message in Queue with status = 0 (READY)"
+          ],
+          "mechanism": "UPDATE Queue SET status = 1, lock_time = :now, claim_id = claim_id + 1 WHERE rowid = (SELECT rowid FROM Queue WHERE status = 0 ORDER BY message_id LIMIT 1) RETURNING * (or atomic transaction select + update in _pop_transaction)",
+          "evidence": {
+            "filePath": "src/litequeue/__init__.py",
+            "lineRange": [
+              554,
+              577
+            ],
+            "observation": "Atomically locks oldest ready message sorted by UUIDv7 message_id, assigns current nanoseconds lock_time, and increments claim_id by 1.",
+            "luaOrCodeBehavior": "UPDATE \"Queue\" SET status = 1, lock_time = :now, claim_id = claim_id + 1 WHERE rowid = (SELECT rowid FROM \"Queue\" WHERE status = 0 ORDER BY message_id LIMIT 1) RETURNING *",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "LOCKED",
+          "to": "DONE",
+          "event": "Worker Completion (done)",
+          "guardConditions": [
+            "message exists in Queue",
+            "stored status == 1 (LOCKED)",
+            "stored claim_id == supplied claim_id"
+          ],
+          "mechanism": "UPDATE Queue SET status = 2, done_time = :now WHERE message_id = :message_id AND status = 1 AND claim_id = :claim_id",
+          "evidence": {
+            "filePath": "src/litequeue/__init__.py",
+            "lineRange": [
+              668,
+              696
+            ],
+            "observation": "Marks locked message claim as completed with current nanosecond timestamp done_time, returning True only if exact claim_id and status=1 matched.",
+            "luaOrCodeBehavior": "UPDATE \"Queue\" SET status = 2, done_time = :now WHERE message_id = :message_id AND status = 1 AND claim_id = :claim_id",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "LOCKED",
+          "to": "FAILED",
+          "event": "Worker Failure (mark_failed)",
+          "guardConditions": [
+            "message exists in Queue",
+            "stored status == 1 (LOCKED)",
+            "stored claim_id == supplied claim_id"
+          ],
+          "mechanism": "UPDATE Queue SET status = 3, done_time = :now WHERE message_id = :message_id AND status = 1 AND claim_id = :claim_id",
+          "evidence": {
+            "filePath": "src/litequeue/__init__.py",
+            "lineRange": [
+              697,
+              724
+            ],
+            "observation": "Marks locked message claim as failed with current nanosecond timestamp done_time, returning True only if exact claim_id and status=1 matched.",
+            "luaOrCodeBehavior": "UPDATE \"Queue\" SET status = 3, done_time = :now WHERE message_id = :message_id AND status = 1 AND claim_id = :claim_id",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "LOCKED",
+          "to": "READY",
+          "event": "Explicit Worker Retry (retry)",
+          "guardConditions": [
+            "message exists in Queue",
+            "stored status IN (1, 3)",
+            "stored claim_id == supplied claim_id"
+          ],
+          "mechanism": "UPDATE Queue SET status = 0, lock_time = NULL, done_time = NULL WHERE message_id = :message_id AND status IN (1, 3) AND claim_id = :claim_id",
+          "evidence": {
+            "filePath": "src/litequeue/__init__.py",
+            "lineRange": [
+              765,
+              795
+            ],
+            "observation": "Requeues locked or failed task back to READY state and resets lock_time and done_time to NULL while preserving claim_id.",
+            "luaOrCodeBehavior": "UPDATE \"Queue\" SET status = 0, lock_time = NULL, done_time = NULL WHERE message_id = :message_id AND status IN (1, 3) AND claim_id = :claim_id",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "FAILED",
+          "to": "READY",
+          "event": "Explicit Failed Retry (retry)",
+          "guardConditions": [
+            "message exists in Queue",
+            "stored status == 3 (FAILED)",
+            "stored claim_id == supplied claim_id"
+          ],
+          "mechanism": "UPDATE Queue SET status = 0, lock_time = NULL, done_time = NULL WHERE message_id = :message_id AND status IN (1, 3) AND claim_id = :claim_id",
+          "evidence": {
+            "filePath": "src/litequeue/__init__.py",
+            "lineRange": [
+              765,
+              795
+            ],
+            "observation": "Returns failed task to ready state with cleared timestamps when supplied claim_id matches stored claim_id.",
+            "luaOrCodeBehavior": "UPDATE \"Queue\" SET status = 0, lock_time = NULL, done_time = NULL WHERE message_id = :message_id AND status IN (1, 3) AND claim_id = :claim_id",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "LOCKED",
+          "to": "READY",
+          "event": "Stalled Claim Timeout Sweep (retry_expired)",
+          "guardConditions": [
+            "stored status == 1 (LOCKED)",
+            "lock_time < (now_ns - threshold_ns)"
+          ],
+          "mechanism": "UPDATE Queue SET status = 0, lock_time = NULL, done_time = NULL WHERE status = 1 AND lock_time < :cutoff_nanoseconds",
+          "evidence": {
+            "filePath": "src/litequeue/__init__.py",
+            "lineRange": [
+              796,
+              819
+            ],
+            "observation": "Atomically resets all expired locked claims to READY and clears timestamps in one single SQL execution.",
+            "luaOrCodeBehavior": "UPDATE \"Queue\" SET status = 0, lock_time = NULL, done_time = NULL WHERE status = 1 AND lock_time < :cutoff_nanoseconds",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "DONE",
+          "to": "DELETED",
+          "event": "Queue Prune",
+          "guardConditions": [
+            "stored status == 2 (DONE) or stored status IN (2, 3) when include_failed=True"
+          ],
+          "mechanism": "DELETE FROM Queue WHERE status IN (2, 3) (or WHERE status IN (2))",
+          "evidence": {
+            "filePath": "src/litequeue/__init__.py",
+            "lineRange": [
+              873,
+              889
+            ],
+            "observation": "Deletes finished message rows from database, freeing associated idempotency key reservations for future reuse.",
+            "luaOrCodeBehavior": "DELETE FROM \"Queue\" WHERE status IN (2, 3)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "FAILED",
+          "to": "DELETED",
+          "event": "Queue Prune with Failed (include_failed=True)",
+          "guardConditions": [
+            "include_failed is True",
+            "stored status == 3 (FAILED)"
+          ],
+          "mechanism": "DELETE FROM Queue WHERE status IN (2, 3)",
+          "evidence": {
+            "filePath": "src/litequeue/__init__.py",
+            "lineRange": [
+              873,
+              889
+            ],
+            "observation": "Deletes failed message rows when include_failed=True, releasing idempotency keys.",
+            "luaOrCodeBehavior": "DELETE FROM \"Queue\" WHERE status IN (2, 3)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-01",
+      "atomicStatement": "FIFO message dequeue and peek order is strictly governed by the lexicographical order of RFC 9562 UUIDv7 message IDs utilizing composite index Queue_status_message_id_idx without executing a temporary B-tree sort.",
+      "enforcingMechanism": "Composite SQLite index (status, message_id) combined with SELECT ... WHERE status = 0 ORDER BY message_id LIMIT 1.",
+      "sourceLocation": {
+        "filePath": "src/litequeue/__init__.py",
+        "lineRange": [
+          554,
+          577
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/test_litequeue.py",
+        "testFunction": "test_fifo_queries_use_composite_index_without_temporary_sort",
+        "lineRange": [
+          910,
+          950
+        ],
+        "observation": "EXPLAIN QUERY PLAN confirms that peek and pop statements utilize Queue_status_message_id_idx and avoid USE TEMP B-TREE."
+      },
+      "historicalContext": {
+        "commitHash": "8084787353ef75b958b182548d0f4be842b86627",
+        "issueOrPr": "#25",
+        "context": "Optimized SQLite feature detection and index indexing for fast pop execution across supported SQLite 3 versions."
+      }
+    },
+    {
+      "id": "INV-02",
+      "atomicStatement": "Message pop atomically transitions the oldest ready message to LOCKED status, records lock_time in integer Unix nanoseconds, and increments claim_id by 1 inside SQLite BEGIN IMMEDIATE isolation.",
+      "enforcingMechanism": "_pop_returning (UPDATE ... RETURNING *) on SQLite >= 3.35 or _pop_transaction inside BEGIN IMMEDIATE transaction block.",
+      "sourceLocation": {
+        "filePath": "src/litequeue/__init__.py",
+        "lineRange": [
+          554,
+          616
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/test_message_claim_ids.py",
+        "testFunction": "test_pop_assigns_a_new_claim_id_for_each_delivery",
+        "lineRange": [
+          34,
+          55
+        ],
+        "observation": "Verifies that successive deliveries of the same message increment claim_id from 0 to 1, then to 2 upon subsequent pop."
+      },
+      "historicalContext": {
+        "commitHash": "6322d765a0a98c417843d54497dc3ff7f6a2b675",
+        "issueOrPr": "v0.13-claim-fencing",
+        "context": "Introduced integer claim IDs to prevent delivery races between retried tasks and delayed workers."
+      }
+    },
+    {
+      "id": "INV-03",
+      "atomicStatement": "State finalization methods (done, mark_failed, retry) reject execution with return value False whenever the worker's supplied claim_id does not equal the stored claim_id or status is not LOCKED.",
+      "enforcingMechanism": "Atomic SQL UPDATE matching WHERE message_id = :message_id AND status = 1 AND claim_id = :claim_id checking cursor.rowcount > 0.",
+      "sourceLocation": {
+        "filePath": "src/litequeue/__init__.py",
+        "lineRange": [
+          668,
+          724
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/test_message_claim_ids.py",
+        "testFunction": "test_stale_worker_cannot_complete_a_new_claim",
+        "lineRange": [
+          57,
+          87
+        ],
+        "observation": "Verifies that an earlier worker attempting done() with a stale claim_id receives False and leaves the active worker's claim intact in LOCKED status."
+      },
+      "historicalContext": {
+        "commitHash": "6322d765a0a98c417843d54497dc3ff7f6a2b675",
+        "issueOrPr": "v0.13-claim-fencing",
+        "context": "Replaced un-fenced state mutations with claim-aware conditional SQL updates."
+      }
+    },
+    {
+      "id": "INV-04",
+      "atomicStatement": "Idempotent submission (put) with a non-null idempotency_key returns the stored Message if the submitted payload data matches, and raises IdempotencyConflict without modifying state if payload data differs.",
+      "enforcingMechanism": "_immediate_transaction_if_needed transaction with SELECT idempotency_key check and unique partial index Queue_idempotency_key_unique_idx.",
+      "sourceLocation": {
+        "filePath": "src/litequeue/__init__.py",
+        "lineRange": [
+          468,
+          516
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/test_idempotency.py",
+        "testFunction": "test_put_rejects_different_data_for_an_existing_key",
+        "lineRange": [
+          54,
+          66
+        ],
+        "observation": "Verifies that replaying an existing key with altered data raises IdempotencyConflict and preserves original message untouched in the database."
+      },
+      "historicalContext": {
+        "commitHash": "1543fc0084b0d8f17d809fb9e8c765a824e7c067",
+        "issueOrPr": "v0.13-idempotency",
+        "context": "Added producer idempotency keys to support ambiguous retry safety in distributed pipelines."
+      }
+    },
+    {
+      "id": "INV-05",
+      "atomicStatement": "Queue capacity constraint (maxsize) is enforced as an immutable SQLite BEFORE INSERT trigger maxsize_control_Queue that aborts insertions when the count of READY messages reaches the configured capacity limit.",
+      "enforcingMechanism": "SQLite BEFORE INSERT trigger: WHEN (SELECT COUNT(*) FROM Queue WHERE status = 0) >= effective_maxsize BEGIN SELECT RAISE(ABORT, 'Max queue length reached: ...'); END;",
+      "sourceLocation": {
+        "filePath": "src/litequeue/__init__.py",
+        "lineRange": [
+          374,
+          385
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/test_threading.py",
+        "testFunction": "test_shared_queue_enforces_maxsize_under_contention",
+        "lineRange": [
+          104,
+          122
+        ],
+        "observation": "Verifies that 16 concurrent worker threads submitting 32 messages against a maxsize=8 queue admit exactly 8 messages and reject 24 with sqlite3.IntegrityError."
+      },
+      "historicalContext": {
+        "commitHash": "8b9f388057535e6b03b225b2f858d990bdb9ca4c",
+        "issueOrPr": "maxsize-reopen-fix",
+        "context": "Persisted maxsize capacity trigger in database schema and added conflict validation when reopening queues."
+      }
+    },
+    {
+      "id": "INV-06",
+      "atomicStatement": "Expired claim recovery (retry_expired) atomically resets all LOCKED claims whose lock_time is strictly older than the calculated nanosecond cutoff back to READY with cleared timestamps in a single SQL statement.",
+      "enforcingMechanism": "UPDATE Queue SET status = 0, lock_time = NULL, done_time = NULL WHERE status = 1 AND lock_time < :cutoff_nanoseconds executed within write connection lock.",
+      "sourceLocation": {
+        "filePath": "src/litequeue/__init__.py",
+        "lineRange": [
+          796,
+          819
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/test_message_claim_ids.py",
+        "testFunction": "test_completion_and_expired_recovery_have_one_winner",
+        "lineRange": [
+          354,
+          403
+        ],
+        "observation": "Verifies that concurrent worker completion and expired recovery result in exactly one winner: either completion succeeds and recovery retries 0 claims, or recovery resets the claim and completion returns False."
+      },
+      "historicalContext": {
+        "commitHash": "6322d765a0a98c417843d54497dc3ff7f6a2b675",
+        "issueOrPr": "v0.13-claim-fencing",
+        "context": "Implemented atomic single-statement expired claim recovery replacing check-then-act application loops."
+      }
+    },
+    {
+      "id": "INV-07",
+      "atomicStatement": "Uncommitted write transaction isolation isolates concurrent reader threads to committed data via a 10-connection query-only pool while granting the transaction-owning thread re-entrant visibility of its uncommitted writes.",
+      "enforcingMechanism": "_read_connection context manager inspecting self._transaction_owner == threading.get_ident(), yielding self.conn for owner and checking out from 10-slot query_only pool for non-owners.",
+      "sourceLocation": {
+        "filePath": "src/litequeue/__init__.py",
+        "lineRange": [
+          617,
+          646
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/test_threading.py",
+        "testFunction": "test_reads_continue_without_observing_uncommitted_writes",
+        "lineRange": [
+          199,
+          228
+        ],
+        "observation": "Verifies that while one thread holds an uncommitted IMMEDIATE transaction inserting a message, concurrent reader threads observe only committed count=1 and cannot get uncommitted message IDs."
+      },
+      "historicalContext": {
+        "commitHash": "1543fc0084b0d8f17d809fb9e8c765a824e7c067",
+        "issueOrPr": "review-backlog",
+        "context": "Constructed query_only read connection pool to prevent dirty read joining and cross-thread transaction pollution."
+      }
+    },
+    {
+      "id": "INV-08",
+      "atomicStatement": "Database schema migrations execute in strict ascending integer version order inside atomic BEGIN IMMEDIATE transactions, ensuring that any failed DDL statement rolls back completely and does not advance PRAGMA user_version.",
+      "enforcingMechanism": "_apply_migration executing migration SQL statements followed by PRAGMA user_version = version wrapped in try-except with connection.rollback().",
+      "sourceLocation": {
+        "filePath": "src/litequeue/migrations.py",
+        "lineRange": [
+          91,
+          114
+        ]
+      },
+      "testEvidence": {
+        "filePath": "tests/test_migrations.py",
+        "testFunction": "test_failed_migration_does_not_advance_user_version",
+        "lineRange": [
+          317,
+          336
+        ],
+        "observation": "Verifies that injecting a failing SQL statement in migration 2 rolls back added columns and leaves user_version at 1."
+      },
+      "historicalContext": {
+        "commitHash": "1543fc0084b0d8f17d809fb9e8c765a824e7c067",
+        "issueOrPr": "v0.13-migrations",
+        "context": "Added versioned migration framework with PRAGMA user_version to safely transition existing SQLite databases from 0.12 to 0.13."
+      }
+    }
+  ],
+  "failureModesAndDefenses": [
+    {
+      "failureMode": "Stale Worker Late Acknowledgment Post-Recovery",
+      "detectionMechanism": "Conditional SQL UPDATE matching stored claim_id with supplied claim_id: WHERE status = 1 AND claim_id = :claim_id.",
+      "recoveryAction": "SQLite returns cursor.rowcount == 0; done() / mark_failed() returns False, signaling the worker to drop stale results.",
+      "sourceEvidence": {
+        "filePath": "src/litequeue/__init__.py",
+        "lineRange": [
+          668,
+          696
+        ],
+        "observation": "done() checks cursor.rowcount > 0 after updating with exact claim_id."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "v0.13",
+        "rootCause": "In LiteQueue <= 0.12, workers completing tasks after expired recovery would overwrite newer worker deliveries because updates matched only message_id and status=LOCKED.",
+        "fixDescription": "Introduced monotonic integer claim_id incremented on pop() and validated during done(), mark_failed(), and retry()."
+      },
+      "prescribedMitigation": "Incorporate monotonic claim/fence tokens in all lease-based task queue protocols."
+    },
+    {
+      "failureMode": "Ambiguous Producer Retry (Network Timeout / Lost Ack)",
+      "detectionMechanism": "Idempotent put lookup: SELECT * FROM Queue WHERE idempotency_key = :idempotency_key inside an IMMEDIATE transaction block.",
+      "recoveryAction": "If existing message has identical data, returns the stored Message object without creating duplicates; if data differs, raises IdempotencyConflict.",
+      "sourceEvidence": {
+        "filePath": "src/litequeue/__init__.py",
+        "lineRange": [
+          468,
+          516
+        ],
+        "observation": "put() verifies existing row data matches submitted data before returning existing record."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "v0.13",
+        "rootCause": "Producers retrying ambiguous put calls when responses were interrupted caused duplicate message insertion.",
+        "fixDescription": "Added optional caller-supplied idempotency_key with unique partial index and replay verification."
+      },
+      "prescribedMitigation": "Implement storage-level unique idempotency keys with exact payload verification on replay."
+    },
+    {
+      "failureMode": "Concurrent Queue Capacity Overflow Under Contention",
+      "detectionMechanism": "SQLite BEFORE INSERT trigger maxsize_control_Queue checking (SELECT COUNT(*) FROM Queue WHERE status = 0) >= maxsize.",
+      "recoveryAction": "SQLite executes RAISE(ABORT, 'Max queue length reached: N'), raising sqlite3.IntegrityError and preventing row insertion.",
+      "sourceEvidence": {
+        "filePath": "src/litequeue/__init__.py",
+        "lineRange": [
+          374,
+          385
+        ],
+        "observation": "Trigger checks live count of ready messages during INSERT transaction."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "8b9f388057535e6b03b225b2f858d990bdb9ca4c",
+        "rootCause": "Application-level capacity checks were vulnerable to race conditions where concurrent producers both saw count < maxsize and both inserted.",
+        "fixDescription": "Moved maxsize enforcement into an engine-level BEFORE INSERT SQLite trigger."
+      },
+      "prescribedMitigation": "Enforce queue size constraints at the database storage engine layer using atomic triggers or check constraints."
+    },
+    {
+      "failureMode": "Cross-Thread Transaction Pollution and Dirty Reads",
+      "detectionMechanism": "Thread identity inspection in _read_connection context manager: self._transaction_owner == threading.get_ident().",
+      "recoveryAction": "Non-owner threads check out connections from a dedicated 10-connection pool configured with PRAGMA query_only = ON, preventing accidental joining of active write transactions.",
+      "sourceEvidence": {
+        "filePath": "src/litequeue/__init__.py",
+        "lineRange": [
+          617,
+          646
+        ],
+        "observation": "Separate query_only read connections isolate readers from uncommitted write transactions."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "1543fc0084b0d8f17d809fb9e8c765a824e7c067",
+        "rootCause": "Sharing a single sqlite3 connection across threads with check_same_thread=False caused concurrent reads to join open write transactions and observe uncommitted data.",
+        "fixDescription": "Implemented dedicated 10-connection read pool with PRAGMA query_only = ON."
+      },
+      "prescribedMitigation": "Isolate concurrent read operations onto dedicated read-only connections with explicit query-only pragma enforcement."
+    },
+    {
+      "failureMode": "Multi-Process Concurrent Schema Migration Collision",
+      "detectionMechanism": "BEGIN IMMEDIATE transaction around PRAGMA user_version check and DDL execution in _apply_migration.",
+      "recoveryAction": "The first process applies the migration and increments PRAGMA user_version; subsequent processes acquire the lock, observe version <= current_version, and exit cleanly without re-executing DDL.",
+      "sourceEvidence": {
+        "filePath": "src/litequeue/migrations.py",
+        "lineRange": [
+          91,
+          114
+        ],
+        "observation": "_apply_migration checks get_user_version under BEGIN IMMEDIATE lock."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "v0.13",
+        "rootCause": "Multiple worker processes starting simultaneously on cold database would attempt conflicting CREATE TABLE / ALTER TABLE statements.",
+        "fixDescription": "Wrapped migration execution in serialized BEGIN IMMEDIATE transactions with idempotent version guards."
+      },
+      "prescribedMitigation": "Serialize database schema migrations under immediate exclusive database locks."
+    },
+    {
+      "failureMode": "High Multi-Process Write Contention Lockout",
+      "detectionMechanism": "SQLite busy handler timeout triggering sqlite3.OperationalError: database is locked.",
+      "recoveryAction": "LiteQueue forwards user-supplied timeout kwargs to all sqlite3.connect calls (write and read connections), allowing configurable busy-handler wait windows.",
+      "sourceEvidence": {
+        "filePath": "src/litequeue/__init__.py",
+        "lineRange": [
+          317,
+          325
+        ],
+        "observation": "LiteQueue forwards timeout kwargs to write connection and all 10 read connections."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "8084787353ef75b958b182548d0f4be842b86627",
+        "rootCause": "Default 5-second SQLite timeout was insufficient for highly concurrent multi-process producer/consumer workloads.",
+        "fixDescription": "Allowed explicit timeout kwarg passthrough to all write and read connection instances."
+      },
+      "prescribedMitigation": "Pass configurable busy timeouts to all underlying database connections and implement application backoff."
+    }
+  ],
+  "historicalEvolution": [
+    {
+      "milestoneOrBug": "Migration from Multi-Queue Shared Database to Single-Queue Architecture",
+      "commitHash": "8084787353ef75b958b182548d0f4be842b86627",
+      "issueOrPr": "#15, #25",
+      "rootCause": "LiteQueue <= 0.9 permitted arbitrary table names and multiple queues in a single SQLite database, leading to database lock contention, schema inconsistencies, and complex connection routing.",
+      "architecturalFix": "Enforced single fixed 'Queue' table per database file; LiteQueue constructor explicitly scans sqlite_schema and raises ValueError if any non-Queue application table exists.",
+      "affectedFiles": [
+        "src/litequeue/__init__.py",
+        "docs/migrate_single_queue.md",
+        "tests/test_litequeue.py"
+      ],
+      "evidence": {
+        "filePath": "src/litequeue/__init__.py",
+        "observation": "LiteQueue.__init__ queries sqlite_schema for tables not GLOB 'sqlite_*' and rejects instances with unsupported tables."
+      }
+    },
+    {
+      "milestoneOrBug": "Introduction of Integer Claim IDs for Delivery Fencing",
+      "commitHash": "6322d765a0a98c417843d54497dc3ff7f6a2b675",
+      "issueOrPr": "v0.13",
+      "rootCause": "When tasks were recovered after worker timeouts, the original worker could still complete the task and erroneously finalize the subsequent worker's active delivery.",
+      "architecturalFix": "Added 64-bit integer claim_id column incremented on each pop(); done(), mark_failed(), and retry() require exact claim_id matching.",
+      "affectedFiles": [
+        "src/litequeue/__init__.py",
+        "src/litequeue/migrations.py",
+        "docs/message_claim_ids.md",
+        "tests/test_message_claim_ids.py"
+      ],
+      "evidence": {
+        "filePath": "src/litequeue/__init__.py",
+        "observation": "Pop operations increment claim_id, and mutation methods validate claim_id equality in WHERE clause."
+      }
+    },
+    {
+      "milestoneOrBug": "Timestamp Precision Evolution and Migration Roundtrip Fix",
+      "commitHash": "1543fc0084b0d8f17d809fb9e8c765a824e7c067",
+      "issueOrPr": "v0.13-migrations",
+      "rootCause": "Migration 2 originally converted nanosecond timestamps to floating-point seconds, which suffered low-order precision loss when converting back to integer Unix nanoseconds.",
+      "architecturalFix": "Migration 3 restores integer Unix nanoseconds via CAST(ROUND('in_time' * 1000000000.0) AS INTEGER), and runtime API standardizes on integer nanoseconds with time.time_ns().",
+      "affectedFiles": [
+        "src/litequeue/migrations.py",
+        "src/litequeue/__init__.py",
+        "tests/test_migrations.py",
+        "tests/test_release_migrations.py"
+      ],
+      "evidence": {
+        "filePath": "src/litequeue/migrations.py",
+        "observation": "MIGRATIONS[3] converts floating-point timestamps back to integer nanoseconds using CAST and ROUND."
+      }
+    },
+    {
+      "milestoneOrBug": "Maxsize Persistence Trigger and Parameter Conflict Validation",
+      "commitHash": "8b9f388057535e6b03b225b2f858d990bdb9ca4c",
+      "issueOrPr": "maxsize-reopen-fix",
+      "rootCause": "Opening an existing database with a different maxsize argument could create conflicting trigger state or bypass stored capacity limits.",
+      "architecturalFix": "Stored capacity is parsed from maxsize_control_Queue trigger SQL on startup; opening an existing queue with a conflicting maxsize parameter raises ValueError.",
+      "affectedFiles": [
+        "src/litequeue/__init__.py",
+        "tests/test_litequeue.py"
+      ],
+      "evidence": {
+        "filePath": "src/litequeue/__init__.py",
+        "observation": "_get_stored_maxsize extracts maxsize from trigger SQL and validates against user-provided argument."
+      }
+    },
+    {
+      "milestoneOrBug": "SQL Parameterization Defense for Multi-Status Count Queries",
+      "commitHash": "14dd632ec71a02c204f32a4381bbd5b1d8d794d9",
+      "issueOrPr": "sql-injection-fix",
+      "rootCause": "Status count queries dynamically formatted string integers, creating potential SQL syntax vulnerabilities.",
+      "architecturalFix": "Refactored _count_statuses to generate parameter placeholders '?' and pass status integer tuples to connection.execute.",
+      "affectedFiles": [
+        "src/litequeue/__init__.py",
+        "tests/test_litequeue.py"
+      ],
+      "evidence": {
+        "filePath": "src/litequeue/__init__.py",
+        "observation": "_count_statuses builds dynamic placeholders ?, ? and passes tuple of status values as query parameters."
+      }
+    }
+  ],
+  "unresolvedContradictionsAndBypasses": [
+    {
+      "claimOrGuarantee": "Tasks that stall or exceed processing thresholds are reliably recovered and re-delivered to active workers.",
+      "contradictionOrBypass": "LiteQueue contains no background threads, timers, or automated recovery loops. Stalled task recovery relies entirely on external processes invoking retry_expired(). If the hosting application does not explicitly invoke retry_expired(), stalled tasks remain permanently stuck in LOCKED status.",
+      "codeLocation": "src/litequeue/__init__.py:L796-819",
+      "evidence": "retry_expired() is an on-demand method; no internal timer or thread invokes it automatically."
+    },
+    {
+      "claimOrGuarantee": "Task retry operations bounded by MAX_ATTEMPTS will eventually terminate and route to FAILED status.",
+      "contradictionOrBypass": "LiteQueue does not store retry attempt counts in the database schema. Example consumer patterns track attempts in an ephemeral in-memory dictionary (attempts: dict[str, int]). If a worker process crashes, its in-memory attempt count is lost, allowing crashed tasks to be repeatedly retried indefinitely upon retry_expired() unless the application computes attempts from claim_id.",
+      "codeLocation": "examples/consumer.py:L34-96",
+      "evidence": "attempts dictionary is in-memory; Queue table contains only claim_id (delivery count), not an explicit max-retries configuration."
+    },
+    {
+      "claimOrGuarantee": "Idempotency keys uniquely identify logical producer submissions and prevent duplicate task insertion across application lifetime.",
+      "contradictionOrBypass": "The idempotency key reservation is directly bound to the message row in the Queue table. Calling prune() deletes completed message rows and permanently releases the associated idempotency keys. A subsequent put() with the same idempotency key after prune() creates a completely new message rather than returning an idempotent replay.",
+      "codeLocation": "src/litequeue/__init__.py:L873-889",
+      "evidence": "prune() executes DELETE FROM Queue WHERE status IN (2, 3), deleting the unique index entry for the idempotency_key."
+    },
+    {
+      "claimOrGuarantee": "Read-only operations can execute concurrently across threads without blocking or resource starvation.",
+      "contradictionOrBypass": "The read pool has a hardcoded fixed size of 10 connections. If 10 threads checkout read connections simultaneously (e.g. during slow iterators or blocking operations), an 11th thread calling qsize(), peek(), or get() blocks indefinitely on Queue.get() until a connection is returned.",
+      "codeLocation": "src/litequeue/__init__.py:L164, L617-646",
+      "evidence": "_read_connections is initialized with maxsize=10 and _read_connection() performs blocking read_connections.get() without a timeout."
+    },
+    {
+      "claimOrGuarantee": "LiteQueue supports concurrent multi-process producers and consumers safely on SQLite WAL mode.",
+      "contradictionOrBypass": "While WAL mode allows concurrent readers alongside one writer, SQLite serializes all writes across processes with a single file lock. Under high multi-process write contention (multiple processes concurrently executing put, pop, done), transactions can exceed the SQLite busy timeout and raise sqlite3.OperationalError: database is locked unless callers implement exponential backoff.",
+      "codeLocation": "src/litequeue/__init__.py:L317-325",
+      "evidence": "sqlite3 connection relies on database-level file locks for write transactions; high contention raises OperationalError when timeout expires."
+    }
+  ],
+  "adversarialCritique": {
+    "boundaryConditions": [
+      "Process crash during long task execution leaves message in LOCKED state indefinitely until an external process explicitly invokes retry_expired() with a valid threshold_seconds.",
+      "Executing prune() clears idempotency key unique index constraints, allowing subsequent duplicate submissions of previously completed tasks.",
+      "Contention among more than 10 concurrent reader threads in a single process causes thread blocking on the fixed-size 10-connection read pool.",
+      "High multi-process write concurrency can exceed the SQLite busy timeout and raise unhandled sqlite3.OperationalError: database is locked.",
+      "System clock regression does not compromise UUIDv7 monotonicity due to counter increment fallback, but extreme NTP clock jumps forward can distort lock expiration calculations."
+    ],
+    "untestedAssumptions": [
+      "Assumes SQLite is compiled in serialized threading mode (SQLITE_THREADSAFE=1), which is standard in official CPython builds but may differ in custom builds.",
+      "Assumes consumers will handle SQLite OperationalError (database is locked) gracefully with application-level retry logic during multi-process contention spikes.",
+      "Assumes external applications requiring permanent idempotency history will record submission receipts in an external database prior to calling prune().",
+      "Assumes single-queue-per-database architecture is acceptable to host applications and that applications will not attempt to create foreign key relationships with the Queue table."
+    ],
+    "acceptedTradeOffs": [
+      "Simplicity and zero external dependencies (pure SQLite + Python standard library) accepted in place of distributed multi-node consensus (Redis/Raft).",
+      "Single-writer SQLite database lock serialization accepted in place of multi-master distributed partition scaling.",
+      "Explicit user-driven janitor invocation (retry_expired) accepted in place of automatic background daemon threads to maintain zero background thread overhead and pure library semantics.",
+      "Ephemeral in-table idempotency key storage accepted in place of an append-only permanent idempotency audit log."
+    ]
+  }
+}

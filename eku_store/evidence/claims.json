@@ -1,0 +1,223 @@
+[
+  {
+    "id": "CLM-001",
+    "abstractionLevel": "BEHAVIORAL_INVARIANT",
+    "claimText": "Task dequeue operations must atomically transition the task record from available state to active execution state and establish a time-bounded lease within a single storage engine consistency boundary before returning payload to worker.",
+    "supportingObservationIds": [
+      "OBS-BULLMQ-001",
+      "OBS-RIVER-001",
+      "OBS-ASYNQ-001",
+      "OBS-PGMQ-001",
+      "OBS-LITEQUEUE-001",
+      "OBS-ROCKETMQ-001"
+    ],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-002",
+    "abstractionLevel": "BEHAVIORAL_INVARIANT",
+    "claimText": "Superseded worker ownership must not authorize protected state transitions (completion, failure, retry) inside the storage engine.",
+    "supportingObservationIds": [
+      "OBS-BULLMQ-002",
+      "OBS-LITEQUEUE-002",
+      "OBS-REDPANDA-002"
+    ],
+    "contradictingObservationIds": [
+      "OBS-ASYNQ-002",
+      "OBS-PGMQ-002"
+    ],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-003",
+    "abstractionLevel": "BEHAVIORAL_INVARIANT",
+    "claimText": "Crash recovery sweepers must enforce a safety margin buffer or multi-phase mark-and-sweep delay exceeding the lease interval before re-enqueuing expired tasks.",
+    "supportingObservationIds": [
+      "OBS-ASYNQ-003",
+      "OBS-BULLMQ-003",
+      "OBS-RIVER-003"
+    ],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-004",
+    "abstractionLevel": "BEHAVIORAL_INVARIANT",
+    "claimText": "Poison work must have bounded delivery attempts and be routed to dead-letter quarantine (DLQ) upon exceeding a maximum threshold.",
+    "supportingObservationIds": [
+      "OBS-RIVER-002"
+    ],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-005",
+    "abstractionLevel": "SOLUTION_FAMILY",
+    "claimText": "Systems regulate message flow across process and network boundaries using explicit credit tokens, client-driven demand signaling, or TCP read suspension rather than unbounded internal memory buffers.",
+    "supportingObservationIds": [
+      "OBS-RABBITMQ-001",
+      "OBS-NSQ-001"
+    ],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-006",
+    "abstractionLevel": "SOLUTION_FAMILY",
+    "claimText": "Storage engines experiencing I/O stalls or lock wait times exceeding a critical threshold must immediately reject incoming writes with explicit transient errors (SYSTEM_BUSY / Alarms).",
+    "supportingObservationIds": [
+      "OBS-ROCKETMQ-002",
+      "OBS-NATS-001"
+    ],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-007",
+    "abstractionLevel": "IMPLEMENTATION_PATTERN",
+    "claimText": "Relational SQL queues must select candidate task rows using SELECT ... FOR UPDATE SKIP LOCKED or single-statement CTEs to allow concurrent lock-free dequeue across worker connections.",
+    "supportingObservationIds": [
+      "OBS-RIVER-001",
+      "OBS-PGMQ-001"
+    ],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-008",
+    "abstractionLevel": "IMPLEMENTATION_PATTERN",
+    "claimText": "High-throughput storage engines write immutable sequential records aligned to physical block/sector boundaries (e.g., 4KB) using Direct I/O (O_DIRECT) or circular pre-allocated journals.",
+    "supportingObservationIds": [
+      "OBS-REDPANDA-001",
+      "OBS-ARTEMIS-001"
+    ],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-009",
+    "abstractionLevel": "SOLUTION_FAMILY",
+    "claimText": "Multi-topic messaging systems decouple immutable sequential physical payload storage (CommitLog/Osiris) from lightweight logical queue index structures (ConsumeQueue/Radix-Trie/Offset Map).",
+    "supportingObservationIds": [
+      "OBS-ROCKETMQ-001"
+    ],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-010",
+    "abstractionLevel": "BEHAVIORAL_INVARIANT",
+    "claimText": "Clustered broker groups replicating message logs or cluster state must enforce epoch/term validation on all mutations, rejecting operations from superseded leadership terms.",
+    "supportingObservationIds": [
+      "OBS-REDPANDA-002",
+      "OBS-RIVER-004"
+    ],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-011",
+    "abstractionLevel": "IMPLEMENTATION_PATTERN",
+    "claimText": "Message identity generators encoding timestamp prefixes (UUIDv7, Snowflake, GUID) must maintain strict monotonic ordering and reject or compensate for backward time drift.",
+    "supportingObservationIds": [],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-012",
+    "abstractionLevel": "BEHAVIORAL_INVARIANT",
+    "claimText": "Worker and broker shutdown sequences must trap OS termination signals, halt new task ingestion, allow in-flight tasks to drain up to a timeout, and requeue uncompleted tasks without incrementing attempt counters.",
+    "supportingObservationIds": [
+      "OBS-RIVER-005"
+    ],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-013",
+    "abstractionLevel": "SOLUTION_FAMILY",
+    "claimText": "Task deduplication within an active sliding window must be enforced via storage-level uniqueness constraints (partial unique indexes or atomic key reservations) evaluated before task persistence.",
+    "supportingObservationIds": [],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-014",
+    "abstractionLevel": "SOLUTION_FAMILY",
+    "claimText": "Administrative control directives (cancellations, pauses) must propagate via dedicated out-of-band push channels (PubSub, LISTEN/NOTIFY, actor control messages) to preempt executing worker contexts.",
+    "supportingObservationIds": [],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-015",
+    "abstractionLevel": "BEHAVIORAL_INVARIANT",
+    "claimText": "Ownership fencing must guard every authoritative side-effecting state mutation, including domain result promotion or outbox emission, not only queue-row completion.",
+    "supportingObservationIds": [
+      "OBS-BULLMQ-002",
+      "OBS-LITEQUEUE-002"
+    ],
+    "contradictingObservationIds": [
+      "OBS-ASYNQ-002",
+      "OBS-PGMQ-002",
+      "OBS-RIVER-006"
+    ],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-016",
+    "abstractionLevel": "BEHAVIORAL_INVARIANT",
+    "claimText": "Lease/recovery SQL must evaluate time at the authoritative storage boundary; test-injection hooks or caller-supplied timestamps must not become production recovery clocks.",
+    "supportingObservationIds": [
+      "OBS-PGMQ-001"
+    ],
+    "contradictingObservationIds": [
+      "OBS-RIVER-007"
+    ],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-017",
+    "abstractionLevel": "BEHAVIORAL_INVARIANT",
+    "claimText": "Durable attempt-start counters, handled-failure counters, and worker-loss/stall counters encode different guarantees and must not be collapsed in poison-payload retry policy.",
+    "supportingObservationIds": [
+      "OBS-RIVER-002",
+      "OBS-BULLMQ-004"
+    ],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-018",
+    "abstractionLevel": "SOLUTION_FAMILY",
+    "claimText": "Repeatable or scheduler-specific infinite-stall exemptions are not applicable to domains where every crashing payload must have bounded delivery attempts and DLQ routing.",
+    "supportingObservationIds": [
+      "OBS-BULLMQ-005"
+    ],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-019",
+    "abstractionLevel": "BEHAVIORAL_INVARIANT",
+    "claimText": "Publish-path overload protection must bound admission waiters as well as admitted bytes/requests; otherwise resource exhaustion can move from buffers into waiter queues.",
+    "supportingObservationIds": [
+      "OBS-REDPANDA-003",
+      "OBS-ROCKETMQ-002"
+    ],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  },
+  {
+    "id": "CLM-020",
+    "abstractionLevel": "BEHAVIORAL_INVARIANT",
+    "claimText": "Worker-drain deadlines and broker-socket deadlines are separate shutdown contracts; renewers for in-flight work must survive soft stop until completion or explicit interrupt, while idle/slow clients need hard close deadlines.",
+    "supportingObservationIds": [
+      "OBS-RIVER-005",
+      "OBS-NATS-002"
+    ],
+    "contradictingObservationIds": [],
+    "modelInferred": true
+  }
+]

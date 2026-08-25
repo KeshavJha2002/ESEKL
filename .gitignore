@@ -1,0 +1,15 @@
+factory/
+future/
+.eku_store/
+
+node_modules/
+npm-debug.log*
+*.tgz
+__pycache__/
+*.py[cod]
+
+evaluation/tool_logs/
+evaluation/**/raw/
+evaluation/**/scratch/
+
+.DS_Store

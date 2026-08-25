@@ -1,0 +1,3268 @@
+{
+  "project": {
+    "name": "rabbitmq",
+    "repoPath": "factory/rabbitmq",
+    "analyzedAt": "2026-08-22T16:29:01.767Z",
+    "fileStats": {
+      "totalFiles": 3558,
+      "codeFiles": 257,
+      "testFiles": 214,
+      "docFiles": 395
+    },
+    "languages": [
+      ".py",
+      ".js",
+      ".php",
+      ".java",
+      ".rb"
+    ]
+  },
+  "readmeSnippet": "# RabbitMQ Server\n\n[![CI](https://github.com/rabbitmq/rabbitmq-server/actions/workflows/test-make.yaml/badge.svg)](https://github.com/rabbitmq/rabbitmq-server/actions/workflows/test-make.yaml)\n\n[RabbitMQ](https://rabbitmq.com) is a [feature rich](https://www.rabbitmq.com/docs),\nmulti-protocol messaging and streaming broker. It supports:\n\n * AMQP 1.0\n * AMQP 0-9-1\n * [RabbitMQ Stream Protocol](https://www.rabbitmq.com/docs/streams)\n * MQTT 3.1, 3.1.1, and 5.0\n * STOMP 1.0 through 1.2\n * [MQTT over WebSocket](https://www.rabbitmq.com/docs/web-mqtt)\n * [STOMP over WebSocket](https://www.rabbitmq.com/docs/web-stomp)\n * AMQP 1.0 over WebSocket (supported in [VMware Tanzu RabbitMQ](https://www.vmware.com/products/app-platform/tanzu-rabbitmq))\n\n\n## Installation\n\n * [Currently supported](https://www.rabbitmq.com/release-information) released series\n * [Installation guides](https://www.rabbitmq.com/docs/download) for various platforms\n * [Kubernetes Cluster Operator](https://www.rabbitmq.com/kubernetes/operator/operator-overview)\n * [Changelog](https://www.rabbitmq.com/release-information)\n * [Releases](https://github.com/rabbitmq/rabbitmq-server/releases) on GitHub\n * [Community Support Eligibility Policy](https://github.com/rabbitmq/rabbitmq-server/blob/main/COMMUNITY_SUPPORT.md)\n * [Supported Erlang versions](https://www.rabbitmq.com/docs/which-erlang)\n\n\n## Tutorials and Documentation\n\n * [RabbitMQ tutorials](https://www.rabbitmq.com/tutorials) and their [executable versions on GitHub](https://github.com/rabbitmq/rabbitmq-tutorials)\n * [Documentation guides](https://rabbitmq.com/docs/)\n * [RabbitMQ blog](https://blog.rabbitmq.com/)\n\nSome key doc guides include\n\n * [CLI tools guide](https://www.rabbitmq.com/docs/cli)\n * [Clustering](https://www.rabbitmq.com/docs/clustering) and [Cluster Formation](https://www.rabbitmq.com/docs/cluster-formation)\n * [Configuration guide](https://www.rabbitmq.com/docs/configure)\n * [Client libraries and tools](https://www.rabbitmq.com/client-libraries/devtools)\n * [Upgrading](https://www.rabbitmq.com/docs/upgrade)\n * [Kubernetes Cluster Operator](https://www.rabbitmq.com/kubernetes/operator/operator-overview)\n * [Quorum queues](https://www.rabbitmq.com/docs/quorum-queues): a replicated, data safety- and consistency-oriented queue type\n * [Streams](https://www.rabbitmq.com/docs/streams): a persistent and replicated append-only log with non-destructive consumer semantics\n * [Runtime Parameters](https://www.rabbitmq.com/docs/parameters)\n * [Policies](https://www.rabbitmq.com/docs/policies)\n * [Monitoring](https://www.rabbitmq.com/docs/monitoring) and [Prometheus/Grafana](https://www.rabbitmq.com/docs/prometheus)\n * [Production checklist](https://www.rabbitmq.com/docs/production-checklist)\n\nRabbitMQ documentation is also [developed on GitHub](https://github.com/rabbitmq/rabbitmq-website/).\n\n## Commercial Features and Support\n\n * [Commercial editions of RabbitMQ](https://tanzu.vmware.com/rabbitmq)\n * [Commercial edition for Kubernetes](https://docs.vmware.com/en/VMware-RabbitMQ-for-Kubernetes/1/rmq/installation.html)\n * [Commercial support](https://tanzu.vmware.com/rabbitmq/oss) from [Broadcom](https://vmware.com) for open source RabbitMQ\n\n## Getting Help from the Community\n\nPlease read the [Community Support Eligibility Policy](https://github.com/rabbitmq/rabbitmq-server/blob/main/COMMUNITY_SUPPORT.md) document\nfirst.\n\nThe recommended community forums are\n\n * [GitHub Discussions](https://github.com/rabbitmq/rabbitmq-server/discussions/)\n * [Community Discord server](https://rabbitmq.com/discord/)\n * `#rabbitmq` on [Libera Chat](https://libera.chat/)\n\n\n## Contributing\n\nSee [CONTRIBUTING.md](./CONTRIBUTING.md) and our [development process overview](https://www.rabbitmq.com/github).\n\nQuestions about contributing, internals and so on are very welcome in [GitHub Discussions](https://github.com/rabbitmq/rabbitmq-server/discussions)\nor [community Discord server](https://www.rabbitmq.com/discord/) in the `contribu",
+  "codeInventory": [
+    {
+      "path": "deps/amqp10_common/codegen.py",
+      "sizeBytes": 4202,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbit_common/codegen.py",
+      "sizeBytes": 21562,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/docker/nodered/settings.js",
+      "sizeBytes": 11531,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_django/manage.py",
+      "sizeBytes": 826,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_django/rabbitmq_auth_backend_django/__init__.py",
+      "sizeBytes": 0,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_django/rabbitmq_auth_backend_django/auth/__init__.py",
+      "sizeBytes": 0,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_django/rabbitmq_auth_backend_django/auth/models.py",
+      "sizeBytes": 57,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_django/rabbitmq_auth_backend_django/auth/tests.py",
+      "sizeBytes": 514,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_django/rabbitmq_auth_backend_django/auth/views.py",
+      "sizeBytes": 1144,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_django/rabbitmq_auth_backend_django/settings.py",
+      "sizeBytes": 4066,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_django/rabbitmq_auth_backend_django/urls.py",
+      "sizeBytes": 1026,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_django/rabbitmq_auth_backend_django/wsgi.py",
+      "sizeBytes": 434,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_php/src/bootstrap.php",
+      "sizeBytes": 4012,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_php/src/resource.php",
+      "sizeBytes": 438,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_php/src/topic.php",
+      "sizeBytes": 435,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_php/src/user.php",
+      "sizeBytes": 434,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_php/src/vhost.php",
+      "sizeBytes": 435,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_spring_boot/src/main/java/com/rabbitmq/examples/AuthBackendHttpController.java",
+      "sizeBytes": 2619,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_spring_boot/src/main/java/com/rabbitmq/examples/BaseCheck.java",
+      "sizeBytes": 947,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_spring_boot/src/main/java/com/rabbitmq/examples/RabbitMqAuthBackendHttp.java",
+      "sizeBytes": 2523,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_spring_boot/src/main/java/com/rabbitmq/examples/ResourceCheck.java",
+      "sizeBytes": 1173,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_spring_boot/src/main/java/com/rabbitmq/examples/TopicCheck.java",
+      "sizeBytes": 794,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_spring_boot/src/main/java/com/rabbitmq/examples/User.java",
+      "sizeBytes": 1458,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_spring_boot/src/main/java/com/rabbitmq/examples/VirtualHostCheck.java",
+      "sizeBytes": 423,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_http/examples/rabbitmq_auth_backend_spring_boot/src/test/java/com/rabbitmq/examples/AuthBackendHttpControllerTest.java",
+      "sizeBytes": 2728,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_oauth2/demo/declare_queues.rb",
+      "sizeBytes": 453,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_auth_backend_oauth2/demo/rsa_docker/check_token.rb",
+      "sizeBytes": 764,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_codegen/amqp_codegen.py",
+      "sizeBytes": 9991,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_consistent_hash_exchange/examples/python/example1.py",
+      "sizeBytes": 875,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_consistent_hash_exchange/examples/python/example2.py",
+      "sizeBytes": 1279,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_consistent_hash_exchange/examples/python/example3.py",
+      "sizeBytes": 1257,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_consistent_hash_exchange/examples/ruby/example1.rb",
+      "sizeBytes": 687,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_consistent_hash_exchange/examples/ruby/example2.rb",
+      "sizeBytes": 820,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_consistent_hash_exchange/examples/ruby/example3.rb",
+      "sizeBytes": 814,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_event_exchange/examples/java/QueueEvents.java",
+      "sizeBytes": 1878,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_federation_management/priv/www/js/federation.js",
+      "sizeBytes": 4556,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/base64.js",
+      "sizeBytes": 4932,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/charts.js",
+      "sizeBytes": 11469,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/dispatcher.js",
+      "sizeBytes": 15797,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/ejs-1.0.js",
+      "sizeBytes": 13216,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/ejs-1.0.min.js",
+      "sizeBytes": 12881,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/ejs-runtime.js",
+      "sizeBytes": 814,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/excanvas.js",
+      "sizeBytes": 41946,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/excanvas.min.js",
+      "sizeBytes": 19416,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/feature-flags.js",
+      "sizeBytes": 7304,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/formatters.js",
+      "sizeBytes": 34295,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/global.js",
+      "sizeBytes": 60741,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/init.js",
+      "sizeBytes": 663,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/jquery-3.5.1.js",
+      "sizeBytes": 287630,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/jquery-3.5.1.min.js",
+      "sizeBytes": 89476,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/jquery.flot-0.8.1.js",
+      "sizeBytes": 119011,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/jquery.flot-0.8.1.min.js",
+      "sizeBytes": 36649,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/jquery.flot-0.8.1.time.js",
+      "sizeBytes": 11726,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/jquery.flot-0.8.1.time.min.js",
+      "sizeBytes": 4889,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/json2-2016.10.28.js",
+      "sizeBytes": 18434,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/main.js",
+      "sizeBytes": 66649,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/oidc-oauth/helper.js",
+      "sizeBytes": 15800,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/oidc-oauth/login-callback-init.js",
+      "sizeBytes": 123,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/oidc-oauth/logout-callback-init.js",
+      "sizeBytes": 124,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/oidc-oauth/oidc-client-ts.3.0.1.min.js",
+      "sizeBytes": 60715,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/oidc-oauth/oidc-client-ts.js",
+      "sizeBytes": 112594,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/prefs.js",
+      "sizeBytes": 4239,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/sammy-0.7.6.js",
+      "sizeBytes": 80036,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/sammy-0.7.6.min.js",
+      "sizeBytes": 27206,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/theme-switcher.js",
+      "sizeBytes": 3687,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/priv/www/js/title.js",
+      "sizeBytes": 1945,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/scripts/verify_ejs_templates.js",
+      "sizeBytes": 7577,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_management/test/js/test/oidc-oauth/helper.test.js",
+      "sizeBytes": 854,
+      "isTest": true
+    },
+    {
+      "path": "deps/rabbitmq_mqtt/test/java_SUITE_data/src/test/java/com/rabbitmq/mqtt/test/MqttTest.java",
+      "sizeBytes": 35622,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_mqtt/test/java_SUITE_data/src/test/java/com/rabbitmq/mqtt/test/MqttV5Test.java",
+      "sizeBytes": 32478,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_mqtt/test/java_SUITE_data/src/test/java/com/rabbitmq/mqtt/test/tls/MqttSSLTest.java",
+      "sizeBytes": 4526,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_mqtt/test/java_SUITE_data/src/test/java/com/rabbitmq/mqtt/test/tls/MqttV5SSLTest.java",
+      "sizeBytes": 4791,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_mqtt/test/java_SUITE_data/src/test/java/com/rabbitmq/mqtt/test/tls/MutualAuth.java",
+      "sizeBytes": 3245,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_shovel_management/priv/www/js/shovel.js",
+      "sizeBytes": 10725,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/examples/python/stream-receiver.py",
+      "sizeBytes": 1201,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/examples/ruby/amq-sender.rb",
+      "sizeBytes": 282,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/examples/ruby/cb-receiver.rb",
+      "sizeBytes": 174,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/examples/ruby/cb-sender.rb",
+      "sizeBytes": 219,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/examples/ruby/cb-slow-receiver.rb",
+      "sizeBytes": 413,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/examples/ruby/exchange-receiver.rb",
+      "sizeBytes": 276,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/examples/ruby/exchange-sender.rb",
+      "sizeBytes": 420,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/examples/ruby/persistent-receiver.rb",
+      "sizeBytes": 253,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/examples/ruby/persistent-sender.rb",
+      "sizeBytes": 576,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/examples/ruby/temp-queue-client.rb",
+      "sizeBytes": 227,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/examples/ruby/temp-queue-service.rb",
+      "sizeBytes": 357,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/examples/ruby/topic-broadcast-receiver.rb",
+      "sizeBytes": 236,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/examples/ruby/topic-broadcast-with-unsubscribe.rb",
+      "sizeBytes": 327,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/examples/ruby/topic-sender.rb",
+      "sizeBytes": 235,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/generate_python_tests.py",
+      "sizeBytes": 6849,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/ack.py",
+      "sizeBytes": 12928,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/amqp_headers.py",
+      "sizeBytes": 2292,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/base.py",
+      "sizeBytes": 11120,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/connect_disconnect.py",
+      "sizeBytes": 5179,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/destinations.py",
+      "sizeBytes": 17353,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/errors.py",
+      "sizeBytes": 4113,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/implicit_connect.py",
+      "sizeBytes": 1601,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/implicit_connect_runner.py",
+      "sizeBytes": 159,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/main_runner.py",
+      "sizeBytes": 497,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/parsing.py",
+      "sizeBytes": 13627,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/queue_properties.py",
+      "sizeBytes": 3964,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/redelivered.py",
+      "sizeBytes": 1883,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/reliability.py",
+      "sizeBytes": 1551,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/test_runner.py",
+      "sizeBytes": 1073,
+      "isTest": true
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/test_util.py",
+      "sizeBytes": 2216,
+      "isTest": true
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/tls_connect_disconnect.py",
+      "sizeBytes": 2765,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/tls_runner.py",
+      "sizeBytes": 569,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/topic_permissions.py",
+      "sizeBytes": 2069,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/transactions.py",
+      "sizeBytes": 2475,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/unsubscribe.py",
+      "sizeBytes": 3609,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/x_queue_name.py",
+      "sizeBytes": 3216,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/x_queue_type_quorum.py",
+      "sizeBytes": 2032,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stomp/test/python_SUITE_data/src/x_queue_type_stream.py",
+      "sizeBytes": 2300,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stream/test/rabbit_stream_SUITE_data/src/test/java/com/rabbitmq/stream/ClusterSizeTest.java",
+      "sizeBytes": 3130,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stream/test/rabbit_stream_SUITE_data/src/test/java/com/rabbitmq/stream/FailureTest.java",
+      "sizeBytes": 27877,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stream/test/rabbit_stream_SUITE_data/src/test/java/com/rabbitmq/stream/Host.java",
+      "sizeBytes": 4354,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stream/test/rabbit_stream_SUITE_data/src/test/java/com/rabbitmq/stream/LeaderLocatorTest.java",
+      "sizeBytes": 6762,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stream/test/rabbit_stream_SUITE_data/src/test/java/com/rabbitmq/stream/StreamTest.java",
+      "sizeBytes": 7019,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stream/test/rabbit_stream_SUITE_data/src/test/java/com/rabbitmq/stream/TestUtils.java",
+      "sizeBytes": 8155,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stream_management/priv/www/js/stream.js",
+      "sizeBytes": 4192,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stream_management/test/http_SUITE_data/src/test/java/com/rabbitmq/stream/HttpTest.java",
+      "sizeBytes": 41713,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_stream_management/test/http_SUITE_data/src/test/java/com/rabbitmq/stream/TestUtils.java",
+      "sizeBytes": 9190,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_top/priv/www/js/top.js",
+      "sizeBytes": 4772,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_tracing/priv/www/js/tracing.js",
+      "sizeBytes": 2467,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_trust_store/examples/rabbitmq_trust_store_django/manage.py",
+      "sizeBytes": 270,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_trust_store/examples/rabbitmq_trust_store_django/rabbitmq_trust_store_django/__init__.py",
+      "sizeBytes": 0,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_trust_store/examples/rabbitmq_trust_store_django/rabbitmq_trust_store_django/settings.py",
+      "sizeBytes": 4116,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_trust_store/examples/rabbitmq_trust_store_django/rabbitmq_trust_store_django/trust_store/__init__.py",
+      "sizeBytes": 0,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_trust_store/examples/rabbitmq_trust_store_django/rabbitmq_trust_store_django/trust_store/apps.py",
+      "sizeBytes": 137,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_trust_store/examples/rabbitmq_trust_store_django/rabbitmq_trust_store_django/trust_store/tests.py",
+      "sizeBytes": 60,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_trust_store/examples/rabbitmq_trust_store_django/rabbitmq_trust_store_django/trust_store/urls.py",
+      "sizeBytes": 115,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_trust_store/examples/rabbitmq_trust_store_django/rabbitmq_trust_store_django/trust_store/views.py",
+      "sizeBytes": 1277,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_trust_store/examples/rabbitmq_trust_store_django/rabbitmq_trust_store_django/urls.py",
+      "sizeBytes": 825,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_trust_store/examples/rabbitmq_trust_store_django/rabbitmq_trust_store_django/wsgi.py",
+      "sizeBytes": 431,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_web_mqtt_examples/priv/mqttws31.js",
+      "sizeBytes": 80738,
+      "isTest": false
+    },
+    {
+      "path": "deps/rabbitmq_web_stomp_examples/priv/stomp.js",
+      "sizeBytes": 16222,
+      "isTest": false
+    },
+    {
+      "path": "selenium/authorization-server/src/main/java/com/rabbitmq/authorization_server/AudienceAuthority.java",
+      "sizeBytes": 922,
+      "isTest": false
+    },
+    {
+      "path": "selenium/authorization-server/src/main/java/com/rabbitmq/authorization_server/AuthorizationServerApplication.java",
+      "sizeBytes": 352,
+      "isTest": false
+    },
+    {
+      "path": "selenium/authorization-server/src/main/java/com/rabbitmq/authorization_server/ClientController.java",
+      "sizeBytes": 793,
+      "isTest": false
+    },
+    {
+      "path": "selenium/authorization-server/src/main/java/com/rabbitmq/authorization_server/ScopeAuthority.java",
+      "sizeBytes": 930,
+      "isTest": false
+    },
+    {
+      "path": "selenium/authorization-server/src/main/java/com/rabbitmq/authorization_server/SecurityConfig.java",
+      "sizeBytes": 7316,
+      "isTest": false
+    },
+    {
+      "path": "selenium/authorization-server/src/main/java/com/rabbitmq/authorization_server/SimpleCORSFilter.java",
+      "sizeBytes": 1758,
+      "isTest": false
+    },
+    {
+      "path": "selenium/authorization-server/src/main/java/com/rabbitmq/authorization_server/UsersConfiguration.java",
+      "sizeBytes": 2681,
+      "isTest": false
+    },
+    {
+      "path": "selenium/authorization-server/src/test/java/com/rabbitmq/authorization_server/AuthorizationServerApplicationTests.java",
+      "sizeBytes": 238,
+      "isTest": false
+    },
+    {
+      "path": "selenium/fakeportal/app.js",
+      "sizeBytes": 2200,
+      "isTest": false
+    },
+    {
+      "path": "selenium/fakeportal/proxy.js",
+      "sizeBytes": 2343,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/amqp.js",
+      "sizeBytes": 3215,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/authnz-msg-protocols/amqp10.js",
+      "sizeBytes": 3391,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/authnz-msg-protocols/mqtt.js",
+      "sizeBytes": 3421,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/basic-auth/ac-administrator-without-vhost-permissions.js",
+      "sizeBytes": 2135,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/basic-auth/ac-management-with-restricted-vhost.js",
+      "sizeBytes": 1277,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/basic-auth/ac-management-without-vhost-permissions.js",
+      "sizeBytes": 1369,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/basic-auth/ac-management.js",
+      "sizeBytes": 2402,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/basic-auth/ac-monitoring-without-vhost-permissions.js",
+      "sizeBytes": 1824,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/basic-auth/happy-login.js",
+      "sizeBytes": 912,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/basic-auth/landing.js",
+      "sizeBytes": 785,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/basic-auth/logout.js",
+      "sizeBytes": 953,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/basic-auth/session-expired-with-no-refresh.js",
+      "sizeBytes": 1234,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/basic-auth/session-expired.js",
+      "sizeBytes": 1238,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/basic-auth/unauthorized.js",
+      "sizeBytes": 1577,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/channels/list-channels.js",
+      "sizeBytes": 2409,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/channels/with-basic-info/list-channels.js",
+      "sizeBytes": 2198,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/connections/amqp091/list-connections.js",
+      "sizeBytes": 2302,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/connections/amqp10/sessions-for-monitoring-user.js",
+      "sizeBytes": 5119,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/connections/mqtt/list-connections.js",
+      "sizeBytes": 2728,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/connections/with-basic-stats/amqp091.js",
+      "sizeBytes": 2064,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/connections/with-basic-stats/amqp10.js",
+      "sizeBytes": 2323,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/connections/with-basic-stats/mqtt.js",
+      "sizeBytes": 2386,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/definitions/enforce-definition-file-extension.js",
+      "sizeBytes": 1551,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/definitions/export.js",
+      "sizeBytes": 989,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/definitions/import.js",
+      "sizeBytes": 1311,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/exchanges/add-exchange.js",
+      "sizeBytes": 2000,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/exchanges/management.js",
+      "sizeBytes": 4713,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/exchanges/paging.js",
+      "sizeBytes": 3832,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/feature-flags/feature-flags.js",
+      "sizeBytes": 2495,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/limits/users.js",
+      "sizeBytes": 1223,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/limits/virtual-hosts.js",
+      "sizeBytes": 1240,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/mgt-api.js",
+      "sizeBytes": 9738,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/mock_http_backend.js",
+      "sizeBytes": 3476,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/mqtt.js",
+      "sizeBytes": 1431,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/multi-oauth/with-basic-auth/happy-login.js",
+      "sizeBytes": 1114,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/multi-oauth/with-basic-auth/landing-with-login-preferences.js",
+      "sizeBytes": 3629,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/multi-oauth/with-basic-auth/landing.js",
+      "sizeBytes": 1875,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/multi-oauth/with-basic-auth-idps-down/happy-login.js",
+      "sizeBytes": 1093,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/multi-oauth/with-basic-auth-idps-down/landing.js",
+      "sizeBytes": 1503,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/multi-oauth/without-basic-auth/happy-login.js",
+      "sizeBytes": 1957,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/multi-oauth/without-basic-auth/landing.js",
+      "sizeBytes": 2347,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-basic-auth/happy-login.js",
+      "sizeBytes": 2568,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-basic-auth/landing.js",
+      "sizeBytes": 1331,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-basic-auth/unauthorized.js",
+      "sizeBytes": 1496,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-basic-auth-idp-down/happy-login.js",
+      "sizeBytes": 1098,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-basic-auth-idp-down/landing.js",
+      "sizeBytes": 1173,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-idp-down/landing.js",
+      "sizeBytes": 1089,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-idp-initiated/happy-login.js",
+      "sizeBytes": 1683,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-idp-initiated/landing.js",
+      "sizeBytes": 1385,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-idp-initiated/logout.js",
+      "sizeBytes": 1030,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-idp-initiated/oauth-return-to.js",
+      "sizeBytes": 4362,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-idp-initiated/token-expires.js",
+      "sizeBytes": 1413,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-idp-initiated/unauthorized.js",
+      "sizeBytes": 1467,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-idp-initiated-via-proxy/happy-login.js",
+      "sizeBytes": 1093,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-multi-resources/happy-login.js",
+      "sizeBytes": 2252,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-multi-resources/landing.js",
+      "sizeBytes": 1449,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-sp-initiated/happy-login.js",
+      "sizeBytes": 1297,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-sp-initiated/landing.js",
+      "sizeBytes": 1053,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-sp-initiated/logout.js",
+      "sizeBytes": 1024,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-sp-initiated/redirection-after-login.js",
+      "sizeBytes": 1232,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-sp-initiated/session-expired.js",
+      "sizeBytes": 1621,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-sp-initiated/token-endpoint-proxy.js",
+      "sizeBytes": 2694,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-sp-initiated/token-refresh.js",
+      "sizeBytes": 1357,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/oauth/with-sp-initiated/unauthorized.js",
+      "sizeBytes": 1946,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/overview/monitor.js",
+      "sizeBytes": 1764,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/overview/non-monitor.js",
+      "sizeBytes": 1781,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/overview/with-basic-stats/monitor.js",
+      "sizeBytes": 1869,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/overview/with-basic-stats/non-monitor.js",
+      "sizeBytes": 1871,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/AdminTab.js",
+      "sizeBytes": 4270,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/BasePage.js",
+      "sizeBytes": 18059,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/ChannelPage.js",
+      "sizeBytes": 663,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/ChannelsPage.js",
+      "sizeBytes": 526,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/ConnectionPage.js",
+      "sizeBytes": 2599,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/ConnectionsPage.js",
+      "sizeBytes": 797,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/ExchangePage.js",
+      "sizeBytes": 1037,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/ExchangesPage.js",
+      "sizeBytes": 3006,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/FakePortalPage.js",
+      "sizeBytes": 777,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/FeatureFlagsAdminTab.js",
+      "sizeBytes": 2845,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/KeycloakLoginPage.js",
+      "sizeBytes": 563,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/LimitsAdminTab.js",
+      "sizeBytes": 1135,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/LoginPage.js",
+      "sizeBytes": 1250,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/OverviewPage.js",
+      "sizeBytes": 2358,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/PoliciesAdminTab.js",
+      "sizeBytes": 1099,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/QueuePage.js",
+      "sizeBytes": 2291,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/QueuesAndStreamsPage.js",
+      "sizeBytes": 3038,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/SSOHomePage.js",
+      "sizeBytes": 4039,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/SpringLoginPage.js",
+      "sizeBytes": 558,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/UAALoginPage.js",
+      "sizeBytes": 556,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/VhostAdminTab.js",
+      "sizeBytes": 707,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/pageobjects/VhostsAdminTab.js",
+      "sizeBytes": 1622,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/prometheus/can-scrape.js",
+      "sizeBytes": 1583,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/prometheus/cannot-scrape.js",
+      "sizeBytes": 1604,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/add-classic.js",
+      "sizeBytes": 2176,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/add-quorum.js",
+      "sizeBytes": 2159,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/add-stream.js",
+      "sizeBytes": 2169,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/autodelete-mqtt-qos0.js",
+      "sizeBytes": 3565,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/consumers.js",
+      "sizeBytes": 2117,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/delete-messages.js",
+      "sizeBytes": 1751,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/display-stats.js",
+      "sizeBytes": 5982,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/list.js",
+      "sizeBytes": 4312,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/move-messages.js",
+      "sizeBytes": 3470,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/paging.js",
+      "sizeBytes": 3634,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/publish-messages.js",
+      "sizeBytes": 1770,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/purge-messages.js",
+      "sizeBytes": 2634,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/runtime-metrics.js",
+      "sizeBytes": 1778,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/view-mqtt-qos0.js",
+      "sizeBytes": 4972,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/view-qq-consumers.js",
+      "sizeBytes": 9070,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/with-disabled-stats/consumers.js",
+      "sizeBytes": 2142,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/with-disabled-stats/display-basic-stats.js",
+      "sizeBytes": 3286,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/queuesAndStreams/with-disabled-stats/runtime-metrics.js",
+      "sizeBytes": 1790,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/utils.js",
+      "sizeBytes": 13397,
+      "isTest": false
+    },
+    {
+      "path": "selenium/test/vhosts/admin-vhosts.js",
+      "sizeBytes": 5389,
+      "isTest": false
+    }
+  ],
+  "testScenariosSummary": [
+    {
+      "filePath": "deps/rabbitmq_management/test/js/test/oidc-oauth/helper.test.js",
+      "testFunction": "with minimum required settings",
+      "subScenarioName": "oidc_settings should have client_id ",
+      "line": 15,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: with minimum required settings -> oidc_settings should have client_id "
+    }
+  ],
+  "historicalFixesSummary": [
+    {
+      "commitHash": "6ba4a70dd7e84dcd0555b8aebd784b34480eacb9",
+      "authorDate": "2026-08-21T20:17:24-07:00",
+      "subject": "Selenium test reliability, flakiness fixes #17225",
+      "body": "",
+      "issueRefs": [
+        "fixes #17225"
+      ],
+      "touchedFiles": [
+        "deps/rabbitmq_management/priv/www/js/tmpl/policies.ejs",
+        "selenium/test/pageobjects/BasePage.js",
+        "selenium/test/pageobjects/PoliciesAdminTab.js",
+        "selenium/test/pageobjects/QueuePage.js"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "935c63d54904b7e75c90b50f3a5e7710f899a6af",
+      "authorDate": "2026-08-20T20:37:07-07:00",
+      "subject": "Merge pull request #17220 from rabbitmq/fix-AD-escaping",
+      "body": "ldap: escape down-level logon names by parts",
+      "issueRefs": [
+        "#17220"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1002e21bed3bbbb0e988111e19a508e769a807d8",
+      "authorDate": "2026-08-20T18:44:46-07:00",
+      "subject": "Expand #17220 to more operations",
+      "body": "Binding was the key scenario (LDAP op) fixed but there are others that would\nrun into the same escaping problem later,\nin all likelihood.",
+      "issueRefs": [
+        "#17220"
+      ],
+      "touchedFiles": [
+        "deps/rabbitmq_auth_backend_ldap/src/rabbit_auth_backend_ldap.erl",
+        "deps/rabbitmq_auth_backend_ldap/test/unit_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "95bd5a612662ebef37a98a24e611b56d6fa68a34",
+      "authorDate": "2026-08-20T16:34:12+02:00",
+      "subject": "ldap: escape down-level logon names by parts",
+      "body": "In Active Directory, it is still possible to login using the Down-Level\nLogon name (DOMAIN\\username). Prior to applying RFC 4514 DN escaping,\nthe plugin passed the username verbatim, allowing the DL Logon name to\nsucceed. After escaping all username unconditionally, valid DL Logon\nnames are unable to login via LDAP plugin.\n\nThis commit fixes this regression by detecting a Down-Level Logon name,\nescaping each part separately, and then joining them. Any other form of\nusername is escaped as before.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_auth_backend_ldap/src/rabbit_auth_backend_ldap.erl",
+        "deps/rabbitmq_auth_backend_ldap/src/rabbit_auth_backend_ldap_util.erl",
+        "deps/rabbitmq_auth_backend_ldap/test/unit_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "4363ad2fda4c869ea97c10e429efecdb3d5b5149",
+      "authorDate": "2026-08-20T00:28:24-07:00",
+      "subject": "Merge pull request #17218 from rabbitmq/mk-flake-fixes-aug-19-2026-round-1",
+      "body": "Test flake chase (Aug 19, 2026) (round 1)",
+      "issueRefs": [
+        "#17218"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c5e7fb27f0d4a381344837adcfaa8847ec3f86a1",
+      "authorDate": "2026-08-19T23:23:26-07:00",
+      "subject": "AMQP 1.0 client management suite: fix a flake by allowing for more time",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_amqp_client/test/management_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c0d17abb77325d87f536d679afe21af14cb253c3",
+      "authorDate": "2026-08-19T22:19:13-07:00",
+      "subject": "Merge pull request #17215 from rabbitmq/rabbitmq-server-17211",
+      "body": "Consul peer discovery: gracefully handle 404 responses",
+      "issueRefs": [
+        "#17215"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "c7bb04bccccd29da5e4f40e50f7864c29df27217",
+      "authorDate": "2026-08-19T20:31:00-07:00",
+      "subject": "Consul peer discovery: gracefully handle 404 responses",
+      "body": "from the Consul API.\n\nNot throwing is enough to let the peer discovery\nprocess to be retried and for the node to continue\nbooting (assuming eventual success).",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_peer_discovery_consul/src/rabbit_peer_discovery_consul.erl",
+        "deps/rabbitmq_peer_discovery_consul/src/rabbitmq_peer_discovery_consul.erl",
+        "deps/rabbitmq_peer_discovery_consul/test/rabbitmq_peer_discovery_consul_SUITE.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "39a53edd2c791451b085448b7cdf839b9ea99626",
+      "authorDate": "2026-08-19T06:35:56-07:00",
+      "subject": "Merge pull request #17208 from rabbitmq/rabbitmq-server-17202",
+      "body": "By @brianr2600: Native STOMP: handle acks that arrive after subscription cancellation gracefully",
+      "issueRefs": [
+        "#17208"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "70a5bc9a8391a28c17c45440611ec9299c2a0283",
+      "authorDate": "2026-08-19T06:35:43-07:00",
+      "subject": "Merge pull request #17209 from rabbitmq/mk-minor-local-shovel-fix",
+      "body": "Local shovel with `src-delete-after`: a minor correctness fix",
+      "issueRefs": [
+        "#17209"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "2af5b4f912c556584b5982601f9530b8861bc293",
+      "authorDate": "2026-08-19T14:23:08+01:00",
+      "subject": "Merge pull request #16515 from rabbitmq/stream-coordinator-opts",
+      "body": "Stream coordinator: v8 optimisations and bug fixes",
+      "issueRefs": [
+        "#16515"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "252ac84eec86c3bf3d617d58d2a3bd8233f671ad",
+      "authorDate": "2026-08-19T11:21:25+01:00",
+      "subject": "Streams: improve list functions and set a timeout for leader changes.",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_stream_queue.erl"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "bd75405965405ea4da436387d56467453926e08b",
+      "authorDate": "2026-08-19T00:48:26-07:00",
+      "subject": "Local shovel with `src-delete-after`: a minor correctness fix",
+      "body": "Which a test reproduced some of the time, so the investigation\nhas started as a flake one but it turns out to be\na minor bug that affected only shovels with `src-delete-after`\nset: in some cases it could transfer more messages than N.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_shovel/src/rabbit_local_shovel.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "b39c83c363665e5b2b2b8e3b4ae713ff69a489cb",
+      "authorDate": "2026-08-12T11:06:34-04:00",
+      "subject": "STOMP: settle deliveries independently of the subscription table",
+      "body": "ACK and NACK resolved delivery tags through the subscription table, so a\ndelivery settled after its subscription was gone was rejected and\nstranded unsettled until the connection closed, burning a quorum-queue\ndelivery-limit attempt on the requeue at disconnect. The table is also\nthe wrong source: a subscription id may be reused with a different ack\nmode, and the governing mode is the one in force at delivery.\n\nThe pending-ack ledger already holds what settlement needs, so record\nthe ack mode there too and settle from the ledger alone, matching the\nsubscription and tag from the ack id; a cumulative ack still prunes\nolder deliveries across subscriptions. An unmatched tag reports \"Message\nnot found\" rather than crashing frame processing through a miscalled\nerror/3, and a settlement queued in a transaction is skipped at commit\nif already settled.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_stomp/src/rabbit_stomp_processor.erl",
+        "deps/rabbitmq_stomp/test/system_SUITE.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "ee0ebfcc0c35be9a677370ed5567a03c51aa24c0",
+      "authorDate": "2026-08-12T17:25:49-04:00",
+      "subject": "STOMP: authorize durable subscription cleanup, take its queue from state",
+      "body": "The queue a durable UNSUBSCRIBE deletes was taken from the frame:\nrabbit_stomp_util:subscription_queue_name/3 returns a client-supplied\nx-queue-name header verbatim, and the plugin-local delete helper\nperformed no permission check, with if_unused and if_empty both false.\nAny client permitted to subscribe could therefore delete any queue in\nits own vhost while holding no permission on it, on a subscription that\nneed not itself be durable.\n\nThis affects main only: on 4.3.x and earlier the same cleanup issues\nqueue.delete on the client's own AMQP channel, where rabbit_channel\nenforces configure permission.\n\nTake the queue from #subscription.queue_name, recorded at SUBSCRIBE,\nwhere the declare is already checked against configure permission.\nDelete it as rabbit_channel does queue.delete: check configure\npermission, then rabbit_amqqueue:delete_with/6, which also applies\ncheck_internal/2 and check_exclusive_access/2. The permission check is\nuncached because this module never invalidates its permission cache.\n\ndelete_with/6 raises where the plugin-local helper returned ok:\n{absent, Q, timeout}, with/4's retry budget exhausted, and\n{absent, Q, alive}, the queue process unexpectedly alive after the\ndelete exited, now end the connection with a not_found ERROR rather\nthan being swallowed as success. A crashed or stopped queue is still\nforce-deleted.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_stomp/src/rabbit_stomp_processor.erl",
+        "deps/rabbitmq_stomp/test/system_SUITE.erl",
+        "deps/rabbitmq_web_stomp/test/unsubscribe_authz_SUITE.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "098758d4adc6d17134820a7d1a4bb5b4471e36d6",
+      "authorDate": "2026-08-18T19:11:16-07:00",
+      "subject": "Merge pull request #17198 from rabbitmq/add-selenium-coverage-queue-stats",
+      "body": "[mgt] Gracefully degrade list channels when stats are disabled",
+      "issueRefs": [
+        "#17198"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "44c194947170bc9d787005d49bded55464e5fba9",
+      "authorDate": "2026-08-18T18:21:30-07:00",
+      "subject": "Selenium suite: fix two flakes in new tests",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "selenium/short-suite-management-ui",
+        "selenium/test/pageobjects/BasePage.js",
+        "selenium/test/queuesAndStreams/display-stats.js",
+        "selenium/test/queuesAndStreams/move-messages.js",
+        "selenium/test/queuesAndStreams/with-disabled-stats/display-basic-stats.js"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "9350f9d5295d771431c600c899d689153b7980e8",
+      "authorDate": "2026-08-18T18:35:43+01:00",
+      "subject": "stream test fix",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_stream/test/rabbit_stream_SUITE_data/src/test/java/com/rabbitmq/stream/FailureTest.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c11bd38ca6b37d80e522b47612e8980f080c394c",
+      "authorDate": "2026-08-18T18:41:58+02:00",
+      "subject": "Gracefully handle list of channels",
+      "body": "when stats are disabled and extend\ntest coverage",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_management/priv/www/js/global.js",
+        "deps/rabbitmq_management/priv/www/js/tmpl/channel.ejs",
+        "deps/rabbitmq_management/src/rabbit_mgmt_db.erl",
+        "deps/rabbitmq_management/src/rabbit_mgmt_wm_channel.erl",
+        "deps/rabbitmq_management/src/rabbit_mgmt_wm_channels.erl",
+        "deps/rabbitmq_management/test/rabbit_mgmt_only_http_SUITE.erl",
+        "selenium/bin/gen-enabled_plugins",
+        "selenium/full-suite-management-ui",
+        "selenium/full-suite-mgt",
+        "selenium/package.json",
+        "selenium/short-suite-management-ui",
+        "selenium/suites/mgt/amqp091-connections.sh",
+        "selenium/suites/mgt/channels-with-basic-info.sh",
+        "selenium/suites/mgt/channels.sh",
+        "selenium/suites/mgt/connections-with-basic-stats.sh",
+        "selenium/suites/mgt/overview-with-basic-stats.sh",
+        "selenium/suites/mgt/overview.sh",
+        "selenium/suites/mgt/queuesAndStreams-basic-stats-no-stream-management.sh",
+        "selenium/suites/mgt/queuesAndStreams-basic-stats.sh",
+        "selenium/suites/mgt/queuesAndStreams-no-stream-management.sh",
+        "selenium/test/basic-auth/disable-stream-management.disabled_plugins",
+        "selenium/test/basic-auth/rabbitmq.disable-stats.conf",
+        "selenium/test/channels/list-channels.js",
+        "selenium/test/channels/with-basic-info/list-channels.js",
+        "selenium/test/connections/amqp091/list-connections.js",
+        "selenium/test/connections/amqp10/sessions-for-monitoring-user.js",
+        "selenium/test/connections/mqtt/list-connections.js",
+        "selenium/test/connections/with-basic-stats/amqp091.js",
+        "selenium/test/connections/with-basic-stats/amqp10.js",
+        "selenium/test/connections/with-basic-stats/mqtt.js",
+        "selenium/test/overview/monitor.js",
+        "selenium/test/overview/non-monitor.js",
+        "selenium/test/overview/with-basic-stats/monitor.js",
+        "selenium/test/overview/with-basic-stats/non-monitor.js",
+        "selenium/test/pageobjects/BasePage.js",
+        "selenium/test/pageobjects/ChannelPage.js",
+        "selenium/test/pageobjects/ChannelsPage.js",
+        "selenium/test/pageobjects/ConnectionPage.js",
+        "selenium/test/pageobjects/OverviewPage.js",
+        "selenium/test/queuesAndStreams/consumers.js",
+        "selenium/test/queuesAndStreams/delete-messages.js",
+        "selenium/test/queuesAndStreams/display-stats.js",
+        "selenium/test/queuesAndStreams/move-messages.js",
+        "selenium/test/queuesAndStreams/publish-messages.js",
+        "selenium/test/queuesAndStreams/purge-messages.js",
+        "selenium/test/queuesAndStreams/runtime-metrics.js",
+        "selenium/test/queuesAndStreams/with-disabled-stats/consumers.js",
+        "selenium/test/queuesAndStreams/with-disabled-stats/display-basic-stats.js",
+        "selenium/test/queuesAndStreams/with-disabled-stats/runtime-metrics.js"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "c9e654b7bf8c8f1666376fdd1a56d63045d0b1d2",
+      "authorDate": "2026-08-04T08:52:21+01:00",
+      "subject": "Stream coordinator: back off writer-shutdown replica failures and wake parked members for re-election",
+      "body": "When a replica start races the writer shutting down (its node restarting),\nosiris:start_replica fails with {{shutdown, writer_unavailable}, _} or\n{{shutdown, noproc}, _}. backoff_class/1 did not match these shapes, so they\nfell through to 'none' and the coordinator re-drove the start immediately - a\nhot loop (hundreds of failed start attempts per second per stream) that floods\nthe logs and delays streams reaching quorum+1 online. This was visible as a\nmulti-minute stall in a rolling cluster restart, where the per-node\nawait_online_quorum_plus_one gate waited on a few churning streams.\n\nClassify {{shutdown, _}, _} as 'short' so the member parks instead of\nhot-looping. The writer-down that follows drives the re-election.\n\nFor the parked member to take part in that re-election, set_running_to_stopped/1\nnow also wakes a timed park ({sleeping, RetryAt} -> current = undefined) so the\nmember is stopped in the current stop phase rather than waiting for its retry\ntimer; the stale parked-tree entry is dropped on the next reconcile. A\n{sleeping, nodeup} park is left alone (its node is down, so it cannot be\nstopped until the node returns). The writer-down handler now routes through\nset_running_to_stopped/1 instead of an inline copy, so it gets the same wake.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_stream_coordinator.erl",
+        "deps/rabbit/test/rabbit_stream_coordinator_SUITE.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "ae2534f937a891f586316bb15e4a98cbc83748cb",
+      "authorDate": "2026-07-28T14:59:46+01:00",
+      "subject": "Stream coordinator: make node reconnection O(footprint) not O(total cardinality)",
+      "body": "The apply({nodeup, Node}) path was the last major deterministic command whose\ncost scaled with total streams and total SAC groups rather than with the work\nthe event actually implies. On every partition heal, rolling restart or node\nbounce it ran on all replicas and folded the entire streams and groups maps,\nblocking the coordinator state machine.\n\nStream side (v8-gated): replace the blanket three-pass scan (re-monitor fold +\nupdate_stream fold + evaluate_stream on every stream) with a single guarded\nfold that touches only streams whose member on Node was parked for the nodeup\n(a disconnected replica to resume and re-monitor, or a member sleeping on\n'nodeup'). Streams with nothing parked on Node cannot change and are skipped.\nThe pre-v8 clause is kept for mixed-version clusters and log replay.\n\nSAC side (v8-gated): add handle_node_reconnected/4. As of v8 a node\ndisconnection keeps the connection in pids_groups, so the reverse index is\nalready correct; the new path skips the compute_node_pid_group_dependencies\ngroup scan and the merge, folding pids_groups keys filtered by node\n(O(connections on the node)) to re-issue the monitor and check-connection\neffects, leaving state untouched. Below v8 it delegates to /3.\n\nAlso in this change:\n - determinism: the consumer timestamp read by state_enter/2 (to size the\n   disconnected timer) is now sourced from the command metadata system_time at\n   v8+ via csr_status/3 and disconnect_ts/1, instead of reading the node wall\n   clock inside apply, which diverged across replicas and on log replay\n - replace an O(n^2) survivor-list rebuild in handle_group_after_connection_down\n   (tail append inside a fold) with lists:partition/2\n - fix two pre-existing SAC mock tests that expected apply/2 and\n   ensure_monitors/4 while the v5+ dispatch calls apply/3 and ensure_monitors/5\n\nBenchmarks (3-node cluster, mean per apply):\n\n  stream coordinator apply({nos (empty SAC):\n    10,000 streams:  7.7 ms  -\n    50,000 streams:   44 ms  -\n\n  SAC handle_node_reconnected:\n    10,000 groups:   2.33 ms -\n    50,000 groups:  11.46 ms -\n\nCombined, a single node reconnps drops from ~55 ms to\na few ms (stream side) plus su\n\nNew tests: nodeup_resumes_onlyator suite) asserts an\nunaffected stream is left byteonitor effect;\nhandle_node_reconnected_v8_tesv8 path leaves state\nbyte-identical and matches theFull suites green\n(coordinator 28/28, SAC 73/73)",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_stream_coordinator.erl",
+        "deps/rabbit/src/rabbit_stream_sac_coordinator.erl",
+        "deps/rabbit/test/rabbit_stream_coordinator_SUITE.erl",
+        "deps/rabbit/test/rabbit_stream_sac_coordinator_SUITE.erl"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "9716df248ed979abc3535e6de4f3c41f7865ea8e",
+      "authorDate": "2026-07-28T09:52:41+01:00",
+      "subject": "Stream coordinator: fix writer liveness edge cases",
+      "body": "Address several liveness gaps in the deterministic apply/3 logic. All\nbehavioural changes are gated on machine version 8 so mixed-version\nclusters stay deterministic; the pre-v8 paths are unchanged.\n\nLevel-triggered writer recovery: leader election was only ever driven by a\nmember_stopped event completing a quorum. A stream that should be running\ncould settle with no usable writer but a stopped quorum available (for\nexample after members are removed one by one while a majority of nodes are\nunavailable), with no event left to trigger election and no way to recover\neven via restart_stream/add_replica. The election is now factored into\nstopped_in_epoch/1 + promote_writer/3, and recover_leaderless_stream/2 runs\nbefore every stream evaluation to elect a writer from a stopped quorum when\nthe stream has no active writer, no member mid-action, and a candidate\nstopped in the current epoch. The check is conservative so it never\npreempts the normal recovery flow nor elects below quorum.\n\nrestart_stream no longer resurrects a member that is being deleted: it\npreviously reset every member's target to stopped, which could leave two\nmembers with a writer role and crash find_leader/1 (and thus apply/3) with\na case_clause.\n\nStale start latches ({starting, _}) from an in-flight start that a\nre-election raced are now cleared, both when the late member_started is\nreceived and during the epoch transition, so the member is stopped and\nrestarted in the current epoch instead of remaining stuck until the next\ncoordinator leader change.\n\nA replica marked disconnected after a noconnection DOWN is resumed as\nrunning on nodeup, rather than staying disconnected until the next\nstop/restart cycle.\n\nThe unreachable leader-delete branch in evaluate_stream emitted a\ndelete_member action with a bare node instead of an args map; corrected\ndefensively.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_stream_coordinator.erl",
+        "deps/rabbit/test/rabbit_stream_coordinator_SUITE.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "49cc019bdd347591ceb8a12cf188036d3faaf01f",
+      "authorDate": "2026-07-27T14:52:24+01:00",
+      "subject": "Stream coordinator: fix liveness gaps in the state machine",
+      "body": "Fix three issues in the deterministic apply/3 logic. The two behavioural\nchanges are gated on machine version 8 to keep mixed-version clusters\ndeterministic.\n\n1. A replica whose 'start' action was in flight when a re-election advanced\n   the stream epoch would receive a member_started carrying the old epoch.\n   With no matching clause this was silently swallowed, leaving the member\n   stuck with current = {starting, _} until the next coordinator leader\n   change ran fail_active_actions/2. A stale member_started now clears the\n   'starting' marker so the member is stopped and restarted in the current\n   epoch.\n\n2. A replica marked 'disconnected' after a noconnection DOWN was never\n   resumed on nodeup: it stayed disconnected until the next stop/restart\n   cycle. It is now resumed to running on nodeup, relying on the re-issued\n   process monitor to restart it if the process did not survive the outage.\n\n3. The (unreachable) leader-delete branch in evaluate_stream emitted a\n   delete_member action with a bare node instead of an args map, which\n   handle_aux would drop. Correct the action shape defensively.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_stream_coordinator.erl",
+        "deps/rabbit/test/rabbit_stream_coordinator_SUITE.erl"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "dcde0c7642b19f2ea2687d440807336a19ebda96",
+      "authorDate": "2026-08-13T17:20:52+01:00",
+      "subject": "ensure unloaded interceptors dont crash list/0 but are skipped. only terminate list/0 for any other non-channel interceptor module causing a crash. also update formatting for error messages to be more detailed to include 'priority, modules and operations' on conflicting interceptors.",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_channel_interceptor.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "2b9101d72b6306b1d662170bce427e8a6bb204c4",
+      "authorDate": "2026-08-11T16:47:48+01:00",
+      "subject": "add tests for set_channel_interceptor_priorities_command and update/fix manual merge update",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/test/channel_interceptor_SUITE.erl",
+        "deps/rabbitmq_cli/test/ctl/set_channel_interceptor_priorities_command_test.exs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "4e2e09db5352dfd7d656d9998e97f71a1cbff5c8",
+      "authorDate": "2026-08-12T21:05:39-07:00",
+      "subject": "Merge pull request #17171 from rabbitmq/mk-selenium-suite-fixes-round-2",
+      "body": "Selenium: do not throw away container logs",
+      "issueRefs": [
+        "#17171"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "e97d7706a66f1d494a8561fb5ac9ea8bb38e45f3",
+      "authorDate": "2026-08-12T16:55:25-07:00",
+      "subject": "Merge pull request #17168 from rabbitmq/mk-selenium-suite-fixes",
+      "body": "Selenium suite fixes",
+      "issueRefs": [
+        "#17168"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "4cc36b8715a4a6061bca2ec7256fdb65efb5adbc",
+      "authorDate": "2026-08-12T12:30:59-07:00",
+      "subject": "Selenium suite fixes",
+      "body": "With these assorted fixes all Selenium suites pass\nfive times in a row without a single failure on\nan x86 Linux host.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "selenium/bin/components/fakeproxy",
+        "selenium/bin/components/mock-auth-backend-ldap",
+        "selenium/bin/components/proxy",
+        "selenium/bin/gen-env-file",
+        "selenium/suites/authnz-mgt/oauth-with-uaa-and-mgt-prefix.sh",
+        "selenium/test/amqp.js",
+        "selenium/test/authnz-msg-protocols/amqp10.js",
+        "selenium/test/authnz-msg-protocols/env.auth-oauth-dev.docker",
+        "selenium/test/authnz-msg-protocols/env.auth-oauth-dev.local",
+        "selenium/test/authnz-msg-protocols/env.auth-oauth-prod.docker",
+        "selenium/test/authnz-msg-protocols/env.auth-oauth-prod.local",
+        "selenium/test/authnz-msg-protocols/env.docker.devkeycloak",
+        "selenium/test/authnz-msg-protocols/env.docker.prodkeycloak",
+        "selenium/test/authnz-msg-protocols/env.local.devkeycloak",
+        "selenium/test/authnz-msg-protocols/env.local.prodkeycloak",
+        "selenium/test/authnz-msg-protocols/env.oauth-prodproducer",
+        "selenium/test/pageobjects/ExchangePage.js",
+        "selenium/test/pageobjects/ExchangesPage.js",
+        "selenium/test/pageobjects/QueuePage.js",
+        "selenium/test/pageobjects/QueuesAndStreamsPage.js",
+        "selenium/test/utils.js"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "47c9a2f3abdec99e5fd75fab72ce82ab5654b03a",
+      "authorDate": "2026-08-11T18:12:25-07:00",
+      "subject": "OAuth 2: rework parts of X-Forwarded-* header support #17153",
+      "body": "A few #17153 tweaks without major changes\n\n\\## Query String Support\n\nNo widely used proxy relies on query strings, so\nwe don't have to support it.\n\n\\## X-Forwarded-* Value Order\n\nThe original implementation in #17153 used the\nleftmost value. With some proxies, this does not\nmatter but e.g. the very `httpd` used in our Selenium\ntests support appended values, and the new (client-provided)\nvalues end up on the left.\n\nIf we pick the rightmost option, chances are\nwe will pick the `httpd` configured setting and\nnot a client value.\n\nAccidentally this addresses a comma-separated\nvalue parsing bug that only specific inputs\ntriggered.\n\n\\## Improve Header Value Validation\n\nSeveral scenarios, e.g. empty strings, resulted in\nexceptions and 500 responses.\n\n\\## Refactoring, More Tests\n\nSome functions have grown to take 6 arguments and yet\ndid not have a lot of test coverage.\n\n\\## ProxyRequests in the `httpd` Config\n\n`ProxyRequests On` is a no-op without a <Proxy> section\n\nso we can set it to the default value for\nsimplicity.",
+      "issueRefs": [
+        "#17153"
+      ],
+      "touchedFiles": [
+        "deps/rabbitmq_auth_backend_oauth2/test/rabbit_mgmt_oauth_token_proxy_http_SUITE.erl",
+        "deps/rabbitmq_management/src/rabbit_mgmt_oauth_token_proxy.erl",
+        "deps/rabbitmq_management/test/rabbit_mgmt_oauth_token_proxy_SUITE.erl",
+        "deps/rabbitmq_management/test/rabbit_mgmt_oauth_token_proxy_prop_SUITE.erl",
+        "selenium/bin/components/tls-terminating-proxy",
+        "selenium/bin/suite_template",
+        "selenium/fakeportal/proxy.js",
+        "selenium/test/env.docker",
+        "selenium/test/oauth/tls-terminating-proxy/httpd.conf",
+        "selenium/test/oauth/with-sp-initiated/token-endpoint-proxy.js",
+        "selenium/test/pageobjects/BasePage.js"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "223aa44ddcf26f6b394ac3239116cd324fa7ed76",
+      "authorDate": "2026-08-10T20:06:33-07:00",
+      "subject": "Merge pull request #17158 from rabbitmq/mk-flake-fixes-aug-10-2026-round-1",
+      "body": "Test flake chase (Aug 10, 2026) (round 1)",
+      "issueRefs": [
+        "#17158"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1b0f3789c679d34fe2c0d53a88d5a8527d03e3b3",
+      "authorDate": "2026-08-10T17:42:51-07:00",
+      "subject": "Selenium: this test needs a higher timeout",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "selenium/test/oauth/with-sp-initiated/session-expired.js"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "dea02cbb3af5b2c80ae49d8c4ff87d0a5c7b2a13",
+      "authorDate": "2026-08-10T16:54:10-07:00",
+      "subject": "Merge pull request #17146 from rabbitmq/port-fixes-back-from-tanzu",
+      "body": "Port Selenium test fixes from tanzu-rabbitmq",
+      "issueRefs": [
+        "#17146"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "cf73ec5c6c5edb4794719e5b86af410e84b84de1",
+      "authorDate": "2026-08-07T17:55:26+02:00",
+      "subject": "Fix remaining selenium issues in exchanges and vhosts tests",
+      "body": "Co-authored-by: Cursor <cursoragent@cursor.com>",
+      "issueRefs": [],
+      "touchedFiles": [
+        "selenium/test/exchanges/management.js",
+        "selenium/test/pageobjects/ExchangesPage.js",
+        "selenium/test/vhosts/admin-vhosts.js"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "419c94babedb0d5d99f494573a30cb4f66189fdd",
+      "authorDate": "2026-08-07T16:35:04+02:00",
+      "subject": "Port Selenium test fixes from tanzu-rabbitmq",
+      "body": "Co-authored-by: Cursor <cursoragent@cursor.com>",
+      "issueRefs": [],
+      "touchedFiles": [
+        "selenium/test/basic-auth/session-expired.js",
+        "selenium/test/basic-auth/unauthorized.js",
+        "selenium/test/multi-oauth/with-basic-auth/landing.js",
+        "selenium/test/multi-oauth/without-basic-auth/landing.js",
+        "selenium/test/oauth/with-basic-auth/landing.js",
+        "selenium/test/oauth/with-basic-auth/unauthorized.js",
+        "selenium/test/oauth/with-idp-initiated/landing.js",
+        "selenium/test/oauth/with-multi-resources/landing.js",
+        "selenium/test/oauth/with-sp-initiated/landing.js",
+        "selenium/test/oauth/with-sp-initiated/session-expired.js",
+        "selenium/test/oauth/with-sp-initiated/unauthorized.js",
+        "selenium/test/pageobjects/ExchangesPage.js",
+        "selenium/test/pageobjects/LoginPage.js",
+        "selenium/test/pageobjects/SSOHomePage.js",
+        "selenium/test/pageobjects/VhostsAdminTab.js"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "7474c064c8c5bc5b23a750ce61cc72efd8c46ae5",
+      "authorDate": "2026-08-06T18:46:54-04:00",
+      "subject": "Rename prop test fun for keep-while conds in db_bindings suite",
+      "body": "PropEr automatically runs functions of arity zero with the prop_ prefix.\nThis test depends on a broker running so it won't succeed when run by\nproper instead of CommonTest. We can rename the prop part to the end to\navoid PropEr running it automatically.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/test/rabbit_db_binding_prop_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "cf8aad81bd5244adcd190d3b98151601473279b7",
+      "authorDate": "2026-08-06T12:06:22-07:00",
+      "subject": "Merge pull request #17127 from rabbitmq/fix-selenium-issues",
+      "body": "Fix event handler that caused a double alert message",
+      "issueRefs": [
+        "#17127"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "2172c8795bd75506a6f759871ff3c8f242b958c4",
+      "authorDate": "2026-08-06T20:08:17+02:00",
+      "subject": "Shovel: report the specific reason a topology setup failure stops the worker",
+      "body": "`init_dest/1` and `init_source/1` can exit with a `{shutdown, _}`\nreason to signal an expected condition, e.g. a predeclared queue is\nmissing or (for 'delete-after' Shovels) that there is nothing left to\ntransfer.\n\nThe catch-all clause in `handle_cast(init_shovel, ...)` caught every\nexception raised during topology setup, including these `{shutdown, _}`\nexits, and replaced them with a generic \"failed to set up topology\"\nstatus. This discarded the specific reason before `terminate/2` had a\nchance to report it.\n\nGeneralize the existing special case for `{shutdown, autodelete}` to\nany `{shutdown, _}` reason, so `terminate/2` reports the actual reason.\nReasons that are not already wrapped in `{shutdown, _}` still fall\nthrough to the generic clause, so unexpected errors are not logged\nwith a full stack trace.\n\nThis makes the following tanzu-rabbitmq suite green:\n```\nmake -C deps/rabbitmq_shovel ct-stream_dynamic FULL=1\n```",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_shovel/src/rabbit_shovel_worker.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "1847cfd7f8abaed2ebbaa61769c9b554d1e5fb73",
+      "authorDate": "2026-08-06T08:52:52-07:00",
+      "subject": "Fix a potential TypeError Selenium would not catch #17127",
+      "body": "",
+      "issueRefs": [
+        "#17127"
+      ],
+      "touchedFiles": [
+        "deps/rabbitmq_management/priv/www/js/oidc-oauth/helper.js"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "57ee81dd20b770fe1b754dfab45a5d3bdd7586dd",
+      "authorDate": "2026-08-06T13:07:17+02:00",
+      "subject": "Fix double alter and double escaped messags",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_management/priv/www/js/main.js",
+        "deps/rabbitmq_management/priv/www/js/oidc-oauth/helper.js",
+        "deps/rabbitmq_management/priv/www/js/tmpl/login_oauth.ejs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "ce4ad4b650b0e84e7a768c0b90340bc7f971e4e3",
+      "authorDate": "2026-08-06T10:23:58+02:00",
+      "subject": "Merge pull request #17123 from rabbitmq/stream-enforce-producer-consumer-max",
+      "body": "fix(stream): enforce max number of publishers and subscriptions per connection",
+      "issueRefs": [
+        "#17123"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "2d44b3e67b303c9bdadd52a257382b5e4c9f423a",
+      "authorDate": "2026-08-06T09:51:34+02:00",
+      "subject": "fix(stream): enforce max number of publishers and subscriptions per connection",
+      "body": "publisher_id and subscription_id are one byte on the wire, so a\nconnection can have at most 256 of each. This was never checked\nexplicitly; it only failed once the ID space was exhausted, via the\nunrelated \"ID already exists\" checks, after paying for permission\nchecks and (for subscribe) a stream lookup RPC.\n\nAdd a guarded clause for each command that fast-rejects with\nprecondition-failed once the connection is already at the limit,\nfollowing the file's existing pattern of guard-based special-case\nclauses (resource_alarm, invalid reference).",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_stream/src/rabbit_stream_reader.erl",
+        "deps/rabbitmq_stream/test/rabbit_stream_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "f4412c73a05456dbda40a14455ecb45b4a0c81db",
+      "authorDate": "2026-08-05T15:54:48-07:00",
+      "subject": "Merge pull request #17099 from rabbitmq/mk-fix-a-type-spec",
+      "body": "`rabbit_fifo_client`: correct a type spec",
+      "issueRefs": [
+        "#17099"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "23f00d959ce87f5061bcd7bb7d94a60fd6d72fe0",
+      "authorDate": "2026-08-05T11:27:07-04:00",
+      "subject": "federation: Use a setup step for vhost setup in upstream_validation_SUITE",
+      "body": "If earlier bootsteps fail (for example return a {skip,_} value) then the\nunconditional setup of a vhost and a user would crash during the\ninit_per_suite. We can run that setup after broker setup steps have\ncompleted to avoid the crash.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_federation_common/test/upstream_validation_SUITE.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "fe2465f85464e615b20e5ed3a4474d5c6c0d2c27",
+      "authorDate": "2026-08-04T17:35:44+02:00",
+      "subject": "Stream: add max_uncompressed_sub_entry_batch_size setting",
+      "body": "The broker stores a published sub-entry batch as-is, including its\ndeclared uncompressed size, without decompressing or verifying it: doing\nso would defeat the point of end-to-end sub-entry compression.\n\nAdd a per-node setting, max_uncompressed_sub_entry_batch_size, that\nbounds this declared size at publish time. It defaults to 67108864\n(64 MiB), matching the default of the same setting on the Java client\n(maxUncompressedSubEntryBatchSize). Configure it via\nstream.max_uncompressed_sub_entry_batch_size in rabbitmq.conf; the\nbroker and the clients publishing to it should use the same value,\nsince the broker's setting governs what can be written and a client's\nsetting governs what it will read back.\n\nA publish frame with a sub-entry batch over the limit gets a\npublish_error with the existing precondition_failed response code\ninstead of being stored. If one sub-entry in a frame is rejected, the\nrest of that frame is rejected too, so a publisher never sees a gap in\nits publishing ID sequence.\n\nAlso fixes a bug found while making this change: a publish_v2 frame with\nno filter value, addressed to an unknown publisher ID, crashed the reader\ninstead of returning a publish_error.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_stream/Makefile",
+        "deps/rabbitmq_stream/priv/schema/rabbitmq_stream.schema",
+        "deps/rabbitmq_stream/src/rabbit_stream_reader.erl",
+        "deps/rabbitmq_stream/src/rabbit_stream_reader.hrl",
+        "deps/rabbitmq_stream/src/rabbit_stream_utils.erl",
+        "deps/rabbitmq_stream/test/config_schema_SUITE_data/rabbitmq_stream.snippets",
+        "deps/rabbitmq_stream/test/rabbit_stream_SUITE.erl",
+        "deps/rabbitmq_stream/test/rabbit_stream_reader_SUITE.erl",
+        "deps/rabbitmq_stream/test/rabbit_stream_utils_SUITE.erl",
+        "deps/rabbitmq_stream_common/include/rabbit_stream.hrl",
+        "release-notes/4.3.5.md"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "005db70727583ba59f9b99da16b7ec3a8285ac9f",
+      "authorDate": "2026-08-04T10:16:57+02:00",
+      "subject": "Return framing error for malformed AMQP frames",
+      "body": "Instead of crashing the AMQP connection, return framing errors for\nmalformed AMQP frames.\n\nCo-authored-by: sunliqiang <sunliqiang@kylinos.cn>",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_amqp_reader.erl",
+        "deps/rabbit/test/unit_amqp_reader_SUITE.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "5b70a7635fd5595a614ece037ab6bef6d103d637",
+      "authorDate": "2026-07-31T14:09:47+02:00",
+      "subject": "Stream: enforce frame_max on outbound Deliver frames",
+      "body": "frame_max is negotiated once at Tune and is meant to bound frame size\nin both directions, but only the inbound path enforced it. A Deliver\nframe carries one whole osiris chunk as a single frame, with no\nfragmentation, and chunk size is decided by osiris_writer's batching,\nnot by frame_max. A subscriber that negotiated a small frame_max could\ntherefore receive a Deliver frame bigger than what it agreed to.\n\nThe chunk is fixed size once committed by osiris and cannot be\nre-encoded smaller for one connection, so the only option is to detect\nand refuse: rabbit_stream_reader now compares each chunk's frame size\nagainst the subscribing connection's frame_max before anything is\nwritten to its socket, and closes the connection if it doesn't fit,\nreusing the existing close/FRAME_TOO_LARGE wire pattern already used\nfor oversized inbound frames.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_stream/docs/PROTOCOL.adoc",
+        "deps/rabbitmq_stream/include/rabbit_stream_metrics.hrl",
+        "deps/rabbitmq_stream/src/rabbit_stream_reader.erl",
+        "deps/rabbitmq_stream/test/rabbit_stream_SUITE.erl",
+        "release-notes/4.3.5.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "47ce9262a76923aa2d5d98ced03630db2cbcde6c",
+      "authorDate": "2026-07-31T02:27:19-07:00",
+      "subject": "Merge pull request #17081 from rabbitmq/mk-item-3xjj",
+      "body": "Consistent hashing exchange: handle an edge case gracefully",
+      "issueRefs": [
+        "#17081"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "985d12a4736b0facfff1877deb43f4b377f9996c",
+      "authorDate": "2026-07-31T02:10:33-07:00",
+      "subject": "Merge pull request #17079 from rabbitmq/mk-flake-fixes-jul-30-2026-round-1",
+      "body": "Test flake chase (Jul 30, 2026) (round 1)",
+      "issueRefs": [
+        "#17079"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "a95aaa09bfe9bf8d3bdc06d6b31fc494190bceb6",
+      "authorDate": "2026-07-31T02:09:31-07:00",
+      "subject": "Consistent hashing exchange: handle an edge case gracefully",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_consistent_hash_exchange/src/rabbit_exchange_type_consistent_hash.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "0f99b0c74b7e702b13a114a5eda7de74109d398f",
+      "authorDate": "2026-07-30T23:49:02-07:00",
+      "subject": "Exchange federation: harden test helper against late deliveries",
+      "body": "Deliveries arriving after 'basic.cancel' (for example, duplicates from\nmultiple upstreams) crashed the shared channel's consumer, cascading\ninto connection timeouts across the rest of the suite.\n\nRegister a default consumer so those late deliveries are absorbed\ninstead of crashing it.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_exchange_federation/test/exchange_federation_test_helpers.erl"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "29452f20498008bf085d83687a1a88038f9b58c4",
+      "authorDate": "2026-07-30T23:49:03-07:00",
+      "subject": "STOMP Python tests: avoid a publish race after `UNSUBSCRIBE`",
+      "body": "An `UNSUBSCRIBE` receipt (ack) only confirms 'basic.cancel-ok': the\nserver-named auto-delete subscription queue and its binding are\nremoved asynchronously.\n\nGive the queue and binding teardown a moment to complete before\nthe post-unsubscribe publish.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_stomp/test/python_SUITE_data/src/unsubscribe.py"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "a221dd2c740d0d97b8efc7e0d7c157db6fdd9fa5",
+      "authorDate": "2026-07-30T14:43:19-07:00",
+      "subject": "Be extra defensive against shovel timer leaks #17055",
+      "body": "",
+      "issueRefs": [
+        "#17055"
+      ],
+      "touchedFiles": [
+        "deps/rabbitmq_shovel/src/rabbit_amqp091_shovel.erl"
+      ],
+      "fixCategory": "memory_leak"
+    },
+    {
+      "commitHash": "3c88f5a5991edab8f9cdaf82039ed706a0f06389",
+      "authorDate": "2026-07-30T18:01:46-07:00",
+      "subject": "Merge pull request #17046 from sauravonwww/fix-federation-startup-malformed-upstream",
+      "body": "Federation: isolate upstream URI parse errors at link init",
+      "issueRefs": [
+        "#17046"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c02aa57ccec76a869b4cb1a2c9d903ce0824cf3e",
+      "authorDate": "2026-07-30T17:38:22-07:00",
+      "subject": "Selenium suite: fix a flake",
+      "body": "By making certain functions idempotent w.r.t. the\nprior UI change (which is stored in local storage\nand can outlive a given test).",
+      "issueRefs": [],
+      "touchedFiles": [
+        "selenium/test/pageobjects/ExchangePage.js",
+        "selenium/test/pageobjects/ExchangesPage.js",
+        "selenium/test/pageobjects/QueuePage.js",
+        "selenium/test/pageobjects/QueuesAndStreamsPage.js"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "bc18df11c67c0a628715a4f0a7d1fa6e421f7a83",
+      "authorDate": "2026-07-30T16:15:18-07:00",
+      "subject": "Merge pull request #17067 from rabbitmq/rabbitmq-server-17063",
+      "body": "Static shovels: fix #17063",
+      "issueRefs": [
+        "#17067",
+        "#17063"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "897f7aaf88ffda5ae951a5d5d2bd1d35a35cf7c2",
+      "authorDate": "2026-07-30T15:00:55-07:00",
+      "subject": "Static shovels: fix #17063",
+      "body": "",
+      "issueRefs": [
+        "#17063"
+      ],
+      "touchedFiles": [
+        "deps/rabbitmq_shovel/src/rabbit_shovel_util.erl",
+        "deps/rabbitmq_shovel/test/amqp091_static_SUITE.erl",
+        "deps/rabbitmq_shovel/test/local_static_SUITE.erl",
+        "deps/rabbitmq_shovel/test/unit_parsing_and_validation_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "bf264c29465d27b09787b94ac32efe41912cd555",
+      "authorDate": "2026-07-28T21:27:21+00:00",
+      "subject": "Federation: redact credentials from malformed-URI parse errors",
+      "body": "`amqp_uri:parse/2` returns `{error, {{unable_to_parse_uri, {malformed_uri,\nRawURI, _}}, _}}` for a structurally malformed URI, embedding the raw URI\n(including any `user:password@` userinfo) in the error `Info`. That `Info`\nwas logged verbatim via `~tp` in `log_skipped_link/3`, leaking credentials.\n\n`sanitize_parse_error/1` now collapses this shape to a bare\n`unable_to_parse_uri` atom, dropping both the raw URI and the exit stack\ntrace. The sanitized URI continues to be reported separately.\n\nExtend the malformed-URI test to assert the error `Info`, not just the\n`safe_uri`, is credential-free.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_federation_common/src/rabbit_federation_upstream.erl",
+        "deps/rabbitmq_federation_common/test/unit_SUITE.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "1eaddf6dc735ebe6b257c2bdf8d90b27ecc45080",
+      "authorDate": "2026-07-28T20:59:44+00:00",
+      "subject": "Fix `amqp_uri:remove_credentials/1` crash on malformed URIs",
+      "body": "`remove_credentials/1` calls `uri_parser:parse/2`, whose `-spec` documents\nan `{error, no_scheme | {malformed_uri, ...}}` return, but it passed the\nresult straight to `proplists:get_value/2`. On a structurally malformed URI\nthe parser returns an error tuple, so `proplists:get_value` raised a\n`function_clause`.\n\nThis function exists to sanitize a URI before logging it, so it is routinely\ncalled on invalid input on error paths (federation link init, shovel\nconnection-failure logging). Crashing there defeats its purpose. Handle the\nerror return by falling back to a best-effort strip of the `user:password@`\nuserinfo, so credentials still never reach the logs.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/amqp_client/src/amqp_uri.erl",
+        "deps/amqp_client/test/unit_SUITE.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "b9643a405557343a9706c006108e0bd24661ae9b",
+      "authorDate": "2026-07-28T19:56:22+00:00",
+      "subject": "Federation: isolate upstream URI parse errors at link init",
+      "body": "When a federation upstream URI fails to parse, `to_params/2` badmatched\n`{ok, Params}` and crashed link initialisation. The crash propagated\nthrough the link supervisor into broker recovery, so one malformed\nupstream took the whole broker down on every cold boot.\n\nThe trigger is c3b950b3 (atom-table exhaustion hardening), which now\nrejects unknown atom parameters (`auth_mechanism`, `verify`, ...) via\n`list_to_existing_atom/1`. That hardening is kept as is; the regression\nis that upstream definitions accepted by the older parser can now\nreturn `{error, _}` and turn a per-link problem into a broker-wide\nboot failure.\n\nMake `to_params/2` return `{ok, _} | {error, {Info, SafeURI}}` with\ncredentials stripped, and have `init_link/1` log and return `ignore`\nso one bad upstream cannot fail broker startup. Add unit tests covering\nthe parse-error return and the credential-stripping guarantee.\n\nSigned-off-by: Saurav Kumar <ssaukum@amazon.com>",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_exchange_federation/src/rabbit_federation_exchange_link.erl",
+        "deps/rabbitmq_federation_common/src/rabbit_federation_upstream.erl",
+        "deps/rabbitmq_federation_common/test/unit_SUITE.erl",
+        "deps/rabbitmq_queue_federation/src/rabbit_federation_queue_link.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "181f913ba2342ba39433c600fa038b3be40d9ce5",
+      "authorDate": "2026-07-29T07:12:38-07:00",
+      "subject": "Merge pull request #16973 from Pyolar/fix/tls-defaults-and-wrap-password-opt",
+      "body": "Definition import from an HTTPS endpoint: don't fail on password-protected client certificates",
+      "issueRefs": [
+        "#16973"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "fa81fc8d65be4998004d4b32007116ce6a309551",
+      "authorDate": "2026-07-28T12:46:14+00:00",
+      "subject": "Parse AMQP 1.0 arrays in linear time",
+      "body": "All elements of an AMQP array share a single constructor which is encoded\nonce, in front of the first element. To parse an element, the parser\ntherefore has to put that constructor back in front of the element's bytes.\n\nSo far it prepended the constructor to the entire remainder of the array:\n\n    parse_array_primitive(ElementType, Data) ->\n        {Val, B} = parse(<<ElementType, Data/binary>>),\n        {Val, B-1}.\n\nSince Data holds all elements that are still to be parsed, every element\ncopied the remainder of the array once, making parsing an array of n\nelements O(n^2).\n\nDetermine the size of a single element up front and cut only that element\nout of the array, so that the copy is bounded by the element instead of by\nthe array. The size follows directly from the subcategory of the element's\nconstructor, that is from the high nibble of its format code [§1.6.1]:\nsubcategories 0x4 to 0x9 are fixed width, while 0xA to 0xF are prefixed by\none or four octets of size.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/amqp10_common/src/amqp10_binary_parser.erl",
+        "deps/amqp10_common/test/binary_parser_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "ea04465919b695b040b3a86375a8591d9be93cad",
+      "authorDate": "2026-07-29T13:55:28+08:00",
+      "subject": "Add unit_definitions_import_https to PARALLEL_CT_SET_1_A",
+      "body": "Fix duplicate Makefile variable assignment causing CI sanity check failure",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/Makefile"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "0cf7117558ce118dfe9eb42958d977d2bec85ca8",
+      "authorDate": "2026-07-29T09:14:12+08:00",
+      "subject": "Merge branch 'main' into fix/tls-defaults-and-wrap-password-opt",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "025b2191a8fafd08042e8329767ad820ba3fbabb",
+      "authorDate": "2026-07-27T18:05:04-07:00",
+      "subject": "AMQP 1.0 client: these can be logged at `debug` level",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/amqp10_client/src/amqp10_client_session.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "9d122683ababf7212d89cce49e16030de000a04a",
+      "authorDate": "2026-07-27T09:34:15+02:00",
+      "subject": "Fix macro usage warning",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_mqtt/src/rabbit_mqtt_packet.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "fbcd4c8163e97261362ccd457d438f58c9ee5295",
+      "authorDate": "2026-07-27T09:25:58+02:00",
+      "subject": "Fix selenium test cases +",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "selenium/test/pageobjects/ExchangePage.js",
+        "selenium/test/pageobjects/QueuePage.js"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "16eb65de3c893694388216e68372ce50ac250de5",
+      "authorDate": "2026-07-24T19:41:02-07:00",
+      "subject": "Shovel: avoid logging a stack trace upon authZ failures",
+      "body": "or when connection limit is exceeded.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/amqp10_client/src/amqp10_client_connection.erl",
+        "deps/rabbitmq_shovel/src/rabbit_shovel_worker.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "81980d01610943639be92624323d285186d85f2f",
+      "authorDate": "2026-07-24T17:33:33+02:00",
+      "subject": "Fix flaky local_to_local_delete_dest_queue test",
+      "body": "This test deletes the shovel's destination queue and expects to\nobserve {terminated, dest_queue_down}. With the default\n(non-predeclared) destination, the shovel detects the deleted queue,\nreports that status, and then auto-recreates the queue on its very\nnext reconnect attempt, going back to `running'.\n\nThat next reconnect attempt used to be slowed down just enough by an\nincidental crash dump (logged by gen_server2 for the previously\nnon-shutdown exit reason) for the test's polling to reliably catch the\ntransient {terminated, dest_queue_down} status in between. Now that\nshovel workers exit with a quiet {shutdown, restart} reason instead\n(see the exit-reason normalization in rabbit_shovel_worker), that\ncrash dump - and the delay it caused - is gone, and the shovel recovers\nbefore the test ever observes the terminated status, making the test\nflaky/failing.\n\nPredeclare the destination queue and mark it as such in the shovel\nconfig, so the shovel never tries to recreate it and every reconnect\nattempt keeps failing instead of racing the shovel's own recovery.\nThis changes the stable, observable terminated reason from\ndest_queue_down (the live monitor firing) to \"failed to connect to\ndestination\" (the generic reconnect failure), which the test now\nasserts on.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_shovel/test/local_dynamic_SUITE.erl"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "73e9e92a75d8c9906c6f4485b35f0fe78f49a6ef",
+      "authorDate": "2026-07-24T17:33:18+02:00",
+      "subject": "Fix test resource name collision across parallel outer groups",
+      "body": "tc_group_properties only reflects the innermost CT group (tests or\npredeclared_topology), which is shared by all four outer groups\n(amqp091, local, amqp091_to_local, local_to_amqp091). Since those run\nin parallel and resource names were derived only from the innermost\ngroup and test case name, same-named test cases across different\nouter groups collided on the same shovel parameter, queues and vhost.\n\nRecord the outer group in Config during init_per_group and fold it\ninto the generated resource names so each outer group gets its own,\nnon-colliding set of names.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_shovel/test/amqp091_local_dynamic_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "6fc7c7ce6f81713cb153720bb919b5ebb278b6c8",
+      "authorDate": "2026-07-24T17:32:49+02:00",
+      "subject": "Fix shovel status detail lost when normalizing exit reasons",
+      "body": "Normalizing every \"please reconnect\" exit path to the uniform\n{shutdown, restart} reason (so the OTP layer stays quiet) meant the\nspecific detail describing why the shovel is restarting (e.g.\ndest_queue_down, \"heartbeat timeout\", \"failed to connect to\ndestination\") was no longer available to terminate/2, which used to\nreport it via rabbit_shovel_status.\n\nReport the specific reason via the new report_terminated/2 helper at\nthe point of detection, before it's discarded in favour of the\nuniform {shutdown, restart} reason used to stop the process. The\nterminate/2 clause for that reason no longer reports a generic status\nitself, since doing so would overwrite the specific one just reported.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_shovel/src/rabbit_shovel_worker.erl"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "037df9ba74d9e247b18bf35cd508c2e2cfea8e00",
+      "authorDate": "2026-07-24T17:32:37+02:00",
+      "subject": "Revert shovel worker restart type back to permanent",
+      "body": "transient was introduced so the supervisor would only emit a\nSUPERVISOR REPORT for genuinely abnormal terminations, relying on\nshovel workers exiting with the literal {shutdown, restart} reason\nfor expected disconnects/reconnects.\n\nThat reason can be silently overridden: rabbit_shovel_worker only\nstarts trapping exits once both connections are established, so\nwhile it is inside close_connections/1 during termination, an\n'EXIT' signal from a not-yet-trapped, still-linked connection process\ncan arrive and replace the worker's own exit reason before the\nsupervisor ever sees {shutdown, restart}. Under permanent this is\nharmless (it always restarts regardless of reason), but under\ntransient it can permanently stop a shovel from reconnecting.\n\nReverting to permanent for now; the underlying race needs a proper\nfix (e.g. unlinking connections before the blocking close calls)\nbefore transient can be reintroduced safely.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_shovel/src/rabbit_shovel_dyn_worker_sup.erl",
+        "deps/rabbitmq_shovel/src/rabbit_shovel_worker_sup.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "2d7f21d8da1b4a7e52a06ce4111f6bbea25e9213",
+      "authorDate": "2026-07-24T16:00:40+02:00",
+      "subject": "Reader: don't log a stack trace replying to an already-disconnected AMQP 1.0 peer",
+      "body": "handle_connection_frame replies to a peer-initiated close by sending our\nown close frame. If the peer's socket is already gone by then (e.g. it\ndisconnected right after sending its own close, before our reply could\ngo out), that write throws {inet_error, closed}, which the generic\ncatch-all in handle_frame/4 turned into a full \"Reader error\" stack\ntrace logged at error level.\n\nThere is nobody left to notify and nothing more useful to do in that\ncase, so it doesn't warrant a stack trace - just a one-line note at\ninfo level. Every other exception is unaffected and still gets the full\ntreatment.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_amqp_reader.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "d8cab15edfbc10eba8e0d09b337b41e33397c5c3",
+      "authorDate": "2026-07-24T15:59:40+02:00",
+      "subject": "Reader: log administrator-forced AMQP 1.0 connection closure as a warning",
+      "body": "The AMQP 1.0 equivalent of the AMQP 0-9-1 connection_forced fix: this\nerror description is only ever built by terminate/2 when a connection\nis deliberately closed by an operator or by the broker itself\n(rabbitmqctl close_connection, the management UI, maintenance mode\ndraining, a node-wide shutdown) - never in reaction to a client\nprotocol violation, so it does not warrant `error`-level logging. Every\nother exception reaching handle_exception/3 is unaffected and still\nlogs at `error`.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_amqp_reader.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "90dc6c20334c08d9e94f97e925f52f37321cd107",
+      "authorDate": "2026-07-24T15:58:34+02:00",
+      "subject": "amqp10_client: don't report supervisor crashes for expected socket-close failures",
+      "body": "Every graceful-close path (an explicit {close, Reason}, receiving the\npeer's close frame, and the connection reacting to a dependent process\nexiting) already treated {error, closed} from send_close/send_open as\nan expected, quiet outcome. Any other socket-level failure from the\nsame call (e.g. {error, einval}) fell through to {stop, Error, State},\nusing the raw, unwrapped error as the exit reason - which the\nsupervisor (transient, one_for_all) reports as an abnormal termination.\n\nNone of these represent a bug in the connection process: they're all\n\"we made a best-effort attempt to notify the peer we're closing, and it\nfailed for some socket-level reason\" - there is nobody left to notify\nand nothing more useful to do either way, regardless of which specific\nreason the socket layer returned. All of these now fold into the same\nquiet path as the existing {error, closed} handling.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/amqp10_client/src/amqp10_client_connection.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "cf34035e81c867df0b891fd0b564af35ac2060d2",
+      "authorDate": "2026-07-24T15:56:50+02:00",
+      "subject": "amqp10_client: fix deadlock in connection's own termination",
+      "body": "terminate/3 called sys:terminate(Sup, normal) - a blocking call from a\nchild process to its own direct supervisor - whenever the connection\nstopped normally. When Sup tries to shut this same child down as part\nof processing that call, it waits for the child to actually die; the\nchild is meanwhile blocked waiting for Sup to reply. Guaranteed\ndeadlock, timing out after 5 seconds on both sides: the supervisor logs\na shutdown_error/killed report once it gives up waiting, and the\nconnection process crashes with \"State machine terminating\" once its\nown sys:terminate call times out.\n\nThis code path pre-dates the connection now properly reacting to a\ndependent process dying (rather than lingering silently), which made it\nfar more likely to be hit in practice. The fix makes the sys:terminate\ncall fire-and-forget instead of blocking, preserving the intended\ncleanup (tearing down the rest of the supervision tree) without the\nconnection waiting on it.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/amqp10_client/src/amqp10_client_connection.erl"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "a9e4e1a63b1bcc9b8ff629f3498d078f1e0372c5",
+      "authorDate": "2026-07-24T10:41:50+02:00",
+      "subject": "Reader: log administrator-forced connection closure as a warning",
+      "body": "connection_forced is only ever raised by rabbit_reader itself when a\nconnection is deliberately closed (rabbitmqctl close_connection, the\nmanagement UI, maintenance mode draining) - never by a client protocol\nviolation. It was going through the same generic hard-error path as\ngenuine exceptions, logging \"Error on AMQP connection ...\" at `error`\nlevel for what is really just an intentional administrative action.\n\nEvery other exception reaching log_hard_error/3 (protocol violations,\npermission errors, actual bugs) is unaffected and still logs at\n`error`.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_reader.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "971f61f5ba520de00ebd39f5e819a00cf98443f8",
+      "authorDate": "2026-07-24T10:41:40+02:00",
+      "subject": "amqp10_client: close connection gracefully when a dependent process exits",
+      "body": "The `opened` state had no clause for a linked process exiting (e.g.\nthe application code that opened the connection), so the event fell\nthrough to the generic \"unexpected connection frame\" clause: a\nconfusing warning was logged and the connection was left open\nindefinitely instead of being closed.\n\nAdded a clause that sends a proper AMQP close frame and transitions to\n`close_sent`, mirroring the handling already used for the `{close,\nReason}` event.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/amqp10_client/src/amqp10_client_connection.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "7f2c8a4004794746144363842978903a14a9c3b2",
+      "authorDate": "2026-07-24T10:41:28+02:00",
+      "subject": "amqp_client: avoid crash dump when a dependent process exits",
+      "body": "amqp_network_connection treats any linked process exiting (e.g. the\napplication code that opened the connection) as a reason to close the\nconnection too, but built its own stop reason as a plain formatted\nstring rather than wrapping it in `{shutdown, _}`. Since this process\nuses a plain gen_server, that meant terminate/2 printed a full\n\"** Generic server ... terminating\" crash dump for what is normally\njust the connection's owner shutting down.\n\namqp_direct_connection already handles the equivalent case correctly\n(log and stop with `normal`); amqp_network_connection now does the\nsame, logging a concise warning and stopping with a `{shutdown, _}`\nreason instead.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/amqp_client/src/amqp_network_connection.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "c3a181c36494715b53380dfe512051a25b7066e9",
+      "authorDate": "2026-07-24T10:41:15+02:00",
+      "subject": "Shovel: share human-readable connection-failure logging across protocols",
+      "body": "The AMQP 0-9-1 shovel already translated raw connect errors (e.g.\neconnrefused, nxdomain) into a human-readable one-line message. The\nAMQP 1.0 shovel had no equivalent: a failed initial connection just\ncrashed on a badmatch, producing an opaque `{badmatch,{error,Reason}}`\nin the log.\n\nMoved the translation helper to rabbit_shovel_util so both protocol\nmodules share it, and made the AMQP 1.0 shovel check the result of\namqp10_client:open_connection/1 instead of pattern-matching on {ok, _}.\n\nLogged at `warning` rather than `error`: a failed connection attempt\nthat will be retried on the next reconnect cycle isn't a critical\nfailure by itself.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_shovel/src/rabbit_amqp091_shovel.erl",
+        "deps/rabbitmq_shovel/src/rabbit_amqp10_shovel.erl",
+        "deps/rabbitmq_shovel/src/rabbit_shovel_util.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "0036a72a8503052ac141544fcf16868cdca350bc",
+      "authorDate": "2026-07-24T10:40:49+02:00",
+      "subject": "Shovel: avoid noisy supervisor reports on expected reconnects",
+      "body": "A shovel disconnecting (e.g. a maintenance-mode connection close, a\nheartbeat timeout) is a routine, retried event, not a crash. Until now\nthe worker exited with the specific failure reason, unwrapped, which\nmade the supervisor treat every such disconnect as an abnormal\ntermination and print a full SUPERVISOR REPORT. It also meant the\nworker's own gen_server2 could print its own crash dump for the same\nevent, since only `{shutdown, _}` reasons are treated as expected.\n\nAll \"please reconnect\" exits now use the uniform `{shutdown, restart}`\nreason, and the dynamic/static worker supervisors use `transient`\n(instead of `permanent`) restart type, matching the pattern already\nused by federation. `transient` still restarts unconditionally on the\nexplicit `{shutdown, restart}` sentinel, but only logs a report for\ngenuinely abnormal terminations. The specific failure is still logged\nby the worker itself right before it stops, now at `warning` rather\nthan `error`, since it's an operational event the shovel recovers\nfrom on its own rather than a critical failure.\n\nRemoved a handful of terminate/2 clauses that matched exit reasons no\nlonger produced anywhere in the module.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_shovel/src/rabbit_shovel_dyn_worker_sup.erl",
+        "deps/rabbitmq_shovel/src/rabbit_shovel_worker.erl",
+        "deps/rabbitmq_shovel/src/rabbit_shovel_worker_sup.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "1ade3d9c90b349ec1eacbed01d2bfb8109020952",
+      "authorDate": "2026-07-23T16:48:08-07:00",
+      "subject": "Merge pull request #17020 from rabbitmq/loic-fix-warnings",
+      "body": "Fix printing of warnings in management UI",
+      "issueRefs": [
+        "#17020"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1d6863e70bd1bff99aa4556721f283b62a34f52a",
+      "authorDate": "2026-07-23T17:42:12+02:00",
+      "subject": "Fix printing of warnings in management UI",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_management/priv/www/js/tmpl/login_oauth.ejs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c9b4b10c2dbf0f1c89f10b482ac8b45f84dc5954",
+      "authorDate": "2026-07-23T14:15:01+02:00",
+      "subject": "Match exact symbol length when detecting AMQP 1.0 body sections",
+      "body": "In server_mode, the parser recognised the symbolic message body\ndescriptors (amqp:data:binary, amqp:amqp-sequence:list and\namqp:amqp-value:*) by their textual prefix only, ignoring the encoded\nsymbol length. A described value whose descriptor merely started with\none of these names was therefore classified as the corresponding\nstandard body section.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/amqp10_common/src/amqp10_binary_parser.erl",
+        "deps/amqp10_common/test/binary_parser_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "f8155057c88ace7148ed552a5b9cfaf43a4c736c",
+      "authorDate": "2026-07-23T11:14:51+02:00",
+      "subject": "AMQP 1.0 client: gracefully handle connection termination in more places (#17013)",
+      "body": "* amqp10_client: handle DOWN in more states\n\nWhen running AMQP 1.0 shovels, sometimes they would crash with errors\nlike this:\n\n```\n  reason: {function_clause,\n              [{amqp10_client_connection,hdr_sent,\n                   [info,\n                    {'DOWN',#Ref<0.2037148225.2260205569.233493>,process,\n                        <0.29675.0>,normal},\n                    {state,0,<0.29672.0>,\n                        #Ref<0.2037148225.2260205569.233493>,<0.29676.0>,\n                        [{<0.29530.0>,\n                          [alias|\n                           #Ref<0.0.3779843.2037148225.2260271105.233488>]}],\n                        <0.29675.0>,\n                        {tcp,#Port<0.396>},\n                        undefined,undefined,\n                        #{notify => <0.29530.0>,port => 5672,\n                          address => \"green\",\n                          sasl =>\n                              {encrypted,\n                                  <<\"6APRufcR3aNjXGKFDynwAyf37GF3YqrJq06ecxGXPXNcdqSEXEKXoitUXhMTLBRhzdnWAQmdu9lw2aZ5TlxChT04sNM7XiCPZVhVFwKI124OLrxsEKjS0zOvYZc8wAlT02XqNHL4HGv9YHRGNX2aFpYCsLVTdEL4yRA8COvRomXsCDuCJ1XpWNvo/Y6fTjkW9PzfZiOwPWyfyvBx2nVCMw==\">>},\n                          hostname => <<\"green\">>,\n                          properties =>\n                              #{<<\"ignore-maintenance\">> => {boolean,true}},\n                          notify_when_opened => <0.29530.0>,\n                          notify_when_closed => <0.29530.0>,\n                          transfer_limit_margin => 0,\n                          max_frame_size => 1048576}}],\n                   [{file,\"amqp10_client_connection.erl\"},{line,244}]},\n               {gen_statem,loop_state_callback,11,\n                   [{file,\"gen_statem.erl\"},{line,3735}]},\n               {proc_lib,init_p_do_apply,3,\n                   [{file,\"proc_lib.erl\"},{line,329}]}]}\n```\n\n* amqp10_client: handle unexpected EXIT reasons in close_sent\n\nConnections linked by their owner (e.g. AMQP 1.0 shovels call\nlink/1 on the connection PID) could crash with a function_clause\nerror if that owner exited with a reason other than shutdown while\nthe connection was in the close_sent state:\n\n```\n  reason: {function_clause,\n               [{amqp10_client_connection,close_sent,\n                    [info,\n                     {'EXIT',<0.11280.0>,killed},\n                     {state,1,<0.11283.0>,\n                         #Ref<0.1827165118.3650617346.181159>,<0.11287.0>,[],\n                         <0.11285.0>,\n                         {tcp,#Port<0.308>},\n                         15000,\n                         {once,#Ref<0.1827165118.3651141633.134174>},\n                         #{notify => <0.11280.0>,port => 5672,\n                           address => \"green\",\n                           hostname => <<\"green\">>,\n                           notify_when_opened => <0.11280.0>,\n                           notify_when_closed => <0.11280.0>}}],\n                    [{file,\"amqp10_client_connection.erl\"},{line,350}]},\n                {gen_statem,loop_state_callback,11,\n                    [{file,\"gen_statem.erl\"},{line,3735}]},\n                {proc_lib,init_p_do_apply,3,\n                    [{file,\"proc_lib.erl\"},{line,329}]}]}\n```\n\nclose_sent/3 only matched EXIT signals with reason shutdown or\n{shutdown, _}, which is what our own supervisor sends when it wants\nus to terminate gracefully within its own timeout. Any other EXIT\nreason, such as an owning process being killed, now stops the\nconnection instead, mirroring how we already give up waiting for a\nclose frame when the reader process goes down.",
+      "issueRefs": [
+        "#17013"
+      ],
+      "touchedFiles": [
+        "deps/amqp10_client/src/amqp10_client_connection.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "e1ae8549ce5ba0bacd58b7a1cbce6909e24adad4",
+      "authorDate": "2026-07-21T17:12:15-07:00",
+      "subject": "Merge pull request #16990 from rabbitmq/qq-aux-upgrade-fix-2",
+      "body": "QQ: handle aux state upgrades from aux v1.",
+      "issueRefs": [
+        "#16990"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "952202016fbe65a862d9d5dbb5977138c8b8c069",
+      "authorDate": "2026-07-21T16:31:29-07:00",
+      "subject": "Safer federation upstream deletion, closes #16991",
+      "body": "If an exchange shared the same (virtual host, name)\ntuple as a federated queue deleted by the federation\nplugin, `rabbit_exchange:update_scratch/3` could\nunintentionally end up being called with the\nconflicting resource (exchange) virtual host\nand name, overriding its decorator list.\n\nThe operation in question does not make sense\nfor federated queues, so let's only perform it\nfor exchanges.\n\nUpdating ` rabbit_db_exchange:update/2` is another\noption but it has backwards-compatibility risks\nand would not fully resolve the issue at hand.",
+      "issueRefs": [
+        "closes #16991"
+      ],
+      "touchedFiles": [
+        "deps/rabbitmq_federation_common/src/rabbit_federation_link_sup.erl",
+        "deps/rabbitmq_queue_federation/test/queue_SUITE.erl"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "3f0f67dfb7c4390e3cbfa25ab3ee19dcb0845bd4",
+      "authorDate": "2026-07-21T17:58:18+02:00",
+      "subject": "Encode AMQP 1.0 arrays of zero-octet elements as opaque values",
+      "body": "## What?\n\nThe AMQP 1.0 binary parser (amqp10_binary_parser) decoded an array\nwhose element constructor has a zero-octet wire encoding (null, true,\nfalse, uint0, ulong0, list0 - wire codes 0x40-0x45) by expanding it\ninto a full Erlang list, one term per element, via lists:duplicate/2.\nIt now instead represents such an array as an opaque value ({as_is,\nTypeCode, Bin}), the same representation already used for decimal and\nNaN/Infinity values that RabbitMQ has no need to interpret further.\n\n ## Why\n\nFor this class of array, the element count is carried in a small,\nfixed-size wire encoding, while the previous implementation allocated\none term per element when decoding it. This meant the memory needed to\nhold the decoded value had no relationship to the size of the input\nthat produced it. Representing the value opaquely removes that\nmismatch entirely, rather than merely capping it, and keeps the parser\nconsistent with how it already treats other value kinds it does not\nneed to interpret.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/amqp10_common/src/amqp10_binary_generator.erl",
+        "deps/amqp10_common/src/amqp10_binary_parser.erl",
+        "deps/amqp10_common/test/binary_parser_SUITE.erl",
+        "deps/amqp10_common/test/prop_SUITE.erl",
+        "deps/rabbit/test/amqp_client_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "efa70f9c9548cd2b1770c235fef18cd322563c38",
+      "authorDate": "2026-07-16T14:12:02-07:00",
+      "subject": "Add regression tests for UDS path Unicode encoding",
+      "body": "The UTF-8 handling for Unix domain socket paths in `ntoa/1`, `ntoab/1`\nand `rabbit_json:encode/1` was verified only manually. A socket path\nreaches these functions in two shapes: a Unicode charlist from a\nconfig-defined listener and a UTF-8 binary from an accepted connection's\nsockname. An earlier revision re-encoded the binary byte-by-byte, which\ndouble-encoded non-ASCII paths, and `rabbit_json` had no clause for a\n`{local, Path}` address at all, crashing on the empty-binary sockname of\nan accepted UDS socket.\n\nAdd two cases to `unix_domain_socket_SUITE`. `test_uds_ntoa_non_ascii_path`\nasserts a non-ASCII path normalises identically through `ntoa/1` and\n`ntoab/1` for both input shapes. `test_uds_json_encode_local_address`\nasserts `rabbit_json:encode/1` handles the empty-binary path and\nnon-ASCII paths in both shapes.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/test/unix_domain_socket_SUITE.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "2e73364027f42503c3a3b7b410a7aa681019f0da",
+      "authorDate": "2026-07-16T13:50:13-07:00",
+      "subject": "Format Unix domain socket paths as UTF-8 safely",
+      "body": "rabbit_misc:ntoa/1 and ntoab/1 render a {local, Path} address by calling\nrabbit_data_coercion:to_list/1 and to_binary/1 respectively. Those helpers\nmishandle Unix domain socket paths that are not plain ASCII:\n\n  - A config-defined listener path arrives from cuttlefish as a Unicode\n    charlist (codepoints). to_binary/1 (and list_to_binary/1 in the\n    callers) raises badarg on any codepoint above 255, crashing the\n    management listener listing and the certificate-expiration health\n    check.\n  - An accepted connection's peer path arrives as a UTF-8 binary (the\n    accepted socket's sockname). to_list/1 turns it into a raw byte\n    list, so it is no longer distinguishable from a codepoint charlist,\n    and no single caller-side wrapper is correct for both shapes.\n\nFix the conversion at the source. ntoa/1 now uses to_unicode_charlist/1,\nwhich yields a proper codepoint charlist for both the charlist and the\nUTF-8 binary shape. ntoab/1 uses to_utf8_binary/1, which yields a correct\nUTF-8 binary for both shapes and falls back to latin1 for paths that are\nnot valid UTF-8. Callers that need a binary (rabbit_mgmt_format:ip/1, the\ncertificate-expiration health check, and rabbit_core_metrics auth attempt\ntracking) now build it with to_utf8_binary/1 over ntoa/1, and\nrabbit_networking:tcp_host/1 routes the {local, _} case through ntoab/1\ninstead of duplicating the conversion.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_networking.erl",
+        "deps/rabbit_common/src/rabbit_core_metrics.erl",
+        "deps/rabbit_common/src/rabbit_misc.erl",
+        "deps/rabbitmq_management/src/rabbit_mgmt_wm_health_check_certificate_expiration.erl",
+        "deps/rabbitmq_management_agent/src/rabbit_mgmt_format.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "f46eb504b1528c8ebefa951991f97ec92e449755",
+      "authorDate": "2026-07-16T09:56:50-07:00",
+      "subject": "Document Unix domain socket listeners in `rabbitmq.conf.example`",
+      "body": "The example config covered TCP and TLS listeners but not Unix domain\nsocket listeners, which the `listeners.tcp.$name` schema now accepts.\n\nAdd a commented example for the `unix:` and `local:` prefixed forms, both\nof which take the socket path followed by `:0` as the port.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/docs/rabbitmq.conf.example"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c73fc9815bcdc14ea8e431b109282e2a5a9d0a61",
+      "authorDate": "2026-07-16T06:31:08-07:00",
+      "subject": "Fix UDS address handling across auth, metrics, and listing surfaces",
+      "body": "The Unix domain socket support left the bare atom `local` leaking out of\ntwo `rabbit_net:peername/1` destructure sites. An accepted UDS socket\nreports `{ok, {local, <<>>}}`, but both sites matched `{ok, {Addr, _Port}}`,\ncollapsing the tuple into the atom `local`. That atom then reached\n`is_loopback/1` and the auth data path, so scattered `local` atom clauses\nhad been added downstream to compensate.\n\nFix the two destructure sites to preserve the `{local, _}` tuple:\n`rabbit_net:is_loopback/1` (socket clause) and\n`rabbit_access_control:get_authz_data_from({socket, _})`. With the tuple\npreserved, remove the now-dead symptom clauses `is_loopback(local)`,\n`ntoa(local)` and `ntoab(local)`.\n\nWiden the `rabbit_net:peername/1` and `sockname/1` specs to include\n`inet:returned_non_ip_address()`, mirroring OTP, since an accepted UDS\nsocket genuinely returns `{ok, {local, Path}}`. This lets Dialyzer accept\nthe new `{ok, {local, _}}` clause, and the `socket_ends/2` Dialyzer\nsuppression is no longer needed.\n\nRender a `{local, Path}` address in the CLI `list_connections` output: add\na `format_info_item/2` clause for it, mirroring the existing IPv4 and IPv6\ntuple clauses, so the socket path is shown instead of the raw\n`{local, ...}` tuple. This matches the HTTP API, which already formats it\nvia `rabbit_misc:ntoa/1`.\n\nCorrect the `ntoab/1` spec to `string() | binary()`, add `{local, string()}`\nto the `peeraddr` type, and make `rabbit_mgmt_format:ipb/1` use\n`iolist_to_binary/1` so a `{local, _}` address cannot crash it.\n\nA UDS listener is configured with `local:/path:0` or `unix:/path:0`, which\nthe cuttlefish `domain_socket` datatype parses into `{local, Path, 0}`.\n\nSplit the test suite into `with_listener` and `without_listener` groups and\ngive the listener a single owner: `init_per_group`/`end_per_group` start and\nstop it once for the group, per-testcase application environment moves into\n`init_per_testcase`/`end_per_testcase`, and the test bodies only open\nconnections and assert. No test body or teardown calls `stop_tcp_listener`\non a listener whose existence it cannot guarantee, which removes the\n`{error, not_found}` teardown crash seen under the parallel CT runner.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_access_control.erl",
+        "deps/rabbit/src/rabbit_networking.erl",
+        "deps/rabbit/test/config_schema_SUITE_data/rabbit.snippets",
+        "deps/rabbit/test/unix_domain_socket_SUITE.erl",
+        "deps/rabbit_common/src/rabbit_core_metrics.erl",
+        "deps/rabbit_common/src/rabbit_misc.erl",
+        "deps/rabbit_common/src/rabbit_net.erl",
+        "deps/rabbit_common/src/rabbit_types.erl",
+        "deps/rabbitmq_cli/lib/rabbitmq/cli/formatters/formatter_helpers.ex",
+        "deps/rabbitmq_cli/test/formatters/formatter_helpers_test.exs",
+        "deps/rabbitmq_management_agent/src/rabbit_mgmt_format.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "5a145da3a9d3f743c6fca0e735c4b854661262c3",
+      "authorDate": "2026-07-16T13:25:23+05:30",
+      "subject": "Address maintainer review findings for UDS support",
+      "body": "- Fix socket_ends/2 tuple decomposition causing is_loopback failures (Finding #1)\n- Restore {error, enoent} assertion in uds_connection_failure tests (Finding #2)\n- Handle the bare atom 'local' in rabbit_misc:ntoa/1 (Finding #3)\n- Drop overly strict hd(Path) guard from tcp_listener_addresses/1 (Finding #4)\n- Remove 'string' from tcp and ssl listener schema datatypes (Finding #5)\n- Restore {error, einval} fallback in rabbit_auth_backend_http\n- Normalise track_auth_attempt_source tuple extraction in rabbit_core_metrics",
+      "issueRefs": [
+        "#1",
+        "#2",
+        "#3",
+        "#4",
+        "#5"
+      ],
+      "touchedFiles": [
+        "deps/rabbit/priv/schema/rabbit.schema",
+        "deps/rabbit/src/rabbit_networking.erl",
+        "deps/rabbit/test/unix_domain_socket_SUITE.erl",
+        "deps/rabbit_common/src/rabbit_core_metrics.erl",
+        "deps/rabbit_common/src/rabbit_misc.erl",
+        "deps/rabbit_common/src/rabbit_net.erl",
+        "deps/rabbitmq_auth_backend_http/src/rabbit_auth_backend_http.erl",
+        "deps/rabbitmq_mqtt/src/rabbit_mqtt_processor.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "2ff30b1384c39be15dbe6ea4b944a58e6f4f795f",
+      "authorDate": "2026-07-15T16:26:44-07:00",
+      "subject": "Add regression tests for confirmed UDS bugs",
+      "body": "Add tests that exercise the five confirmed issues with the Unix Domain\nSocket implementation:\n\n- is_loopback must return true for the {local, _} tuple (finding #1)\n- guest must connect over UDS with loopback_users=[<<\"guest\">>] (#1)\n- internal_loopback backend must accept guest over UDS (#1)\n- track_auth_attempt_source must not crash UDS connections (#2)\n- rabbit_misc:ntoa must handle the bare atom `local` (#3)\n- tcp_listener_addresses must handle arbitrary string paths (#4)\n\nAlso: add rabbitmq_auth_backend_internal_loopback to TEST_DEPS, add\nthe MPL copyright header, fix executable file mode (755 -> 644), and\nremove unnecessary timer:sleep calls and trivial comments.\n\nThese tests are expected to FAIL against the current PR code, proving\nthe bugs exist. They will pass once the fixes are applied.",
+      "issueRefs": [
+        "#1",
+        "#2",
+        "#3",
+        "#4"
+      ],
+      "touchedFiles": [
+        "deps/rabbit/Makefile",
+        "deps/rabbit/test/unix_domain_socket_SUITE.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "abbb4cdbcdf5910cd1ffaaa97c92b4ea41b6b83d",
+      "authorDate": "2026-07-15T16:32:36+05:30",
+      "subject": "Fix CI: register UDS suite in parallel CT, remove dead Dialyzer code",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_auth_backend_http/src/rabbit_auth_backend_http.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "d30b2f5cf53b4682345d64c5dbe7e25c2d57b646",
+      "authorDate": "2026-07-12T17:48:46+05:30",
+      "subject": "Fix Unix Domain Socket handling per maintainer review",
+      "body": "- Fix socket_ends/2 tuple decomposition causing is_loopback failures\n- Normalise string/binary conversions in ntoa/1\n- Use Cuttlefish domain_socket datatype for robust config validation\n- Safely handle 108-character sun_path limits in CT test suites\n- Ensure reliable listener teardown on mid-test crashes\n- Remove unused ip_address_to_binary/1",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/priv/schema/rabbit.schema",
+        "deps/rabbit/src/rabbit_networking.erl",
+        "deps/rabbit/test/unix_domain_socket_SUITE.erl",
+        "deps/rabbit_common/src/rabbit_misc.erl",
+        "deps/rabbit_common/src/rabbit_net.erl",
+        "deps/rabbitmq_mqtt/src/rabbit_mqtt_util.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "35606e82479c628b5b75ba78d63d284d81cfebcf",
+      "authorDate": "2026-07-06T00:03:25+05:30",
+      "subject": "feat: implement native Unix Domain Socket support",
+      "body": "- Extend listeners config to natively support UDS paths\n- Bypass DNS resolution for local socket paths\n- Fix ntoa usage across all core modules and plugins to prevent crashes\n- Identify UDS as a secure loopback connection to permit guest login\n- Add integration tests for connection lifecycles and pub/sub routing",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/amqp_client/src/amqp_network_connection.erl",
+        "deps/rabbit/priv/schema/rabbit.schema",
+        "deps/rabbit/src/rabbit_networking.erl",
+        "deps/rabbit/test/unix_domain_socket_SUITE.erl",
+        "deps/rabbit_common/src/rabbit_core_metrics.erl",
+        "deps/rabbit_common/src/rabbit_misc.erl",
+        "deps/rabbit_common/src/rabbit_net.erl",
+        "deps/rabbitmq_auth_backend_http/src/rabbit_auth_backend_http.erl",
+        "deps/rabbitmq_cli/lib/rabbitmq/cli/core/listeners.ex",
+        "deps/rabbitmq_management/src/rabbit_mgmt_wm_health_check_certificate_expiration.erl",
+        "deps/rabbitmq_mqtt/src/rabbit_mqtt_util.erl",
+        "deps/rabbitmq_web_dispatch/src/rabbit_cowboy_stream_h.erl",
+        "deps/rabbitmq_web_stomp/src/rabbit_web_stomp_listener.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "92ad8337f5de0a503f6a67e75d3ca1786f67f7c9",
+      "authorDate": "2026-07-20T13:13:02+02:00",
+      "subject": "Merge pull request #16976 from pterygota/stream-sac-stuck-partition",
+      "body": "Fix stream SAC coordinator ignoring deactivating consumer status",
+      "issueRefs": [
+        "#16976"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "16fd6bd176832919aa21741dda6d749c352be380",
+      "authorDate": "2026-07-18T13:17:18-04:00",
+      "subject": "Fix stream SAC coordinator ignoring deactivating consumer status",
+      "body": "When a consumer's stepping-down consumer_update response triggers the\ncoordinator's command_activate_consumer handler, the deactivating\nconsumer is treated as active because is_active({_, DEACTIVATING}) is\ntrue. The handler then sets all connected consumers to\n{CONNECTED, WAITING} and calls evaluate_active_consumer/1, which picks\na new active. If that picks the same deactivating consumer, the\nbranch suppresses the needed notification effect, the coordinator\nthinks the consumer is active while its client has already been told\nactive=false, and the result is a stuck partition that never delivers\nmessages. Checking for a deactivating consumer so we hit the\nnotification effect in that case fixes the bug.\n\nFixes #16975",
+      "issueRefs": [
+        "Fixes #16975"
+      ],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_stream_sac_coordinator.erl",
+        "deps/rabbit/test/rabbit_stream_sac_coordinator_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "4a1c9574e3dc8c99325add374d0c6251d9457cb5",
+      "authorDate": "2026-07-19T12:53:08+08:00",
+      "subject": "Revert TLS defaults change; keep only the wrap_password_opt fix",
+      "body": "The tls_options_or_default/1 default options are restored to their\noriginal values. Only the missing rabbit_ssl:wrap_password_opt/1 call\nin load_with_hashing/3 is retained, for consistency with load/1.\n\nSigned-off-by: sunliqiang <sunliqiang@kylinos.cn>",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_definitions_import_https.erl",
+        "deps/rabbit/test/unit_definitions_import_https_SUITE.erl"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "fcec8e49ed0a39ae874785119abfbcd615da09ca",
+      "authorDate": "2026-07-14T20:08:30-07:00",
+      "subject": "Migrate feature-flags.ejs #16916",
+      "body": "while at it, fix a subtle event propagation\nbug that only affects this branch.",
+      "issueRefs": [
+        "#16916"
+      ],
+      "touchedFiles": [
+        "deps/rabbitmq_management/priv/www/index.html",
+        "deps/rabbitmq_management/priv/www/js/feature-flags.js",
+        "deps/rabbitmq_management/priv/www/js/main.js",
+        "deps/rabbitmq_management/priv/www/js/tmpl/feature-flags.ejs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1736a85f157f47b2f8769fc0029338c9d9c9b63e",
+      "authorDate": "2026-07-13T10:21:11+02:00",
+      "subject": "Fix issue on queue creation",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_management/priv/www/js/main.js"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "8d7333e1151cdbb29158133748f20b266526157f",
+      "authorDate": "2026-07-16T18:35:57-07:00",
+      "subject": "Correct a minor usability issue #16957",
+      "body": "",
+      "issueRefs": [
+        "#16957"
+      ],
+      "touchedFiles": [
+        "deps/rabbitmq_management/priv/www/js/main.js"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "4db3ded21f9c63d1f46ba9db921928970e35d27c",
+      "authorDate": "2026-07-14T14:16:56+01:00",
+      "subject": "Ra v3.1.9 - bugfixes",
+      "body": "* Forward follower's append_entries_reply when it already has the snapshot\n* Fix stale last_written/pending state after log truncation, and a snapshot-send regression",
+      "issueRefs": [],
+      "touchedFiles": [
+        "rabbitmq-components.mk"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "85576314ea54afa149c4f36fd7d158fffc61a3b3",
+      "authorDate": "2026-07-10T20:45:58-07:00",
+      "subject": "Fix a tricky regression in #16894",
+      "body": "",
+      "issueRefs": [
+        "#16894"
+      ],
+      "touchedFiles": [
+        "deps/rabbitmq_management/priv/www/js/oidc-oauth/helper.js",
+        "deps/rabbitmq_management/priv/www/js/prefs.js"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "4800ba93bb8c327795ba4f0c81074f9c0899171a",
+      "authorDate": "2026-07-07T14:54:33+02:00",
+      "subject": "Remove LOGIN_SESSION_TIMEOUT from the m Cookie",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_management/priv/www/js/prefs.js"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "393ee0438c4b75aa17d75ba49c78da31c4a96aee",
+      "authorDate": "2026-07-10T20:49:44+00:00",
+      "subject": "Log mirrored_supervisor roster wipe and successful failover at info",
+      "body": "Two low-frequency, high-consequence mirrored_supervisor events were only\nobservable at debug (the roster wipe) or not at all (a successful failover),\nwhile their failure counterparts are already logged. Both matter for federation\nand shovel, whose link rosters live in mirrored_sup_childspec.\n\n- init/delete_all: the branch that deletes all child records for a group (when\n  this node is the sole reachable member) is the most destructive operation in\n  the module. Promote its log from debug to info and reword it, so a wrong wipe\n  (e.g. a node that transiently sees no peers) leaves a trace above debug.\n\n- DOWN/failover: when a peer dies and this node re-homes and starts its children,\n  the success path was silent; only the \"could not start some children\" and\n  \"failover failed\" branches logged. Add an info log on success (guarded so a\n  dead peer that owned no children does not log a no-op), symmetric with the\n  existing failure logging.\n\nBoth are per-event (not per-child / per-start_child), so they do not add\nsteady-state noise. No behavior change.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/mirrored_supervisor.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "db8237106cd8a1403b42efaeaf01ef797916cd26",
+      "authorDate": "2026-07-09T19:45:32-07:00",
+      "subject": "Merge pull request #16911 from rabbitmq/mk-http-api-publishing-tweaks",
+      "body": "HTTP API: publishing should use timeouts when waiting for publisher confirms",
+      "issueRefs": [
+        "#16911"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "ed2bc1e0def1fc5eec2b5255b0d9eaee02696c8c",
+      "authorDate": "2026-07-09T18:00:21-07:00",
+      "subject": "HTTP API: publishing should use timeouts when waiting for publisher confirms",
+      "body": "The endpoint previously waited for a publisher\nconfirm indefinitely.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_management/src/rabbit_mgmt_wm_exchange_publish.erl",
+        "deps/rabbitmq_management/test/rabbit_mgmt_http_SUITE.erl"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "b743c422a8260ce4960033a67016867498069066",
+      "authorDate": "2026-07-08T16:33:00+02:00",
+      "subject": "Fix unit test",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_management/test/rabbit_mgmt_test_unit_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "ecfe2a5903bbaa3d3f2adac371ef3d8d8b3061fa",
+      "authorDate": "2026-07-08T13:51:05+02:00",
+      "subject": "package-generic-unix: set FULL=1 (#16897)",
+      "body": "Without this change, re-running `make package-generic-unix` could\nproduce strange complilation errors like:\n```\n== Compilation error in file lib/rabbitmq/cli/formatters/pretty_table.ex ==\n** (MatchError) no match of right hand side value:\n\n    false\n\n    lib/rabbitmq/cli/formatters/pretty_table.ex:17: (module)\nwarning: you must pass return_diagnostics: true when invoking Kernel.ParallelCompiler functions\n  (elixir 1.19.5) lib/kernel/parallel_compiler.ex:324: Kernel.ParallelCompiler.spawn_workers/3\n  (stdlib 7.3) erl_eval.erl:920: :erl_eval.do_apply/7\n  (stdlib 7.3) erl_eval.erl:484: :erl_eval.expr/6\n  (mix 1.19.5) lib/mix/project.ex:557: Mix.Project.in_project/4\n  (elixir 1.19.5) lib/file.ex:2013: File.cd!/2\n  (stdlib 7.3) erl_eval.erl:920: :erl_eval.do_apply/7\n```\n\nBy disabling erlang.mk's dependency optimisation, we avoid such strange\nissues.",
+      "issueRefs": [
+        "#16897"
+      ],
+      "touchedFiles": [
+        "packaging/generic-unix/Makefile"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "05289e571f2e128210276ea8eb13ad720ed2b28b",
+      "authorDate": "2026-07-06T17:11:43-07:00",
+      "subject": "Merge pull request #16880 from Ayanda-D/fix-vhost-delete-race",
+      "body": "Handle concurrent queue or vhost delete race condition on ra cluster shutdown",
+      "issueRefs": [
+        "#16880"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "1c799afba2fcfe0a45f07ce322c542688387e314",
+      "authorDate": "2026-07-06T15:41:59-07:00",
+      "subject": "Fix a very minor logging regression",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_web_dispatch/src/rabbit_cowboy_stream_h.erl",
+        "deps/rabbitmq_web_dispatch/src/rabbit_web_dispatch_access_control.erl",
+        "deps/rabbitmq_web_dispatch/test/system_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "a620a8edcbc9b3a1739fa8e10935d877b1d02ae0",
+      "authorDate": "2026-07-06T18:30:42+02:00",
+      "subject": "Fix issues",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_auth_backend_oauth2/src/rabbit_auth_backend_oauth2.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "349724456abaec19d8a580307dc1d1b8b0440fd3",
+      "authorDate": "2026-07-06T15:52:42+02:00",
+      "subject": "Fix test case (add exp claim)",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_auth_backend_oauth2/test/rabbit_auth_backend_oauth2_test_util.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "afc686e980843c685ce0825c3e3a2a4880934939",
+      "authorDate": "2026-07-06T13:35:43+01:00",
+      "subject": "add tests for vhost delete race conditions",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/test/quorum_queue_SUITE.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "3a2341ba8020f35ddcccd0cb75bddc4bf6991cc7",
+      "authorDate": "2026-06-18T16:30:02-04:00",
+      "subject": "Fix vhost delete race",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_quorum_queue.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "0e79f7a5c2b35b7a37a4d2fc134da5c8c2709261",
+      "authorDate": "2026-07-03T17:08:00+02:00",
+      "subject": "Maintenance mode: drain and revive tolerate failing housekeeping callbacks",
+      "body": "Once rabbit_maintenance:drain/0 has marked the node as being drained, any\nsubsequent step is housekeeping around cleaning up in-flight state. A\nplugin drain/1 callback that crashes, a channel that refuses to shut\ndown within the termination timeout, or a stuck federation link would\nraise from inside drain/0 and surface at the CLI layer as a non-zero\nexit code, even though the node was in fact drained. Automation like\nKubernetes preStop hooks that runs `rabbitmq-upgrade drain` treats that\nas a failed drain and retries or aborts the upgrade.\n\nWrap each housekeeping step in a local safe_maintenance_step/2,3\nhelper that logs a warning with the stacktrace and continues. The\nload-bearing mark_as_being_drained/0 call is intentionally left\nunwrapped: if it fails, drain has not actually happened and the caller\nmust know.\n\nApplied the same treatment to revive/0 so that a failing queue-type\nrevive callback or federation reconnect no longer leaves the DRAINING\nflag stuck, which would keep the node effectively unusable.\n\nAdded a maintenance_mode_SUITE regression test that mecks\nrabbit_queue_type:drain/1 and revive/0 to raise, then asserts that\ndrain/0 and revive/0 still return ok and the node's DRAINING flag\ntransitions as expected.\n\nCloses #3369.",
+      "issueRefs": [
+        "Closes #3369"
+      ],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_maintenance.erl",
+        "deps/rabbit/test/maintenance_mode_SUITE.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "82021abd7d02b667e7f80a10e0c0379b38fc44b9",
+      "authorDate": "2026-07-03T00:24:28-07:00",
+      "subject": "Merge pull request #16855 from rabbitmq/mk-item-grh7",
+      "body": "Shovel bug fixes",
+      "issueRefs": [
+        "#16855"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "a7cc6b5b509fd92c0ee43172dda1f86e93e73e5d",
+      "authorDate": "2026-07-02T20:52:28-07:00",
+      "subject": "Shovel bug fixes",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_shovel/src/rabbit_amqp091_shovel.erl",
+        "deps/rabbitmq_shovel/src/rabbit_amqp10_shovel.erl",
+        "deps/rabbitmq_shovel/src/rabbit_local_shovel.erl",
+        "deps/rabbitmq_shovel/src/rabbit_shovel_behaviour.erl",
+        "deps/rabbitmq_shovel/src/rabbit_shovel_config.erl",
+        "deps/rabbitmq_shovel/src/rabbit_shovel_parameters.erl",
+        "deps/rabbitmq_shovel/src/rabbit_shovel_util.erl",
+        "deps/rabbitmq_shovel/src/rabbit_shovel_worker.erl",
+        "deps/rabbitmq_shovel/test/unit_parsing_and_validation_SUITE.erl",
+        "deps/rabbitmq_shovel/test/unit_runtime_parameter_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c306a490b0498e0446c11ad282deed0358fce977",
+      "authorDate": "2026-06-29T10:08:21+02:00",
+      "subject": "Fix expected value in sum_entry/difference unit test",
+      "body": "For sum_entry({2, 3}, {3, ''}) the second field normalises to\n{3, 0}; sum_entry_safe then computes {3 + 2, 0 + 3} = {5, 3}, not\n{5, 0}. Update the assertion and add a short reminder that the\nhelpers compute B (+|-) A so future readers don't trip over the\nargument order.\n\nThe end-to-end regression test (collector_survives_non_integer_metric)\nwas unaffected and already passing on CI.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_management_agent/test/metrics_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "84cb9d33eea6e772d17863e7e57d271fa55be272",
+      "authorDate": "2026-06-29T10:01:52+02:00",
+      "subject": "Management agent: tolerate non-integer values in metrics aggregation",
+      "body": "The mgmt metrics collector reads rows from the core_metrics ETS\ntables on every scrape and feeds them through sum_entry/2 and\ndifference/2, which add or subtract tuples element-wise. Each\nfield is expected to be an integer.\n\nUnder connection or queue churn, a field can briefly read as the\nempty atom '' — the same sentinel rabbit_mgmt_format uses to\nrepresent \"null\". Performing arithmetic on it raises badarith\ninside the gen_server, killing the collector for that table and\nlosing any in-progress aggregation state (#12815):\n\n    exception error: an error occurred when evaluating an\n                     arithmetic expression\n        in operator  -/2\n           called as '' - 19495760921\n        in call from rabbit_mgmt_metrics_collector:difference/2\n\nWrap sum_entry/2 and difference/2 so each input tuple goes through\na normalisation pass first: if every element is an integer the\ntuple is reused as-is; otherwise non-integer fields are coerced\nto 0 and the rebuilt tuple is fed to the original arithmetic.\nA single bad scrape now produces an imperfect delta instead of a\ncrash, and the next scrape recovers a correct value.\n\nA regression test in metrics_SUITE.erl injects a synthetic Pid\ninto connection_coarse_metrics with one field set to '', runs\ntwo scrapes via force_collect, and verifies the collector\nprocess is still alive afterwards. A second unit-style test pins\ndown the \"non-integer coerces to 0\" contract.\n\nCloses #12815.",
+      "issueRefs": [
+        "#12815",
+        "Closes #12815"
+      ],
+      "touchedFiles": [
+        "deps/rabbitmq_management_agent/src/rabbit_mgmt_metrics_collector.erl",
+        "deps/rabbitmq_management_agent/test/metrics_SUITE.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "29a3637d225c7ff2e80e108a9bf4f5062a52597c",
+      "authorDate": "2026-07-02T18:58:10-07:00",
+      "subject": "Merge pull request #16842 from rabbitmq/rabbitmq-plugins-cli-remote-node-and-offline-fixes",
+      "body": "rabbitmq-plugins: fix remote node file path handling, offline mode remote node validation and  is-enabled false positives",
+      "issueRefs": [
+        "#16842"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "8cf35bb85800649b6c3b90cbfaa3fb7eff9f00ab",
+      "authorDate": "2026-07-01T20:09:16+05:30",
+      "subject": "Remove unnecessary atom quotes to fix --warnings-as-errors failure",
+      "body": "The quoted atom :\"definitelynotthelocalnodename\" triggered an Elixir\ncompiler warning since the atom consists only of unquoted-safe characters.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_cli/test/plugins/plugins_helpers_test.exs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "2202b446bc2792d1225ad1ccf82164e9e57be794",
+      "authorDate": "2026-07-01T18:52:40+05:30",
+      "subject": "Added offline status for local node, added and fixed unit test",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_cli/lib/rabbitmq/cli/formatters/plugins.ex",
+        "deps/rabbitmq_cli/lib/rabbitmq/cli/plugins/commands/list_command.ex",
+        "deps/rabbitmq_cli/test/plugins/plugins_formatter_test.exs",
+        "deps/rabbitmq_cli/test/plugins/plugins_helpers_test.exs",
+        "deps/rabbitmq_ct_helpers/src/rabbit_ct_broker_helpers.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "9526fd6f2ea55cd8d1cbc89d59d0600f4718af53",
+      "authorDate": "2026-06-30T18:24:26+00:00",
+      "subject": "Tolerate undefined/none decorators in `rabbit_queue_decorator:select/1`",
+      "body": "A queue whose stored `decorators` field is the atom `undefined` crashes\nthe broker at boot with `error:{bad_generator,undefined}` when a queue\ndecorator is registered (for example by the queue federation plugin),\nbecause `select/1` is a list comprehension that assumes a list.\n\nQuorum queues migrated from Mnesia to Khepri retain `decorators =\nundefined`: the durable Mnesia record stored `undefined`, the migration\ncopies it verbatim, and quorum queues are not re-stored during recovery\nthe way classic queues are.\n\nAdd `undefined` and `none` clauses to `select/1` returning `[]`, matching\nthe existing guard in `rabbit_exchange_decorator:select/2`, and add a\nunit test.\n\nFixes #16843",
+      "issueRefs": [
+        "Fixes #16843"
+      ],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_queue_decorator.erl"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "e82fae609b119b7504b2a6b73ace3f8b719c3b63",
+      "authorDate": "2026-06-30T15:47:33+05:30",
+      "subject": "rabbitmq-plugins fixes",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_cli/lib/rabbitmq/cli/formatters/plugins.ex",
+        "deps/rabbitmq_cli/lib/rabbitmq/cli/plugins/commands/directories_command.ex",
+        "deps/rabbitmq_cli/lib/rabbitmq/cli/plugins/commands/disable_command.ex",
+        "deps/rabbitmq_cli/lib/rabbitmq/cli/plugins/commands/enable_command.ex",
+        "deps/rabbitmq_cli/lib/rabbitmq/cli/plugins/commands/is_enabled.ex",
+        "deps/rabbitmq_cli/lib/rabbitmq/cli/plugins/commands/list_command.ex",
+        "deps/rabbitmq_cli/lib/rabbitmq/cli/plugins/commands/set_command.ex",
+        "deps/rabbitmq_cli/lib/rabbitmq/cli/plugins/plugins_helpers.ex",
+        "deps/rabbitmq_cli/test/plugins/directories_command_test.exs",
+        "deps/rabbitmq_cli/test/plugins/disable_plugins_command_test.exs",
+        "deps/rabbitmq_cli/test/plugins/enable_plugins_command_test.exs",
+        "deps/rabbitmq_cli/test/plugins/is_enabled_command_test.exs",
+        "deps/rabbitmq_cli/test/plugins/list_plugins_command_test.exs",
+        "deps/rabbitmq_cli/test/plugins/plugins_formatter_test.exs",
+        "deps/rabbitmq_cli/test/plugins/set_plugins_command_test.exs"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "40edbeea2958604da2eb23dd426dd040e5c3e432",
+      "authorDate": "2026-06-29T17:08:12-07:00",
+      "subject": "Merge pull request #16833 from rabbitmq/cqv2-slash-accumulation",
+      "body": "CQ: fix slash accumulation (enametoolong)",
+      "issueRefs": [
+        "#16833"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c5be8ca53372f92001c901507bff094ddbbb2528",
+      "authorDate": "2026-06-29T15:14:23-07:00",
+      "subject": "Merge pull request #16837 from rabbitmq/mk-item-pr8w",
+      "body": "Fix two STOMP bugs",
+      "issueRefs": [
+        "#16837"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "6b2d508a3620c6f624bedce6d597b778b45f0fef",
+      "authorDate": "2026-06-29T14:56:03-07:00",
+      "subject": "Fix two STOMP bugs",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_stomp/src/rabbit_stomp_processor.erl",
+        "deps/rabbitmq_stomp/test/topic_SUITE.erl",
+        "deps/rabbitmq_stomp/test/unit_subscription_access_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "49eb151fe238470d1599e01fac321c392935a049",
+      "authorDate": "2026-06-29T14:15:41+02:00",
+      "subject": "CQ: fix slash accumulation (enametoolong)",
+      "body": "Previously, each purge appended another '/' to the\nindex dir path. With enough purges (thousands),\nthe path was so long, that the queue failed with enametoolong.\n\nFixes https://github.com/rabbitmq/rabbitmq-server/discussions/15338",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_classic_queue_index_v2.erl",
+        "deps/rabbit/test/backing_queue_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "70515370592e59d904c21115194db290c68d4421",
+      "authorDate": "2026-06-29T08:15:15+02:00",
+      "subject": "Merge pull request #16829 from MugemaneBertin2001/stream-reader-timeout-log-cleanup",
+      "body": "Stream: log a clean message when a client RPC times out",
+      "issueRefs": [
+        "#16829"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "b465d0ac138dcf91819205811d2e7e836c9d9158",
+      "authorDate": "2026-06-29T01:42:33+02:00",
+      "subject": "Stream: log a clean message when a client RPC times out",
+      "body": "Previously, when rabbit_stream_reader detected an outstanding RPC\nrequest (such as a consumer_update) that exceeded request_timeout,\nit stopped the gen_statem with {request_timeout, _} as the exit\nreason. OTP treats that as an abnormal exit, so the connection's\nfull state was dumped to the error log along with a gen_statem\nstack trace for what is an expected operational condition.\n\nStop with {shutdown, {request_timeout, TimedOut}} instead so OTP\ntreats the exit as benign, and emit a single INFO log line that\nnames the connection plus the per-request content\n(subscription_id, stream, consumer_name, active) of every request\nthat timed out.\n\nCloses #15744.",
+      "issueRefs": [
+        "Closes #15744"
+      ],
+      "touchedFiles": [
+        "deps/rabbitmq_stream/src/rabbit_stream_reader.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "1209fc7275e844a694a60951397ec864b752fa8f",
+      "authorDate": "2026-06-26T19:50:21-07:00",
+      "subject": "Wait for message-TTL expiry in priority_queue_SUITE dropwhile_fetchwhile",
+      "body": "Message-TTL expiry is timer-driven and asynchronous, not lazy at basic.get time, so a fixed timer:sleep(10) raced it under load. Poll the queue's ready count to 0 before get_empty; polling basic.get would drain stragglers into unacked and mask a broken TTL.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/test/priority_queue_SUITE.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "772002718e1bd154dfaaeb61156c4693dc220351",
+      "authorDate": "2026-06-26T19:44:56-07:00",
+      "subject": "Merge pull request #16824 from rabbitmq/rabbitmq-server-16823",
+      "body": "Fix a `tie_binding_to_dest_with_keep_while_cond` exception on certain auto-delete exchanges",
+      "issueRefs": [
+        "#16824"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "6aed828c5e671c4174d0898ed5f06bc5702a6553",
+      "authorDate": "2026-06-26T19:43:35-07:00",
+      "subject": "Poll for single-active-consumer failover in single_active_consumer_priority",
+      "body": "The bare ?assertMatch calls on the SAC id raced the asynchronous Ra-driven failover that follows close_channel; the intervening flush/1 only drains the test mailbox. Switch every check to ?awaitMatch and drop the misleading flush/1 calls. Reproduced on main and v4.2.x mixed-version CI.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/test/quorum_queue_SUITE.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "0b3c150e01d7dd9a9135ba903e855fd512651727",
+      "authorDate": "2026-06-26T17:32:55-07:00",
+      "subject": "Fix a `tie_binding_to_dest_with_keep_while_cond` exception on certain auto-delete exchanges",
+      "body": "The migration ties an auto-delete exchange to having at least one\noutbound binding (that is, where the exchange in question\nis the source) via a `keep_while` condition.\n\nAn exchange without such bindings (e.g. an exchange-to-exchange\ndestination or an `alternate-exchange` target) cannot satisfy it,\nso Khepri rejects the write with `keep_while_conditions_not_met`.\n\nSuch exchanges should be skipped, matching the behavior\non the `exchange.declare` path.\n\nReferences #16590 #16587.\nCloses #16823.",
+      "issueRefs": [
+        "#16590",
+        "#16587",
+        "Closes #16823"
+      ],
+      "touchedFiles": [
+        "deps/rabbit/Makefile",
+        "deps/rabbit/src/rabbit_db_queue.erl",
+        "deps/rabbit/test/rabbit_db_binding_SUITE.erl",
+        "deps/rabbit/test/rabbit_db_binding_prop_SUITE.erl"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "15d9abc5a850246fc7e58756e015831c1e5370a4",
+      "authorDate": "2026-06-26T15:00:02+02:00",
+      "subject": "stream_queue_SUITE: use publisher confirms (#16819)",
+      "body": "Without confirms, a race condition was possible\nhttps://github.com/rabbitmq/rabbitmq-server/actions/runs/28232855559/job/83640548393",
+      "issueRefs": [
+        "#16819"
+      ],
+      "touchedFiles": [
+        "deps/rabbit/test/rabbit_stream_queue_SUITE.erl"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "a0e7c1fbeac369ceabf4c14ec65272f6ccb7b661",
+      "authorDate": "2026-06-25T16:24:32-07:00",
+      "subject": "Merge pull request #16799 from rabbitmq/handle-undefined-consumer-timeout",
+      "body": "rabbit_queue_type: default invalid consumer_timeout config to 24h",
+      "issueRefs": [
+        "#16799"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "c7b939c817d7fa523695360ca9e3bf3fc9212e1c",
+      "authorDate": "2026-06-25T15:28:52-07:00",
+      "subject": "Fix two more (now) stale `ebin` references",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit_common/mk/rabbitmq-dist.mk",
+        "deps/rabbit_common/mk/rabbitmq-run.mk",
+        "erlang.mk"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1c7d7a694699b0350227b17dcf3f8b23d7024cee",
+      "authorDate": "2026-06-25T12:35:24+02:00",
+      "subject": "Shovel: fix flaky stream test",
+      "body": "Without offset specification, we had no guarantee that we would\nconsume all messages (some could be published before we attached).\n\nFailure example (9 out of 10 messages consumed):\nhttps://github.com/rabbitmq/rabbitmq-server/actions/runs/28160826055/job/83400596884?pr=16798",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_shovel/test/shovel_dynamic_SUITE.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "663e57f8e798c07c23ee94274a70feb308549a99",
+      "authorDate": "2026-06-25T09:28:30+01:00",
+      "subject": "rabbit_queue_type: default invalid consumer_timeout config to 24h",
+      "body": "Setting consumer_timeout to a non-integer value (e.g. undefined) in\nadvanced.config caused a badmatch crash in get_consumer_timeout/2,\nreturning INTERNAL_ERROR to connecting clients. Default to 86400000ms\nand log a warning instead.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbit/src/rabbit_queue_type.erl"
+      ],
+      "fixCategory": "crash"
+    },
+    {
+      "commitHash": "774e13dff601fb51b175159fbedb03c2e900b98c",
+      "authorDate": "2026-06-24T21:09:28-07:00",
+      "subject": "Merge pull request #16795 from rabbitmq/mk-cli-test-fixes",
+      "body": "Make CLI tests idempotent (re-runnable)",
+      "issueRefs": [
+        "#16795"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "bedfc24acfebd8c0074c239f518c9aa5859adeb2",
+      "authorDate": "2026-06-23T17:00:56-07:00",
+      "subject": "Merge pull request #16776 from Chr1s70ph/fix/bash-command-completion",
+      "body": "fix: shell command completion",
+      "issueRefs": [
+        "#16776"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "34aea2c2107b09147c23f42698c2de79bb098209",
+      "authorDate": "2026-06-23T16:23:28+02:00",
+      "subject": "fix: zsh command completion",
+      "body": "Starting with https://github.com/rabbitmq/rabbitmq-cli/issues/439\nthe `--auto-complete` flag was moved to its own first-class command.\n\nThe zsh-completion has not been updated to use this command yet.\nThis commit fixes that.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "scripts/zsh_autocomplete.sh"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "dcb29f4206206ef27f98a2551dca1a385afc006c",
+      "authorDate": "2026-06-23T13:53:15+02:00",
+      "subject": "fix: bash command completion",
+      "body": "Starting with https://github.com/rabbitmq/rabbitmq-cli/issues/439\nthe `--auto-complete` flag was moved to its own first-class command.\n\nThe bash-completion has not been updated to use this command yet.\nThis commit fixes that.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "scripts/bash_autocomplete.sh"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "fdc860813c612d3edfa0bfd112bd511d8dbeb58b",
+      "authorDate": "2026-06-22T17:30:06-07:00",
+      "subject": "Merge pull request #16767 from rabbitmq/mk-do-not-leak-fast-terminating-shovel-status",
+      "body": "Avoid leaking shovel status when a shovel is deleted before it successfully connects (in the `starting` state)",
+      "issueRefs": [
+        "#16767"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "memory_leak"
+    },
+    {
+      "commitHash": "f6565763ea7e63ebbe04d44cc4c1c80fac8efdea",
+      "authorDate": "2026-06-22T16:41:54-07:00",
+      "subject": "Avoid leaking shovel status when a shovel is deleted before connecting",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_shovel/src/rabbit_shovel_dyn_worker_sup_sup.erl",
+        "deps/rabbitmq_shovel_management/test/http_SUITE.erl"
+      ],
+      "fixCategory": "memory_leak"
+    },
+    {
+      "commitHash": "b8a3ae54aa1d5e37f135d4f8edf22ef0f1248d6d",
+      "authorDate": "2026-06-22T13:15:07-07:00",
+      "subject": "Merge pull request #16759 from sdewhitt/bugfix/empty-request-fails-signature-validation",
+      "body": "Fix SigV4 SignatureDoesNotMatch on body-less requests (e.g. S3 GET)",
+      "issueRefs": [
+        "#16759"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "5174ec342f180a475afaf36f3bce5c86157e2c25",
+      "authorDate": "2026-06-22T12:35:58-07:00",
+      "subject": "Add regression tests for headers_as_is on body-less requests",
+      "body": "Add perform_request_headers_as_is_test_ asserting that a body-less\nrequest (e.g. S3 GetObject) passes {headers_as_is, true} to httpc so the\nsigned content-length header is sent verbatim, and that a body-bearing\nrequest does not add the option (httpc preserves content-length when a\nbody is present).\n\nAlso update the existing httpc:request meck expectations for body-less\nGETs in gen_server_call_test_ and perform_request_test_ to match the new\noptions argument.\n\nVerified effective: reverting the one-line fix makes these tests fail.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_aws/test/rabbitmq_aws_tests.erl"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "56a562708deaedc6514e673b1d1bda6dc33491d2",
+      "authorDate": "2026-06-22T12:16:52-07:00",
+      "subject": "Fix SigV4 SignatureDoesNotMatch on body-less requests (e.g. S3 GET)",
+      "body": "The SigV4 signer includes \"content-length\" in the signed-header set for\nevery request, with value \"0\" when the body is empty. The body-less\nrequest clause then calls httpc:request/4 with an empty options list, and\nhttpc strips the \"content-length\" header from a request that has no body\nbefore sending it. The headers actually transmitted therefore no longer\nmatch the signed-header set the signature was computed over, so the\nservice rejects the request with SignatureDoesNotMatch (HTTP 403).\n\nThis affects any empty-body request, most visibly S3 GetObject:\nfetching an object via an S3 ARN fails every time, while body-bearing\nrequests (e.g. Secrets Manager GetSecretValue) are unaffected because\nhttpc preserves content-length when a body is present.\n\nPass {headers_as_is, true} to httpc on the body-less clause so the signed\nheaders, including \"content-length: 0\", are sent verbatim and match the\nsignature. The body-bearing clause is unchanged.\n\nVerified against S3 (GetObject) and Secrets Manager (GetSecretValue):\nwith the fix the S3 GET succeeds; without it, S3 fails with\nSignatureDoesNotMatch while Secrets Manager succeeds on the same\ncredentials.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "deps/rabbitmq_aws/src/rabbitmq_aws.erl"
+      ],
+      "fixCategory": "deadlock"
+    }
+  ]
+}

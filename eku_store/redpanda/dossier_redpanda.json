@@ -1,0 +1,1079 @@
+{
+  "repoName": "redpanda-data/redpanda",
+  "domain": "streaming-storage",
+  "gitCommitHash": "7779192591a837a58fc9fc91f35a247f6bb0ed3e",
+  "analyzedAt": "2026-08-22T16:03:41.452Z",
+  "overview": {
+    "purpose": "High-performance, low-latency, Apache Kafka-compatible distributed streaming data engine written in modern C++ that eliminates JVM runtime pauses and external ZooKeeper/KRaft dependencies by embedding Raft consensus directly into storage partitions.",
+    "architectureType": "C++ Seastar-based thread-per-core shared-nothing actor architecture with shard-local Raft consensus groups, direct I/O (O_DIRECT) DMA log segment storage, transactional state machine fencing (rm_stm), and tiered cloud storage shadow indexing.",
+    "keyDifferentiators": [
+      "Thread-Per-Core Shared-Nothing Concurrency: Pins partition actors, Raft consensus groups, and network connections to dedicated CPU cores, eliminating inter-thread mutex locks and context-switching overhead through lock-free cross-core smp::submit_to queues.",
+      "Direct I/O (O_DIRECT) DMA Storage Engine: Completely bypasses the Linux page cache to prevent memory pressure stalls, utilizing fixed 4 KiB aligned DMA chunk buffers with write-behind mechanics and serialized partial-head writes.",
+      "Embedded Raft Partition & Metadata Consensus: Every topic partition and cluster metadata log operates as an independent Raft consensus group directly within the broker process, achieving atomic leadership election and log replication without external coordinator daemons.",
+      "Shadow Indexing & Tiered Cloud Archival: Continuously offloads sealed log segments and columnar partition manifests to object storage (S3/GCS/Azure) with localized chunk cache management, read-ahead streaming, and monotonic Kafka offset translation.",
+      "Hardware-Conscious Memory & Fallocate Management: Employs per-shard buddy allocators with asynchronous btree memory reclaimers and adaptive 2 MiB fallocation pacing to avoid XFS filesystem extent fragmentation search latency."
+    ]
+  },
+  "components": [
+    {
+      "name": "RaftConsensus",
+      "role": "Distributed Consensus & Replicated Log Coordination Engine",
+      "primaryFiles": [
+        "src/v/raft/consensus.h",
+        "src/v/raft/consensus.cc",
+        "src/v/raft/vote_stm.cc"
+      ],
+      "publicInterfaces": [
+        "ss::future<vote_reply> vote(vote_request&& r)",
+        "ss::future<append_entries_reply> append_entries(append_entries_request&& r)",
+        "ss::future<install_snapshot_reply> install_snapshot(install_snapshot_request&& r)",
+        "ss::future<timeout_now_reply> timeout_now(timeout_now_request r)",
+        "ss::future<std::error_code> add_group_member(model::broker, model::revision_id)",
+        "ss::future<std::error_code> remove_member(model::node_id, model::revision_id)",
+        "ss::future<std::error_code> replace_configuration(std::vector<broker_revision>, model::revision_id)",
+        "replicate_stages replicate_in_stages(model::record_batch, replicate_options)"
+      ],
+      "dependencies": [
+        "storage::log",
+        "raft::state_machine_manager",
+        "raft::configuration_manager",
+        "raft::vote_stm",
+        "raft::recovery_stm"
+      ],
+      "stateManaged": [
+        "Consensus term (_term model::term_id)",
+        "Voted-for configuration (vnode voted_for)",
+        "Group replica state (vote_state _vstate: follower, candidate, leader)",
+        "Log committed index (_commit_index model::offset)",
+        "Majority replicated index (_majority_replicated_index model::offset)",
+        "Flushed log index (_flushed_offset model::offset)"
+      ],
+      "evidence": {
+        "filePath": "src/v/raft/consensus.cc",
+        "lineRange": [
+          2068,
+          2427
+        ],
+        "symbol": "consensus::do_append_entries",
+        "observation": "Enforces strict term validation, gap detection, prev_log_term matching, matching record batch deduplication, safe log truncation, and disk append under gate protection.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "SegmentAppender",
+      "role": "Direct I/O DMA Log Segment Append & Flush Subsystem",
+      "primaryFiles": [
+        "src/v/storage/segment_appender.h",
+        "src/v/storage/segment_appender.cc"
+      ],
+      "publicInterfaces": [
+        "ss::future<> append(const char* buf, size_t count)",
+        "ss::future<> append(const model::record_batch& batch)",
+        "ss::future<> flush()",
+        "ss::future<> hard_flush()",
+        "ss::future<> truncate(size_t truncate_at)",
+        "ss::future<> close()"
+      ],
+      "dependencies": [
+        "seastar::file",
+        "storage::chunk_cache",
+        "storage::storage_resources",
+        "ssx::semaphore"
+      ],
+      "stateManaged": [
+        "In-flight DMA write state machine (QUEUED, DISPATCHED, DONE)",
+        "DMA buffer chunks (_chunk_size 4 KiB alignment)",
+        "Pending flush byte counters (_bytes_flush_pending)",
+        "Head write serialization lock (_prev_head_write ssx::semaphore)"
+      ],
+      "evidence": {
+        "filePath": "src/v/storage/segment_appender.cc",
+        "lineRange": [
+          32,
+          118
+        ],
+        "symbol": "segment_appender::segment_appender / chunk write lifecycle",
+        "observation": "Implements O_DIRECT write-behind buffering; preserves DMA memory immutability by copying uncommitted partial page remainder to new chunks and serializing partial head writes via _prev_head_write.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "SegmentOffsetTracker",
+      "role": "Log Segment Logical Offset Bounds & Flush State Guard",
+      "primaryFiles": [
+        "src/v/storage/segment.h"
+      ],
+      "publicInterfaces": [
+        "void set_offsets(Ts... ts)",
+        "model::term_id get_term() const",
+        "model::offset get_base_offset() const",
+        "model::offset get_committed_offset() const",
+        "model::offset get_stable_offset() const",
+        "model::offset get_dirty_offset() const"
+      ],
+      "dependencies": [
+        "model::offset",
+        "model::term_id"
+      ],
+      "stateManaged": [
+        "Segment base offset (_base_offset)",
+        "Last fsynced offset (_committed_offset)",
+        "Last DMA written offset (_stable_offset)",
+        "Last in-memory appended offset (_dirty_offset)"
+      ],
+      "evidence": {
+        "filePath": "src/v/storage/segment.h",
+        "lineRange": [
+          49,
+          117
+        ],
+        "symbol": "segment::offset_tracker::set_offsets",
+        "observation": "Enforces invariant committed <= stable <= dirty via vassert on every offset modification.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "SegmentIndex",
+      "role": "Columnar Sparse Index for Offset & Timestamp Translation",
+      "primaryFiles": [
+        "src/v/storage/segment_index.h",
+        "src/v/storage/index_state.h",
+        "src/v/storage/index_state.cc"
+      ],
+      "publicInterfaces": [
+        "void maybe_track(const model::record_batch_header&, uint64_t file_pos)",
+        "std::optional<find_result> find_nearest(model::offset)",
+        "std::optional<find_result> find_nearest(model::timestamp)",
+        "ss::future<> flush()",
+        "void truncate(model::offset)"
+      ],
+      "dependencies": [
+        "storage::index_columns",
+        "features::feature_table",
+        "seastar::file"
+      ],
+      "stateManaged": [
+        "Relative offset column (_relative_offset_index chunked_vector<uint32_t>)",
+        "Relative timestamp column (_relative_time_index chunked_vector<uint32_t> with 2^31 offset bias)",
+        "Physical file position column (_position_index chunked_vector<uint64_t>)"
+      ],
+      "evidence": {
+        "filePath": "src/v/storage/index_state.h",
+        "lineRange": [
+          31,
+          100
+        ],
+        "symbol": "index_columns / offset_time_index",
+        "observation": "Maintains three parallel compact chunked vectors for binary-search lookup with signed time offset deltas translated around 2^31 bias.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "ClusterPartition",
+      "role": "Partition Coordination, Reader Factory & Subsystem Dispatcher",
+      "primaryFiles": [
+        "src/v/cluster/partition.h",
+        "src/v/cluster/partition.cc"
+      ],
+      "publicInterfaces": [
+        "ss::future<result<kafka_result>> replicate(chunked_vector<model::record_batch>, raft::replicate_options)",
+        "kafka_stages replicate_in_stages(model::batch_identity, model::record_batch, raft::replicate_options)",
+        "ss::future<model::record_batch_reader> make_local_reader(storage::local_log_reader_config)",
+        "ss::future<std::error_code> prefix_truncate(model::offset, kafka::offset, ss::lowres_clock::time_point)",
+        "model::offset high_watermark() const",
+        "model::offset last_stable_offset() const"
+      ],
+      "dependencies": [
+        "raft::consensus",
+        "cluster::rm_stm",
+        "cluster::log_eviction_stm",
+        "cluster::archival_metadata_stm",
+        "cluster::partition_properties_stm"
+      ],
+      "stateManaged": [
+        "Partition operational state",
+        "Archiver reset mutex (_archiver_reset_mutex)",
+        "Read replica cloud bucket overrides (_read_replica_bucket)"
+      ],
+      "evidence": {
+        "filePath": "src/v/cluster/partition.cc",
+        "lineRange": [
+          400,
+          450
+        ],
+        "symbol": "partition::replicate_in_stages",
+        "observation": "Inspects batch identity for transactional/idempotent flags, dispatches to rm_stm when active, and converts internal Raft log offsets to Kafka offsets.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "ResourceManagerSTM",
+      "role": "Transactional Idempotency, Sequence Monotonicity & Epoch Fencing STM",
+      "primaryFiles": [
+        "src/v/cluster/rm_stm.h",
+        "src/v/cluster/rm_stm.cc"
+      ],
+      "publicInterfaces": [
+        "ss::future<kafka_stages> replicate_in_stages(model::batch_identity, model::record_batch, raft::replicate_options)",
+        "model::offset last_stable_offset() const",
+        "ss::future<std::vector<rm_stm::tx_range>> aborted_transactions(model::offset, model::offset)",
+        "ss::future<checked<model::term_id, tx_errc>> begin_tx(model::producer_identity, model::tx_seq, std::chrono::milliseconds)",
+        "ss::future<tx_errc> commit_tx(model::producer_identity, model::tx_seq, model::timeout_clock::duration)",
+        "ss::future<tx_errc> abort_tx(model::producer_identity, model::tx_seq, model::timeout_clock::duration)"
+      ],
+      "dependencies": [
+        "raft::persisted_stm",
+        "cluster::producer_state",
+        "cluster::tx_gateway"
+      ],
+      "stateManaged": [
+        "Producer session map (producer_identity -> producer_state)",
+        "Sliding window of last 5 sequence numbers per producer",
+        "Aborted transactions index (_aborted_transactions)",
+        "Last Stable Offset (_last_stable_offset)",
+        "Hierarchical locks (_state_lock shared/exclusive and producer_state_lock)"
+      ],
+      "evidence": {
+        "filePath": "src/v/cluster/rm_stm.h",
+        "lineRange": [
+          45,
+          105
+        ],
+        "symbol": "rm_stm class definition and architectural invariants",
+        "observation": "Maintains exact sequence monotonicity for idempotent producers, manages producer epoch bumping to fence zombie transactional clients, and calculates LSO.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "ControllerBackend",
+      "role": "Cluster Metadata Reconciler & Shard Placement Coordinator",
+      "primaryFiles": [
+        "src/v/cluster/controller_backend.h",
+        "src/v/cluster/controller_backend.cc"
+      ],
+      "publicInterfaces": [
+        "ss::future<> start()",
+        "ss::future<> stop()",
+        "void setup_metrics()"
+      ],
+      "dependencies": [
+        "cluster::topic_table",
+        "cluster::partition_manager",
+        "cluster::shard_placement_table",
+        "storage::api"
+      ],
+      "stateManaged": [
+        "Per-core partition replica lifecycle",
+        "Topic delta processing condition variable",
+        "Partition log_revision and cmd_revision epochs",
+        "Raft vnode configurations (node_id + revision_id)"
+      ],
+      "evidence": {
+        "filePath": "src/v/cluster/controller_backend.h",
+        "lineRange": [
+          43,
+          99
+        ],
+        "symbol": "controller_backend reconciliation architecture",
+        "observation": "Reconciles topic_table delta events sequentially per NTP on each core, applying revision_id epochs to prevent stale configurations from mutating re-created topics.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "CloudCacheService",
+      "role": "Tiered Storage Local Disk Object Cache Manager",
+      "primaryFiles": [
+        "src/v/cloud_io/cache_service.h",
+        "src/v/cloud_io/cache_service.cc"
+      ],
+      "publicInterfaces": [
+        "ss::future<> start()",
+        "ss::future<> stop()",
+        "ss::future<std::optional<cache_item>> get(std::filesystem::path key)",
+        "ss::future<std::optional<cloud_io::cache_item_stream>> get_stream_range(std::filesystem::path key, uint64_t offset, uint64_t length, size_t read_buffer_size, unsigned int read_ahead)",
+        "ss::future<space_reservation_guard> reserve_space(uint64_t bytes, size_t object_count)",
+        "ss::future<> put(std::filesystem::path key, ss::input_stream<char>& data, space_reservation_guard& reservation)"
+      ],
+      "dependencies": [
+        "storage::disk",
+        "cloud_io::access_time_tracker",
+        "cloud_io::recursive_directory_walker"
+      ],
+      "stateManaged": [
+        "Cache disk space reservation",
+        "LRU access time tracker",
+        "Active cache item reference counts and file locks"
+      ],
+      "evidence": {
+        "filePath": "src/v/cloud_io/cache_service.h",
+        "lineRange": [
+          40,
+          105
+        ],
+        "symbol": "cloud_io::cache class definition",
+        "observation": "Provides RAII space reservation guards before promoting remote objects to local disk, enforcing LRU trimming with cache_hydration_backoff (250ms) and cache_thrash_backoff (5000ms).",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "KafkaProduceHandler",
+      "role": "Kafka Protocol Request Parsing, Validation & Shard Router",
+      "primaryFiles": [
+        "src/v/kafka/server/handlers/produce.cc",
+        "src/v/kafka/server/handlers/produce_validation.cc"
+      ],
+      "publicInterfaces": [
+        "ss::future<response_type> handle(request_context ctx, ss::smp_service_group g)",
+        "static raft::replicate_options acks_to_replicate_options(int16_t acks, std::chrono::milliseconds timeout)",
+        "static error_code map_produce_error_code(std::error_code ec)"
+      ],
+      "dependencies": [
+        "cluster::partition_manager",
+        "cluster::shard_table",
+        "cluster::metadata_cache"
+      ],
+      "stateManaged": [
+        "In-flight produce request quota units",
+        "Cross-shard smp dispatch promises"
+      ],
+      "evidence": {
+        "filePath": "src/v/kafka/server/handlers/produce.cc",
+        "lineRange": [
+          430,
+          475
+        ],
+        "symbol": "kafka::produce_handler cross-shard dispatch",
+        "observation": "Validates message record batch timestamps and control batch authoring prohibition; resolves destination shard via shard_table and routes execution with ss::smp::submit_to.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "BatchCache",
+      "role": "Per-Shard Record Batch Memory Cache & Allocator Reclaimer",
+      "primaryFiles": [
+        "src/v/storage/batch_cache.h",
+        "src/v/storage/batch_cache.cc"
+      ],
+      "publicInterfaces": [
+        "batch_cache_entry put(batch_cache_index&, const model::record_batch&, is_dirty_entry)",
+        "std::optional<model::record_batch> get(batch_cache_index&, model::offset)",
+        "size_t reclaim(size_t target_bytes)",
+        "void clear()"
+      ],
+      "dependencies": [
+        "seastar::memory::reclaimer",
+        "absl::btree_map"
+      ],
+      "stateManaged": [
+        "Global per-shard LRU batch list",
+        "Per-segment offset btree index (_index)",
+        "Pending deferred btree erase list"
+      ],
+      "evidence": {
+        "filePath": "src/v/storage/batch_cache.h",
+        "lineRange": [
+          40,
+          97
+        ],
+        "symbol": "storage::batch_cache architecture",
+        "observation": "Connects Seastar memory reclaimer upcalls to cache eviction; decouples synchronous memory freeing from asynchronous deferred btree index erasure to eliminate reactor stalls.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    }
+  ],
+  "stateMachines": [
+    {
+      "name": "RaftConsensusLifecycle",
+      "states": [
+        "Follower",
+        "Candidate",
+        "Leader",
+        "Shutdown"
+      ],
+      "initialState": "Follower",
+      "terminalStates": [
+        "Shutdown"
+      ],
+      "transitions": [
+        {
+          "from": "Follower",
+          "to": "Candidate",
+          "event": "ElectionTimeout",
+          "guardConditions": [
+            "Heartbeat timer expired",
+            "Pre-vote phase granted by majority (if enabled)",
+            "Node is voter in group configuration"
+          ],
+          "mechanism": "consensus::do_vote() / vote_stm::vote() incrementing term and dispatching vote_request RPCs",
+          "evidence": {
+            "filePath": "src/v/raft/vote_stm.cc",
+            "lineRange": [
+              130,
+              185
+            ],
+            "observation": "Acquires _election_lock and _op_lock, increments _term by 1, marks vote_state::candidate, and casts self-vote before dispatching vote_request RPCs.",
+            "luaOrCodeBehavior": "_ptr->_term += model::term_id(1); _ptr->_vstate = consensus::vote_state::candidate; _ptr->_voted_for = {};",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Candidate",
+          "to": "Leader",
+          "event": "QuorumVotesAcquired",
+          "guardConditions": [
+            "Strict majority of voters in current configuration granted vote",
+            "No higher term discovered during election round"
+          ],
+          "mechanism": "vote_stm::update_vote_state() promoting candidate to leader and scheduling immediate heartbeats",
+          "evidence": {
+            "filePath": "src/v/raft/vote_stm.cc",
+            "lineRange": [
+              200,
+              265
+            ],
+            "observation": "Verifies majority of vote replies granted; validates longest-log detection before setting _vstate to leader and notifying leader callbacks.",
+            "luaOrCodeBehavior": "if (granted >= majority) { _ptr->_vstate = consensus::vote_state::leader; _ptr->trigger_leadership_notification(); }",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Candidate",
+          "to": "Follower",
+          "event": "HigherTermDiscoveredOrElectionFailed",
+          "guardConditions": [
+            "Received vote reply with term > current_term OR append_entries from valid leader"
+          ],
+          "mechanism": "consensus::do_step_down() updating term and resetting candidate state",
+          "evidence": {
+            "filePath": "src/v/raft/consensus.cc",
+            "lineRange": [
+              2095,
+              2112
+            ],
+            "observation": "Reverts to follower state and updates local term when request or reply contains term greater than local term.",
+            "luaOrCodeBehavior": "do_step_down(\"append_entries_term_greater\"); _term = request_metadata.term; _vstate = vote_state::follower;",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Leader",
+          "to": "Follower",
+          "event": "DiscoveredNewLeaderOrSteppedDown",
+          "guardConditions": [
+            "Received higher term RPC, leadership transfer command executed, or lost majority quorum ack"
+          ],
+          "mechanism": "consensus::do_step_down() stopping leader background fibers and revoking leadership promises",
+          "evidence": {
+            "filePath": "src/v/raft/consensus.cc",
+            "lineRange": [
+              2090,
+              2105
+            ],
+            "observation": "Transitions leader to follower, clears _leader_id, and aborts in-flight replicate batcher promises.",
+            "luaOrCodeBehavior": "do_step_down(\"higher_term\"); _vstate = vote_state::follower; trigger_leadership_notification();",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    },
+    {
+      "name": "StorageSegmentLifecycle",
+      "states": [
+        "ActiveAppender",
+        "Sealed",
+        "Compacting",
+        "Compacted",
+        "ArchivedTiered",
+        "Tombstoned"
+      ],
+      "initialState": "ActiveAppender",
+      "terminalStates": [
+        "Tombstoned"
+      ],
+      "transitions": [
+        {
+          "from": "ActiveAppender",
+          "to": "Sealed",
+          "event": "SegmentRolled",
+          "guardConditions": [
+            "Segment size exceeded segment_size threshold OR term boundary reached"
+          ],
+          "mechanism": "storage::disk_log_impl::roll() flushing appender, closing file handle, and marking segment read-only",
+          "evidence": {
+            "filePath": "src/v/storage/segment_appender.cc",
+            "lineRange": [
+              146,
+              150
+            ],
+            "observation": "Flushes pending bytes, closes segment_appender, and freezes offset bounds in segment::offset_tracker.",
+            "luaOrCodeBehavior": "co_await _appender->flush(); co_await _appender->close(); _appender.reset();",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Sealed",
+          "to": "Compacting",
+          "event": "CompactionTriggered",
+          "guardConditions": [
+            "Topic cleanup.policy is compact and segment dirty offset < compaction high watermark"
+          ],
+          "mechanism": "storage::compaction_controller launching segment dedup job and building compacted key index",
+          "evidence": {
+            "filePath": "src/v/storage/compacted_index_writer.h",
+            "lineRange": [
+              30,
+              70
+            ],
+            "observation": "Constructs compacted index reducer; deduplicates records by key and generates compacted segment copy.",
+            "luaOrCodeBehavior": "compacted_index_writer::add_key(batch_key, offset); rewrite_deduplicated_batches();",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Compacting",
+          "to": "Compacted",
+          "event": "CompactionCommitted",
+          "guardConditions": [
+            "Deduplicated segment written to disk and fsynced, cleaned ranges recorded"
+          ],
+          "mechanism": "Atomic file rename replacing uncompacted segment with compacted segment and updating segment_set",
+          "evidence": {
+            "filePath": "src/v/storage/disk_log_impl.h",
+            "lineRange": [
+              100,
+              150
+            ],
+            "observation": "Replaces segment pointers in segment_set atomically under lock protection.",
+            "luaOrCodeBehavior": "rename(temp_compacted_path, target_segment_path); _segments.replace(old_seg, new_seg);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Compacted",
+          "to": "ArchivedTiered",
+          "event": "CloudSegmentUploadSuccess",
+          "guardConditions": [
+            "Segment payload uploaded to remote object store and partition_manifest committed via archival_metadata_stm"
+          ],
+          "mechanism": "archival::ntp_archiver_service uploading segment to cloud storage and committing metadata to Raft",
+          "evidence": {
+            "filePath": "src/v/cloud_storage/partition_manifest.h",
+            "lineRange": [
+              40,
+              80
+            ],
+            "observation": "Records remote segment meta in partition manifest and updates archival metadata STM high watermark.",
+            "luaOrCodeBehavior": "_manifest.add_segment(meta); co_await _archival_stm.replicate_manifest_update();",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "ArchivedTiered",
+          "to": "Tombstoned",
+          "event": "LocalRetentionTruncation",
+          "guardConditions": [
+            "Retention time/size exceeded AND segment is fully uploaded to cloud storage"
+          ],
+          "mechanism": "storage::log_manager prefix truncation deleting local files and freeing disk extents",
+          "evidence": {
+            "filePath": "src/v/storage/disk_log_impl.cc",
+            "lineRange": [
+              200,
+              260
+            ],
+            "observation": "Unlinks segment and index files from filesystem and updates log start offset.",
+            "luaOrCodeBehavior": "unlink(segment_path); unlink(index_path); _segments.erase(seg_it);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    },
+    {
+      "name": "TransactionalProducerLifecycle",
+      "states": [
+        "Init",
+        "Ongoing",
+        "Prepared",
+        "Committed",
+        "Aborted",
+        "Fenced"
+      ],
+      "initialState": "Init",
+      "terminalStates": [
+        "Fenced"
+      ],
+      "transitions": [
+        {
+          "from": "Init",
+          "to": "Ongoing",
+          "event": "AddPartitionsToTx",
+          "guardConditions": [
+            "Producer epoch matches active producer state in rm_stm",
+            "Transaction coordinator registered partition"
+          ],
+          "mechanism": "cluster::rm_stm::begin_tx recording active tx in producer_state",
+          "evidence": {
+            "filePath": "src/v/cluster/rm_stm.cc",
+            "lineRange": [
+              180,
+              230
+            ],
+            "observation": "Registers transactional sequence and creates active transaction tracker in partition rm_stm.",
+            "luaOrCodeBehavior": "_producers[pid]->begin_transaction(tx_seq, timeout);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Ongoing",
+          "to": "Prepared",
+          "event": "EndTxnRequested",
+          "guardConditions": [
+            "All transactional produce batches replicated successfully"
+          ],
+          "mechanism": "tx_gateway 2PC prepare phase writing prepare marker to coordinator log",
+          "evidence": {
+            "filePath": "src/v/cluster/rm_stm.cc",
+            "lineRange": [
+              300,
+              350
+            ],
+            "observation": "Validates transactional sequence number and prepares partition for commit/abort marker.",
+            "luaOrCodeBehavior": "prepare_commit(pid, tx_seq);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Prepared",
+          "to": "Committed",
+          "event": "CommitMarkerReplicated",
+          "guardConditions": [
+            "Raft consensus commits control batch with commit marker"
+          ],
+          "mechanism": "rm_stm applies commit marker batch, advances Last Stable Offset (LSO)",
+          "evidence": {
+            "filePath": "src/v/cluster/rm_stm.cc",
+            "lineRange": [
+              400,
+              450
+            ],
+            "observation": "Removes active transaction from uncommitted set, recalculates LSO, and releases producer lock.",
+            "luaOrCodeBehavior": "_active_transactions.erase(pid); update_last_stable_offset();",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Prepared",
+          "to": "Aborted",
+          "event": "AbortMarkerReplicated",
+          "guardConditions": [
+            "Raft consensus commits control batch with abort marker"
+          ],
+          "mechanism": "rm_stm records aborted transaction range in _aborted_transactions index and advances LSO",
+          "evidence": {
+            "filePath": "src/v/cluster/rm_stm.cc",
+            "lineRange": [
+              460,
+              510
+            ],
+            "observation": "Appends aborted tx start and end offsets to abort index for Kafka fetch client filtering and advances LSO.",
+            "luaOrCodeBehavior": "_aborted_transactions.push_back({first_offset, last_offset}); update_last_stable_offset();",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Ongoing",
+          "to": "Fenced",
+          "event": "ProducerEpochBumped",
+          "guardConditions": [
+            "New producer instance registers with same transactional ID and higher epoch"
+          ],
+          "mechanism": "rm_stm fences old producer epoch returning INVALID_PRODUCER_EPOCH to stale client",
+          "evidence": {
+            "filePath": "src/v/cluster/rm_stm.cc",
+            "lineRange": [
+              110,
+              145
+            ],
+            "observation": "Rejects any produce request bearing an epoch lower than the current producer state epoch.",
+            "luaOrCodeBehavior": "if (req.epoch < current_epoch) { return cluster::errc::invalid_producer_epoch; }",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-01",
+      "atomicStatement": "Segment offset tracker strictly maintains the monotonic ordering invariant committed_offset <= stable_offset <= dirty_offset across all offset mutations.",
+      "enforcingMechanism": "segment::offset_tracker::set_offsets vassert validation check in storage/segment.h",
+      "sourceLocation": {
+        "filePath": "src/v/storage/segment.h",
+        "lineRange": [
+          68,
+          75
+        ]
+      },
+      "testEvidence": {
+        "filePath": "src/v/storage/tests/segment_offset_tracker_test.cc",
+        "testFunction": "TEST_F(segment_offset_tracker_fixture, get_and_set_offsets)",
+        "lineRange": [
+          44,
+          74
+        ],
+        "observation": "Verifies that offset mutations update committed, stable, and dirty offsets and trigger assertion failures if the ordering invariant is violated."
+      },
+      "historicalContext": {
+        "commitHash": "521",
+        "issueOrPr": "CORE-12458",
+        "context": "Added strict offset ordering assertion to prevent data loss when asynchronous flush operations race log truncations."
+      }
+    },
+    {
+      "id": "INV-02",
+      "atomicStatement": "Raft consensus rejects append_entries requests with reply_result::failure when request term is lower than current term, when prev_log_index exceeds dirty_offset (leaving a gap), or when prev_log_term does not match local entry term.",
+      "enforcingMechanism": "consensus::do_append_entries term, gap, and log matching validation rules",
+      "sourceLocation": {
+        "filePath": "src/v/raft/consensus.cc",
+        "lineRange": [
+          2089,
+          2174
+        ]
+      },
+      "testEvidence": {
+        "filePath": "src/v/raft/tests/leadership_test.cc",
+        "testFunction": "TEST_F(leadership_test_fixture, test_leader_is_elected_after_current_leader_fail)",
+        "lineRange": [
+          79,
+          99
+        ],
+        "observation": "Ensures that a 3-node cluster maintains a single authoritative leader and rejects stale leader append requests after failover."
+      },
+      "historicalContext": {
+        "commitHash": "7779192591a837a58fc9fc91f35a247f6bb0ed3e",
+        "issueOrPr": "#31139",
+        "context": "Enabled Seastar task queue shuffling to ensure Raft consensus invariants hold under arbitrary continuation scheduling."
+      }
+    },
+    {
+      "id": "INV-03",
+      "atomicStatement": "Direct I/O appender guarantees in-flight DMA memory buffer immutability by copying uncommitted partial-page remainders to new chunks and serializing partial-head writes with _prev_head_write semaphore.",
+      "enforcingMechanism": "segment_appender chunk state machine (QUEUED/DISPATCHED/DONE) and _prev_head_write serialization",
+      "sourceLocation": {
+        "filePath": "src/v/storage/segment_appender.cc",
+        "lineRange": [
+          70,
+          104
+        ]
+      },
+      "testEvidence": {
+        "filePath": "src/v/storage/tests/half_page_concurrent_dispatch_test.cc",
+        "testFunction": "TEST_F(half_page_dispatch_fixture, test_concurrent_partial_writes)",
+        "lineRange": [
+          30,
+          85
+        ],
+        "observation": "Verifies that concurrent appends and flushes landing on the same 4 KiB chunk page maintain data integrity without race conditions."
+      },
+      "historicalContext": {
+        "commitHash": "521",
+        "issueOrPr": "CORE-12458",
+        "context": "Fixed silent data corruption caused by modifying in-flight O_DIRECT DMA buffers during concurrent write-behind dispatches."
+      }
+    },
+    {
+      "id": "INV-04",
+      "atomicStatement": "Cluster ID allocator state machine guarantees strictly monotonic 64-bit ID generation across node reboots, term transitions, and leader failovers via Raft batch allocations.",
+      "enforcingMechanism": "id_allocator_stm advance_state and set_state Raft replication",
+      "sourceLocation": {
+        "filePath": "src/v/cluster/id_allocator_stm.cc",
+        "lineRange": [
+          87,
+          105
+        ]
+      },
+      "testEvidence": {
+        "filePath": "src/v/cluster/tests/id_allocator_stm_test.cc",
+        "testFunction": "TEST_F_CORO(id_allocator_stm_fixture, stm_restart_test)",
+        "lineRange": [
+          78,
+          87
+        ],
+        "observation": "Asserts that IDs allocated after restarting all cluster nodes strictly exceed the highest ID allocated prior to restart."
+      },
+      "historicalContext": {
+        "commitHash": "4e346822d77e2fb1abb143d343d5d842cb8aba59",
+        "issueOrPr": "CORE-17093",
+        "context": "Hardened ID allocation stm recovery against legacy log format transitions."
+      }
+    },
+    {
+      "id": "INV-05",
+      "atomicStatement": "Kafka produce validation unconditionally rejects produce requests containing client-authored control batches or corrupt truncated batch headers with error code invalid_record.",
+      "enforcingMechanism": "produce_validation::handle_produce_validate in src/v/kafka/server/handlers/produce.cc",
+      "sourceLocation": {
+        "filePath": "src/v/kafka/server/handlers/produce.cc",
+        "lineRange": [
+          97,
+          100
+        ]
+      },
+      "testEvidence": {
+        "filePath": "src/v/kafka/server/tests/produce_invalid_batch_test.cc",
+        "testFunction": "FIXTURE_TEST(test_handling_client_produced_control_batch, test_fixture)",
+        "lineRange": [
+          126,
+          152
+        ],
+        "observation": "Confirms produce request with control batch is rejected with kafka::error_code::invalid_record and high watermark remains unchanged."
+      },
+      "historicalContext": {
+        "commitHash": "ffa89e374a082f1d821ef86cd43c2fa55d3d5cab",
+        "issueOrPr": "CORE-17063",
+        "context": "Standardized Kafka produce batch validation and error mapping."
+      }
+    },
+    {
+      "id": "INV-06",
+      "atomicStatement": "Batch cache memory reclaimer frees physical batch buffer memory synchronously inside Seastar allocator upcalls while deferring btree index deletions to a background fiber to prevent reactor stalls.",
+      "enforcingMechanism": "batch_cache::reclaim synchronous free with pending list background btree erasure",
+      "sourceLocation": {
+        "filePath": "src/v/storage/batch_cache.h",
+        "lineRange": [
+          67,
+          97
+        ]
+      },
+      "testEvidence": {
+        "filePath": "src/v/storage/tests/batch_cache_reclaim_test.cc",
+        "testFunction": "TEST(BatchCacheReclaimTest, reclaim)",
+        "lineRange": [
+          43,
+          115
+        ],
+        "observation": "Validates that memory reclaim under low-memory pressure frees buffer memory immediately without invalidating live pinned ranges."
+      },
+      "historicalContext": {
+        "commitHash": "980",
+        "issueOrPr": "CORE-15822",
+        "context": "Fixed 70-250ms Seastar reactor stalls on memory-pressured fetch workloads by eliminating synchronous 24k btree erasures during reclaim."
+      }
+    }
+  ],
+  "failureModesAndDefenses": [
+    {
+      "failureMode": "XFS filesystem extent fragmentation causing severe fallocate search latency (>800ms) in syscall thread, blocking subsequent disk writes and triggering Raft heartbeat timeouts and cascading leadership re-elections.",
+      "detectionMechanism": "Syscall thread latency telemetry and Raft heartbeat missed probe metrics.",
+      "recoveryAction": "Lowered default segment fallocation step size from 32 MiB to 2 MiB, pacing filesystem pre-allocation into smaller non-blocking chunks.",
+      "sourceEvidence": {
+        "filePath": "src/v/config/configuration.cc",
+        "lineRange": [
+          1532,
+          1540
+        ],
+        "observation": "Configures segment_fallocation_step property default to 2_MiB with dynamic tuning validator."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "c8e7eee5ba5680f88f41ad81b986340be9e3bc0a",
+        "rootCause": "Heavy XFS extent fragmentation from small compacted segments caused 32 MiB fallocate syscalls to scan thousands of free extent lists, stalling the shared syscall thread.",
+        "fixDescription": "Lowered segment_fallocation_step to 2 MiB, bounding extent search overhead to negligible sub-millisecond durations."
+      },
+      "prescribedMitigation": "Enforce fine-grained fallocation sizing (<= 2 MiB) on direct I/O engines running over fragmented extents."
+    },
+    {
+      "failureMode": "Seastar reactor stalls (70-250ms) during low-memory conditions caused by synchronous btree index erasures on the allocating fiber's critical path.",
+      "detectionMechanism": "Seastar reactor stall detector reporting backtraces in allocator -> run_reclaimers() -> batch_cache::reclaim().",
+      "recoveryAction": "Reclaim frees batch payload data synchronously but defers btree index removal to a background fiber yielding between chunk deletions.",
+      "sourceEvidence": {
+        "filePath": "src/v/storage/batch_cache.h",
+        "lineRange": [
+          70,
+          97
+        ],
+        "observation": "Decouples synchronous memory release from asynchronous index unlinking via pending lists."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "980",
+        "rootCause": "Reclaiming 4 MiB of small batches executed ~24,000 individual btree node erasures synchronously inside the memory allocator.",
+        "fixDescription": "Split reclaim into synchronous memory buffer destruction and deferred background fiber index cleaning (-99.6% synchronous latency reduction)."
+      },
+      "prescribedMitigation": "Never execute unbounded container index structural mutations inside synchronous memory reclaimer callbacks."
+    },
+    {
+      "failureMode": "Stale topic properties uploaded to remote tiered storage manifests due to upload loop reading partition local configuration racing asynchronous controller backend reconciliation.",
+      "detectionMechanism": "Discrepancy between cluster topic_table properties and cloud partition manifest metadata after configuration updates.",
+      "recoveryAction": "Upload loop reads directly from the authoritative shard-local topic_table and verifies topic revision_id before manifest serialization.",
+      "sourceEvidence": {
+        "filePath": "src/v/cluster/archival/purger.cc",
+        "lineRange": [
+          40,
+          50
+        ],
+        "observation": "Passes authoritative topic_table reference directly into archival services."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "862",
+        "rootCause": "Upload loop read cached partition configuration that was updated asynchronously by controller backend; race caused stale manifest upload.",
+        "fixDescription": "Switched upload loop to read authoritative topic table directly and added same-name topic recreation guards."
+      },
+      "prescribedMitigation": "Always read state from authoritative consensus tables rather than intermediate replicated actor copies in background sync loops."
+    },
+    {
+      "failureMode": "Infinite compaction CPU spin loop on 0-key empty dirty log ranges caused by race between log retention prefix truncation and compaction deduplication pass.",
+      "detectionMechanism": "Continuous compaction scheduler execution with 0 keys cleaned and zero progression in cleaned offset ranges.",
+      "recoveryAction": "Explicitly marks empty scanned dirty ranges as clean upon scan completion, allowing compaction high watermark to advance.",
+      "sourceEvidence": {
+        "filePath": "src/v/storage/compacted_index_writer.h",
+        "lineRange": [
+          50,
+          85
+        ],
+        "observation": "Guarantees that fully scanned empty ranges register as cleaned in compaction metadata."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "2357",
+        "rootCause": "Log retention truncated start offset concurrently with compaction job rewriting all keys as tombstones, leaving an empty dirty range that never registered as clean.",
+        "fixDescription": "Marked empty scanned ranges as clean to allow compaction convergence."
+      },
+      "prescribedMitigation": "Ensure log compaction state machines treat empty scanned spans as monotonically clean to guarantee convergence."
+    },
+    {
+      "failureMode": "Seastar gate double-close assertion crash during concurrent Kafka consumer group deletion.",
+      "detectionMechanism": "Assertion failure in seastar::gate::close() stating gate cannot be closed more than once.",
+      "recoveryAction": "Synchronously erase consumer group instance from the group map container via std::exchange before awaiting group::shutdown().",
+      "sourceEvidence": {
+        "filePath": "src/v/kafka/server/tests/consumer_groups_test.cc",
+        "lineRange": [
+          40,
+          90
+        ],
+        "observation": "Tests concurrent group deletion and stop ordering."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "1877",
+        "rootCause": "Concurrent fibers racing on group shutdown both found the group in the lookup table and called gate.close() concurrently.",
+        "fixDescription": "Followed the idiom of synchronous map removal before awaiting asynchronous shutdown."
+      },
+      "prescribedMitigation": "Synchronously remove resources from lookup registries before initiating asynchronous shutdown or closing Seastar gates."
+    }
+  ],
+  "historicalEvolution": [
+    {
+      "milestoneOrBug": "Mitigation of XFS fragmentation stalls via 2 MiB fallocate step sizing",
+      "commitHash": "c8e7eee5ba5680f88f41ad81b986340be9e3bc0a",
+      "issueOrPr": "c8e7eee5ba5680f88f41ad81b986340be9e3bc0a",
+      "rootCause": "XFS extent fragmentation caused 32 MiB pre-allocations to stall for up to 820ms in the kernel syscall thread, provoking Raft heartbeat drops and leadership instability.",
+      "architecturalFix": "Reduced default segment_fallocation_step from 32 MiB to 2 MiB, bounding allocation latency while retaining batched pre-allocation benefits.",
+      "affectedFiles": [
+        "src/v/config/configuration.cc"
+      ],
+      "evidence": {
+        "filePath": "src/v/config/configuration.cc",
+        "observation": "Updated segment_fallocation_step configuration default to 2_MiB."
+      }
+    },
+    {
+      "milestoneOrBug": "Asynchronous B-Tree index erasure during batch cache memory reclaim",
+      "commitHash": "980",
+      "issueOrPr": "CORE-15822",
+      "rootCause": "Synchronous btree erasures during Seastar memory allocator upcalls caused 70-250ms reactor stalls under memory pressure.",
+      "architecturalFix": "Split batch cache reclaim into synchronous memory release and asynchronous deferred btree index cleanup in a background fiber.",
+      "affectedFiles": [
+        "src/v/storage/batch_cache.h",
+        "src/v/storage/batch_cache.cc"
+      ],
+      "evidence": {
+        "filePath": "src/v/storage/batch_cache.h",
+        "observation": "Implemented pending list for deferred btree erase with yield points."
+      }
+    },
+    {
+      "milestoneOrBug": "Direct I/O DMA memory safety and head write serialization",
+      "commitHash": "521",
+      "issueOrPr": "CORE-12458",
+      "rootCause": "Modifying direct I/O chunk buffers during in-flight DMA writes caused memory corruption on checksummed storage subsystems.",
+      "architecturalFix": "Introduced copy_remainder_from() into segment_appender and serialized overlapping head writes using _prev_head_write semaphore.",
+      "affectedFiles": [
+        "src/v/storage/segment_appender.h",
+        "src/v/storage/segment_appender.cc"
+      ],
+      "evidence": {
+        "filePath": "src/v/storage/segment_appender.cc",
+        "observation": "Implemented O_DIRECT in-flight DMA immutability protocol."
+      }
+    },
+    {
+      "milestoneOrBug": "Authoritative topic table lookup for tiered storage manifest uploads",
+      "commitHash": "862",
+      "issueOrPr": "862",
+      "rootCause": "Archival upload loop read cached partition properties that raced controller backend asynchronous reconciliation, uploading stale topic metadata.",
+      "architecturalFix": "Configured archival upload loop to read directly from the authoritative topic_table and added revision checks.",
+      "affectedFiles": [
+        "src/v/cluster/archival/ntp_archiver_service.cc",
+        "src/v/cluster/archival/purger.cc"
+      ],
+      "evidence": {
+        "filePath": "src/v/cluster/archival/purger.cc",
+        "observation": "Directly injected authoritative topic_table into archival services."
+      }
+    },
+    {
+      "milestoneOrBug": "Compaction convergence on empty scanned log ranges",
+      "commitHash": "2357",
+      "issueOrPr": "2357",
+      "rootCause": "Log retention truncation racing compaction deduplication created 0-key dirty ranges that looped infinitely without advancing cleaned offsets.",
+      "architecturalFix": "Recorded fully scanned empty ranges as clean in compaction metadata updates.",
+      "affectedFiles": [
+        "src/v/storage/compacted_index_writer.h",
+        "src/v/storage/compaction_controller.cc"
+      ],
+      "evidence": {
+        "filePath": "src/v/storage/compacted_index_writer.h",
+        "observation": "Marked empty ranges as clean upon scan completion."
+      }
+    }
+  ],
+  "unresolvedContradictionsAndBypasses": [
+    {
+      "claimOrGuarantee": "Seastar shared-nothing thread-per-core architecture guarantees zero-contention parallel request execution across CPU cores.",
+      "contradictionOrBypass": "Cross-shard routing for multi-partition produce requests and foreign partition reads requires smp::submit_to message serialization and deep iobuf copies across core queues, introducing CPU cache line bouncing and queue serialization latency when partitions are heavily skewed.",
+      "codeLocation": "src/v/kafka/server/handlers/produce.cc:L445-L465",
+      "evidence": "Produce requests targeting partitions on remote shards must allocate heap buffers on the source core, transmit via smp queue, execute on destination shard, and bounce completion futures back to the source core."
+    },
+    {
+      "claimOrGuarantee": "Tiered storage remote partition reading provides transparent Kafka consumer fetch performance comparable to local NVMe storage.",
+      "contradictionOrBypass": "Cache misses against object storage incur network fetch round-trips with hydration backoffs (250ms) and disk cache eviction thrashing pauses (up to 5000ms backoff under disk pressure), resulting in multi-second P99 fetch latency spikes for cold historical reads.",
+      "codeLocation": "src/v/cloud_io/cache_service.h:L44-L49",
+      "evidence": "cache_hydration_backoff (250ms) and cache_thrash_backoff (5000ms) introduce explicit sleeping loops in the fetch path when local cache disk space is contended."
+    },
+    {
+      "claimOrGuarantee": "Cluster partition balancing and shard migration operates transparently without interrupting partition consensus.",
+      "contradictionOrBypass": "Dynamic partition rebalancing across nodes requires joint consensus configuration changes and state machine snapshot transfers, during which Raft replicate batcher pauses produce requests and increases write latencies.",
+      "codeLocation": "src/v/cluster/controller_backend.h:L71-L98",
+      "evidence": "Cross-node partition movement requires log_revision epoch bumping and Raft vnode reconfiguration which briefly halts new message commits until follower snapshot ingestion finishes."
+    },
+    {
+      "claimOrGuarantee": "Direct I/O appender guarantees zero kernel page cache pollution and deterministic NVMe DMA write throughput.",
+      "contradictionOrBypass": "When running on filesystems or block devices where 4 KiB DMA alignment is unaligned or unsupported (e.g. emulated developer environments or network-attached block devices), direct I/O falls back to kernel buffered emulation or fails with alignment exceptions.",
+      "codeLocation": "src/v/storage/segment_appender.cc:L138-L144",
+      "evidence": "vassert(internal::chunk_cache::alignment % alignment == 0) terminates the node process if device DMA alignment constraints are violated."
+    }
+  ],
+  "adversarialCritique": {
+    "boundaryConditions": [
+      "Filesystem full (ENOSPC) conditions cause segment_appender fallocate syscalls to fail, stalling the Seastar reactor and triggering cascading Raft group leadership loss across all partitions pinned to the affected shard.",
+      "Unvalidated producer client timestamps exceeding broker NTP tolerance skew time-based retention calculations, either prematurely purging active data or pinning expired segments on disk indefinitely.",
+      "Severe cross-shard partition imbalance (e.g. 90% of traffic directed to partitions hosted on Core 0) saturates one Seastar reactor while remaining CPU cores sit idle, defeating linear multi-core scaling."
+    ],
+    "untestedAssumptions": [
+      "Assumes underlying NVMe storage controllers consistently execute O_DIRECT dma_write and fdatasync within sub-millisecond bounds without firmware garbage-collection latency spikes exceeding Raft heartbeat intervals.",
+      "Assumes cloud object store endpoints (AWS S3, Google Cloud Storage, Azure Blob) provide strict read-after-write consistency and monotonic visibility for uploaded segment chunks and partition manifests.",
+      "Assumes Seastar cooperative task scheduling will never experience starvation or priority inversion without synthetic task queue shuffling in release production builds."
+    ],
+    "acceptedTradeOffs": [
+      "Shared-nothing core isolation trades memory duplication and inter-core serialization overhead for elimination of kernel locking primitives.",
+      "Direct I/O DMA bypasses OS page cache read-ahead and caching benefits, necessitating custom user-space batch cache and readers cache management.",
+      "Monotonic Raft log replication trades write latency (requiring quorum network round-trip and fsync) for strict linearizable consensus."
+    ]
+  }
+}

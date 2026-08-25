@@ -1,0 +1,866 @@
+{
+  "repoName": "maragudk/goqite",
+  "domain": "message_queues",
+  "gitCommitHash": "471f9d49ce356737fc756a287007d7b4c54c61e1",
+  "analyzedAt": "2026-08-22T15:35:00.000Z",
+  "overview": {
+    "purpose": "Persistent, lightweight message queue and background job runner in Go backed by SQLite (and PostgreSQL) inspired by AWS SQS, providing transactional enqueue/dequeue, visibility timeouts, priority ordering, and automatic heartbeat lease extensions without external broker dependencies.",
+    "architectureType": "Single-table RDBMS-backed task queue leveraging atomic single-statement UPDATE ... RETURNING queries with visibility timeout leases, in-process polling tickers, and serializable transactional semantics.",
+    "keyDifferentiators": [
+      "Zero non-test dependencies; operates directly against standard database/sql interfaces with bring-your-own driver support for SQLite (mattn/go-sqlite3) and PostgreSQL (pgx).",
+      "Atomic dequeue without explicit transaction lock steps via single-statement UPDATE goqite SET timeout = ?, received = received + 1 WHERE id = (SELECT id ... LIMIT 1) RETURNING id, body.",
+      "First-class ACID integration supporting atomic enqueue/dequeue within caller-provided sql.Tx transactions (enabling transactional outbox patterns).",
+      "Autonomous background heartbeat renewal in jobs.Runner that extends visibility leases at 80% (4/5) of the timeout duration to prevent duplicate execution during long-running tasks.",
+      "Dual database dialect support (SQLite and PostgreSQL) with strict typing, randomized hex ID defaults (randomblob/pgcrypto), and automatic updated timestamp triggers."
+    ]
+  },
+  "components": [
+    {
+      "name": "Queue",
+      "role": "Core Queue Broker & Storage Interface",
+      "primaryFiles": [
+        "goqite.go",
+        "schema_sqlite.sql",
+        "schema_postgres.sql"
+      ],
+      "publicInterfaces": [
+        "New(opts NewOpts) *Queue",
+        "Send(ctx context.Context, m Message) error",
+        "SendTx(ctx context.Context, tx *sql.Tx, m Message) error",
+        "SendAndGetID(ctx context.Context, m Message) (ID, error)",
+        "SendAndGetIDTx(ctx context.Context, tx *sql.Tx, m Message) (ID, error)",
+        "Receive(ctx context.Context) (*Message, error)",
+        "ReceiveTx(ctx context.Context, tx *sql.Tx) (*Message, error)",
+        "ReceiveAndWait(ctx context.Context, interval time.Duration) (*Message, error)",
+        "Extend(ctx context.Context, id ID, delay time.Duration) error",
+        "ExtendTx(ctx context.Context, tx *sql.Tx, id ID, delay time.Duration) error",
+        "Delete(ctx context.Context, id ID) error",
+        "DeleteTx(ctx context.Context, tx *sql.Tx, id ID) error"
+      ],
+      "dependencies": [
+        "database/sql",
+        "maragu.dev/goqite/internal/sql"
+      ],
+      "stateManaged": [
+        "Queue configuration parameters (name, maxReceive, timeout, flavor)",
+        "Single-table message state: id, created, updated, queue, body, timeout, received, priority"
+      ],
+      "evidence": {
+        "filePath": "goqite.go",
+        "lineRange": [
+          40,
+          215
+        ],
+        "symbol": "goqite.New / Queue.ReceiveTx",
+        "observation": "Constructs Queue instance with default maxReceive=3 and timeout=5s, and executes atomic single-statement UPDATE ... RETURNING query over the goqite table selecting the highest priority and oldest visible message.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Job Runner",
+      "role": "Background Worker Pool & Lease Extender",
+      "primaryFiles": [
+        "jobs/runner.go"
+      ],
+      "publicInterfaces": [
+        "NewRunner(opts NewRunnerOpts) *Runner",
+        "Start(ctx context.Context)",
+        "Register(name string, job Func)",
+        "Create(ctx context.Context, q *goqite.Queue, name string, m goqite.Message) (goqite.ID, error)",
+        "CreateTx(ctx context.Context, tx *sql.Tx, q *goqite.Queue, name string, m goqite.Message) (goqite.ID, error)"
+      ],
+      "dependencies": [
+        "maragu.dev/goqite",
+        "database/sql",
+        "encoding/gob",
+        "sync"
+      ],
+      "stateManaged": [
+        "Registered job function registry (map[string]Func)",
+        "Active concurrency counter and limit (jobCount, jobCountLimit protected by sync.RWMutex)",
+        "In-flight worker goroutines (sync.WaitGroup)",
+        "Per-job visibility timeout extension tickers"
+      ],
+      "evidence": {
+        "filePath": "jobs/runner.go",
+        "lineRange": [
+          82,
+          199
+        ],
+        "symbol": "jobs.Runner.Start / Runner.receiveAndRun",
+        "observation": "Polls queue using ReceiveAndWait, decodes Gob-marshaled job envelopes, validates job registration, bounds concurrency via mutex-guarded jobCount, spawns heartbeat extension goroutines at 4/5 extend intervals, executes jobs with panic recovery, and deletes completed messages.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "HTTP Handler",
+      "role": "REST Gateway & HTTP Long-Polling Interface",
+      "primaryFiles": [
+        "http/handler.go"
+      ],
+      "publicInterfaces": [
+        "NewHandler(q queue) http.HandlerFunc"
+      ],
+      "dependencies": [
+        "net/http",
+        "encoding/json",
+        "maragu.dev/goqite"
+      ],
+      "stateManaged": [
+        "HTTP request/response encoding and decoding",
+        "Query parameter validation (timeout <= 20s, interval <= timeout)",
+        "HTTP status mapping (200 OK, 204 No Content, 400 Bad Request, 500 Internal Server Error)"
+      ],
+      "evidence": {
+        "filePath": "http/handler.go",
+        "lineRange": [
+          34,
+          149
+        ],
+        "symbol": "http.NewHandler",
+        "observation": "Maps HTTP GET (with optional long-polling timeout/interval query parameters), POST (send), PUT (extend), and DELETE (delete) methods directly to the underlying queue interface.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Transaction Executor",
+      "role": "ACID Transaction & Panic Rollback Manager",
+      "primaryFiles": [
+        "internal/sql/tx.go"
+      ],
+      "publicInterfaces": [
+        "InTx(ctx context.Context, db *sql.DB, cb func(*sql.Tx) error) error"
+      ],
+      "dependencies": [
+        "database/sql"
+      ],
+      "stateManaged": [
+        "Transaction lifecycle (BeginTx, Commit, Rollback)",
+        "Serializable isolation level (sql.LevelSerializable)"
+      ],
+      "evidence": {
+        "filePath": "internal/sql/tx.go",
+        "lineRange": [
+          9,
+          38
+        ],
+        "symbol": "internalsql.InTx",
+        "observation": "Starts transactions with Isolation: sql.LevelSerializable, catches panics to safely roll back transactions before re-panicking, and ensures error propagation triggers clean rollbacks.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Storage Schema",
+      "role": "RDBMS Table DDL & Triggers",
+      "primaryFiles": [
+        "schema_sqlite.sql",
+        "schema_postgres.sql"
+      ],
+      "publicInterfaces": [
+        "Table: goqite",
+        "Trigger: goqite_updated_timestamp",
+        "Index: goqite_queue_priority_created_idx"
+      ],
+      "dependencies": [
+        "SQLite 3.37+ (STRICT tables, RETURNING)",
+        "PostgreSQL 13+ (pgcrypto, timestamptz, RETURNING)"
+      ],
+      "stateManaged": [
+        "Columns: id (TEXT PRIMARY KEY), created (TEXT/TIMESTAMPTZ), updated (TEXT/TIMESTAMPTZ), queue (TEXT), body (BLOB/BYTEA), timeout (TEXT/TIMESTAMPTZ), received (INTEGER), priority (INTEGER)",
+        "Composite index on (queue, priority DESC, created)"
+      ],
+      "evidence": {
+        "filePath": "schema_sqlite.sql",
+        "lineRange": [
+          1,
+          17
+        ],
+        "symbol": "goqite table DDL / goqite_queue_priority_created_idx",
+        "observation": "Declares STRICT SQLite table with 16-byte random hex default IDs, ISO8601 UTC timestamp defaults via strftime('%Y-%m-%dT%H:%M:%fZ'), an AFTER UPDATE trigger maintaining updated timestamps, and a composite index for priority/FIFO dequeue optimization.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    }
+  ],
+  "stateMachines": [
+    {
+      "name": "MessageLifecycle",
+      "states": [
+        "Delayed",
+        "Ready",
+        "Invisible",
+        "Completed",
+        "PoisonExhausted"
+      ],
+      "initialState": "Ready",
+      "terminalStates": [
+        "Completed",
+        "PoisonExhausted"
+      ],
+      "transitions": [
+        {
+          "from": "Initial",
+          "to": "Delayed",
+          "event": "Send with Delay > 0",
+          "guardConditions": [
+            "m.Delay > 0"
+          ],
+          "mechanism": "INSERT INTO goqite (queue, body, timeout, priority) VALUES (?, ?, ?, ?) with timeout = now + delay",
+          "evidence": {
+            "filePath": "goqite.go",
+            "lineRange": [
+              121,
+              144
+            ],
+            "observation": "SendAndGetIDTx calculates timeout = time.Now().UTC().Add(m.Delay) and inserts message row with future timeout timestamp.",
+            "luaOrCodeBehavior": "INSERT INTO goqite (queue, body, timeout, priority) VALUES (?, ?, ?, ?) RETURNING id",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Initial",
+          "to": "Ready",
+          "event": "Send with Delay == 0",
+          "guardConditions": [
+            "m.Delay == 0"
+          ],
+          "mechanism": "INSERT INTO goqite (queue, body, timeout, priority) VALUES (?, ?, ?, ?) with timeout = now",
+          "evidence": {
+            "filePath": "goqite.go",
+            "lineRange": [
+              121,
+              144
+            ],
+            "observation": "SendAndGetIDTx calculates timeout = time.Now().UTC() and inserts message row immediately eligible for dequeue.",
+            "luaOrCodeBehavior": "INSERT INTO goqite (queue, body, timeout, priority) VALUES (?, ?, ?, ?) RETURNING id",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Delayed",
+          "to": "Ready",
+          "event": "Delay Timer Expiration",
+          "guardConditions": [
+            "now >= timeout",
+            "received < maxReceive"
+          ],
+          "mechanism": "Time progression makes message match WHERE ? >= timeout in subquery",
+          "evidence": {
+            "filePath": "goqite.go",
+            "lineRange": [
+              171,
+              180
+            ],
+            "observation": "Subquery filter ? >= timeout matches previously delayed message once current timestamp passes the delay expiration timestamp.",
+            "luaOrCodeBehavior": "WHERE queue = ? AND ? >= timeout AND received < ? ORDER BY priority DESC, created LIMIT 1",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Ready",
+          "to": "Invisible",
+          "event": "Receive / Dequeue",
+          "guardConditions": [
+            "now >= timeout",
+            "received < maxReceive"
+          ],
+          "mechanism": "Atomic UPDATE goqite SET timeout = now + q.timeout, received = received + 1 WHERE id = (SELECT id ... LIMIT 1) RETURNING id, body",
+          "evidence": {
+            "filePath": "goqite.go",
+            "lineRange": [
+              166,
+              188
+            ],
+            "observation": "Increments received counter by 1 and advances timeout to now + q.timeout in a single atomic SQL statement, returning id and body.",
+            "luaOrCodeBehavior": "UPDATE goqite SET timeout = ?, received = received + 1 WHERE id = (SELECT id FROM goqite WHERE queue = ? AND ? >= timeout AND received < ? ORDER BY priority DESC, created LIMIT 1) RETURNING id, body",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Invisible",
+          "to": "Invisible",
+          "event": "Extend Timeout",
+          "guardConditions": [
+            "id exists",
+            "delay >= 0"
+          ],
+          "mechanism": "UPDATE goqite SET timeout = now + delay WHERE queue = ? AND id = ?",
+          "evidence": {
+            "filePath": "goqite.go",
+            "lineRange": [
+              255,
+              272
+            ],
+            "observation": "ExtendTx sets timeout to time.Now().UTC().Add(delay) for matching queue and id.",
+            "luaOrCodeBehavior": "UPDATE goqite SET timeout = ? WHERE queue = ? AND id = ?",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Invisible",
+          "to": "Ready",
+          "event": "Visibility Timeout Expiry (Retry)",
+          "guardConditions": [
+            "now >= timeout",
+            "received < maxReceive"
+          ],
+          "mechanism": "Time progression makes message match WHERE ? >= timeout again because it was not deleted",
+          "evidence": {
+            "filePath": "goqite.go",
+            "lineRange": [
+              171,
+              180
+            ],
+            "observation": "Message whose lease expired becomes visible for subsequent ReceiveTx executions if received < maxReceive.",
+            "luaOrCodeBehavior": "WHERE queue = ? AND ? >= timeout AND received < ? ORDER BY priority DESC, created LIMIT 1",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Invisible",
+          "to": "PoisonExhausted",
+          "event": "Visibility Timeout Expiry with Max Receives Reached",
+          "guardConditions": [
+            "now >= timeout",
+            "received >= maxReceive"
+          ],
+          "mechanism": "Subquery filter received < maxReceive excludes message permanently from future ReceiveTx scans",
+          "evidence": {
+            "filePath": "goqite.go",
+            "lineRange": [
+              176,
+              182
+            ],
+            "observation": "When received reaches maxReceive, the message condition received < maxReceive evaluates to false, permanently stranding the message in the table.",
+            "luaOrCodeBehavior": "WHERE queue = ? AND ? >= timeout AND received < ?",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Invisible",
+          "to": "Completed",
+          "event": "Delete",
+          "guardConditions": [
+            "id exists"
+          ],
+          "mechanism": "DELETE FROM goqite WHERE queue = ? AND id = ?",
+          "evidence": {
+            "filePath": "goqite.go",
+            "lineRange": [
+              282,
+              293
+            ],
+            "observation": "DeleteTx executes DELETE query matching queue and id, removing the message from storage permanently.",
+            "luaOrCodeBehavior": "DELETE FROM goqite WHERE queue = ? AND id = ?",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-01",
+      "atomicStatement": "ReceiveTx executes an atomic single-statement UPDATE ... RETURNING with an embedded SELECT ... LIMIT 1 subquery to claim the highest priority, oldest visible message and advance its timeout lease without separate transactional locking steps.",
+      "enforcingMechanism": "Single-statement UPDATE goqite SET timeout = ?, received = received + 1 WHERE id = (SELECT id FROM goqite WHERE queue = ? AND ? >= timeout AND received < ? ORDER BY priority DESC, created LIMIT 1) RETURNING id, body",
+      "sourceLocation": {
+        "filePath": "goqite.go",
+        "lineRange": [
+          166,
+          212
+        ]
+      },
+      "testEvidence": {
+        "filePath": "goqite_test.go",
+        "testFunction": "TestQueue",
+        "lineRange": [
+          18,
+          45
+        ],
+        "observation": "Verifies that Receive dequeues an available message, returns its body and ID, and subsequent immediate Receive returns nil."
+      },
+      "historicalContext": {
+        "commitHash": "39aac52b0ede02cdfc610e9dbda0a63b58f59d19",
+        "issueOrPr": "#65",
+        "context": "Added priority ordering (ORDER BY priority desc, created) to dequeue query."
+      }
+    },
+    {
+      "id": "INV-02",
+      "atomicStatement": "A message cannot be received concurrently or redelivered to any worker until current UTC time equals or exceeds its stored timeout timestamp.",
+      "enforcingMechanism": "SQL subquery filter ? >= timeout where parameter is formatted UTC timestamp string (RFC3339 milli) or timestamptz.",
+      "sourceLocation": {
+        "filePath": "goqite.go",
+        "lineRange": [
+          159,
+          182
+        ]
+      },
+      "testEvidence": {
+        "filePath": "goqite_test.go",
+        "testFunction": "TestQueue_Receive",
+        "lineRange": [
+          139,
+          155
+        ],
+        "observation": "Sub-scenario 'does not receive a message twice in a row' verifies that after receiving a message, immediate second receive returns nil."
+      },
+      "historicalContext": {
+        "commitHash": "cacb23e736989d886856570877f29fb500080c8f",
+        "issueOrPr": "#68",
+        "context": "Fixed timeouts to always use UTC to prevent premature or blocked delivery across systems with differing local timezones."
+      }
+    },
+    {
+      "id": "INV-03",
+      "atomicStatement": "A message whose received count equals or exceeds maxReceive is permanently excluded from dequeue by all consumers.",
+      "enforcingMechanism": "SQL subquery filter received < ? where parameter is q.maxReceive (default 3).",
+      "sourceLocation": {
+        "filePath": "goqite.go",
+        "lineRange": [
+          176,
+          182
+        ]
+      },
+      "testEvidence": {
+        "filePath": "goqite_test.go",
+        "testFunction": "TestQueue_Receive",
+        "lineRange": [
+          157,
+          189
+        ],
+        "observation": "Sub-scenario 'does receive a message up to three times if set and timeout has passed' verifies message is delivered exactly 3 times across timeout expirations, and fourth receive returns nil."
+      },
+      "historicalContext": {
+        "commitHash": "ed254cc6db8c68c5561b179a24a94da8b9437fdc",
+        "issueOrPr": "#6",
+        "context": "MaxReceive enforcement codified in initial queue implementation."
+      }
+    },
+    {
+      "id": "INV-04",
+      "atomicStatement": "Messages within the same queue are dequeued strictly in descending order of priority, with ties broken in ascending order of created timestamp (FIFO).",
+      "enforcingMechanism": "SQL subquery ORDER BY priority DESC, created LIMIT 1 backed by composite index goqite_queue_priority_created_idx.",
+      "sourceLocation": {
+        "filePath": "goqite.go",
+        "lineRange": [
+          177,
+          179
+        ]
+      },
+      "testEvidence": {
+        "filePath": "goqite_test.go",
+        "testFunction": "TestQueue_Receive",
+        "lineRange": [
+          191,
+          219
+        ],
+        "observation": "Sub-scenario 'can receive messages with higher priorities first' sends low-priority (1) then high-priority (10) messages and asserts high-priority message is received first."
+      },
+      "historicalContext": {
+        "commitHash": "39aac52b0ede02cdfc610e9dbda0a63b58f59d19",
+        "issueOrPr": "#65",
+        "context": "Added priority column to schema and updated subquery order clause."
+      }
+    },
+    {
+      "id": "INV-05",
+      "atomicStatement": "Messages residing in different logical queues within the same database table are completely isolated and cannot be received, extended, or deleted across queue boundaries.",
+      "enforcingMechanism": "SQL WHERE queue = ? constraint enforced across Send, Receive, Extend, and Delete operations.",
+      "sourceLocation": {
+        "filePath": "goqite.go",
+        "lineRange": [
+          174,
+          286
+        ]
+      },
+      "testEvidence": {
+        "filePath": "goqite_test.go",
+        "testFunction": "TestQueue_Receive",
+        "lineRange": [
+          221,
+          244
+        ],
+        "observation": "Sub-scenario 'does not receive a message from a different queue' creates q1 and q2 on shared DB, sends to q1, and asserts q2.Receive returns nil."
+      },
+      "historicalContext": {
+        "commitHash": "ab231fb3286c2bd89b4d4a6da3dab1d33636b784",
+        "issueOrPr": "#26",
+        "context": "Added composite index on (queue, created) to optimize multi-queue isolation scans on large tables."
+      }
+    },
+    {
+      "id": "INV-06",
+      "atomicStatement": "Runner automatically extends message visibility timeouts in a background goroutine at an interval equal to 80% of the extend duration (extend - extend/5) for the entire duration of job execution.",
+      "enforcingMechanism": "Time-delayed ticker loop in Runner.receiveAndRun: time.Sleep(r.extend - r.extend/5) followed by r.queue.Extend(jobCtx, m.ID, r.extend).",
+      "sourceLocation": {
+        "filePath": "jobs/runner.go",
+        "lineRange": [
+          167,
+          182
+        ]
+      },
+      "testEvidence": {
+        "filePath": "jobs/runner_test.go",
+        "testFunction": "TestRunner_Start",
+        "lineRange": [
+          125,
+          143
+        ],
+        "observation": "Sub-scenario 'extends a job's timeout if it takes longer than the default timeout' runs a job sleeping 150ms with a 100ms queue timeout and asserts job completes with runCount == 1 (no duplicate delivery)."
+      },
+      "historicalContext": {
+        "commitHash": "6de717138cdef2fe661ddafc155cd38561f8bd96",
+        "issueOrPr": "#40",
+        "context": "Added job runner timeout option and extension goroutine to prevent queue timeout expiry on slow jobs."
+      }
+    },
+    {
+      "id": "INV-07",
+      "atomicStatement": "InTx executes database operations inside a transaction configured with sql.LevelSerializable isolation, rolling back automatically upon error or panic.",
+      "enforcingMechanism": "db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable}) with deferred recover() calling tx.Rollback() before re-panicking.",
+      "sourceLocation": {
+        "filePath": "internal/sql/tx.go",
+        "lineRange": [
+          9,
+          38
+        ]
+      },
+      "testEvidence": {
+        "filePath": "jobs/runner_test.go",
+        "testFunction": "TestCreateTx",
+        "lineRange": [
+          176,
+          200
+        ],
+        "observation": "Test verifies that CreateTx inside InTx successfully commits job creation and makes it immediately available to the runner."
+      },
+      "historicalContext": {
+        "commitHash": "d9666631651270a8b4000b66bcd1315a73df61b8",
+        "issueOrPr": "#13",
+        "context": "Supported explicit transactions for all methods to enable atomic business logic + queue operations."
+      }
+    },
+    {
+      "id": "INV-08",
+      "atomicStatement": "A panic inside a registered job function is caught by a deferred recover() handler, preventing worker pool termination while allowing message visibility lease to expire for retry.",
+      "enforcingMechanism": "Deferred recovery block in Runner.receiveAndRun worker goroutine: defer func() { if rec := recover(); rec != nil { r.log.Info(...) } }().",
+      "sourceLocation": {
+        "filePath": "jobs/runner.go",
+        "lineRange": [
+          157,
+          161
+        ]
+      },
+      "testEvidence": {
+        "filePath": "jobs/runner_test.go",
+        "testFunction": "TestRunner_Start",
+        "lineRange": [
+          109,
+          123
+        ],
+        "observation": "Sub-scenario 'does not panic if job panics' registers a panicking job, executes runner, and asserts runner does not crash."
+      },
+      "historicalContext": {
+        "commitHash": "6de717138cdef2fe661ddafc155cd38561f8bd96",
+        "issueOrPr": "#40",
+        "context": "Hardened runner against job worker panics."
+      }
+    },
+    {
+      "id": "INV-09",
+      "atomicStatement": "Register panics immediately if a job handler function is registered with a name that already exists in the runner's job registry.",
+      "enforcingMechanism": "Map presence check in Runner.Register: if _, ok := r.jobs[name]; ok { panic(...) }.",
+      "sourceLocation": {
+        "filePath": "jobs/runner.go",
+        "lineRange": [
+          204,
+          209
+        ]
+      },
+      "testEvidence": {
+        "filePath": "jobs/runner_test.go",
+        "testFunction": "TestRunner_Register",
+        "lineRange": [
+          29,
+          44
+        ],
+        "observation": "Sub-scenario 'panics if the same job is registered twice' registers 'test' twice and asserts panic message matches 'job \"test\" already registered'."
+      },
+      "historicalContext": {
+        "commitHash": "2f1718512f7756f9ed12dfbe6bed74492465b9ba",
+        "issueOrPr": "#60",
+        "context": "Formalized job registration semantics in runner package."
+      }
+    },
+    {
+      "id": "INV-10",
+      "atomicStatement": "Message IDs are 34-character strings prefixed with 'm_' followed by 32 lowercase hexadecimal characters generated by randomblob(16) in SQLite or gen_random_bytes(16) in PostgreSQL.",
+      "enforcingMechanism": "DEFAULT ('m_' || lower(hex(randomblob(16)))) in SQLite schema; DEFAULT ('m_' || encode(gen_random_bytes(16), 'hex')) in PostgreSQL schema.",
+      "sourceLocation": {
+        "filePath": "schema_sqlite.sql",
+        "lineRange": [
+          1,
+          2
+        ]
+      },
+      "testEvidence": {
+        "filePath": "goqite_test.go",
+        "testFunction": "TestQueue_SendAndGetID",
+        "lineRange": [
+          247,
+          260
+        ],
+        "observation": "Asserts returned message ID has length == 34."
+      },
+      "historicalContext": {
+        "commitHash": "b168aacf2eaf1b55d245c57e705349da8b917f6b",
+        "issueOrPr": "#64",
+        "context": "Maintained identical ID format across SQLite and PostgreSQL schemas."
+      }
+    }
+  ],
+  "failureModesAndDefenses": [
+    {
+      "failureMode": "Worker Crash / Panic During Task Execution",
+      "detectionMechanism": "Absence of Delete call before message timeout expiration timestamp.",
+      "recoveryAction": "Message automatically becomes visible again when now >= timeout and is redelivered to next available worker with incremented received count.",
+      "sourceEvidence": {
+        "filePath": "jobs/runner.go",
+        "lineRange": [
+          157,
+          198
+        ],
+        "observation": "If worker goroutine panics or crashes, Delete is bypassed; the message timeout expires and ReceiveTx picks it up on subsequent poll."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "#40",
+        "rootCause": "Unhandled panic could terminate the entire runner process without releasing or recovering in-flight tasks.",
+        "fixDescription": "Wrapped job execution in deferred recover() handler logging error while relying on visibility timeout for natural re-enqueue."
+      },
+      "prescribedMitigation": "Ensure job handlers are idempotent to tolerate re-execution following crash recovery."
+    },
+    {
+      "failureMode": "Visibility Lease Starvation on Long-Running Tasks",
+      "detectionMechanism": "Job execution time exceeding default queue visibility timeout (default 5s).",
+      "recoveryAction": "Runner spawns background goroutine extending message timeout periodically by r.extend every (extend - extend/5) duration.",
+      "sourceEvidence": {
+        "filePath": "jobs/runner.go",
+        "lineRange": [
+          166,
+          182
+        ],
+        "observation": "Continuous sleep-and-extend loop calls queue.Extend(jobCtx, m.ID, r.extend) until job context is cancelled upon completion."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "#40",
+        "rootCause": "Long jobs exceeded initial queue timeout, causing other runner instances to receive and execute the same job concurrently.",
+        "fixDescription": "Implemented auto-extension heartbeat loop inside runner.receiveAndRun."
+      },
+      "prescribedMitigation": "Configure runner Extend duration proportional to expected maximum single-heartbeat network latency."
+    },
+    {
+      "failureMode": "Poison Pill / Crash-Inducing Message Loop",
+      "detectionMechanism": "Message repeatedly failing or crashing worker until received counter reaches maxReceive.",
+      "recoveryAction": "ReceiveTx query subquery clause received < q.maxReceive permanently suppresses further delivery of the message.",
+      "sourceEvidence": {
+        "filePath": "goqite.go",
+        "lineRange": [
+          176,
+          188
+        ],
+        "observation": "Once received == maxReceive, subquery yields no rows and Receive returns nil."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "#6",
+        "rootCause": "Malformed payloads could trigger infinite retry cycles and starve valid tasks.",
+        "fixDescription": "Enforced configurable maxReceive threshold in NewOpts (default 3)."
+      },
+      "prescribedMitigation": "Implement external dead-letter archiving query to extract stranded rows where received >= maxReceive."
+    },
+    {
+      "failureMode": "Host Clock Skew Across Distributed Schedulers",
+      "detectionMechanism": "Timezone mismatch or non-UTC local clock causing strftime or timestamp comparisons to evaluate incorrectly against database time.",
+      "recoveryAction": "Explicit conversion to time.Now().UTC() and strict RFC3339 millisecond precision formatting across all query parameters.",
+      "sourceEvidence": {
+        "filePath": "goqite.go",
+        "lineRange": [
+          23,
+          25
+        ],
+        "observation": "Enforces rfc3339Milli format ('2006-01-02T15:04:05.000Z07:00') and UTC normalization on all timestamp parameters."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "#68",
+        "rootCause": "Local non-UTC server timestamps in timeout column conflicted with UTC default timestamps generated by SQLite strftime triggers.",
+        "fixDescription": "Updated all time.Now() calls to time.Now().UTC() across queue operations."
+      },
+      "prescribedMitigation": "Maintain NTP synchronization across all application nodes and database servers."
+    },
+    {
+      "failureMode": "SQLite Single-Writer Lock Contention (SQLITE_BUSY)",
+      "detectionMechanism": "database/sql returning 'database is locked' (SQLITE_BUSY) under concurrent transactions.",
+      "recoveryAction": "Testing harness and documentation mandate WAL mode (_journal=WAL), busy timeout (_timeout=5000), single connection limit (SetMaxOpenConns(1)), and runner backoff sleep (time.Sleep(time.Second)) on receive errors.",
+      "sourceEvidence": {
+        "filePath": "jobs/runner.go",
+        "lineRange": [
+          123,
+          125
+        ],
+        "observation": "Runner sleeps 1s on non-cancellation receive errors to avoid hammering database under lock contention."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "#19",
+        "rootCause": "Concurrent test suites and parallel benchmarks timed out under unconfigured SQLite concurrency.",
+        "fixDescription": "Configured WAL journal mode, busy timeouts, and added retry headroom in test fixtures."
+      },
+      "prescribedMitigation": "For multi-process or high-throughput write workloads, configure WAL mode and busy_timeout=5000 on SQLite connections, or migrate to PostgreSQL flavor."
+    }
+  ],
+  "historicalEvolution": [
+    {
+      "milestoneOrBug": "UTC Normalization for Timeout Columns",
+      "commitHash": "cacb23e736989d886856570877f29fb500080c8f",
+      "issueOrPr": "#68",
+      "rootCause": "Timeout calculations used local host timestamps whereas database created/updated timestamps were stored in UTC ISO8601 strings, leading to premature message dequeuing or delayed execution on non-UTC systems.",
+      "architecturalFix": "Standardized all timeout timestamp generation on time.Now().UTC() and formatted with RFC3339 millisecond precision.",
+      "affectedFiles": [
+        "goqite.go"
+      ],
+      "evidence": {
+        "filePath": "goqite.go",
+        "observation": "Replaced local time formatting with time.Now().UTC().Add(...) and timeout.Format(rfc3339Milli)."
+      }
+    },
+    {
+      "milestoneOrBug": "Message Priority Support",
+      "commitHash": "39aac52b0ede02cdfc610e9dbda0a63b58f59d19",
+      "issueOrPr": "#65 (Fixes #62)",
+      "rootCause": "Queue only supported pure FIFO delivery order, preventing urgent background jobs from bypassing backlog of normal tasks.",
+      "architecturalFix": "Added priority integer column to goqite table, created composite index (queue, priority desc, created), updated ReceiveTx subquery to ORDER BY priority DESC, created LIMIT 1, and expanded jobs.Create signature to accept full goqite.Message.",
+      "affectedFiles": [
+        "goqite.go",
+        "goqite_test.go",
+        "schema_sqlite.sql",
+        "schema_postgres.sql",
+        "jobs/runner.go",
+        "jobs/runner_test.go"
+      ],
+      "evidence": {
+        "filePath": "schema_sqlite.sql",
+        "observation": "Added priority integer not null default 0 and index goqite_queue_priority_created_idx."
+      }
+    },
+    {
+      "milestoneOrBug": "Multi-Database PostgreSQL Dialect Support",
+      "commitHash": "b168aacf2eaf1b55d245c57e705349da8b917f6b",
+      "issueOrPr": "#64 (Fixes #30)",
+      "rootCause": "Goqite SQL statements and schema were hardcoded to SQLite-specific syntax (strftime, ?, randomblob), precluding use in enterprise PostgreSQL deployments.",
+      "architecturalFix": "Introduced SQLFlavor enum (SQLFlavorSQLite, SQLFlavorPostgreSQL) in NewOpts, implemented parameterized query branching ($1 vs ? and timestamptz vs text), and created schema_postgres.sql with pgcrypto.",
+      "affectedFiles": [
+        "goqite.go",
+        "goqite_test.go",
+        "schema_postgres.sql",
+        "internal/testing/postgres.go"
+      ],
+      "evidence": {
+        "filePath": "goqite.go",
+        "observation": "Added switch q.flavor in SendAndGetIDTx, ReceiveTx, ExtendTx, and DeleteTx."
+      }
+    },
+    {
+      "milestoneOrBug": "Job Runner Autonomous Lease Extension",
+      "commitHash": "6de717138cdef2fe661ddafc155cd38561f8bd96",
+      "issueOrPr": "#40",
+      "rootCause": "Jobs taking longer than the default queue visibility timeout were redelivered to other workers while still actively executing, causing duplicate concurrent execution.",
+      "architecturalFix": "Implemented background heartbeat extension goroutine inside jobs.Runner executing queue.Extend every (extend - extend/5) duration, added panic recovery defer, and added Extend duration option to NewRunnerOpts.",
+      "affectedFiles": [
+        "jobs/runner.go",
+        "jobs/runner_test.go"
+      ],
+      "evidence": {
+        "filePath": "jobs/runner.go",
+        "observation": "Spawns goroutine sleeping extend - extend/5 and issuing queue.Extend(jobCtx, m.ID, r.extend) until job completion."
+      }
+    },
+    {
+      "milestoneOrBug": "Composite Index for Multi-Queue Performance",
+      "commitHash": "ab231fb3286c2bd89b4d4a6da3dab1d33636b784",
+      "issueOrPr": "#26 (Fixes #18)",
+      "rootCause": "ReceiveTx executed full table scans as message volume grew large across multiple queues sharing the same goqite table.",
+      "architecturalFix": "Benchmarked and added composite index on (queue, created) [subsequently expanded to (queue, priority desc, created)] to accelerate subquery selection.",
+      "affectedFiles": [
+        "schema.sql",
+        "goqite_test.go",
+        "benchmark.txt"
+      ],
+      "evidence": {
+        "filePath": "schema_sqlite.sql",
+        "observation": "Created index goqite_queue_priority_created_idx on goqite (queue, priority desc, created)."
+      }
+    },
+    {
+      "milestoneOrBug": "Explicit Transaction Support (ACID Enqueue/Dequeue)",
+      "commitHash": "d9666631651270a8b4000b66bcd1315a73df61b8",
+      "issueOrPr": "#13 (Fixes #6)",
+      "rootCause": "Application services could not atomically combine business domain database mutations with message enqueue/dequeue in the same database transaction.",
+      "architecturalFix": "Added *Tx method variants (SendTx, SendAndGetIDTx, ReceiveTx, ExtendTx, DeleteTx, CreateTx) and implemented InTx serializable transaction wrapper.",
+      "affectedFiles": [
+        "goqite.go",
+        "internal/sql/tx.go"
+      ],
+      "evidence": {
+        "filePath": "internal/sql/tx.go",
+        "observation": "Implemented InTx with sql.LevelSerializable isolation and automatic rollback on error or panic."
+      }
+    }
+  ],
+  "unresolvedContradictionsAndBypasses": [
+    {
+      "claimOrGuarantee": "Messages that fail or crash workers are safely managed by the maxReceive limit.",
+      "contradictionOrBypass": "Goqite lacks a Dead-Letter Queue (DLQ) table or automated deletion for poison messages. When received reaches maxReceive, the message is simply ignored by ReceiveTx (due to received < maxReceive), leaving dead rows permanently in the goqite table where they accumulate and degrade index range scan performance over time.",
+      "codeLocation": "goqite.go:176",
+      "evidence": "Subquery filter received < ? excludes exhausted messages from dequeue, but no mechanism purges, archives, or moves them to a DLQ table."
+    },
+    {
+      "claimOrGuarantee": "Worker has exclusive ownership during task execution.",
+      "contradictionOrBypass": "Extend and Delete do NOT verify a fencing token or lease generation ID. If a worker is delayed by a long GC pause or network stall exceeding its timeout, a second worker dequeues the message. When the first worker wakes up, it can still successfully call Delete(m.ID) or Extend(m.ID), destroying the task while the second worker is mid-execution.",
+      "codeLocation": "goqite.go:286-292",
+      "evidence": "DELETE query is 'delete from goqite where queue = ? and id = ?' with no check on whether received count or timeout timestamp has been mutated by another worker."
+    },
+    {
+      "claimOrGuarantee": "Visibility timeouts are strictly deterministic and clock-synchronized.",
+      "contradictionOrBypass": "Time comparisons in ReceiveTx evaluate the Go application server's local time (time.Now().UTC()) against the database row's stored timeout value. In multi-server deployments where application nodes experience clock skew relative to each other or to the central database, messages may be received prematurely or experience unexpected delivery delays.",
+      "codeLocation": "goqite.go:159,182",
+      "evidence": "Query uses parameterized client time (? >= timeout) formatted on the application server rather than database-native now() or strftime('now')."
+    },
+    {
+      "claimOrGuarantee": "Runner strictly bounds worker concurrency without busy loops or poll thrashing.",
+      "contradictionOrBypass": "When jobCount reaches jobCountLimit, Runner.receiveAndRun releases its read lock and calls time.Sleep(r.pollInterval). It lacks a condition variable, semaphore channel, or worker completion signal, resulting in polling latency when worker slots open and race conditions where multiple goroutines can wake simultaneously.",
+      "codeLocation": "jobs/runner.go:107-115",
+      "evidence": "r.jobCountLock.RLock(); if r.jobCount == r.jobCountLimit { r.jobCountLock.RUnlock(); time.Sleep(r.pollInterval); return; }."
+    },
+    {
+      "claimOrGuarantee": "Serializable transactions guarantee completely conflict-free queue operations.",
+      "contradictionOrBypass": "SQLite only supports a single writer in WAL mode. When multiple concurrent producers or consumers call InTx (which sets Isolation: sql.LevelSerializable), transactions serialize on SQLite's database lock, causing SQLITE_BUSY errors if write bursts exceed the 5000ms busy timeout.",
+      "codeLocation": "internal/sql/tx.go:10",
+      "evidence": "InTx enforces sql.LevelSerializable on all transactions, creating lock contention under high-concurrency writes on SQLite backends."
+    }
+  ],
+  "adversarialCritique": {
+    "boundaryConditions": [
+      "Clock jumps or NTP step corrections on application hosts directly alter message visibility horizons because timeout comparisons evaluate Go client time.Now().UTC() rather than database-internal clocks.",
+      "Worker partition / GC pause: A worker stalling past its visibility timeout allows a second worker to acquire the task; the first worker then deletes the row upon finishing, aborting the task's guaranteed visibility for the second worker.",
+      "Poison pill table bloating: High failure rates lead to thousands of permanent poison rows (received >= maxReceive) that are never deleted, forcing the index scan on (queue, priority desc, created) to traverse increasing numbers of dead rows."
+    ],
+    "untestedAssumptions": [
+      "Assumes all distributed Go queue nodes maintain synchronized clocks within sub-millisecond tolerances when querying shared PostgreSQL or network-attached SQLite databases.",
+      "Assumes callers will implement custom administrative maintenance jobs to periodically purge or archive exhausted messages (received >= maxReceive).",
+      "Assumes database driver connection pools with sql.LevelSerializable will handle lock retries cleanly without inducing application thread starvation under write pressure."
+    ],
+    "acceptedTradeOffs": [
+      "Simplicity and zero external dependencies over advanced distributed coordination: Uses single-table atomic UPDATE ... RETURNING instead of distributed lock managers (Redis, etcd, ZooKeeper).",
+      "At-least-once delivery over strict exactly-once processing: A worker that crashes, panics, or times out will have its task redelivered upon timeout expiry.",
+      "In-process polling over push notifications: Uses periodic tickers (ReceiveAndWait) rather than SQLite commit hooks or PostgreSQL LISTEN/NOTIFY to maintain driver and database neutrality."
+    ]
+  }
+}

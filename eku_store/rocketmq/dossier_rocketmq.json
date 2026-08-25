@@ -1,0 +1,1338 @@
+{
+  "repoName": "apache/rocketmq",
+  "domain": "message_queues",
+  "gitCommitHash": "efa1be59d6fc747ad220f036c86030f05f0419f9",
+  "analyzedAt": "2026-08-22T16:30:00.000Z",
+  "overview": {
+    "purpose": "High-throughput, low-latency, distributed messaging and streaming platform in Java engineered for financial-grade transactional messaging, strict FIFO ordered queues, massive million-topic queue capacity, sub-millisecond sequential append-only persistence via memory-mapped files and off-heap direct byte buffer pools, and term-based high-availability quorum replication with DLedger Raft controller failover.",
+    "architectureType": "Decoupled Distributed Multi-Tier Broker architecture with stateless NameServer route coordination, unified physical CommitLog append-only storage with concurrent logical ConsumeQueue dispatching, two-tier off-heap TransientStorePool memory pinning (mlock), synchronous/asynchronous disk flush pipelines, epoch-scoped SyncStateSet replication (AutoSwitchHAService / DLedger Controller), and server-side Pop/Push consumption state machines.",
+    "keyDifferentiators": [
+      "Single CommitLog Sequential Append: Writes all messages across all topics and queues sequentially into 1GB memory-mapped files under a spin-lock or reentrant lock, achieving near-hardware-speed sequential disk I/O throughput while offloading consumption queue creation to an asynchronous reput pipeline.",
+      "Dual-Buffer TransientStorePool with Direct Memory Pinning: Utilizes pooled direct ByteBuffers pinned into physical RAM via JNA LibC mlock, completely decoupling client write buffer appends from OS PageCache dirty page flushes to avoid OS kernel write stalls.",
+      "Fixed 20-Byte ConsumeQueue & IndexFile Units: Encodes logical queue indices (CommitLog Offset [8B], Size [4B], Tag HashCode [8B]) and key hash indices (Key Hash [4B], Physical Offset [8B], Time Diff [4B], Prev Slot [4B]) into fixed-size units enabling constant-time binary search and zero-heap index traversal.",
+      "Stateless NameServer Registry with Self-Healing Route Discovery: Eliminates heavy consensus protocols (ZooKeeper/etcd) in favor of peerless, eventually consistent NameServer nodes refreshed via 30-second broker heartbeat pings and 120-second channel eviction scans.",
+      "Stateless 5.0 Pop Consumption & PopReviveService: Decouples consumer instance scaling from queue count partitions through short invisible leases, lightweight checkpoint records in CHECK_POINT_TOPIC, and automatic retry requeuing via PopReviveService.",
+      "Two-Phase Commit (2PC) Transactional Engine: Executes distributed financial transactions through invisible Half-Topic staging (RMQ_SYS_TRANS_HALF_TOPIC), Op-Topic commit tracking (RMQ_SYS_TRANS_OP_HALF_TOPIC), and active broker transaction status check queries."
+    ]
+  },
+  "components": [
+    {
+      "name": "CommitLog",
+      "role": "Central Physical Message Log & Append-Only Storage Engine",
+      "primaryFiles": [
+        "store/src/main/java/org/apache/rocketmq/store/CommitLog.java"
+      ],
+      "publicInterfaces": [
+        "CompletableFuture<PutMessageResult> asyncPutMessage(MessageExtBrokerInner msg)",
+        "CompletableFuture<PutMessageResult> asyncPutMessages(MessageExtBatch messageExtBatch)",
+        "SelectMappedBufferResult getMessage(long offset, int size)",
+        "SelectMappedBufferResult getData(long offset)",
+        "long pickupStoreTimestamp(long offset, int size)",
+        "boolean resetOffset(long offset)"
+      ],
+      "dependencies": [
+        "MappedFileQueue",
+        "DefaultMappedFile",
+        "TransientStorePool",
+        "DefaultHAService",
+        "FlushCommitLogService",
+        "StoreStatsService",
+        "StoreCheckpoint"
+      ],
+      "stateManaged": [
+        "MappedFileQueue containing 1GB physical commit log segments",
+        "wrotePosition, committedPosition, flushedPosition offsets",
+        "PutMessageLock (PutMessageSpinLock or PutMessageReentrantLock)",
+        "GroupCommitService requests queue and flush completions",
+        "TopicQueueLock for per-queue offset allocation"
+      ],
+      "evidence": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/CommitLog.java",
+        "lineRange": [
+          999,
+          1170
+        ],
+        "symbol": "CommitLog.asyncPutMessage",
+        "observation": "Enforces global sequential serialization across all topics using spin-lock/reentrant lock, allocates monotonic queue offsets, appends encoded byte buffers to MappedFile, and orchestrates asynchronous disk flushing and HA replication futures.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "DefaultMappedFile",
+      "role": "Memory-Mapped File Abstraction, DirectByteBuffer Writing & PageCache Flusher",
+      "primaryFiles": [
+        "store/src/main/java/org/apache/rocketmq/store/logfile/DefaultMappedFile.java",
+        "store/src/main/java/org/apache/rocketmq/store/logfile/MappedFile.java"
+      ],
+      "publicInterfaces": [
+        "AppendMessageResult appendMessagesInner(MessageExt messageExt, AppendMessageCallback cb, PutMessageContext putMessageContext)",
+        "int commit(int commitLeastPages)",
+        "int flush(int flushLeastPages)",
+        "void warmMappedFile(FlushDiskType type, int pages)",
+        "SelectMappedBufferResult selectMappedBuffer(int pos, int size)",
+        "void cleanResources()",
+        "boolean destroy(long intervalForcibly)"
+      ],
+      "dependencies": [
+        "FileChannel",
+        "MappedByteBuffer",
+        "TransientStorePool",
+        "LibC",
+        "sun.misc.Unsafe"
+      ],
+      "stateManaged": [
+        "Atomic wrotePosition, committedPosition, flushedPosition integers",
+        "Off-heap writeBuffer direct ByteBuffer",
+        "OS mappedByteBuffer virtual memory pages",
+        "Reference count (refCount) guarding safe unmapping"
+      ],
+      "evidence": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/logfile/DefaultMappedFile.java",
+        "lineRange": [
+          351,
+          426
+        ],
+        "symbol": "DefaultMappedFile.appendMessagesInner",
+        "observation": "Appends encoded message bytes to either transient writeBuffer (if TransientStorePool is enabled) or direct mappedByteBuffer, advancing wrotePosition via AtomicIntegerFieldUpdater without allocating garbage collector memory.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "TransientStorePool",
+      "role": "Off-Heap Direct ByteBuffer Memory Pinning & Allocation Supervisor",
+      "primaryFiles": [
+        "store/src/main/java/org/apache/rocketmq/store/TransientStorePool.java"
+      ],
+      "publicInterfaces": [
+        "void init()",
+        "void destroy()",
+        "ByteBuffer borrowBuffer()",
+        "void returnBuffer(ByteBuffer byteBuffer)",
+        "int availableBufferNums()",
+        "boolean isRealCommit()",
+        "void setRealCommit(boolean realCommit)"
+      ],
+      "dependencies": [
+        "ByteBuffer",
+        "ConcurrentLinkedDeque",
+        "PlatformDependent",
+        "LibC"
+      ],
+      "stateManaged": [
+        "ConcurrentLinkedDeque of preallocated direct ByteBuffers (poolSize x fileSize)",
+        "Physical memory lock state (mlock / munlock)",
+        "isRealCommit write flag"
+      ],
+      "evidence": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/TransientStorePool.java",
+        "lineRange": [
+          48,
+          79
+        ],
+        "symbol": "TransientStorePool.init",
+        "observation": "Allocates poolSize direct ByteBuffers of 1GB each off-heap and invokes LibC.mlock via native pointer address to lock virtual memory in RAM, preventing OS swapping.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "ConsumeQueue",
+      "role": "Logical Consumer Queue Indexer & Tag Hash Filter Dispatcher",
+      "primaryFiles": [
+        "store/src/main/java/org/apache/rocketmq/store/ConsumeQueue.java",
+        "store/src/main/java/org/apache/rocketmq/store/queue/ConsumeQueueInterface.java"
+      ],
+      "publicInterfaces": [
+        "void putMessagePositionInfoWrapper(DispatchRequest request)",
+        "SelectMappedBufferResult getIndexBuffer(long startIndex)",
+        "CqUnit get(long index)",
+        "long rollNextFile(long nextBeginOffset)",
+        "void assignQueueOffset(QueueOffsetOperator queueOffsetOperator, MessageExtBrokerInner msg)",
+        "void increaseQueueOffset(QueueOffsetOperator queueOffsetOperator, MessageExtBrokerInner msg, short messageNum)"
+      ],
+      "dependencies": [
+        "MappedFileQueue",
+        "ConsumeQueueExt",
+        "DefaultMessageStore",
+        "DispatchRequest",
+        "StoreCheckpoint"
+      ],
+      "stateManaged": [
+        "Topic and QueueId partition index files",
+        "Fixed 20-byte CQ units (CommitLog Offset, Msg Size, Tag HashCode)",
+        "minLogicOffset and maxPhysicOffset"
+      ],
+      "evidence": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/ConsumeQueue.java",
+        "lineRange": [
+          53,
+          64
+        ],
+        "symbol": "ConsumeQueue.CQ_STORE_UNIT_SIZE",
+        "observation": "Maintains 20-byte index units in mapped files containing CommitLog physical offset (8B), message body size (4B), and tag hash code (8B) for constant-time consumer offset lookups.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "ReputMessageService",
+      "role": "Asynchronous CommitLog-to-ConsumeQueue/IndexFile Dispatch Pipeline",
+      "primaryFiles": [
+        "store/src/main/java/org/apache/rocketmq/store/DefaultMessageStore.java"
+      ],
+      "publicInterfaces": [
+        "void doReput()",
+        "long behind()",
+        "long behindMs()",
+        "long getReputFromOffset()",
+        "void setReputFromOffset(long reputFromOffset)"
+      ],
+      "dependencies": [
+        "CommitLog",
+        "ConsumeQueueStore",
+        "IndexService",
+        "DefaultMessageStore"
+      ],
+      "stateManaged": [
+        "reputFromOffset cursor position",
+        "currentReputTimestamp",
+        "DispatchRequest event streams"
+      ],
+      "evidence": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/DefaultMessageStore.java",
+        "lineRange": [
+          2711,
+          2760
+        ],
+        "symbol": "DefaultMessageStore.ReputMessageService.doReput",
+        "observation": "Continuously tails committed/max CommitLog offsets, parses serialized message envelopes, builds DispatchRequest objects, and invokes doDispatch() to populate ConsumeQueue and IndexFile concurrently.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "IndexFile & IndexService",
+      "role": "Fixed-Size Hash Slot & Linked Index Query Engine",
+      "primaryFiles": [
+        "store/src/main/java/org/apache/rocketmq/store/index/IndexFile.java",
+        "store/src/main/java/org/apache/rocketmq/store/index/IndexService.java"
+      ],
+      "publicInterfaces": [
+        "boolean putKey(String key, long phyOffset, long storeTimestamp)",
+        "void selectPhyOS(List<Long> phyPositions, String key, int maxNum, long begin, long end, boolean isOnlyUniqKey)",
+        "void flush()",
+        "boolean isWriteFull()"
+      ],
+      "dependencies": [
+        "DefaultMappedFile",
+        "IndexHeader"
+      ],
+      "stateManaged": [
+        "IndexHeader (40-byte metadata header)",
+        "5,000,000 hash slots (4 bytes each)",
+        "20,000,000 index items (20 bytes each with keyHash, phyOffset, timeDiff, prevIndexPos)",
+        "MappedByteBuffer backing storage"
+      ],
+      "evidence": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/index/IndexFile.java",
+        "lineRange": [
+          33,
+          46
+        ],
+        "symbol": "IndexFile.indexSize",
+        "observation": "Structures index files into 40-byte header, 5M 4-byte hash slots, and 20M 20-byte index nodes, resolving slot collisions via singly linked prevIndexPos pointers.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "AutoSwitchHAService",
+      "role": "Epoch-Fenced SyncStateSet Quorum High-Availability Controller",
+      "primaryFiles": [
+        "store/src/main/java/org/apache/rocketmq/store/ha/autoswitch/AutoSwitchHAService.java",
+        "store/src/main/java/org/apache/rocketmq/store/ha/autoswitch/EpochFileCache.java"
+      ],
+      "publicInterfaces": [
+        "boolean changeToMaster(int masterEpoch)",
+        "boolean changeToSlave(String newMasterAddr, int newMasterEpoch, Long slaveId)",
+        "void notifySyncStateSetChanged(Set<Long> newSyncStateSet)",
+        "long computeConfirmOffset()",
+        "void truncateInvalidMsg()"
+      ],
+      "dependencies": [
+        "EpochFileCache",
+        "AutoSwitchHAClient",
+        "AutoSwitchHAConnection",
+        "DefaultMessageStore"
+      ],
+      "stateManaged": [
+        "EpochFileCache (epoch-to-startOffset mappings)",
+        "syncStateSet (in-sync replica broker IDs)",
+        "Master epoch and confirmOffset",
+        "isSynchronizingSyncStateSet lock"
+      ],
+      "evidence": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/ha/autoswitch/AutoSwitchHAService.java",
+        "lineRange": [
+          122,
+          169
+        ],
+        "symbol": "AutoSwitchHAService.changeToMaster",
+        "observation": "Fences stale masters via monotonic epoch checks, truncates dirty commitlog records above the latest valid epoch, computes new confirmOffset, appends epoch entry, waits for CQ dispatch to catch up, and activates realCommit.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "BrokerFastFailure",
+      "role": "PageCache Saturation Guard & Request Queue Shedder",
+      "primaryFiles": [
+        "broker/src/main/java/org/apache/rocketmq/broker/latency/BrokerFastFailure.java"
+      ],
+      "publicInterfaces": [
+        "void start()",
+        "void cleanExpiredRequest()",
+        "void cleanExpiredRequestInQueue(BlockingQueue<Runnable> blockingQueue, long maxWaitTimeMillsInQueue)"
+      ],
+      "dependencies": [
+        "BrokerController",
+        "DefaultMessageStore",
+        "ScheduledExecutorService"
+      ],
+      "stateManaged": [
+        "ScheduledExecutorService background scan thread (10ms interval)",
+        "cleanExpiredRequestQueueList for send, pull, lite pull, heartbeat, transaction queues",
+        "jstackTime threshold timestamp"
+      ],
+      "evidence": {
+        "filePath": "broker/src/main/java/org/apache/rocketmq/broker/latency/BrokerFastFailure.java",
+        "lineRange": [
+          92,
+          119
+        ],
+        "symbol": "BrokerFastFailure.cleanExpiredRequest",
+        "observation": "Monitors isOSPageCacheBusy() (lock held > 1000ms) and queue wait time; aggressively purges pending send/pull requests with SYSTEM_BUSY errors to prevent cascading broker thread exhaustion.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "TransactionalMessageServiceImpl",
+      "role": "2-Phase Financial Transactional Half-Message & Op-Topic Coordinator",
+      "primaryFiles": [
+        "broker/src/main/java/org/apache/rocketmq/broker/transaction/queue/TransactionalMessageServiceImpl.java",
+        "broker/src/main/java/org/apache/rocketmq/broker/processor/EndTransactionProcessor.java"
+      ],
+      "publicInterfaces": [
+        "CompletableFuture<PutMessageResult> prepareMessage(MessageExtBrokerInner messageInner)",
+        "OperationResult commitMessage(EndTransactionRequestHeader requestHeader)",
+        "OperationResult rollbackMessage(EndTransactionRequestHeader requestHeader)",
+        "void check(long transactionTimeout, int transactionCheckMax, AbstractTransactionalMessageCheckListener listener)"
+      ],
+      "dependencies": [
+        "TransactionalMessageBridge",
+        "TransactionalOpBatchService",
+        "DefaultMessageStore",
+        "BrokerController"
+      ],
+      "stateManaged": [
+        "RMQ_SYS_TRANS_HALF_TOPIC half messages queue",
+        "RMQ_SYS_TRANS_OP_HALF_TOPIC op commit/rollback index records",
+        "TransactionMetrics and check retry counters"
+      ],
+      "evidence": {
+        "filePath": "broker/src/main/java/org/apache/rocketmq/broker/processor/EndTransactionProcessor.java",
+        "lineRange": [
+          131,
+          160
+        ],
+        "symbol": "EndTransactionProcessor.processRequest",
+        "observation": "Handles 2PC COMMIT by retrieving prepared message from CommitLog, restoring original topic and queueId, publishing final message, and recording op deletion in RMQ_SYS_TRANS_OP_HALF_TOPIC.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "RouteInfoManager",
+      "role": "Stateless NameServer Metadata Registry & Broker Liveness Monitor",
+      "primaryFiles": [
+        "namesrv/src/main/java/org/apache/rocketmq/namesrv/routeinfo/RouteInfoManager.java"
+      ],
+      "publicInterfaces": [
+        "RegisterBrokerResult registerBroker(...)",
+        "void unregisterBroker(...)",
+        "TopicRouteData pickupTopicRouteData(String topic)",
+        "void scanNotActiveBroker()",
+        "void onChannelDestroy(BrokerAddrInfo brokerAddrInfo)"
+      ],
+      "dependencies": [
+        "ReentrantReadWriteLock",
+        "BatchUnregistrationService",
+        "NamesrvController"
+      ],
+      "stateManaged": [
+        "topicQueueTable: Map<Topic, Map<BrokerName, QueueData>>",
+        "brokerAddrTable: Map<BrokerName, BrokerData>",
+        "clusterAddrTable: Map<ClusterName, Set<BrokerName>>",
+        "brokerLiveTable: Map<BrokerAddrInfo, BrokerLiveInfo>",
+        "filterServerTable: Map<BrokerAddrInfo, List<String>>"
+      ],
+      "evidence": {
+        "filePath": "namesrv/src/main/java/org/apache/rocketmq/namesrv/routeinfo/RouteInfoManager.java",
+        "lineRange": [
+          71,
+          94
+        ],
+        "symbol": "RouteInfoManager.RouteInfoManager",
+        "observation": "Maintains in-memory concurrent maps of topic route topologies and broker liveness; scans brokerLiveTable every 10 seconds, unregistering brokers whose heartbeats are older than 120 seconds.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "PopReviveService",
+      "role": "5.0 Stateless Pop Consumption Invisible Lease & Retry Revive Engine",
+      "primaryFiles": [
+        "broker/src/main/java/org/apache/rocketmq/broker/processor/PopReviveService.java",
+        "broker/src/main/java/org/apache/rocketmq/broker/processor/PopMessageProcessor.java"
+      ],
+      "publicInterfaces": [
+        "void run()",
+        "boolean reviveRetry(PopCheckPoint popCheckPoint, MessageExt messageExt)",
+        "void setShouldRunPopRevive(boolean shouldRunPopRevive)"
+      ],
+      "dependencies": [
+        "BrokerController",
+        "PopInflightMessageCounter",
+        "ConsumerOffsetManager",
+        "PopBufferMergeService"
+      ],
+      "stateManaged": [
+        "REVIVE_TOPIC consumption offset",
+        "inflightReviveRequestMap (TreeMap sorted by invisible revive deadline)",
+        "ckRewriteIntervals table"
+      ],
+      "evidence": {
+        "filePath": "broker/src/main/java/org/apache/rocketmq/broker/processor/PopReviveService.java",
+        "lineRange": [
+          107,
+          150
+        ],
+        "symbol": "PopReviveService.reviveRetry",
+        "observation": "Scans PopCheckPoint records against matching ACK messages; if invisible lease expires before consumer ACK, reformulates the payload into a retry message and appends it to %RETRY%<ConsumerGroup> topic.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "RebalanceLockManager",
+      "role": "FIFO / Ordered Message Queue Distributed Lease Coordinator",
+      "primaryFiles": [
+        "broker/src/main/java/org/apache/rocketmq/broker/client/rebalance/RebalanceLockManager.java"
+      ],
+      "publicInterfaces": [
+        "boolean tryLock(String group, MessageQueue mq, String clientId)",
+        "Set<MessageQueue> tryLockBatch(String group, Set<MessageQueue> mqs, String clientId)",
+        "void unLock(String group, MessageQueue mq, String clientId)",
+        "void unLockBatch(String group, Set<MessageQueue> mqs, String clientId)",
+        "boolean isLockAllExpired(String group)"
+      ],
+      "dependencies": [
+        "ConcurrentHashMap",
+        "ReentrantLock",
+        "MessageQueue"
+      ],
+      "stateManaged": [
+        "mqLockTable: Map<Group, Map<MessageQueue, LockEntry>>",
+        "LockEntry: clientId, lastUpdateTimestamp, 60-second lease timeout"
+      ],
+      "evidence": {
+        "filePath": "broker/src/main/java/org/apache/rocketmq/broker/client/rebalance/RebalanceLockManager.java",
+        "lineRange": [
+          52,
+          104
+        ],
+        "symbol": "RebalanceLockManager.tryLock",
+        "observation": "Enforces 60,000ms exclusive leases per (Group, MessageQueue) mapping; grants ownership if unlocked or held by same clientId, allowing preemption only when lease timestamp expires without renewal.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    }
+  ],
+  "stateMachines": [
+    {
+      "name": "TransactionalMessageLifecycle",
+      "states": [
+        "HALF_PREPARED",
+        "COMMITTED",
+        "ROLLED_BACK",
+        "CHECK_PENDING",
+        "EXPIRED_DISCARDED"
+      ],
+      "initialState": "HALF_PREPARED",
+      "terminalStates": [
+        "COMMITTED",
+        "ROLLED_BACK",
+        "EXPIRED_DISCARDED"
+      ],
+      "transitions": [
+        {
+          "from": "HALF_PREPARED",
+          "to": "COMMITTED",
+          "event": "Producer EndTransaction (Commit)",
+          "guardConditions": [
+            "Producer sends TRANSACTION_COMMIT_TYPE",
+            "Prepare message verified in CommitLog via commitLogOffset"
+          ],
+          "mechanism": "Restores original topic and queueId from message properties, appends final message to CommitLog, and records op offset into RMQ_SYS_TRANS_OP_HALF_TOPIC",
+          "evidence": {
+            "filePath": "broker/src/main/java/org/apache/rocketmq/broker/processor/EndTransactionProcessor.java",
+            "lineRange": [
+              131,
+              150
+            ],
+            "observation": "EndTransactionProcessor decodes prepare message, clears PROPERTY_TRANSACTION_PREPARED, and writes final message into CommitLog.",
+            "luaOrCodeBehavior": "MessageExtBrokerInner msgInner = endMessageTransaction(result.getPrepareMessage()); sendFinalMessage(msgInner); deletePrepareMessage(result);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "HALF_PREPARED",
+          "to": "ROLLED_BACK",
+          "event": "Producer EndTransaction (Rollback)",
+          "guardConditions": [
+            "Producer sends TRANSACTION_ROLLBACK_TYPE"
+          ],
+          "mechanism": "Writes op deletion offset into RMQ_SYS_TRANS_OP_HALF_TOPIC without restoring the message to target topic, permanently suppressing delivery",
+          "evidence": {
+            "filePath": "broker/src/main/java/org/apache/rocketmq/broker/processor/EndTransactionProcessor.java",
+            "lineRange": [
+              118,
+              125
+            ],
+            "observation": "Rollback bypasses final topic write and immediately invokes deletePrepareMessage to retire the half message.",
+            "luaOrCodeBehavior": "deletePrepareMessage(result);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "HALF_PREPARED",
+          "to": "CHECK_PENDING",
+          "event": "CheckImmunityTime Expired",
+          "guardConditions": [
+            "currentTime - storeTimestamp > transactionTimeOut",
+            "No op record found in RMQ_SYS_TRANS_OP_HALF_TOPIC"
+          ],
+          "mechanism": "TransactionalMessageCheckService issues CHECK_TRANSACTION_STATE RPC back to original producer group channel",
+          "evidence": {
+            "filePath": "broker/src/main/java/org/apache/rocketmq/broker/transaction/queue/TransactionalMessageServiceImpl.java",
+            "lineRange": [
+              280,
+              350
+            ],
+            "observation": "Check service queries half topic, cross-references op topic records, and sends verification query to producer client.",
+            "luaOrCodeBehavior": "listener.resolveHalfMsg(msgExt);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "CHECK_PENDING",
+          "to": "EXPIRED_DISCARDED",
+          "event": "MaxCheckCount Exceeded",
+          "guardConditions": [
+            "Transaction check retry count >= transactionCheckMax (default 15)"
+          ],
+          "mechanism": "Logs discard warning and permanently writes op record to cancel future checks without consumer delivery",
+          "evidence": {
+            "filePath": "broker/src/main/java/org/apache/rocketmq/broker/transaction/queue/TransactionalMessageServiceImpl.java",
+            "lineRange": [
+              360,
+              390
+            ],
+            "observation": "Abandons dangling uncommitted messages when check threshold is exhausted.",
+            "luaOrCodeBehavior": "if (needDiscard(msgExt, transactionCheckMax)) { listener.sendDiscardMsg(msgExt); }",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    },
+    {
+      "name": "AutoSwitchHARoleFSM",
+      "states": [
+        "SLAVE",
+        "SYNC_MASTER",
+        "CHANGING_TO_MASTER",
+        "CHANGING_TO_SLAVE"
+      ],
+      "initialState": "SLAVE",
+      "terminalStates": [],
+      "transitions": [
+        {
+          "from": "SLAVE",
+          "to": "CHANGING_TO_MASTER",
+          "event": "DLedger Controller Election Event",
+          "guardConditions": [
+            "newMasterEpoch > currentEpoch",
+            "Broker ID chosen by Raft Controller quorum"
+          ],
+          "mechanism": "Destroys existing HA client connections, stops replication threads, and initiates local storage validation",
+          "evidence": {
+            "filePath": "store/src/main/java/org/apache/rocketmq/store/ha/autoswitch/AutoSwitchHAService.java",
+            "lineRange": [
+              122,
+              133
+            ],
+            "observation": "Shuts down haClient and tears down active slave sockets upon receiving changeToMaster command.",
+            "luaOrCodeBehavior": "destroyConnections(); if (this.haClient != null) { this.haClient.shutdown(); }",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "CHANGING_TO_MASTER",
+          "to": "SYNC_MASTER",
+          "event": "CommitLog Truncation & Epoch Append Complete",
+          "guardConditions": [
+            "Invalid uncommitted messages truncated to truncateOffset",
+            "Dispatch behind bytes reduced to 0",
+            "TransientStorePool committed to disk"
+          ],
+          "mechanism": "Computes confirmOffset, appends new EpochEntry(masterEpoch, maxPhyOffset), recovers TopicQueueTable, and sets stateMachineVersion",
+          "evidence": {
+            "filePath": "store/src/main/java/org/apache/rocketmq/store/ha/autoswitch/AutoSwitchHAService.java",
+            "lineRange": [
+              135,
+              168
+            ],
+            "observation": "Completes master role promotion after synchronizing EpochFileCache and flushing write buffers.",
+            "luaOrCodeBehavior": "this.epochCache.appendEntry(newEpochEntry); while (defaultMessageStore.dispatchBehindBytes() > 0) Thread.sleep(100); defaultMessageStore.getTransientStorePool().setRealCommit(true);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "SYNC_MASTER",
+          "to": "CHANGING_TO_SLAVE",
+          "event": "Controller Demote / Higher Epoch Master Discovered",
+          "guardConditions": [
+            "newMasterEpoch >= lastEpoch",
+            "New master address announced by controller"
+          ],
+          "mechanism": "Destroys master server sockets, instantiates AutoSwitchHAClient connecting to new master, and sets realCommit=false",
+          "evidence": {
+            "filePath": "store/src/main/java/org/apache/rocketmq/store/ha/autoswitch/AutoSwitchHAService.java",
+            "lineRange": [
+              172,
+              202
+            ],
+            "observation": "Demotes broker to slave, disables direct commit in TransientStorePool, and opens HA replication client to new master.",
+            "luaOrCodeBehavior": "this.haClient.updateMasterAddress(newMasterAddr); defaultMessageStore.getTransientStorePool().setRealCommit(false);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "CHANGING_TO_SLAVE",
+          "to": "SLAVE",
+          "event": "Epoch Handshake & Dirty Log Truncation Complete",
+          "guardConditions": [
+            "Master-slave epoch boundary matched",
+            "Slave CommitLog truncated to master sync point"
+          ],
+          "mechanism": "HAClient completes epoch sync and begins receiving continuous CommitLog byte streams from master",
+          "evidence": {
+            "filePath": "store/src/main/java/org/apache/rocketmq/store/ha/autoswitch/AutoSwitchHAClient.java",
+            "lineRange": [
+              180,
+              240
+            ],
+            "observation": "Replication client exchanges epoch maps and synchronizes physical log streams.",
+            "luaOrCodeBehavior": "haClient.start();",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    },
+    {
+      "name": "PopMessageLifecycleFSM",
+      "states": [
+        "AVAILABLE",
+        "POP_IN_FLIGHT",
+        "ACKED",
+        "REVIVED_TO_RETRY",
+        "DEAD_LETTER_QUEUE"
+      ],
+      "initialState": "AVAILABLE",
+      "terminalStates": [
+        "ACKED",
+        "DEAD_LETTER_QUEUE"
+      ],
+      "transitions": [
+        {
+          "from": "AVAILABLE",
+          "to": "POP_IN_FLIGHT",
+          "event": "Consumer POP Request",
+          "guardConditions": [
+            "Pop request received with invisibleTime > 0",
+            "Queue lock acquired without FIFO blocking"
+          ],
+          "mechanism": "Generates PopCheckPoint, records popTime and reviveTime in CHECK_POINT_TOPIC / buffer, and delivers message to consumer",
+          "evidence": {
+            "filePath": "broker/src/main/java/org/apache/rocketmq/broker/processor/PopMessageProcessor.java",
+            "lineRange": [
+              400,
+              480
+            ],
+            "observation": "PopMessageProcessor constructs checkpoint record, writes it to buffer, and increments in-flight counter.",
+            "luaOrCodeBehavior": "popBufferMergeService.addCk(point, reviveQueueId, reviveQueueOffset, nextBeginOffset);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "POP_IN_FLIGHT",
+          "to": "ACKED",
+          "event": "Consumer ACK",
+          "guardConditions": [
+            "Ack message received before reviveTime deadline",
+            "Match confirmed by PopBufferMergeService or REVIVE_TOPIC scanner"
+          ],
+          "mechanism": "Merges ACK with PopCheckPoint in memory or writes ACK entry into REVIVE_TOPIC to cancel retry dispatch",
+          "evidence": {
+            "filePath": "broker/src/main/java/org/apache/rocketmq/broker/processor/PopBufferMergeService.java",
+            "lineRange": [
+              120,
+              180
+            ],
+            "observation": "Matches ack with checkpoint in memory buffer, completing message lifecycle without disk rewrite.",
+            "luaOrCodeBehavior": "if (point.getAckOffsetList().contains(ackMsg.getOffset())) { point.setBitMap(point.getBitMap() | (1 << index)); }",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "POP_IN_FLIGHT",
+          "to": "REVIVED_TO_RETRY",
+          "event": "Invisible Lease Expiration",
+          "guardConditions": [
+            "currentTime >= reviveTime",
+            "PopCheckPoint bitMap indicates unacknowledged message",
+            "reconsumeTimes < maxReconsumeTimes"
+          ],
+          "mechanism": "PopReviveService reads expired checkpoint and republishes original message payload to %RETRY%<Group> topic",
+          "evidence": {
+            "filePath": "broker/src/main/java/org/apache/rocketmq/broker/processor/PopReviveService.java",
+            "lineRange": [
+              107,
+              150
+            ],
+            "observation": "Revive thread creates retry message, increments reconsumeTimes, and writes into retry queue.",
+            "luaOrCodeBehavior": "msgInner.setTopic(KeyBuilder.buildPopRetryTopic(popCheckPoint.getTopic(), popCheckPoint.getCId())); brokerController.getEscapeBridge().putMessageToSpecificQueue(msgInner);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "POP_IN_FLIGHT",
+          "to": "DEAD_LETTER_QUEUE",
+          "event": "Max Reconsumption Exhaustion",
+          "guardConditions": [
+            "currentTime >= reviveTime",
+            "reconsumeTimes >= maxReconsumeTimes (default 16)"
+          ],
+          "mechanism": "Routes payload into %DLQ%<ConsumerGroup> topic, isolating poison pill payload from production queues",
+          "evidence": {
+            "filePath": "broker/src/main/java/org/apache/rocketmq/broker/processor/PopReviveService.java",
+            "lineRange": [
+              110,
+              137
+            ],
+            "observation": "Redirects expired message to dead-letter queue when retry count is exhausted.",
+            "luaOrCodeBehavior": "msgInner.setTopic(MixAll.getDLQTopic(popCheckPoint.getCId()));",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    },
+    {
+      "name": "MappedFileLifecycleFSM",
+      "states": [
+        "PREALLOCATED",
+        "WRITABLE",
+        "COMMITTED",
+        "FLUSHED",
+        "CLEANED_UNMAPPED"
+      ],
+      "initialState": "PREALLOCATED",
+      "terminalStates": [
+        "CLEANED_UNMAPPED"
+      ],
+      "transitions": [
+        {
+          "from": "PREALLOCATED",
+          "to": "WRITABLE",
+          "event": "AllocateMappedFileService Acquisition",
+          "guardConditions": [
+            "1GB physical file created and memory-mapped",
+            "warmMappedFile completes (if warmMapedFileEnable=true)"
+          ],
+          "mechanism": "Assigns direct ByteBuffer or mappedByteBuffer and sets fileFromOffset",
+          "evidence": {
+            "filePath": "store/src/main/java/org/apache/rocketmq/store/logfile/DefaultMappedFile.java",
+            "lineRange": [
+              190,
+              234
+            ],
+            "observation": "Initializes fileChannel, maps virtual memory, increments TOTAL_MAPPED_VIRTUAL_MEMORY, and binds TransientStorePool buffer.",
+            "luaOrCodeBehavior": "this.mappedByteBuffer = this.fileChannel.map(MapMode.READ_WRITE, 0, fileSize); this.writeBuffer = transientStorePool.borrowBuffer();",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "WRITABLE",
+          "to": "COMMITTED",
+          "event": "CommitRealTimeService Invocation",
+          "guardConditions": [
+            "writeBuffer is non-null",
+            "wrotePosition - committedPosition >= commitCommitLogLeastPages"
+          ],
+          "mechanism": "Transfers dirty bytes from off-heap writeBuffer to OS FileChannel via fileChannel.write(byteBuffer)",
+          "evidence": {
+            "filePath": "store/src/main/java/org/apache/rocketmq/store/logfile/DefaultMappedFile.java",
+            "lineRange": [
+              562,
+              605
+            ],
+            "observation": "Drains writeBuffer slice into fileChannel and advances committedPosition.",
+            "luaOrCodeBehavior": "this.fileChannel.write(byteBuffer); COMMITTED_POSITION_UPDATER.set(this, writePos);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "COMMITTED",
+          "to": "FLUSHED",
+          "event": "FlushRealTimeService / GroupCommitService Sync",
+          "guardConditions": [
+            "committedPosition - flushedPosition >= flushCommitLogLeastPages (or timeout elapsed)"
+          ],
+          "mechanism": "Forces OS PageCache dirty pages to disk via fileChannel.force(false) or mappedByteBuffer.force()",
+          "evidence": {
+            "filePath": "store/src/main/java/org/apache/rocketmq/store/logfile/DefaultMappedFile.java",
+            "lineRange": [
+              526,
+              559
+            ],
+            "observation": "Invokes force() on fileChannel or mappedByteBuffer and updates flushedPosition to getReadPosition().",
+            "luaOrCodeBehavior": "this.fileChannel.force(false); FLUSHED_POSITION_UPDATER.set(this, value);",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "FLUSHED",
+          "to": "CLEANED_UNMAPPED",
+          "event": "CleanCommitLogService Retention Expiry",
+          "guardConditions": [
+            "Disk space threshold exceeded or file retention time (default 72h) expired",
+            "refCount drops to 0"
+          ],
+          "mechanism": "Calls UtilAll.cleanBuffer to invoke sun.misc.Unsafe cleaner, decrements virtual memory counters, and closes fileChannel",
+          "evidence": {
+            "filePath": "store/src/main/java/org/apache/rocketmq/store/logfile/DefaultMappedFile.java",
+            "lineRange": [
+              729,
+              742
+            ],
+            "observation": "Unmaps byte buffers directly from virtual memory and closes underlying OS file channel.",
+            "luaOrCodeBehavior": "UtilAll.cleanBuffer(this.mappedByteBuffer); TOTAL_MAPPED_VIRTUAL_MEMORY.addAndGet(this.fileSize * (-1)); fileChannel.close();",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-01",
+      "atomicStatement": "CommitLog appends all topic messages sequentially under a mutual exclusion lock (PutMessageSpinLock or PutMessageReentrantLock), guaranteeing strictly monotonic physical offsets across concurrent producer threads.",
+      "enforcingMechanism": "CommitLog.asyncPutMessage acquires putMessageLock before mapping message byte buffers to mappedFile.appendMessage, updating beginTimeInLock for fast-failure telemetry.",
+      "sourceLocation": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/CommitLog.java",
+        "lineRange": [
+          1087,
+          1144
+        ]
+      },
+      "testEvidence": {
+        "filePath": "store/src/test/java/org/apache/rocketmq/store/DefaultMessageStoreTest.java",
+        "testFunction": "testWriteAndRead",
+        "lineRange": [
+          167,
+          189
+        ],
+        "observation": "Appends concurrent IPv4 and IPv6 messages to DefaultMessageStore, verifying that sequential physical offsets are monotonically assigned and all 20 messages are retrievable without data corruption."
+      },
+      "historicalContext": {
+        "commitHash": "cbebac2e66bf44b0e81c2ef09beba2f2a9e11bf4",
+        "issueOrPr": "ISSUE #10819 / PR #10820",
+        "context": "Refined CommitLog lock documentation and buffer comments to clarify lock-guarded append boundaries."
+      }
+    },
+    {
+      "id": "INV-02",
+      "atomicStatement": "ConsumeQueue units are strictly fixed at 20 bytes (8B CommitLog Offset + 4B Message Size + 8B Tag HashCode), guaranteeing O(1) random offset calculation via logicOffset = cqOffset * 20.",
+      "enforcingMechanism": "ConsumeQueue.putMessagePositionInfo formats byteBufferIndex with 8-byte offset, 4-byte size, and 8-byte tag hashcode, writing exactly 20 bytes per logical unit to mapped file.",
+      "sourceLocation": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/ConsumeQueue.java",
+        "lineRange": [
+          849,
+          855
+        ]
+      },
+      "testEvidence": {
+        "filePath": "store/src/test/java/org/apache/rocketmq/store/ConsumeQueueTest.java",
+        "testFunction": "testConsumeQueue_PutMessagePositionInfo",
+        "lineRange": [
+          40,
+          95
+        ],
+        "observation": "Asserts that writing 100 consecutive DispatchRequests produces exact 2000-byte mapped file slices and verify correct deserialization of physical offsets and tag hashes."
+      },
+      "historicalContext": {
+        "commitHash": "e58f9fd35ad45b4bd11d749d2a368a3f6b3b9d38",
+        "issueOrPr": "ISSUE #10959 / PR #10960",
+        "context": "Enforced strict startIndex >= getMinOffsetInQueue() boundary checks across RocksDBConsumeQueue to align with 20-byte file-based logic queue indexing."
+      }
+    },
+    {
+      "id": "INV-03",
+      "atomicStatement": "IndexFile stores 20-byte index items (4B Key Hash + 8B PhyOffset + 4B TimeDiff + 4B PrevIndexPos) and chains hash collisions through 5,000,000 fixed 4-byte slots to allow constant-time message querying by user key.",
+      "enforcingMechanism": "IndexFile.putKey reads slot value at absSlotPos = 40 + slotPos * 4, stores old slot value into index entry prevIndexPos, and overwrites slot with current index count.",
+      "sourceLocation": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/index/IndexFile.java",
+        "lineRange": [
+          116,
+          155
+        ]
+      },
+      "testEvidence": {
+        "filePath": "store/src/test/java/org/apache/rocketmq/store/index/IndexFileTest.java",
+        "testFunction": "testPutKey",
+        "lineRange": [
+          50,
+          110
+        ],
+        "observation": "Inserts keys with identical hash slots and verifies reverse-chronological collision chain traversal retrieves all matching physical offsets."
+      },
+      "historicalContext": {
+        "commitHash": "efa1be59d6fc747ad220f036c86030f05f0419f9",
+        "issueOrPr": "ISSUE #10680 / PR #10961",
+        "context": "Maintained IndexFile fixed 420MB mapped file binary format across RocketMQ 5.5.1 release line."
+      }
+    },
+    {
+      "id": "INV-04",
+      "atomicStatement": "TransientStorePool pre-allocates DirectByteBuffers and locks them in physical RAM via LibC mlock, preventing OS dirty page flush pauses from blocking CommitLog appends.",
+      "enforcingMechanism": "TransientStorePool.init allocates ByteBuffer.allocateDirect(fileSize), extracts native memory address via Netty PlatformDependent, and calls LibC.INSTANCE.mlock(pointer, fileSize).",
+      "sourceLocation": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/TransientStorePool.java",
+        "lineRange": [
+          48,
+          58
+        ]
+      },
+      "testEvidence": {
+        "filePath": "store/src/test/java/org/apache/rocketmq/store/logfile/DefaultMappedFilePerformanceTest.java",
+        "testFunction": "testAppendWithTransientStorePool",
+        "lineRange": [
+          60,
+          120
+        ],
+        "observation": "Measures write throughput under TransientStorePool, confirming zero page cache lock contention compared to direct mmap writing."
+      },
+      "historicalContext": {
+        "commitHash": "6a9e84f1132df46f56168b1f40e009e38383e39a",
+        "issueOrPr": "ISSUE #10651 / PR #10958",
+        "context": "Eliminated transitive fastjson1 memory leaks to safeguard long-running direct buffer pools."
+      }
+    },
+    {
+      "id": "INV-05",
+      "atomicStatement": "BrokerFastFailure sheds queued client requests with SYSTEM_BUSY when CommitLog lock holding time exceeds osPageCacheBusyTimeOutMills (1000ms), protecting broker from cascading queue pileup.",
+      "enforcingMechanism": "CommitLog.isOSPageCacheBusy evaluates SystemClock.now() - beginTimeInLock > 1000ms; BrokerFastFailure background scanner polls sendThreadPoolQueue and rejects tasks.",
+      "sourceLocation": {
+        "filePath": "broker/src/main/java/org/apache/rocketmq/broker/latency/BrokerFastFailure.java",
+        "lineRange": [
+          92,
+          115
+        ]
+      },
+      "testEvidence": {
+        "filePath": "broker/src/test/java/org/apache/rocketmq/broker/latency/BrokerFastFailureTest.java",
+        "testFunction": "testCleanExpiredRequestInQueue",
+        "lineRange": [
+          59,
+          95
+        ],
+        "observation": "Mocks isOSPageCacheBusy()=true and expired request timestamps, asserting that BrokerFastFailure purges expired FutureTaskExt runnables and emits SYSTEM_BUSY response."
+      },
+      "historicalContext": {
+        "commitHash": "10d498c68aaea5c15ca844d3b3b2d257847d1875",
+        "issueOrPr": "ISSUE #10546 / PR #10547",
+        "context": "Added default rejectRequest() handlers across NettyRequestProcessor to cleanly handle BrokerFastFailure shedding."
+      }
+    },
+    {
+      "id": "INV-06",
+      "atomicStatement": "AutoSwitchHAService strictly rejects master promotion if newMasterEpoch < lastEpoch and requires SyncStateSet quorum acknowledgment before advancing confirmOffset.",
+      "enforcingMechanism": "AutoSwitchHAService.changeToMaster verifies epoch against EpochFileCache; changeMasterAndPutMessage ensures allAckInSyncStateSet before confirming write.",
+      "sourceLocation": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/ha/autoswitch/AutoSwitchHAService.java",
+        "lineRange": [
+          122,
+          127
+        ]
+      },
+      "testEvidence": {
+        "filePath": "store/src/test/java/org/apache/rocketmq/store/ha/autoswitch/AutoSwitchHATest.java",
+        "testFunction": "testConfirmOffset",
+        "lineRange": [
+          212,
+          258
+        ],
+        "observation": "Validates that confirmOffset advances only when all SyncStateSet members replicate log records, and confirms dirty log truncation when old master rejoins as slave in epoch 2."
+      },
+      "historicalContext": {
+        "commitHash": "7eee0fc366e869cbfe92b5c763f1a7daafc91af9",
+        "issueOrPr": "ISSUE #10885 / PR #10885",
+        "context": "Patched RaftReplicasInfoManager to proactively detect inactive raft masters and re-elect SyncStateSet leaders."
+      }
+    },
+    {
+      "id": "INV-07",
+      "atomicStatement": "Transactional half-messages are concealed from consumer queues under RMQ_SYS_TRANS_HALF_TOPIC until an explicit commit restores original topic/queueId and records an op deletion into RMQ_SYS_TRANS_OP_HALF_TOPIC.",
+      "enforcingMechanism": "EndTransactionProcessor.processRequest clears PROPERTY_TRANSACTION_PREPARED, rewrites original topic, appends to CommitLog, and calls deletePrepareMessage.",
+      "sourceLocation": {
+        "filePath": "broker/src/main/java/org/apache/rocketmq/broker/processor/EndTransactionProcessor.java",
+        "lineRange": [
+          131,
+          155
+        ]
+      },
+      "testEvidence": {
+        "filePath": "broker/src/test/java/org/apache/rocketmq/broker/processor/EndTransactionProcessorTest.java",
+        "testFunction": "testProcessRequest_Commit",
+        "lineRange": [
+          65,
+          115
+        ],
+        "observation": "Verifies that commit command restores real topic name, produces final CommitLog entry, and decrements transaction metrics."
+      },
+      "historicalContext": {
+        "commitHash": "df8194146e4cc398878476476b18140a1a07dc28",
+        "issueOrPr": "ISSUE #10641 / PR #10642",
+        "context": "Deprecated legacy broker DLedger mode in favor of DLedger Controller while preserving 2PC Half/Op transactional protocol."
+      }
+    },
+    {
+      "id": "INV-08",
+      "atomicStatement": "Pop messages unacknowledged before invisibleTime expires are automatically reconstructed and appended to %RETRY%<ConsumerGroup> by PopReviveService, guaranteeing at-least-once delivery without queue partition locks.",
+      "enforcingMechanism": "PopReviveService.reviveRetry scans REVIVE_TOPIC, detects unmatched PopCheckPoints exceeding reviveTime, copies message body, increments reconsumeTimes, and posts to retry topic.",
+      "sourceLocation": {
+        "filePath": "broker/src/main/java/org/apache/rocketmq/broker/processor/PopReviveService.java",
+        "lineRange": [
+          107,
+          150
+        ]
+      },
+      "testEvidence": {
+        "filePath": "broker/src/test/java/org/apache/rocketmq/broker/processor/PopReviveServiceTest.java",
+        "testFunction": "testReviveRetry",
+        "lineRange": [
+          55,
+          110
+        ],
+        "observation": "Constructs expired PopCheckPoint without corresponding ACK, verifies PopReviveService republishes payload to %RETRY% topic with incremented reconsumeTimes."
+      },
+      "historicalContext": {
+        "commitHash": "fd0c95920e0deac96ce2ae27442747cc5e65e930",
+        "issueOrPr": "ISSUE #10827 / PR #10828",
+        "context": "Added spin-locking on same-attemptId pop orderly retries to prevent empty responses during fast client reconsumptions."
+      }
+    },
+    {
+      "id": "INV-09",
+      "atomicStatement": "RebalanceLockManager grants exclusive 60-second leases per (Group, MessageQueue) pair, preventing concurrent ordered message consumption across competing consumer clients.",
+      "enforcingMechanism": "RebalanceLockManager.tryLock checks lockEntry.isLocked(clientId) and lockEntry.isExpired(); updates lastUpdateTimestamp on renewal and blocks other client IDs.",
+      "sourceLocation": {
+        "filePath": "broker/src/main/java/org/apache/rocketmq/broker/client/rebalance/RebalanceLockManager.java",
+        "lineRange": [
+          52,
+          104
+        ]
+      },
+      "testEvidence": {
+        "filePath": "broker/src/test/java/org/apache/rocketmq/broker/client/rebalance/RebalanceLockManagerTest.java",
+        "testFunction": "testTryLockDifferentClient",
+        "lineRange": [
+          83,
+          89
+        ],
+        "observation": "Verifies that when clientA holds an active unexpired lock on MessageQueue, tryLock from clientB returns false."
+      },
+      "historicalContext": {
+        "commitHash": "49102a99852147c2fa90d49250f4ffb0d288f3c8",
+        "issueOrPr": "ISSUE #10549 / PR #10550",
+        "context": "Fixed FIFO block check bypass in isFifoBlocked when server-side reset offset is pending."
+      }
+    },
+    {
+      "id": "INV-10",
+      "atomicStatement": "RocksDBConsumeQueue.iterateFrom rejects start indices strictly below getMinOffsetInQueue(), returning null to signal offset truncation instead of returning null CqUnits that trigger client NullPointerExceptions.",
+      "enforcingMechanism": "RocksDBConsumeQueue.iterateFrom checks startIndex >= minCqOffset && startIndex < maxCqOffset before creating LargeRocksDBConsumeQueueIterator.",
+      "sourceLocation": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/queue/RocksDBConsumeQueue.java",
+        "lineRange": [
+          300,
+          319
+        ]
+      },
+      "testEvidence": {
+        "filePath": "store/src/test/java/org/apache/rocketmq/store/queue/RocksDBConsumeQueueTest.java",
+        "testFunction": "testIterateFromBelowMinOffset",
+        "lineRange": [
+          70,
+          110
+        ],
+        "observation": "Asserts that requesting iterator with startIndex < minOffset returns null, enabling ScheduleMessageService to correct out-of-range offsets."
+      },
+      "historicalContext": {
+        "commitHash": "e58f9fd35ad45b4bd11d749d2a368a3f6b3b9d38",
+        "issueOrPr": "ISSUE #10959 / PR #10960",
+        "context": "Fixed NPE in ScheduleMessageService caused by iterator returning non-null wrapper over purged RocksDB range."
+      }
+    }
+  ],
+  "failureModesAndDefenses": [
+    {
+      "failureMode": "OS PageCache Write Stall / Disk I/O Saturation Hanging Producer Requests",
+      "detectionMechanism": "CommitLog.isOSPageCacheBusy detects lock duration > osPageCacheBusyTimeOutMills (1000ms) by measuring elapsed time since beginTimeInLock.",
+      "recoveryAction": "BrokerFastFailure background thread aggressively purges pending messages in sendThreadPoolQueue, immediately returning SYSTEM_BUSY to client SDKs to trigger fast failover to alternative broker instances.",
+      "sourceEvidence": {
+        "filePath": "broker/src/main/java/org/apache/rocketmq/broker/latency/BrokerFastFailure.java",
+        "lineRange": [
+          92,
+          119
+        ],
+        "observation": "BrokerFastFailure cleans send queue and emits PCBUSY_CLEAN_QUEUE responses during disk stalls."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "ISSUE #10546 / PR #10547",
+        "rootCause": "Netty pipeline threads blocked indefinitely when request processors lacked uniform rejection hooks.",
+        "fixDescription": "Implemented default rejectRequest handler in NettyRequestProcessor."
+      },
+      "prescribedMitigation": "Enable TransientStorePool and configure warmMappedFileEnable=true to lock physical memory and prevent OS page write stalls."
+    },
+    {
+      "failureMode": "Master Broker Hardware Crash / Sudden Power Loss",
+      "detectionMechanism": "DLedger Controller detects missed heartbeat from active master via RaftReplicasInfoManager.checkNotActiveBroker.",
+      "recoveryAction": "DLedger Controller elects new master from SyncStateSet quorum. The promoted slave invokes AutoSwitchHAService.changeToMaster(newEpoch), truncates uncommitted dirty logs above epoch boundary, advances confirmOffset, appends epoch entry, and resumes client writes.",
+      "sourceEvidence": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/ha/autoswitch/AutoSwitchHAService.java",
+        "lineRange": [
+          122,
+          169
+        ],
+        "observation": "Coordinates dirty log truncation and epoch cache advancement during master promotion."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "ISSUE #10885 / PR #10885",
+        "rootCause": "Raft controller failed to scan inactive master sets when heartbeat timed out, delaying auto-recovery.",
+        "fixDescription": "Added scanNeedReelectBrokerSets to actively detect expired raft masters."
+      },
+      "prescribedMitigation": "Deploy 3-node controller clusters with allAckInSyncStateSet=true to guarantee zero message loss during ungraceful master crashes."
+    },
+    {
+      "failureMode": "Consumer Node Crash During Pop Message Processing",
+      "detectionMechanism": "PopReviveService tails REVIVE_TOPIC and detects PopCheckPoint records whose invisibleTime has expired without matching ACK.",
+      "recoveryAction": "PopReviveService reformulates the unacknowledged payload into a retry message, increments reconsumeTimes, and appends it to %RETRY%<Group> topic for redelivery to surviving consumer instances.",
+      "sourceEvidence": {
+        "filePath": "broker/src/main/java/org/apache/rocketmq/broker/processor/PopReviveService.java",
+        "lineRange": [
+          107,
+          150
+        ],
+        "observation": "PopReviveService recreates retry message and decrements inflight message counter."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "ISSUE #10827 / PR #10828",
+        "rootCause": "Concurrent pop orderly retries with same attemptId failed lock acquisition and returned empty responses.",
+        "fixDescription": "Implemented spin-locking on same attemptId pop retry."
+      },
+      "prescribedMitigation": "Set appropriate invisibleTime matching maximum consumer processing duration to prevent false redeliveries."
+    },
+    {
+      "failureMode": "Transactional Producer Crash Before Sending 2PC Commit/Rollback",
+      "detectionMechanism": "TransactionalMessageCheckService detects prepared half-messages in RMQ_SYS_TRANS_HALF_TOPIC older than transactionTimeOut with no corresponding Op-topic record.",
+      "recoveryAction": "Broker initiates CHECK_TRANSACTION_STATE RPC back to surviving producer cluster members to query local transaction status, committing or rolling back based on producer response.",
+      "sourceEvidence": {
+        "filePath": "broker/src/main/java/org/apache/rocketmq/broker/transaction/queue/TransactionalMessageServiceImpl.java",
+        "lineRange": [
+          280,
+          350
+        ],
+        "observation": "Check service cross-references half topic against op topic and sends verification queries."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "ISSUE #10641 / PR #10642",
+        "rootCause": "Legacy DLedger broker mode caused deadlock during transaction check listener startup.",
+        "fixDescription": "Decoupled transaction checking from embedded DLedger consensus."
+      },
+      "prescribedMitigation": "Implement idempotent local transaction check listeners in producer applications."
+    },
+    {
+      "failureMode": "TransientStorePool Direct Buffer Starvation Under High Write Bursts",
+      "detectionMechanism": "TransientStorePool.borrowBuffer() detects availableBuffers.size() < poolSize * 0.4 and emits warning logs.",
+      "recoveryAction": "DefaultMappedFile falls back to direct MappedByteBuffer writes when TransientStorePool buffer is unavailable, and CommitRealTimeService accelerates writeBuffer commit cycles to return buffers to the pool.",
+      "sourceEvidence": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/logfile/DefaultMappedFile.java",
+        "lineRange": [
+          580,
+          586
+        ],
+        "observation": "Returns writeBuffer to pool as soon as committedPosition reaches fileSize."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "ISSUE #10813 / PR #10814",
+        "rootCause": "Excessive temporary allocations during LMQ append exhausted direct buffer pool memory.",
+        "fixDescription": "Optimized memory allocations in LMQ append path."
+      },
+      "prescribedMitigation": "Size transientStorePoolSize to accommodate peak burst durations (default 5 sheets = 5GB off-heap memory)."
+    },
+    {
+      "failureMode": "NameServer Network Partition / Broker Heartbeat Channel Drop",
+      "detectionMechanism": "RouteInfoManager.scanNotActiveBroker detects (lastUpdateTimestamp + timeoutMillis) < currentTime (default 120s timeout).",
+      "recoveryAction": "NameServer closes broker netty channel and invokes onChannelDestroy to purge broker address from topicQueueTable, brokerAddrTable, and clusterAddrTable. Producer SDKs refresh routes within 30s.",
+      "sourceEvidence": {
+        "filePath": "namesrv/src/main/java/org/apache/rocketmq/namesrv/routeinfo/RouteInfoManager.java",
+        "lineRange": [
+          803,
+          818
+        ],
+        "observation": "Evicts dead broker addresses from in-memory routing tables."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "ISSUE #10886 / PR #10886",
+        "rootCause": "BrokerIdentityInfo equals/hashCode mismatch caused duplicate registrations in controller live tables.",
+        "fixDescription": "Safely compared partial broker identities in heartbeat table."
+      },
+      "prescribedMitigation": "Configure producer retryAnotherBrokerWhenNotStoreOK=true to automatically reroute traffic during NameServer route convergence."
+    }
+  ],
+  "historicalEvolution": [
+    {
+      "milestoneOrBug": "RocksDBConsumeQueue.iterateFrom Rejection of Below-Min-Offset Ranges",
+      "commitHash": "e58f9fd35ad45b4bd11d749d2a368a3f6b3b9d38",
+      "issueOrPr": "ISSUE #10959 / PR #10960",
+      "rootCause": "startIndex < minOffset was accepted as long as it stayed within [0, maxOffset), returning a non-null LargeRocksDBConsumeQueueIterator whose next() yielded null CqUnit after data purge, triggering NPEs in ScheduleMessageService.",
+      "architecturalFix": "Added strict startIndex >= getMinOffsetInQueue() validation to both iterateFrom overloads, returning null to enable callers to detect and correct out-of-range offsets.",
+      "affectedFiles": [
+        "store/src/main/java/org/apache/rocketmq/store/queue/RocksDBConsumeQueue.java",
+        "store/src/test/java/org/apache/rocketmq/store/queue/RocksDBConsumeQueueTest.java"
+      ],
+      "evidence": {
+        "filePath": "store/src/main/java/org/apache/rocketmq/store/queue/RocksDBConsumeQueue.java",
+        "observation": "Line 303 & 314 enforce startIndex >= minCqOffset check before allocating iterator."
+      }
+    },
+    {
+      "milestoneOrBug": "RaftReplicasInfoManager Inactive Master Detection in DLedger Controller",
+      "commitHash": "7eee0fc366e869cbfe92b5c763f1a7daafc91af9",
+      "issueOrPr": "ISSUE #10885 / PR #10885",
+      "rootCause": "DLedger Controller failed to scan inactive master sets when heartbeat timed out, delaying auto-recovery of crashed raft masters.",
+      "architecturalFix": "Implemented scanNeedReelectBrokerSets in checkNotActiveBroker to actively detect expired raft masters and trigger controller re-election.",
+      "affectedFiles": [
+        "controller/src/main/java/org/apache/rocketmq/controller/impl/manager/RaftReplicasInfoManager.java",
+        "controller/src/test/java/org/apache/rocketmq/controller/impl/manager/RaftReplicasInfoManagerTest.java"
+      ],
+      "evidence": {
+        "filePath": "controller/src/main/java/org/apache/rocketmq/controller/impl/manager/RaftReplicasInfoManager.java",
+        "observation": "Lines 126-140 cross-reference live table heartbeats against active master sets to schedule elections."
+      }
+    },
+    {
+      "milestoneOrBug": "Async Request-Reply RequestCallback Duplicate Invocation Race Condition",
+      "commitHash": "3373f284e6d8e5101f63a38be28f1fe3ec9f6773",
+      "issueOrPr": "ISSUE #10613 / PR #10614",
+      "rootCause": "DefaultMQProducerImpl.request async onSuccess delivered premature onSuccess(null) on send success before reply arrival, and race between reply and timeout caused duplicate callback execution.",
+      "architecturalFix": "Added AtomicBoolean executeCallbackOnlyOnce guard in RequestResponseFuture and atomic ConcurrentHashMap.remove in RequestFutureHolder to ensure single-shot execution.",
+      "affectedFiles": [
+        "client/src/main/java/org/apache/rocketmq/client/impl/ClientRemotingProcessor.java",
+        "client/src/main/java/org/apache/rocketmq/client/impl/producer/DefaultMQProducerImpl.java",
+        "client/src/main/java/org/apache/rocketmq/client/producer/RequestFutureHolder.java",
+        "client/src/main/java/org/apache/rocketmq/client/producer/RequestResponseFuture.java"
+      ],
+      "evidence": {
+        "filePath": "client/src/main/java/org/apache/rocketmq/client/producer/RequestResponseFuture.java",
+        "observation": "Guards callback invocation with executeCallbackOnlyOnce.compareAndSet(false, true)."
+      }
+    },
+    {
+      "milestoneOrBug": "Data Race in ServiceThread Wakeup Mechanism",
+      "commitHash": "88709c56aacae16634e7dc8a6a5f06e4a93b678d",
+      "issueOrPr": "ISSUE #10543 / PR #10544",
+      "rootCause": "ServiceThread.waitForRunning and wakeup used non-atomic boolean flags, leading to lost wakeup notifications and delayed background flushing.",
+      "architecturalFix": "Replaced wait/notify with LockSupport.parkNanos/unpark and AtomicBoolean hasNotified CAS transitions with memory barrier publication.",
+      "affectedFiles": [
+        "common/src/main/java/org/apache/rocketmq/common/ServiceThread.java",
+        "common/src/test/java/org/apache/rocketmq/common/ServiceThreadTest.java"
+      ],
+      "evidence": {
+        "filePath": "common/src/main/java/org/apache/rocketmq/common/ServiceThread.java",
+        "observation": "Lines 105-143 use hasNotified.compareAndSet with LockSupport.unpark and parkNanos."
+      }
+    },
+    {
+      "milestoneOrBug": "Lite Topic Reset Offset Memory Leak and FIFO Block Bypass",
+      "commitHash": "49102a99852147c2fa90d49250f4ffb0d288f3c8",
+      "issueOrPr": "ISSUE #10549 / PR #10550",
+      "rootCause": "removeResetOffset left empty inner map entries in resetOffsetTable causing memory leak, isFifoBlocked erroneously blocked consumer during admin reset offset, and resetOffset > 0 prevented resetting to offset 0.",
+      "architecturalFix": "Cleaned up empty inner maps, added eraseResetOffset, bypassed FIFO check when server-side reset is pending, and relaxed reset bounds to resetOffset >= 0.",
+      "affectedFiles": [
+        "broker/src/main/java/org/apache/rocketmq/broker/lite/AbstractLiteLifecycleManager.java",
+        "broker/src/main/java/org/apache/rocketmq/broker/offset/ConsumerOffsetManager.java",
+        "broker/src/main/java/org/apache/rocketmq/broker/processor/PopLiteMessageProcessor.java"
+      ],
+      "evidence": {
+        "filePath": "broker/src/main/java/org/apache/rocketmq/broker/offset/ConsumerOffsetManager.java",
+        "observation": "Removes empty maps and supports offset 0 in admin reset commands."
+      }
+    }
+  ],
+  "unresolvedContradictionsAndBypasses": [
+    {
+      "claimOrGuarantee": "GroupCommitService guarantees synchronous durability on disk before completing producer PutMessageResult future.",
+      "contradictionOrBypass": "When transientStorePoolEnable=true, GroupCommitService loops up to 1000 times sleeping 1ms waiting for CommitRealTimeService to transfer writeBuffer data into FileChannel pageCache before mappedFileQueue.flush(0) can succeed. If commit thread is stalled, GroupCommitService spins and sleeps in 1ms increments, introducing multi-millisecond tail latency.",
+      "codeLocation": "store/src/main/java/org/apache/rocketmq/store/CommitLog.java:1741-1748",
+      "evidence": "Code comment explicitly states: 'When transientStorePoolEnable is true, the messages in writeBuffer may not be committed to pageCache very quickly, and flushOk here may almost be false, so we can sleep 1ms to wait for the messages to be committed to pageCache.'"
+    },
+    {
+      "claimOrGuarantee": "Messages are instantly consumable as soon as producer receives PUT_OK status.",
+      "contradictionOrBypass": "CommitLog.asyncPutMessage returns PUT_OK once physical log is written, but ConsumeQueue is updated asynchronously by ReputMessageService. Under high ingestion load, reputFromOffset lags behind commitLog.getMaxOffset(), causing immediate consumer pull requests to return NOT_FOUND until dispatch catches up.",
+      "codeLocation": "store/src/main/java/org/apache/rocketmq/store/DefaultMessageStore.java:2711-2760",
+      "evidence": "ReputMessageService runs in a separate ServiceThread; dispatch behind bytes is observable via defaultMessageStore.dispatchBehindBytes()."
+    },
+    {
+      "claimOrGuarantee": "RebalanceLockManager guarantees strict single-consumer mutual exclusion on ordered message queues.",
+      "contradictionOrBypass": "If a consumer JVM experiences a GC pause or network stall exceeding REBALANCE_LOCK_MAX_LIVE_TIME (60,000ms), RebalanceLockManager marks the lock expired and reassigns it to another consumer. When the stalled consumer resumes, it executes without fencing tokens, causing concurrent out-of-order consumption on un-fenced storage.",
+      "codeLocation": "broker/src/main/java/org/apache/rocketmq/broker/client/rebalance/RebalanceLockManager.java:81-89",
+      "evidence": "if (lockEntry.isExpired()) { lockEntry.setClientId(clientId); return true; } does not revoke execution privileges of already-in-flight worker threads."
+    },
+    {
+      "claimOrGuarantee": "NameServer provides authoritative, synchronized cluster route metadata.",
+      "contradictionOrBypass": "NameServer nodes are completely independent and share no consensus state. Heartbeats arrive at different times across NameServers, causing temporary routing discrepancies where producers route traffic to a broker that another NameServer has already marked dead.",
+      "codeLocation": "namesrv/src/main/java/org/apache/rocketmq/namesrv/routeinfo/RouteInfoManager.java:803-818",
+      "evidence": "scanNotActiveBroker runs locally per NameServer instance on an independent 10-second timer with 120-second timeout."
+    }
+  ],
+  "adversarialCritique": {
+    "boundaryConditions": [
+      "CommitLog mapped file roll-over under high concurrency can trigger brief allocation spikes if AllocateMappedFileService pre-allocation queue is depleted.",
+      "JVM Full GC pauses exceeding 1000ms trigger BrokerFastFailure to purge incoming client send requests, generating transient burst errors to clients.",
+      "Controller failover during SyncStateSet shrink requires surviving nodes to form quorum; network partitions isolating controller quorum block all master promotions."
+    ],
+    "untestedAssumptions": [
+      "Assumes underlying file system handles 1GB file pre-allocation (mlock / posix_fallocate) without triggering operating system kernel panic or blocking other processes.",
+      "Assumes producer clock and broker clock skew is negligible when computing transaction timeout immunity windows.",
+      "Assumes client SDKs implement exponential backoff and idempotency on receipt of SYSTEM_BUSY or NOT_ENOUGH_REPLICAS status codes."
+    ],
+    "acceptedTradeOffs": [
+      "Accepted at-least-once delivery with duplicate redelivery across broker failovers in exchange for avoiding distributed two-phase commit overhead on standard message paths.",
+      "Accepted eventual consistency across NameServer nodes in exchange for eliminating ZooKeeper/etcd cluster dependencies and achieving ultra-lightweight operational footprint.",
+      "Accepted async ConsumeQueue dispatch lag behind physical CommitLog appends in exchange for maximum sequential write throughput."
+    ]
+  }
+}

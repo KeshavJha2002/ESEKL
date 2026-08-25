@@ -1,0 +1,38 @@
+[
+  {
+    "fixtureId": "NEG-DLINK-001",
+    "description": "Domain EKU citing unknown supportedByRepoEkus",
+    "expectedErrorCategory": "BROKEN_SUPPORT_LINK",
+    "payload": {
+      "id": "EKU-TEST-001",
+      "supportedByRepoEkus": ["REKU-NONEXISTENT-999"]
+    }
+  },
+  {
+    "fixtureId": "NEG-DLINK-002",
+    "description": "Domain EKU citing unknown alternativeMechanismRepoEkus",
+    "expectedErrorCategory": "BROKEN_ALTERNATIVE_LINK",
+    "payload": {
+      "id": "EKU-TEST-002",
+      "alternativeMechanismRepoEkus": ["REKU-NONEXISTENT-888"]
+    }
+  },
+  {
+    "fixtureId": "NEG-DLINK-003",
+    "description": "Domain EKU citing unknown counterexampleRepoEkus",
+    "expectedErrorCategory": "BROKEN_COUNTEREXAMPLE_LINK",
+    "payload": {
+      "id": "EKU-TEST-003",
+      "counterexampleRepoEkus": ["REKU-NONEXISTENT-777"]
+    }
+  },
+  {
+    "fixtureId": "NEG-DLINK-004",
+    "description": "Domain EKU citing unknown notApplicableRepoEkus",
+    "expectedErrorCategory": "BROKEN_NOT_APPLICABLE_LINK",
+    "payload": {
+      "id": "EKU-TEST-004",
+      "notApplicableRepoEkus": ["REKU-NONEXISTENT-666"]
+    }
+  }
+]

@@ -1,0 +1,386 @@
+[
+  {
+    "commitHash": "ded1b54c538de60b4df8f4953c5e1979ac64b5db",
+    "authorDate": "2026-08-20T20:47:31-04:00",
+    "subject": "Revert \"ARTEMIS-6142 Ensure InVM connections are removed on graceful close\"",
+    "body": "This reverts commit 546ec6936f22ae77de7e62b23eafb64a6abf9495.\n\nI'm sorry, but I'm having to revert this. and I will defer it to next\nversion. I'm adding a new Pull Request for this with some work that will\nneed to be done before we merge it",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/impl/invm/InVMAcceptor.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/impl/invm/InVMConnection.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/impl/invm/InVMConnector.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/server/impl/RemotingServiceImpl.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/jms/connection/InVMConnectionLeakStressTest.java",
+      "tests/unit-tests/src/test/java/org/apache/activemq/artemis/tests/unit/core/remoting/impl/invm/InVMConnectionTest.java"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "a5f4979e2fe14997dcf2d5fa90cd27a6cd8f2050",
+    "authorDate": "2026-08-20T15:40:58-05:00",
+    "subject": "NO-JIRA doc fix for curl syntax",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docs/user-manual/management.adoc"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2dba0cd2f5ddb7d31f3f9644b6d6823a4c044826",
+    "authorDate": "2026-08-20T13:15:52-04:00",
+    "subject": "NO-JIRA Fixing intermittent test issue",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-server/src/test/java/org/apache/activemq/artemis/core/server/impl/ActiveMQServerStartupTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5c3c91f974859ea0c2655ba116600254c4075a20",
+    "authorDate": "2026-08-20T09:57:52-04:00",
+    "subject": "NO-JIRA Fixing MultipleProducerTest's intermittent failures",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/client/MultipleProducersTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "546ec6936f22ae77de7e62b23eafb64a6abf9495",
+    "authorDate": "2026-07-02T14:29:56+02:00",
+    "subject": "ARTEMIS-6142 Ensure InVM connections are removed on graceful close",
+    "body": "- Fix race condition in InVMConnection\n- InVMAcceptor/InVMConnector gracefully closing (not reported as disconnect anymore)\n- Adds InVMConnectionLeakStressTest",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/impl/invm/InVMAcceptor.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/impl/invm/InVMConnection.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/impl/invm/InVMConnector.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/server/impl/RemotingServiceImpl.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/jms/connection/InVMConnectionLeakStressTest.java",
+      "tests/unit-tests/src/test/java/org/apache/activemq/artemis/tests/unit/core/remoting/impl/invm/InVMConnectionTest.java"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "d8be32ad68e801448519ac90e979ebe859c9871c",
+    "authorDate": "2026-08-18T07:56:49-05:00",
+    "subject": "ARTEMIS-6198 fix flaky test",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/mqtt5/MQTT5Test.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/mqtt5/MQTT5TestSupport.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ac165bf5beb753aa03310c05591fd912d9b4151b",
+    "authorDate": "2026-07-11T12:19:14+02:00",
+    "subject": "ARTEMIS-6155 Decrease github jobs timeout to 60m",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".github/workflows/build.yml"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "217da479688934b9e9b0c5e2e82016fd259eee26",
+    "authorDate": "2026-08-12T14:38:35-05:00",
+    "subject": "ARTEMIS-6189 fix flaky MQTT tests",
+    "body": "During repeated execution of MQTT tests I fixed these flaky tests:\n\n- Add a notification listener to the cluster remote subscribe test to\n  synchronize on SESSION_CREATED, preventing a race in subscription\n  takeover\n- Fix non-deterministic message ordering in testAutoDeleteRetainedQueue\n  by consuming the retained message before publishing non-retained\n  messages\n- Use Wait.assertFalse for async disconnect detection instead of an\n  immediate assertion\n\nCo-Authored-By: Claude <noreply@anthropic.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/ActiveMQServerImpl.java",
+      "artemis-server/src/test/java/org/apache/activemq/artemis/core/server/impl/ActiveMQServerStartupTest.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/mqtt/MQTTTest.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/mqtt/MqttClusterRemoteSubscribeTest.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/mqtt5/MQTT5Test.java"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "b30557853d73e73be1fa421f38e1b95d2c97762b",
+    "authorDate": "2026-08-12T14:37:55-05:00",
+    "subject": "ARTEMIS-6189 implement MQTT QoS 1 & 2 resiliency",
+    "body": "Replace the in-memory and per-client resources with journal-persisted\npacket-ID correlation and DuplicateIDCache-backed packet ID caches\nso that QoS 1 and QoS 2 message flows survive broker restarts.\n\n- Packet ID assignments are persisted to the journal via a\n  JournalHashMap so that when a message is redelivered after a broker\n  restart the same packet ID is reused\n- Inbound QoS 2 duplicate detection and outbound QoS 2 PUBREC tracking\n  use DuplicateIDCache instead of in-memory sets, surviving restarts\n- The per-client QoS 2 management queue (used for PUBREL persistence)\n  is eliminated; PUBREL retransmission is driven by iterating the\n  PUBREC cache on reconnect\n- Objects related to resilience (caches, journal maps) are only created\n  when actually used, avoiding overhead for QoS 0/1-only clients\n- Sends and acknowledgements are now explicitly transactional, ensuring\n  atomicity between message operations and correlation store and cache\n  updates\n- Session startup is asynchronous with CountDownLatch synchronization,\n  preventing a race where client packets arrive before the session is\n  fully initialized after CONNACK\n- Duplicate QoS 2 publish detection is moved earlier into the protocol\n  handler\n- MQTT message filters are constructed once in the protocol manager and\n  shared, rather than duplicated per subscription manager instance\n- Each subscription item now directly holds its consumer reference,\n  eliminating a separate consumer lookup map\n- Graceful handling of ActiveMQShutdownException during message deletion\n  and rollback redelivery avoids misleading log messages during broker\n  restart\n- Error logging throughout the MQTT protocol includes client ID and\n  packet ID context for easier debugging\n\nCo-Authored-By: Claude <noreply@anthropic.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/CoreDeliveryInfo.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTBundle.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTConnection.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTConnectionManager.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTLogger.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTMessageInfo.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTProtocolHandler.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTProtocolManager.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTProtocolManagerFactory.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTPublishManager.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTSession.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTSessionCallback.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTSessionState.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTStateManager.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTSubscriptionManager.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTUtil.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/PacketIdCache.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/PacketIdCorrelationKey.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/main/java/org/apache/activemq/artemis/core/protocol/mqtt/SubscriptionItem.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/test/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTSessionStateTest.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/test/java/org/apache/activemq/artemis/core/protocol/mqtt/MQTTStateManagerTest.java",
+      "artemis-protocols/artemis-mqtt-protocol/src/test/java/org/apache/activemq/artemis/core/protocol/mqtt/StateSerDeTest.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/persistence/impl/journal/JournalRecordIds.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/postoffice/DuplicateIDCache.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/postoffice/PostOffice.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/postoffice/impl/InMemoryDuplicateIDCache.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/postoffice/impl/NoOpDuplicateIDCache.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/postoffice/impl/PersistentDuplicateIDCache.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/postoffice/impl/PostOfficeImpl.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/impl/invm/InVMAcceptor.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/impl/netty/NettyAcceptor.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/server/RemotingService.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/server/impl/RemotingServiceImpl.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/ActiveMQMessageBundle.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/ActiveMQServerLogger.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/ActiveMQServerImpl.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/QueueImpl.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/RefsOperation.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/ServerSessionImpl.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/spi/core/protocol/AbstractProtocolManagerFactory.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/spi/core/protocol/ProtocolManagerFactory.java",
+      "docs/user-manual/versions.adoc",
+      "tests/artemis-test-support/src/main/java/org/apache/activemq/artemis/tests/unit/core/server/impl/fakes/FakePostOffice.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/mqtt/MQTTTest.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/mqtt/PahoMQTTQOS2SecurityTest.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/mqtt5/MQTT5Test.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/mqtt5/MQTT5TestSupport.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/mqtt5/spec/controlpackets/ConnAckTests.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/mqtt5/spec/controlpackets/ConnectTests.java"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "ae94df41d5d4d8bf355c413ae43f0ec118148707",
+    "authorDate": "2026-08-12T14:36:55-05:00",
+    "subject": "ARTEMIS-6189 generify JournalHashMap collection ID",
+    "body": "The JournalHashMap collection ID was hardcoded as a primitive long. This\ngeneralizes it to a type parameter, enabling journal hash maps keyed by\narbitrary types such as String. This is needed for MQTT packet-ID\ncorrelation, which is keyed by client ID.\n\n- Collection ID encoding/decoding is now delegated to the persister via\n  abstract methods, rather than hardcoded as long read/write\n- The internal map storage switches from Netty's LongObjectHashMap to a\n  standard HashMap to support non-primitive keys\n- Null-safety fix in JournalHashMap.remove() prevents an NPE when\n  removing a key that doesn't exist\n\nCo-Authored-By: Claude <noreply@anthropic.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-journal/src/main/java/org/apache/activemq/artemis/core/journal/collections/AbstractHashMapPersister.java",
+      "artemis-journal/src/main/java/org/apache/activemq/artemis/core/journal/collections/JournalHashMap.java",
+      "artemis-journal/src/main/java/org/apache/activemq/artemis/core/journal/collections/JournalHashMapProvider.java",
+      "artemis-protocols/artemis-amqp-protocol/src/main/java/org/apache/activemq/artemis/protocol/amqp/connect/mirror/AckManager.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/persistence/impl/journal/codec/AckRetry.java",
+      "tests/compatibility-tests/src/main/resources/ackManager/ackRetryEncoding.groovy",
+      "tests/compatibility-tests/src/test/java/org/apache/activemq/artemis/tests/compatibility/AckRetryCompatibilityTest.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/amqp/connect/AckManagerTest.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/journal/JournalHashMapTest.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/replication/RepeatStartBackupTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8e89b9ade5ec8577a9d7e88884b3219a0a09d0d3",
+    "authorDate": "2026-07-20T14:59:23+01:00",
+    "subject": "NO-JIRA half the runtime of CuratorDistributedLockTest with cluster reuse and smaller timeouts",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-lockmanager/artemis-lockmanager-ri/src/test/java/org/apache/activemq/artemis/lockmanager/zookeeper/CuratorDistributedLockTest.java"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "00dd2dde19f974bf1ee555881f132f995045b95a",
+    "authorDate": "2026-08-11T10:20:30+02:00",
+    "subject": "ARTEMIS-6179 Fix deleteReference/depage deadlock",
+    "body": "Removes synchronized from QueueImpl#deleteReference(). It calls\niterQueue(), which acquires depageLock internally, while depage()\nacquires depageLock first and then enters a synchronized(this)\nblock. The reversed lock order deadlocks QueueControl#removeMessage()\nagainst the paging executor whenever they race on an actively\npaging queue.\n\nThis mirrors the fix already applied to copyReference() in\nARTEMIS-5376: iterQueue() already provides its own synchronization\nvia depageLock, so the outer synchronized on deleteReference() is\nredundant and unsafe. Verified with\ntestRemoveMessageWhilstPagingAndConsuming, which reliably deadlocks\nwithout this change and passes cleanly with it.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/QueueImpl.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/management/ManagementWithPagingServerTest.java"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "30dc4c0453539b2994ca41fb97ea01ffc405b979",
+    "authorDate": "2026-08-07T18:37:37-04:00",
+    "subject": "ARTEMIS-6178 Fixing checkstyle",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tests/compatibility-tests/src/test/java/org/apache/activemq/artemis/tests/compatibility/LegacyClientTopologyTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6fbb99fb1518bdd215f903df3fcce714188e8282",
+    "authorDate": "2026-08-07T10:08:24-04:00",
+    "subject": "ARTEMIS-6176 Update to proton-j 0.35.0 and add configuration",
+    "body": "Update to proton-j 0.35.0 and add configuration options to allow control\nof new proton-j options added as part of that release\n\nAdd new option maxTransfersPerDelivery with default of 65535\nAdd system property configuration to the TLSEncode object to update\nmaxDecodeDepth and zeroWidthArrayElementLimit values for the proton\ncodec in case of a backwards compatible issue a user might face.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-protocols/artemis-amqp-protocol/src/main/java/org/apache/activemq/artemis/protocol/amqp/broker/ProtonProtocolManager.java",
+      "artemis-protocols/artemis-amqp-protocol/src/main/java/org/apache/activemq/artemis/protocol/amqp/proton/AMQPConnectionContext.java",
+      "artemis-protocols/artemis-amqp-protocol/src/main/java/org/apache/activemq/artemis/protocol/amqp/proton/AmqpSupport.java",
+      "artemis-protocols/artemis-amqp-protocol/src/main/java/org/apache/activemq/artemis/protocol/amqp/util/TLSEncode.java",
+      "artemis-protocols/artemis-amqp-protocol/src/test/java/org/apache/activemq/artemis/protocol/amqp/proton/AMQPConnectionContextTest.java",
+      "pom.xml",
+      "tests/integration-tests-isolated/src/test/java/org/apache/activemq/artemis/tests/integration/isolated/amqp/AmqpTLSCodecOverridesTest.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/amqp/AmqpMaxTransfersPerDeliveryTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "29ba2a4c08786e876b27c966ff0fc62019d6bd53",
+    "authorDate": "2026-07-31T09:05:27+02:00",
+    "subject": "ARTEMIS-6172 Fix HTTP tunneling server async packets starve request replies",
+    "body": "With httpEnabled=true, Core packets are tunneled over HTTP. HttpAcceptorHandler\npairs each client POST with one queued HTTP response slot; every server\noutbound ByteBuf must take a slot before it can be flushed.\nServer-initiated / async packets (e.g. ClusterTopologyChangeMessage) also\nconsume those slots. When they drain the queue, replies to the client’s own\nrequests block on responses.take() until another HTTP request arrives.\nThe client is often waiting for that reply, so the connection stalls.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/protocol/ProtocolHandler.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/remoting/impl/netty/HttpAcceptorHandler.java",
+      "artemis-server/src/test/java/org/apache/activemq/artemis/core/remoting/impl/netty/HttpAcceptorHandlerTest.java",
+      "docs/user-manual/versions.adoc",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/http/CoreClientOverHttpTest.java"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "09c4d4fc0fa5c91b69d7199862b20d499fc55432",
+    "authorDate": "2026-07-17T16:33:09+02:00",
+    "subject": "ARTEMIS-6159 Bound lock coordinator start so an unreachable ZooKeeper does not hang the broker",
+    "body": "LockCoordinator.run() started the lock manager with the unbounded\nstart() overload. Against CuratorDistributedLockManager this delegates\nto start(-1, null), which blocks forever in\nCuratorFramework.blockUntilConnected while ZooKeeper is unreachable.\n\nBecause run() executes on the coordinator's own ordered executor, a\nstuck start() permanently occupies that executor. stop() queues its\ncleanup on the same executor and waits on it with no timeout, so\nbroker stop/restart hangs indefinitely. This also happens for a lock\ncoordinator that isn't referenced by any acceptor or broker\nconnection, since every configured coordinator is started\nunconditionally.\n\nBound the start call to the coordinator's own check period instead:\non timeout it is simply retried on the next scheduled run, at the\nsame cadence it already runs at. Once run() can no longer block\nforever, stop()'s cleanup task gets its turn within one check period\nand returns on its own, so stop() itself did not need to change.\n\nAdded LockCoordinatorTest (artemis-server) with a lock manager that\nblocks on start like an unreachable ZooKeeper would, and\nUnreachableLockManagerTest (integration-tests) with a real\nCuratorDistributedLockManager pointed at a closed port and an\nunassigned coordinator. Both hang and fail without the fix, pass with\nit.\n\nAssisted-by: Claude",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/lock/LockCoordinator.java",
+      "artemis-server/src/test/java/org/apache/activemq/artemis/core/server/lock/LockCoordinatorAutoStartTest.java",
+      "artemis-server/src/test/java/org/apache/activemq/artemis/core/server/lock/LockCoordinatorTest.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/lockmanager/UnreachableLockManagerTest.java"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "a2f59024552e2e47b4d165e76f6855377d371a44",
+    "authorDate": "2026-07-21T08:17:41+02:00",
+    "subject": "ARTEMIS-6163 Add auto-start and management start/stop for lock coordinators",
+    "body": "Now that lock coordinators only start once a broker is activated, the\nbrokers that are active still all race for the lock. When a primary\nfails, a broker in a standby data center can grab the lock before the\nbackup of that primary has finished activating, so the group comes\nback in the wrong place. Which brokers may take a lock over on their\nown is a deployment decision, not something a broker can work out by\nitself.\n\nAdded an auto-start attribute on lock-coordinator, defaulting to true\nso nothing changes for existing configurations. With auto-start=false\nthe coordinator is created and visible in management, but it never\npolls for the lock on its own, so it stays out of the race until\nsomebody decides otherwise.\n\nTo make that decision possible, ActiveMQServerControl now exposes\nstartLockCoordinator and stopLockCoordinator next to the existing\nlistLockCoordinatorsAsJSON, both audited. Starting an already started\ncoordinator does nothing, stopping one that holds the lock releases\nit and pauses whatever is bound to it, and an unknown name is\nrejected. A coordinator can be started again after it was stopped, so\na data center can be handed the lock and handed it back.\n\nAdded LockCoordinatorAutoStartManagementTest for the whole cycle on an\nacceptor bound to an auto-start=false coordinator, a unit test for the\nflag itself and parser coverage for the new attribute.\n\nAssisted-by: Claude",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-commons/src/main/java/org/apache/activemq/artemis/logs/AuditLogger.java",
+      "artemis-core-client/src/main/java/org/apache/activemq/artemis/api/core/management/ActiveMQServerControl.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/config/LockCoordinatorConfiguration.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/deployers/impl/FileConfigurationParser.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/management/impl/ActiveMQServerControlImpl.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/ActiveMQServerImpl.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/lock/LockCoordinator.java",
+      "artemis-server/src/main/resources/schema/artemis-configuration.xsd",
+      "artemis-server/src/test/java/org/apache/activemq/artemis/core/config/impl/ConfigurationImplTest.java",
+      "artemis-server/src/test/java/org/apache/activemq/artemis/core/config/impl/FileConfigurationParserTest.java",
+      "artemis-server/src/test/java/org/apache/activemq/artemis/core/server/lock/LockCoordinatorAutoStartTest.java",
+      "docs/user-manual/lock-coordination.adoc",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/amqp/connect/LockCoordinatorAutoStartManagementTest.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/management/ActiveMQServerControlUsingCoreTest.java"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "d12d99af276ed5d6f7a9fb4edc24e6500d3ebeab",
+    "authorDate": "2026-07-21T08:16:57+02:00",
+    "subject": "ARTEMIS-6162 Only start lock coordinators once the broker is activated",
+    "body": "ActiveMQServerImpl.internalStart() started every configured lock\ncoordinator right away, regardless of the HA role of the node, so a\npassive backup contended for the lock along with the active primary.\n\nTwo things go wrong with that. A passive backup that wins the lock\nholds it while none of its acceptors or broker connections exist yet,\nso the elements bound to that coordinator are down on every node of\nthe group. And when brokers in different data centers share a lock,\nthe backup of a failed primary needs a few seconds to activate while\nthe remote brokers keep polling every check-period, so the lock\nusually lands on a remote broker rather than on the backup that is\ntaking over.\n\nSplit the creation from the start. The coordinators are still created\nin internalStart(), since acceptors and broker connections look them\nup by name while they are being created, but polling for the lock now\nstarts in completeActivation(), the single point every activation\ngoes through, right before the acceptors are started. Only a node\nthat actually became active contends for the lock.\n\nAdded LockCoordinatorHaActivationTest: a replicated pair sharing one\ncoordinator. The passive backup keeps its coordinator stopped while\nthe primary holds the lock, and takes the lock over once the primary\nis gone. Without the fix the backup is polling for the lock while\nstill passive and the test fails.\n\nAssisted-by: Claude",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/ActiveMQServerLogger.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/ActiveMQServerImpl.java",
+      "docs/user-manual/lock-coordination.adoc",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/cluster/failover/LockCoordinatorHaActivationTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6640f77cc55de6be3a0e33231c8e1df683254617",
+    "authorDate": "2026-07-09T15:16:38+02:00",
+    "subject": "ARTEMIS-6153 Fix race in ClusterConnectionImpl",
+    "body": "removeRecord() was not synchronized on recordsGuard, allowing a\nnodeUP topology notification to interleave between super.fail()\nand record removal. If nodeUP arrived while the stale record was\nstill present, it was silently ignored, and the subsequent removal\nleft no bridge and no store-and-forward queue for the returning\nnode. Synchronize removeRecord() and disconnectRecord() on\nrecordsGuard and re-check the topology after removal to re-create\nthe bridge if the node is already back.\n\nAssisted-by: Cursor",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/cluster/impl/ClusterConnectionImpl.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/core/server/cluster/impl/ClusterConnectionAccessor.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/cluster/distribution/ClusterConnectionSfQueueRaceTest.java"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "86ed6b4aab3ab1c601ee3414d46e247d44c14641",
+    "authorDate": "2026-07-06T16:09:22-04:00",
+    "subject": "ARTEMIS-6146 Large Message inconsistencies through Divert and Mirror",
+    "body": "When sending a large message following a Divert, the large message file\ncould be corrupted in a few cases.\n\nAlso there were a few inconsistencies between mirror and Diverts.\n\nI added an integration test at AMQPMirrorLargeMessageDivertDroppedTest\nwhere I found a few issues.\n\nThese issues were captured at PostOfficeImplTest on mock tests.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-core-client/src/main/java/org/apache/activemq/artemis/api/core/Message.java",
+      "artemis-core-client/src/main/java/org/apache/activemq/artemis/core/message/impl/CoreMessage.java",
+      "artemis-protocols/artemis-amqp-protocol/src/main/java/org/apache/activemq/artemis/protocol/amqp/broker/AMQPMessage.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/paging/impl/PagingStoreImpl.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/postoffice/impl/PostOfficeImpl.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/DivertImpl.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/QueueImpl.java",
+      "artemis-server/src/test/java/org/apache/activemq/artemis/core/postoffice/impl/PostOfficeImplTest.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/amqp/connect/AMQPMirrorLargeMessageDivertDroppedTest.java"
+    ],
+    "fixCategory": "data_corruption"
+  },
+  {
+    "commitHash": "91966100c2884e7d26503bfe98b2b2d89dcda31c",
+    "authorDate": "2026-07-02T10:32:00+02:00",
+    "subject": "ARTEMIS-6141 Fix non-portable kill -SIGINT",
+    "body": "LargeMessageInterruptTest.killProcess() relies on Runtime.exec(\"kill -SIGINT ...\")\nto send a graceful shutdown signal. The -SIGINT flag is a non-standard signal\nspecification that some kill implementations silently ignore while reporting\nsuccess (exit code 0), causing the broker process to stay alive and the test\nto time out. Observed on Fedora 43 where /usr/bin/kill does not handle -SIGINT.\n\nReplace with Process.destroy() which sends SIGTERM directly via JVM syscall,\nwith no dependency on external binaries or their flag parsing behavior.\n\nAssisted-by: Cursor",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tests/soak-tests/src/test/java/org/apache/activemq/artemis/tests/soak/interruptlm/LargeMessageInterruptTest.java"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "26f934addbe13f2fce960a026006d3f1450438e2",
+    "authorDate": "2026-06-30T13:46:20-04:00",
+    "subject": "ARTEMIS-6126 Fixing basedir resolution on testsuite",
+    "body": "This is particularly important if running tests through the IDE",
+    "issueRefs": [],
+    "touchedFiles": [
+      "tests/artemis-test-support/src/main/java/org/apache/activemq/artemis/utils/BasedirSupport.java",
+      "tests/artemis-test-support/src/main/java/org/apache/activemq/artemis/utils/RealServerTestBase.java",
+      "tests/e2e-tests/src/test/java/org/apache/activemq/artemis/tests/e2e/common/E2ETestBase.java",
+      "tests/smoke-tests/src/test/java/org/apache/activemq/artemis/tests/smoke/upgradeTest/CompareUpgradeTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "50eb8724a72f2196da7ad3ae3380cff3bd7abe81",
+    "authorDate": "2026-06-25T10:51:05+02:00",
+    "subject": "ARTEMIS-6128 Fix typo for Adler32",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-server/src/main/java/org/apache/activemq/artemis/core/config/impl/ConfigurationImpl.java",
+      "artemis-server/src/main/java/org/apache/activemq/artemis/spi/core/security/jaas/ReloadableProperties.java",
+      "artemis-server/src/test/java/org/apache/activemq/artemis/core/config/impl/ConfigurationImplTest.java",
+      "tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/server/ConfigurationTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "deba383b1b6266beb88528e0200f55758449cc72",
+    "authorDate": "2026-06-16T16:42:33+01:00",
+    "subject": "NO-JIRA fix use of tempDir in two tests that need statics",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "artemis-server/src/test/java/org/apache/activemq/artemis/core/config/impl/AbstractConfigurationFullTest.java",
+      "artemis-server/src/test/java/org/apache/activemq/artemis/spi/core/security/jaas/kubernetes/client/KubernetesClientImplTest.java"
+    ],
+    "fixCategory": "other"
+  }
+]

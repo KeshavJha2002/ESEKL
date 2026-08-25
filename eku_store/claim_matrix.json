@@ -1,0 +1,1179 @@
+{
+  "corpus": [
+    "asynq",
+    "bullmq",
+    "pgmq",
+    "river",
+    "goqite",
+    "litequeue",
+    "nats-server",
+    "nsq",
+    "blazingmq",
+    "redpanda",
+    "rabbitmq",
+    "artemis",
+    "rocketmq"
+  ],
+  "matrix": [
+    {
+      "id": "EKU-QUEUE-001",
+      "title": "Atomic Dequeue and Distributed Lease Allocation",
+      "repositoryAssessments": {
+        "asynq": {
+          "class": "SUPPORTS",
+          "rationale": "dequeueCmd atomic Lua script with RPOPLPUSH and ZADD lease"
+        },
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "moveToActive.lua atomic Lua script setting lock key and active list"
+        },
+        "pgmq": {
+          "class": "SUPPORTS",
+          "rationale": "pgmq.read CTE with SELECT FOR UPDATE SKIP LOCKED + UPDATE vt"
+        },
+        "river": {
+          "class": "SUPPORTS",
+          "rationale": "JobDeq CTE with SELECT FOR UPDATE SKIP LOCKED + UPDATE running"
+        },
+        "goqite": {
+          "class": "SUPPORTS",
+          "rationale": "Single-statement UPDATE ... RETURNING with embedded subquery"
+        },
+        "litequeue": {
+          "class": "SUPPORTS",
+          "rationale": "Single-statement UPDATE Queue SET status=1, claim_id=claim_id+1 ... RETURNING *"
+        },
+        "nats-server": {
+          "class": "SUPPORTS",
+          "rationale": "JetStream Consumer ack pending tracking under locked state machine"
+        },
+        "nsq": {
+          "class": "SUPPORTS",
+          "rationale": "Channel Go channel read and inFlightPQ push under Mutex"
+        },
+        "blazingmq": {
+          "class": "SUPPORTS",
+          "rationale": "RootQueueEngine single-threaded event dispatching"
+        },
+        "redpanda": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Streaming log partition offset pull without per-message lease state transitions"
+        },
+        "rabbitmq": {
+          "class": "SUPPORTS",
+          "rationale": "RabbitAmqqueueProcess actor mailbox serial dequeue / Raft state machine"
+        },
+        "artemis": {
+          "class": "SUPPORTS",
+          "rationale": "QueueImpl synchronized MessageReference delivery transition"
+        },
+        "rocketmq": {
+          "class": "SUPPORTS",
+          "rationale": "PopMessageProcessor PopCheckPoint reservation and REVIVE_TOPIC append"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-002",
+      "title": "Token-Fenced Ownership Validation on State Finalization",
+      "repositoryAssessments": {
+        "asynq": {
+          "class": "COUNTEREXAMPLE",
+          "rationale": "doneCmd executes unconditional LREM and DEL by msg_id without token or lease check"
+        },
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "removeLock.lua checks lock token == ARGV[1]; returns -6 if token mismatch"
+        },
+        "pgmq": {
+          "class": "COUNTEREXAMPLE",
+          "rationale": "pgmq.delete executes unconditional DELETE WHERE msg_id = $1 without token check"
+        },
+        "river": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Checks state = 'running' in SQL transaction boundary, but does not use explicit worker UUID token"
+        },
+        "goqite": {
+          "class": "COUNTEREXAMPLE",
+          "rationale": "Delete executes DELETE FROM goqite WHERE id = ? without token or lease check"
+        },
+        "litequeue": {
+          "class": "SUPPORTS",
+          "rationale": "done executes UPDATE Queue ... WHERE claim_id = ?; returns False on mismatch"
+        },
+        "nats-server": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "JetStream +ACK validates consumer sequence token and stream sequence"
+        },
+        "nsq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "FIN command validates message presence in client connection inFlightPQ"
+        },
+        "blazingmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "CONFIRM event validates consumer instance GUID"
+        },
+        "redpanda": {
+          "class": "SUPPORTS",
+          "rationale": "rm_stm validates producer_epoch and rejects stale producer transactions"
+        },
+        "rabbitmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Channel process drops delivery tags from closed/timed-out channels; Raft term in Quorum"
+        },
+        "artemis": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Broker maintains delivery reference state machine; rejects duplicate acks"
+        },
+        "rocketmq": {
+          "class": "SUPPORTS",
+          "rationale": "RebalanceLockManager validates 60s lease per client before committing offsets"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-003",
+      "title": "Clock-Skew Defended Sweep and Multi-Phase Crash Recovery",
+      "repositoryAssessments": {
+        "asynq": {
+          "class": "SUPPORTS",
+          "rationale": "recoverLeaseExpiredTasks enforces explicit 30s safety margin buffer (score < now - 30s)"
+        },
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "moveStalledJobsToWait uses Two-Phase Mark-and-Sweep with 1-cycle grace period"
+        },
+        "pgmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Relies on PostgreSQL server clock_timestamp() during dequeue query"
+        },
+        "river": {
+          "class": "SUPPORTS",
+          "rationale": "JobRescuer evaluates updated_at < now() - worker_timeout with default 1-hour rescue buffer"
+        },
+        "goqite": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Relies on database engine datetime('now') during dequeue query"
+        },
+        "litequeue": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "retry_expired queries SQLite unixepoch() in seconds"
+        },
+        "nats-server": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "JetStream server-side ack wait timers evaluated on server monotonic clock"
+        },
+        "nsq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "queueScanLoop probabilistic scan based on local monotonic tick timers"
+        },
+        "blazingmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "RootQueueEngine internal timers track unconfirmed message leases"
+        },
+        "redpanda": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Raft leader heartbeat timers with election timeout grace intervals"
+        },
+        "rabbitmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Erlang process timers for consumer ack timeouts"
+        },
+        "artemis": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "ActiveMQServerImpl scheduled executor sweeps unacknowledged delivery refs"
+        },
+        "rocketmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "PopMessageProcessor scan scheduled tasks with 10s revive scan interval"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-004",
+      "title": "Atomic Delivery Thresholding and Poison-Pill Dead-Letter Quarantine",
+      "repositoryAssessments": {
+        "asynq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "EnqueueUnique enforces uniqueness via NX key, but standard Enqueue appends unconditionally"
+        },
+        "bullmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "add() supports custom jobId deduplication, but default adds generate unique IDs"
+        },
+        "pgmq": {
+          "class": "COUNTEREXAMPLE",
+          "rationale": "send() appends unconditional sequence-incremented rows to partition table"
+        },
+        "river": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "UniqueOpts enforces unique insert window, but standard Insert creates new job row"
+        },
+        "goqite": {
+          "class": "COUNTEREXAMPLE",
+          "rationale": "Send() executes unconditional INSERT INTO goqite (id, body) VALUES (?, ?)"
+        },
+        "litequeue": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "put() idempotently returns existing message if identical payload re-sent"
+        },
+        "nats-server": {
+          "class": "SUPPORTS",
+          "rationale": "JetStream consumer deduplication tracking sequence window"
+        },
+        "nsq": {
+          "class": "COUNTEREXAMPLE",
+          "rationale": "nsqd PutMessage() appends unconditionally to memory queue / diskqueue"
+        },
+        "blazingmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "MessageGUID tracking in session queue engine"
+        },
+        "redpanda": {
+          "class": "SUPPORTS",
+          "rationale": "Idempotent producer state machine validates (producer_id, sequence) in rm_stm"
+        },
+        "rabbitmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "RabbitMQ Stream deduplication tracking publish sequence"
+        },
+        "artemis": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "_AMQ_DUPL_ID header deduplication cache"
+        },
+        "rocketmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "IndexFile user key indexing for query deduplication"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-005",
+      "title": "Credit-Based Flow Control and Producer Ingestion Backpressure",
+      "repositoryAssessments": {
+        "asynq": {
+          "class": "SUPPORTS",
+          "rationale": "requeueCmd pushes to retry zset with computed exponential backoff score"
+        },
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "moveToFinished-12.lua moves job to wait or delayed with backoff delay"
+        },
+        "pgmq": {
+          "class": "SUPPORTS",
+          "rationale": "pgmq.read increments read_ct and sets vt = clock_timestamp() + backoff_delay"
+        },
+        "river": {
+          "class": "SUPPORTS",
+          "rationale": "JobSetStateRetry increments attempt, sets state='retry', calculates backoff delay"
+        },
+        "goqite": {
+          "class": "SUPPORTS",
+          "rationale": "Receive() sets timeout = datetime('now', ? || ' seconds') and increments received"
+        },
+        "litequeue": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "retry_expired() increments status back to 0 without backoff interval"
+        },
+        "nats-server": {
+          "class": "SUPPORTS",
+          "rationale": "JetStream Consumer -NAK supports backoff header for redelivery delay"
+        },
+        "nsq": {
+          "class": "SUPPORTS",
+          "rationale": "REQ command with timeout duration argument reschedules in-flight message"
+        },
+        "blazingmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Consumer NACK reschedules message routing with domain backoff policy"
+        },
+        "redpanda": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Storage log engine with client-managed retry offsets"
+        },
+        "rabbitmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Dead-letter exchange with TTL per queue message"
+        },
+        "artemis": {
+          "class": "SUPPORTS",
+          "rationale": "AddressSettings redelivery-delay and redelivery-multiplier configuration"
+        },
+        "rocketmq": {
+          "class": "SUPPORTS",
+          "rationale": "Consumer sends back message to %RETRY% topic with delayLevel increment"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-006",
+      "title": "Fast-Shedding Latency Gating and Storage Saturation Protection",
+      "repositoryAssessments": {
+        "asynq": {
+          "class": "SUPPORTS",
+          "rationale": "killCmd moves task from retry to archived set when retries exhausted"
+        },
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "moveToFailed moves job to failed set; client dead-letter listeners consume event"
+        },
+        "pgmq": {
+          "class": "SUPPORTS",
+          "rationale": "pgmq.archive moves message to archive table or drops if archive disabled"
+        },
+        "river": {
+          "class": "SUPPORTS",
+          "rationale": "JobSetStateDiscard moves job to state='discarded' with finalized error trace"
+        },
+        "goqite": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "No dead-letter table; application must Delete() or job loops forever"
+        },
+        "litequeue": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "prune_failed() deletes expired uncompleted tasks without quarantine"
+        },
+        "nats-server": {
+          "class": "SUPPORTS",
+          "rationale": "JetStream Consumer max_deliver threshold drops or terminates message"
+        },
+        "nsq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "max_attempts threshold in client library initiates FIN and dead-letter log"
+        },
+        "blazingmq": {
+          "class": "SUPPORTS",
+          "rationale": "Poison message detection routes unconfirmed message to DLQ cluster queue"
+        },
+        "redpanda": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Storage engine does not discard unconsumed log segments on retry exhaustion"
+        },
+        "rabbitmq": {
+          "class": "SUPPORTS",
+          "rationale": "x-dead-letter-exchange and x-delivery-limit routing on quorum queues"
+        },
+        "artemis": {
+          "class": "SUPPORTS",
+          "rationale": "AddressSettings dead-letter-address and expiry-address routing"
+        },
+        "rocketmq": {
+          "class": "SUPPORTS",
+          "rationale": "When reconsumeTimes > 16, routes message to %DLQ% topic"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-007",
+      "title": "Relational Lock-Free Task Dequeue via MVCC Row-Level Skipping",
+      "repositoryAssessments": {
+        "asynq": {
+          "class": "SUPPORTS",
+          "rationale": "Redis connection pool with size limiter and acquire timeout bounds"
+        },
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "IORedis connection pool with maxRetriesPerRequest and offline queue bounds"
+        },
+        "pgmq": {
+          "class": "SUPPORTS",
+          "rationale": "PostgreSQL max_connections server-side bound with pgBouncer pool limits"
+        },
+        "river": {
+          "class": "SUPPORTS",
+          "rationale": "pgxpool.Pool MaxConns and MaxConnIdleTime pool bounds"
+        },
+        "goqite": {
+          "class": "SUPPORTS",
+          "rationale": "sql.DB SetMaxOpenConns(1) to serialize SQLite WAL writes"
+        },
+        "litequeue": {
+          "class": "SUPPORTS",
+          "rationale": "SQLite busy_timeout=5000ms with single-writer WAL concurrency model"
+        },
+        "nats-server": {
+          "class": "SUPPORTS",
+          "rationale": "Client max_pending output buffer limits with slow consumer disconnection"
+        },
+        "nsq": {
+          "class": "SUPPORTS",
+          "rationale": "max_in_flight RDY flow control per client connection"
+        },
+        "blazingmq": {
+          "class": "SUPPORTS",
+          "rationale": "Watermark-based credit flow control per consumer channel"
+        },
+        "redpanda": {
+          "class": "SUPPORTS",
+          "rationale": "Memory tracking semaphores bound RPC buffers and active log append requests"
+        },
+        "rabbitmq": {
+          "class": "SUPPORTS",
+          "rationale": "credit_flow Erlang module throttles producer processes across actor mailboxes"
+        },
+        "artemis": {
+          "class": "SUPPORTS",
+          "rationale": "AddressSettings max-size-bytes and address-full-policy (BLOCK, FAIL, PAGE)"
+        },
+        "rocketmq": {
+          "class": "SUPPORTS",
+          "rationale": "BrokerFastFailure sweeps expired requests from queue when page cache busy"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-008",
+      "title": "Sector-Aligned Append-Only Direct I/O Journal Ingestion",
+      "repositoryAssessments": {
+        "asynq": {
+          "class": "SUPPORTS",
+          "rationale": "Heartbeat and lease renewals execute in background goroutine per active task"
+        },
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "extendLock.lua called periodically by lock manager timer per active job"
+        },
+        "pgmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "pgmq.set_vt() can be called periodically by application worker"
+        },
+        "river": {
+          "class": "SUPPORTS",
+          "rationale": "JobHeartbeat goroutine periodically executes UPDATE ... SET updated_at = now()"
+        },
+        "goqite": {
+          "class": "SUPPORTS",
+          "rationale": "Extend() method executes UPDATE goqite SET timeout = datetime('now', ? || ' seconds')"
+        },
+        "litequeue": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "No periodic heartbeat; application must touch/update claim"
+        },
+        "nats-server": {
+          "class": "SUPPORTS",
+          "rationale": "JetStream Consumer +WPI (work in progress) resets ack timer"
+        },
+        "nsq": {
+          "class": "SUPPORTS",
+          "rationale": "TOUCH command resets in-flight message timeout in nsqd channel"
+        },
+        "blazingmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Heartbeat at session connection level rather than per-message lease"
+        },
+        "redpanda": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Raft leader heartbeat maintains cluster leadership lease"
+        },
+        "rabbitmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "AMQP heartbeat at connection level; consumer ack timeouts are fixed"
+        },
+        "artemis": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Client connection ping/pong keeps session alive"
+        },
+        "rocketmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "HeartbeatData keeps client channel registered with broker"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-009",
+      "title": "Decoupled Physical Storage CommitLog and Lightweight Logical Queue Offsets",
+      "repositoryAssessments": {
+        "asynq": {
+          "class": "SUPPORTS",
+          "rationale": "Strict priority scheduling dequeues highest-priority queue first before lower queues"
+        },
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "Priority queues use Redis sorted sets with priority score ordering"
+        },
+        "pgmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Relies on FIFO order; priority requires separate partitioned queue tables"
+        },
+        "river": {
+          "class": "SUPPORTS",
+          "rationale": "JobDeq query orders by priority ASC, id ASC for weighted multi-queue priority"
+        },
+        "goqite": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Single-table SQLite queue without priority ordering"
+        },
+        "litequeue": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Single-table SQLite queue without priority ordering"
+        },
+        "nats-server": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "JetStream subject filtering and consumer group routing"
+        },
+        "nsq": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "In-memory channel FIFO queue without priority levels"
+        },
+        "blazingmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Domain priority routing and high-priority event dispatchers"
+        },
+        "redpanda": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Strict log partition append and consume order"
+        },
+        "rabbitmq": {
+          "class": "SUPPORTS",
+          "rationale": "x-max-priority queue argument enables Erlang priority heap"
+        },
+        "artemis": {
+          "class": "SUPPORTS",
+          "rationale": "PriorityMessageGroups and 10 JMS priority buckets in QueueImpl"
+        },
+        "rocketmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Dedicated topic routing per priority class"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-010",
+      "title": "Epoch-Scoped Consensus State Machine Fencing",
+      "repositoryAssessments": {
+        "asynq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Redis RDB snapshots and AOF fsync=everysec provide durability"
+        },
+        "bullmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Redis AOF/RDB persistence configured independently of client library"
+        },
+        "pgmq": {
+          "class": "SUPPORTS",
+          "rationale": "PostgreSQL WAL fsync on transaction commit guarantees crash durability"
+        },
+        "river": {
+          "class": "SUPPORTS",
+          "rationale": "PostgreSQL WAL synchronous_commit ensures durable transaction boundary"
+        },
+        "goqite": {
+          "class": "SUPPORTS",
+          "rationale": "SQLite WAL journal_mode=WAL with synchronous=NORMAL/FULL fsync"
+        },
+        "litequeue": {
+          "class": "SUPPORTS",
+          "rationale": "SQLite WAL mode with fsync on transaction commit"
+        },
+        "nats-server": {
+          "class": "SUPPORTS",
+          "rationale": "JetStream file storage engine executes msync/fsync on message blocks"
+        },
+        "nsq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "diskqueue writes to disk; memory queue drops unwritten messages on crash"
+        },
+        "blazingmq": {
+          "class": "SUPPORTS",
+          "rationale": "Journal file storage engine with synchronous disk writes and CRC32"
+        },
+        "redpanda": {
+          "class": "SUPPORTS",
+          "rationale": "Direct I/O O_DIRECT/O_DSYNC segment appender bypassing OS page cache"
+        },
+        "rabbitmq": {
+          "class": "SUPPORTS",
+          "rationale": "RabbitMQ Quorum Queues execute Raft log fsync via ra Erlang library"
+        },
+        "artemis": {
+          "class": "SUPPORTS",
+          "rationale": "AIOJournal uses Linux libaio direct I/O for synchronous journal flush"
+        },
+        "rocketmq": {
+          "class": "SUPPORTS",
+          "rationale": "CommitLog flush options: ASYNC_FLUSH (PageCache) or SYNC_FLUSH (fsync)"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-011",
+      "title": "Monotonic Time-Ordered Identity Generation with Skew Defense",
+      "repositoryAssessments": {
+        "asynq": {
+          "class": "SUPPORTS",
+          "rationale": "Redis MULTI/EXEC pipeline wraps lease mutation and list pops"
+        },
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "Single Redis EVAL script executes full dequeue/lease state transition atomically"
+        },
+        "pgmq": {
+          "class": "SUPPORTS",
+          "rationale": "BEGIN ... CTE with SELECT FOR UPDATE SKIP LOCKED + UPDATE vt ... COMMIT"
+        },
+        "river": {
+          "class": "SUPPORTS",
+          "rationale": "PostgreSQL transaction wrapping JobDeq CTE mutation"
+        },
+        "goqite": {
+          "class": "SUPPORTS",
+          "rationale": "Single SQL UPDATE ... RETURNING * executed in implicit transaction"
+        },
+        "litequeue": {
+          "class": "SUPPORTS",
+          "rationale": "Single SQL UPDATE ... RETURNING * executed in implicit transaction"
+        },
+        "nats-server": {
+          "class": "SUPPORTS",
+          "rationale": "JetStream consumer lock mutex serializes state transition and sequence commit"
+        },
+        "nsq": {
+          "class": "SUPPORTS",
+          "rationale": "Channel Mutex serializes memoryMsgChan read and inFlightPQ push"
+        },
+        "blazingmq": {
+          "class": "SUPPORTS",
+          "rationale": "Dispatcher thread single-threaded execution queue per partition"
+        },
+        "redpanda": {
+          "class": "SUPPORTS",
+          "rationale": "Raft replicated state machine executes log commit before state update"
+        },
+        "rabbitmq": {
+          "class": "SUPPORTS",
+          "rationale": "Erlang actor process mailbox serializes message delivery and ack transitions"
+        },
+        "artemis": {
+          "class": "SUPPORTS",
+          "rationale": "QueueImpl synchronized delivery block and Journal transaction log"
+        },
+        "rocketmq": {
+          "class": "SUPPORTS",
+          "rationale": "PopMessageProcessor locks consume queue offset before appending to ReviveTopic"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-012",
+      "title": "Graceful Shutdown In-Flight Drain with Non-Faulting Task Re-enqueue",
+      "repositoryAssessments": {
+        "asynq": {
+          "class": "SUPPORTS",
+          "rationale": "Server.Shutdown() initiates graceful drain with configurable timeout"
+        },
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "Worker.close() stops fetching, waits for in-flight handlers, or force-cancels"
+        },
+        "pgmq": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Stateless PostgreSQL extension without daemon process"
+        },
+        "river": {
+          "class": "SUPPORTS",
+          "rationale": "JobExecutor drains in-flight jobs; requeues remainder via JobSetStateInterrupted"
+        },
+        "goqite": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Context cancellation in runner loop; lease expires naturally"
+        },
+        "litequeue": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Relies on client connection close; expired lease recovered on sweep"
+        },
+        "nats-server": {
+          "class": "SUPPORTS",
+          "rationale": "Shutdown drains clients and checkpoints JetStream state"
+        },
+        "nsq": {
+          "class": "SUPPORTS",
+          "rationale": "Exit() flushes memory channels to disk queue and unregisters from nsqlookupd"
+        },
+        "blazingmq": {
+          "class": "SUPPORTS",
+          "rationale": "Dispatcher and RootQueueEngine orderly session drain"
+        },
+        "redpanda": {
+          "class": "SUPPORTS",
+          "rationale": "Seastar shutdown coordinates shard-local actor termination"
+        },
+        "rabbitmq": {
+          "class": "SUPPORTS",
+          "rationale": "rabbit.erl stops listeners, drains channel actors, flushes Raft logs"
+        },
+        "artemis": {
+          "class": "SUPPORTS",
+          "rationale": "ActiveMQServerImpl stops acceptors, drains sessions, flushes journals"
+        },
+        "rocketmq": {
+          "class": "SUPPORTS",
+          "rationale": "BrokerController shutdown hook unregisters routes, flushes PageCache"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-013",
+      "title": "Sliding-Window Task Deduplication and Uniqueness Reservation",
+      "repositoryAssessments": {
+        "asynq": {
+          "class": "SUPPORTS",
+          "rationale": "SET asynq:{q}:unique:<key> <task_id> NX EX <duration> in enqueue script"
+        },
+        "bullmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Custom jobId deduplication via HEXISTS bull:<q>:<jobId>"
+        },
+        "pgmq": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "PGMQ core table does not enforce uniqueness"
+        },
+        "river": {
+          "class": "SUPPORTS",
+          "rationale": "PostgreSQL partial unique index river_job_unique_idx over unique_key"
+        },
+        "goqite": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Goqite core table does not enforce uniqueness"
+        },
+        "litequeue": {
+          "class": "SUPPORTS",
+          "rationale": "Idempotent put replay returns original message ID if data matches"
+        },
+        "nats-server": {
+          "class": "SUPPORTS",
+          "rationale": "JetStream Nats-Msg-Id sliding deduplication window (default 2 min)"
+        },
+        "nsq": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Strictly at-least-once with zero built-in deduplication"
+        },
+        "blazingmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "MessageGUID deduplication in relay queue engine"
+        },
+        "redpanda": {
+          "class": "SUPPORTS",
+          "rationale": "rm_stm transactional state machine tracks producer_id and sequence"
+        },
+        "rabbitmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "RabbitMQ Stream deduplication tracking publish sequence"
+        },
+        "artemis": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "_AMQ_DUPL_ID header deduplication cache"
+        },
+        "rocketmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "IndexFile user key indexing for query deduplication"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-014",
+      "title": "Out-of-Band Real-Time Control Plane and Cancellation Propagation",
+      "repositoryAssessments": {
+        "asynq": {
+          "class": "SUPPORTS",
+          "rationale": "Subscribes to Redis PubSub asynq:cancel; cancels worker context immediately"
+        },
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "Redis PubSub / Streams event channel for administrative control"
+        },
+        "pgmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Trigger-driven pg_notify for inserts; cancellation is polling-based"
+        },
+        "river": {
+          "class": "SUPPORTS",
+          "rationale": "Publishes JSON payload via pg_notify('river_control', ...) to cancel job context"
+        },
+        "goqite": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "No out-of-band control plane"
+        },
+        "litequeue": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "No out-of-band control plane"
+        },
+        "nats-server": {
+          "class": "SUPPORTS",
+          "rationale": "$SYS subject hierarchy and JetStream direct advisory control channels"
+        },
+        "nsq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "HTTP administrative API on dedicated port 4151 vs TCP 4150"
+        },
+        "blazingmq": {
+          "class": "SUPPORTS",
+          "rationale": "Dispatcher control event queue with higher priority than data events"
+        },
+        "redpanda": {
+          "class": "SUPPORTS",
+          "rationale": "Raft controller topic for cluster metadata and partition control"
+        },
+        "rabbitmq": {
+          "class": "SUPPORTS",
+          "rationale": "rabbit_control.erl Erlang actor direct message passing to processes"
+        },
+        "artemis": {
+          "class": "SUPPORTS",
+          "rationale": "JMX / Management address out-of-band actor messaging"
+        },
+        "rocketmq": {
+          "class": "SUPPORTS",
+          "rationale": "AdminBrokerProcessor dedicated Netty remoting channel for admin commands"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-015",
+      "title": "Fenced Domain Result Promotion & Outbox Emission",
+      "repositoryAssessments": {
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "Atomic lock token check prevents superseded worker from marking job finished (OBS-BULLMQ-002)"
+        },
+        "litequeue": {
+          "class": "SUPPORTS",
+          "rationale": "mark_done requires claim_id equality to avoid stale completion (OBS-LITEQUEUE-002)"
+        },
+        "river": {
+          "class": "COUNTEREXAMPLE",
+          "rationale": "Job completion SQL checks state='running' without worker generation token check (OBS-RIVER-006)"
+        },
+        "asynq": {
+          "class": "COUNTEREXAMPLE",
+          "rationale": "markDone checks key existence in active set without unique worker generation token (OBS-ASYNQ-001)"
+        },
+        "pgmq": {
+          "class": "COUNTEREXAMPLE",
+          "rationale": "pgmq.delete relies solely on msg_id without generation fencing (OBS-PGMQ-001)"
+        },
+        "goqite": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Application heartbeat lease extension without outbox fencing"
+        },
+        "blazingmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Cluster node epoch fencing on broker failover"
+        },
+        "nats-server": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Broker streaming server without application outbox ledger table"
+        },
+        "nsq": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "In-memory channel broker without transactional domain projection"
+        },
+        "redpanda": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Storage log engine with Raft leader epoch fencing"
+        },
+        "rabbitmq": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "AMQP channel consumer ack model"
+        },
+        "artemis": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "JMS transaction branch acknowledgment"
+        },
+        "rocketmq": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Consumer group offset commit model"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-016",
+      "title": "Authoritative Storage-Time Lease Recovery",
+      "repositoryAssessments": {
+        "pgmq": {
+          "class": "SUPPORTS",
+          "rationale": "Uses clock_timestamp() for visibility time calculation (OBS-PGMQ-001)"
+        },
+        "asynq": {
+          "class": "SUPPORTS",
+          "rationale": "Redis server time via Lua/server commands for score evaluation (OBS-ASYNQ-001)"
+        },
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "Redis EVAL scripts use server-side timestamp argument (OBS-BULLMQ-001)"
+        },
+        "river": {
+          "class": "COUNTEREXAMPLE",
+          "rationale": "Historically accepted caller-supplied now parameter in recovery queries (OBS-RIVER-007)"
+        },
+        "goqite": {
+          "class": "SUPPORTS",
+          "rationale": "SQLite datetime('now') evaluated in database query"
+        },
+        "litequeue": {
+          "class": "SUPPORTS",
+          "rationale": "SQLite strftime('%s', 'now') in claim and prune queries (OBS-LITEQUEUE-001)"
+        },
+        "nats-server": {
+          "class": "SUPPORTS",
+          "rationale": "Server-side timer wheel governs ack wait expiration (OBS-NATS-001)"
+        },
+        "nsq": {
+          "class": "SUPPORTS",
+          "rationale": "nsqd process monotonic timer governs message timeout (OBS-NSQ-001)"
+        },
+        "blazingmq": {
+          "class": "SUPPORTS",
+          "rationale": "Broker domain timer manages delivery timeouts"
+        },
+        "redpanda": {
+          "class": "SUPPORTS",
+          "rationale": "Storage segment timer manages compaction and retention (OBS-REDPANDA-001)"
+        },
+        "rabbitmq": {
+          "class": "SUPPORTS",
+          "rationale": "Erlang monotonic time for consumer ack timeout (OBS-RABBITMQ-001)"
+        },
+        "artemis": {
+          "class": "SUPPORTS",
+          "rationale": "Server-side journal timer tracks transaction expiration (OBS-ARTEMIS-001)"
+        },
+        "rocketmq": {
+          "class": "SUPPORTS",
+          "rationale": "Broker monotonic clock tracks request timeout in fast-failure (OBS-ROCKETMQ-002)"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-017",
+      "title": "Separate Attempt, Failure, And Worker-Loss Counters",
+      "repositoryAssessments": {
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "Maintains attemptsMade, failedReason, and maxStalledCount independently (OBS-BULLMQ-004)"
+        },
+        "river": {
+          "class": "SUPPORTS",
+          "rationale": "Tracks attempt counter, error payload array, and distinct state machine (OBS-RIVER-001)"
+        },
+        "asynq": {
+          "class": "SUPPORTS",
+          "rationale": "Tracks retried count vs max_retry and archive state (OBS-ASYNQ-001)"
+        },
+        "pgmq": {
+          "class": "COUNTEREXAMPLE",
+          "rationale": "Single read_ct counter increments on every pop without failure reason tracking (OBS-PGMQ-001)"
+        },
+        "goqite": {
+          "class": "COUNTEREXAMPLE",
+          "rationale": "received integer column incremented without failure category isolation"
+        },
+        "litequeue": {
+          "class": "COUNTEREXAMPLE",
+          "rationale": "No internal retry counter; relies on deletion or pruning (OBS-LITEQUEUE-001)"
+        },
+        "nats-server": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "JetStream consumer redelivery counter tracked in stream metadata (OBS-NATS-001)"
+        },
+        "nsq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "tracks attempts count on in-flight message (OBS-NSQ-001)"
+        },
+        "blazingmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Tracks delivery attempt count per routing token"
+        },
+        "rabbitmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "x-delivery-count header for quorum queues (OBS-RABBITMQ-001)"
+        },
+        "artemis": {
+          "class": "SUPPORTS",
+          "rationale": "Delivery count tracked separately from DLQ expiration headers (OBS-ARTEMIS-001)"
+        },
+        "rocketmq": {
+          "class": "SUPPORTS",
+          "rationale": "ReconsumeTimes tracked separately from retry topic routing (OBS-ROCKETMQ-001)"
+        },
+        "redpanda": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Log append engine without task attempt semantics"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-018",
+      "title": "Poison Payload Isolation From Repeatable Stall Exemptions",
+      "repositoryAssessments": {
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "Fixes crash loop where repeatable tasks bypassed stall counts on poison payloads (OBS-BULLMQ-005)"
+        },
+        "river": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Periodic jobs instantiate new unique job rows with fresh attempt counters (OBS-RIVER-001)"
+        },
+        "asynq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Scheduler enqueues distinct task instances with independent retry budgets (OBS-ASYNQ-001)"
+        },
+        "pgmq": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "No built-in cron scheduler engine"
+        },
+        "goqite": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Minimal queue without cron scheduler"
+        },
+        "litequeue": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Single-table SQLite queue without cron engine"
+        },
+        "nats-server": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Message streaming broker without task scheduler"
+        },
+        "nsq": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Topic/channel broker without recurring job scheduler"
+        },
+        "blazingmq": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Broker messaging engine without task scheduler"
+        },
+        "redpanda": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Streaming log engine without recurring task scheduler"
+        },
+        "rabbitmq": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Broker engine without native recurring cron scheduler"
+        },
+        "artemis": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Broker engine without recurring task scheduler"
+        },
+        "rocketmq": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Broker engine without recurring task scheduler"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-019",
+      "title": "Bounded Admission Waiters In Publish Overload",
+      "repositoryAssessments": {
+        "redpanda": {
+          "class": "SUPPORTS",
+          "rationale": "Rejects excess semaphore waiters immediately when storage is saturated (OBS-REDPANDA-003)"
+        },
+        "rocketmq": {
+          "class": "SUPPORTS",
+          "rationale": "BrokerFastFailure cleans expired queue requests and returns SYSTEM_BUSY (OBS-ROCKETMQ-002)"
+        },
+        "nats-server": {
+          "class": "SUPPORTS",
+          "rationale": "MaxPending buffers drop slow consumer/publisher connections (OBS-NATS-001)"
+        },
+        "rabbitmq": {
+          "class": "SUPPORTS",
+          "rationale": "Credit flow mechanism throttles and suspends publisher socket reads (OBS-RABBITMQ-001)"
+        },
+        "artemis": {
+          "class": "SUPPORTS",
+          "rationale": "Address-full policy BLOCK or FAIL with bounded queue memory (OBS-ARTEMIS-001)"
+        },
+        "blazingmq": {
+          "class": "SUPPORTS",
+          "rationale": "High watermark capacity limits reject publisher writes"
+        },
+        "nsq": {
+          "class": "SUPPORTS",
+          "rationale": "Channel queue size bounds overflow to disk or rejects (OBS-NSQ-001)"
+        },
+        "river": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "PostgreSQL connection pool max_connections limits concurrency (OBS-RIVER-001)"
+        },
+        "pgmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "PostgreSQL transaction admission control (OBS-PGMQ-001)"
+        },
+        "asynq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Redis connection pool limits concurrency (OBS-ASYNQ-001)"
+        },
+        "bullmq": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "IORedis connection pool limits concurrency (OBS-BULLMQ-001)"
+        },
+        "goqite": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "SQLite busy_timeout limits concurrency"
+        },
+        "litequeue": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "SQLite WAL lock timeout limits concurrency (OBS-LITEQUEUE-001)"
+        }
+      }
+    },
+    {
+      "id": "EKU-QUEUE-020",
+      "title": "Decoupled Worker-Drain And Broker-Socket Shutdown Contracts",
+      "repositoryAssessments": {
+        "nats-server": {
+          "class": "SUPPORTS",
+          "rationale": "Lame duck mode drains client connections before process exit (OBS-NATS-002)"
+        },
+        "river": {
+          "class": "SUPPORTS",
+          "rationale": "Graceful shutdown stops fetcher and waits for active worker completion deadline (OBS-RIVER-005)"
+        },
+        "nsq": {
+          "class": "SUPPORTS",
+          "rationale": "Exit handler closes TCP listeners before flushing in-flight channels to disk (OBS-NSQ-001)"
+        },
+        "bullmq": {
+          "class": "SUPPORTS",
+          "rationale": "close() stops fetching new jobs and waits for running handlers or force-closes (OBS-BULLMQ-001)"
+        },
+        "asynq": {
+          "class": "SUPPORTS",
+          "rationale": "Shutdown initiates graceful worker drain with configurable timeout (OBS-ASYNQ-001)"
+        },
+        "blazingmq": {
+          "class": "SUPPORTS",
+          "rationale": "Session drain sequence disconnects producers before cluster shutdown"
+        },
+        "redpanda": {
+          "class": "SUPPORTS",
+          "rationale": "Raft leader stepdown and storage flush on shutdown (OBS-REDPANDA-001)"
+        },
+        "rabbitmq": {
+          "class": "SUPPORTS",
+          "rationale": "Application stop drains queue processes and closes network listeners (OBS-RABBITMQ-001)"
+        },
+        "artemis": {
+          "class": "SUPPORTS",
+          "rationale": "Server stop halts acceptor ports and completes in-flight journal transactions (OBS-ARTEMIS-001)"
+        },
+        "rocketmq": {
+          "class": "SUPPORTS",
+          "rationale": "Shutdown hook unregisters broker from nameserver and flushes CommitLog (OBS-ROCKETMQ-001)"
+        },
+        "goqite": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Context cancellation propagates to active worker loops"
+        },
+        "litequeue": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "rationale": "Application loop governs worker termination (OBS-LITEQUEUE-001)"
+        },
+        "pgmq": {
+          "class": "NOT_APPLICABLE",
+          "rationale": "Stateless PostgreSQL extension without daemon process"
+        }
+      }
+    }
+  ]
+}

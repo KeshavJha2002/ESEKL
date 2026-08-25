@@ -1,0 +1,1198 @@
+{
+  "repoName": "rabbitmq/rabbitmq-server",
+  "domain": "message_queues",
+  "gitCommitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
+  "analyzedAt": "2026-08-22T16:30:00.000Z",
+  "overview": {
+    "purpose": "Industrial-grade, multi-protocol distributed message broker and streaming platform in Erlang/OTP, providing resilient AMQP 0-9-1, AMQP 1.0, MQTT, STOMP, and high-throughput RabbitMQ Streams with consensus-backed Quorum Queues (Raft) and append-only segmented logs.",
+    "architectureType": "Erlang/OTP Actor-Concurrency Broker with Raft Log Consensus (Ra/RabbitFIFO), Segmented Append-Only Log Streams (Osiris), Dual RAM/Disk Paging Queue Index, Asynchronous Process-Credit Backpressure (credit_flow), and Cluster-Wide Resource Monitors.",
+    "keyDifferentiators": [
+      "Quorum Queues Consensus Engine: Distributed FIFO queue type built on the Ra Erlang Raft library, enforcing strict monotonic log replication across a majority of cluster nodes prior to emitting basic.ack publisher confirmations.",
+      "Dual Ingress/Egress Credit Flow Backpressure: Intra-node process token exchange (credit_flow) propagating backpressure from message stores and queue actors upstream to socket readers without head-of-line mailbox accumulation.",
+      "Variable Queue Multi-Tier Paging: Classic queue storage engine orchestrating in-memory queues (q_head) and on-disk segment trees (q_tail) with flying write/remove deduplication to minimize disk I/O for fast consumer turnarounds.",
+      "High-Throughput Partitioned Streams (Osiris): Persistent, append-only replicated log architecture enabling non-destructive, offset-based consumer replays, sub-batch vectoring, and zero-copy chunk iteration.",
+      "Dynamic Mirrored Supervisor Fabric: Distributed supervisor pattern utilizing Khepri/Mnesia metadata with automatic minority partition isolation and debounced group reconciliation to prevent duplicate worker execution.",
+      "Cluster-Wide Resource Alarm Subsystem: Real-time memory high-watermark and free disk space polling with immediate TCP socket reader suspension and connection.blocked framing."
+    ]
+  },
+  "components": [
+    {
+      "name": "RabbitReader (Connection Actor)",
+      "role": "AMQP 0-9-1 / 1.0 TCP Socket Controller, Frame Parser & Backpressure Gate",
+      "primaryFiles": [
+        "deps/rabbit/src/rabbit_reader.erl"
+      ],
+      "publicInterfaces": [
+        "start_link(Ref, Sock)",
+        "init(Parent, Ref, Sock)",
+        "mainloop(Deb, Buf, BufLen, State)",
+        "recvloop(Deb, Buf, BufLen, State)",
+        "conserve_resources(Pid, Source, Alert)",
+        "shutdown(Pid, Explanation)"
+      ],
+      "dependencies": [
+        "ranch",
+        "rabbit_framing",
+        "rabbit_channel",
+        "rabbit_alarm",
+        "credit_flow"
+      ],
+      "stateManaged": [
+        "Connection lifecycle state (pre_init, securing, running, blocking, blocked, closing, closed)",
+        "Socket buffer and dynamic framing buffers (dynamic_buffer_size, dynamic_buffer_moving_average)",
+        "Resource throttle state (throttle.last_blocked_at, throttle.blocked_by, throttle.should_block)",
+        "Heartbeat monitor and channel supervisor references (helper_sup, channel_sup_sup_pid)"
+      ],
+      "evidence": {
+        "filePath": "deps/rabbit/src/rabbit_reader.erl",
+        "lineRange": [
+          73,
+          150
+        ],
+        "symbol": "rabbit_reader / #v1 / mainloop",
+        "observation": "Manages dedicated TCP socket processes, parses framing wire formats, monitors credit flow states, and halts socket readloops upon receiving resource alarms or exhausted channel credits.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "RabbitChannel (Channel Engine)",
+      "role": "AMQP Channel Actor, Unconfirmed Publish Tracker & Delivery Flow Dispatcher",
+      "primaryFiles": [
+        "deps/rabbit/src/rabbit_channel.erl"
+      ],
+      "publicInterfaces": [
+        "start_link(Opts)",
+        "handle_method(Method, Content, State)",
+        "deliver_to_queues(ExchangeName, Delivery, State)",
+        "record_confirms(Confirms, State)",
+        "handle_queue_actions(Actions, State)"
+      ],
+      "dependencies": [
+        "rabbit_exchange",
+        "rabbit_router",
+        "rabbit_queue_type",
+        "rabbit_limiter",
+        "rabbit_trace"
+      ],
+      "stateManaged": [
+        "Transaction buffer (tx: none | committing | failed | {Msgs, Acks})",
+        "Publish confirmation sequence tracker (publish_seqno, unconfirmed map)",
+        "Unacknowledged delivered messages queue (unacked_message_q)",
+        "Consumer tag mappings and prefetch limiters (consumer_mapping, limiter)"
+      ],
+      "evidence": {
+        "filePath": "deps/rabbit/src/rabbit_channel.erl",
+        "lineRange": [
+          1172,
+          1250
+        ],
+        "symbol": "handle_method(#'basic.publish'{}) / deliver_to_queues",
+        "observation": "Enforces exchange write permissions, resolves routing keys across bindings, assigns monotonic publish sequence numbers, dispatches deliveries to destination queue types, and tracks unconfirmed acknowledgements.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "RabbitQuorumQueue (Quorum Queue Adapter)",
+      "role": "Raft Consensus Queue Interface & Membership Coordinator",
+      "primaryFiles": [
+        "deps/rabbit/src/rabbit_quorum_queue.erl"
+      ],
+      "publicInterfaces": [
+        "declare(Queue, Node)",
+        "delete(Queue, IfUnused, IfEmpty, ActingUser)",
+        "deliver(QSs, Msg, Options)",
+        "consume(Queue, Spec, State)",
+        "settle(QueueName, SettleOp, CTag, MsgIds, State)",
+        "credit(QueueName, CTag, DeliveryCount, Credit, Drain, State)",
+        "dequeue(Queue, NoAck, LimiterPid, CTag, Timeout, State)",
+        "add_member(Queue, Node)",
+        "delete_member(Queue, Node)"
+      ],
+      "dependencies": [
+        "ra",
+        "rabbit_fifo",
+        "rabbit_fifo_client",
+        "rabbit_queue_type_ra"
+      ],
+      "stateManaged": [
+        "Raft cluster membership specifications (ra_name, nodes, uids)",
+        "Pending Raft pipeline commands and cached segments",
+        "Delivery limit configuration and dead-letter handlers",
+        "Single active consumer leader lease mappings"
+      ],
+      "evidence": {
+        "filePath": "deps/rabbit/src/rabbit_quorum_queue.erl",
+        "lineRange": [
+          1349,
+          1366
+        ],
+        "symbol": "deliver / deliver0 / rabbit_fifo_client:enqueue",
+        "observation": "Adapts AMQP queue operations into Raft state machine commands, pipelining enqueues, checkouts, settlements, and cluster membership mutations through embedded Ra servers.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "RabbitFIFO (Raft Replicated State Machine)",
+      "role": "Deterministic Consensus State Machine for Quorum Queues",
+      "primaryFiles": [
+        "deps/rabbit/src/rabbit_fifo.erl"
+      ],
+      "publicInterfaces": [
+        "init(Config)",
+        "apply(Meta, Command, State)",
+        "state_enter(StateName, State)",
+        "tick(Timestamp, State)",
+        "overview(State)",
+        "exec_read(Query, Args, State)"
+      ],
+      "dependencies": [
+        "ra_machine",
+        "rabbit_fifo_pq",
+        "rabbit_fifo_dlx",
+        "mc"
+      ],
+      "stateManaged": [
+        "Priority message index queue (messages rabbit_fifo_pq)",
+        "Active and waiting consumer records (consumers map, waiting_consumers list)",
+        "Checked-out unacknowledged message descriptors (checked_out map)",
+        "Enqueuer tracking table and reclaimable disk bytes counter (enqueuers, reclaimable_bytes)",
+        "Per-message acquired and delivery counters"
+      ],
+      "evidence": {
+        "filePath": "deps/rabbit/src/rabbit_fifo.erl",
+        "lineRange": [
+          275,
+          376
+        ],
+        "symbol": "apply_ / apply_enqueue / #checkout / #settle",
+        "observation": "Executes deterministic state machine updates across all Raft replicas, handling message deduplication, TTL evaluations, credit decrementing, and dead-letter routing.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "RabbitAmqqueueProcess (Classic Queue Actor)",
+      "role": "OTP GenServer Process Managing Classic Queue Lifecycles & Flow Biasing",
+      "primaryFiles": [
+        "deps/rabbit/src/rabbit_amqqueue_process.erl"
+      ],
+      "publicInterfaces": [
+        "start_link(Queue, Marker)",
+        "init(Queue)",
+        "handle_call(Request, From, State)",
+        "handle_cast(Message, State)",
+        "handle_info(Message, State)",
+        "prioritise_call(Msg, From, Len, State)",
+        "prioritise_cast(Msg, Len, State)",
+        "prioritise_info(Msg, Len, State)"
+      ],
+      "dependencies": [
+        "gen_server2",
+        "rabbit_variable_queue",
+        "rabbit_queue_consumers",
+        "rabbit_dead_letter",
+        "pmon"
+      ],
+      "stateManaged": [
+        "Backing queue state (backing_queue, backing_queue_state)",
+        "Registered consumers and active exclusive/SAC consumer pids (consumers, active_consumer)",
+        "Queue and message TTL timers (expiry_timer_ref, ttl_timer_ref)",
+        "Publishing sender monitors and channel mappings (senders, msg_id_to_channel)",
+        "Gen_server2 priority state and consumer bias ratios"
+      ],
+      "evidence": {
+        "filePath": "deps/rabbit/src/rabbit_amqqueue_process.erl",
+        "lineRange": [
+          1250,
+          1298
+        ],
+        "symbol": "prioritise_call / prioritise_cast / consumer_bias",
+        "observation": "Coordinates classic queue message delivery, dynamic consumer biasing (prioritizing consumer acks when egress/ingress ratio < 2.0), and per-queue expiration timers.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "RabbitVariableQueue (Backing Queue & Paging Engine)",
+      "role": "Dual Memory/Disk Classic Queue Paging & In-Flight Confirmation Storage",
+      "primaryFiles": [
+        "deps/rabbit/src/rabbit_variable_queue.erl"
+      ],
+      "publicInterfaces": [
+        "init(Queue, Recover, Callback)",
+        "publish(Msg, MsgProps, IsDelivered, ChPid, State)",
+        "publish_delivered(Msg, MsgProps, ChPid, State)",
+        "fetch(AckRequired, State)",
+        "drop(AckRequired, State)",
+        "ack(AckTags, State)",
+        "requeue(AckTags, DelFailed, State)",
+        "drain_confirmed(State)",
+        "terminate(Reason, State)"
+      ],
+      "dependencies": [
+        "rabbit_backing_queue",
+        "rabbit_classic_queue_index_v2",
+        "rabbit_classic_queue_store_v2",
+        "rabbit_msg_store"
+      ],
+      "stateManaged": [
+        "In-memory queue head (q_head) and on-disk segment tail (q_tail)",
+        "RAM and disk pending ack registries (ram_pending_ack, disk_pending_ack)",
+        "Monotonic sequence numbers (next_seq_id, redeliver_seq_id)",
+        "Unconfirmed publish sets (unconfirmed, confirmed, unconfirmed_simple)",
+        "Rolling rate averages (rates, in_counter, out_counter)"
+      ],
+      "evidence": {
+        "filePath": "deps/rabbit/src/rabbit_variable_queue.erl",
+        "lineRange": [
+          524,
+          639
+        ],
+        "symbol": "publish / fetch / ack / requeue",
+        "observation": "Coordinates message persistence between per-queue index/store segments and shared vhost message stores, tracking pending acks and batching confirmations.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "RabbitStreamQueue (Stream Queue Adapter)",
+      "role": "Osiris Append-Only Log Stream Interface & Offset-Based Reader Engine",
+      "primaryFiles": [
+        "deps/rabbit/src/rabbit_stream_queue.erl"
+      ],
+      "publicInterfaces": [
+        "declare(Queue, Node)",
+        "delete(Queue, IfUnused, IfEmpty, ActingUser)",
+        "deliver(QSs, Msg, Options)",
+        "consume(Queue, Spec, State)",
+        "cancel(Queue, Spec, State)",
+        "credit(QueueName, CTag, DeliveryCount, Credit, Drain, State)",
+        "parse_offset_arg(Arg)"
+      ],
+      "dependencies": [
+        "osiris",
+        "osiris_log",
+        "rabbit_queue_type",
+        "rabbit_stream_coordinator"
+      ],
+      "stateManaged": [
+        "Stream client connection contexts (stream_client, leader, readers)",
+        "Per-consumer offset tracking (start_offset, listening_offset, last_consumed_offset)",
+        "Osiris segment chunk iterators and read-ahead buffers (chunk_iterator, buffer_msgs_rev)",
+        "In-flight append correlation map and backpressure soft limits"
+      ],
+      "evidence": {
+        "filePath": "deps/rabbit/src/rabbit_stream_queue.erl",
+        "lineRange": [
+          557,
+          594
+        ],
+        "symbol": "deliver / deliver0 / osiris:write",
+        "observation": "Enables high-throughput sequential appends to distributed Osiris logs, supports non-destructive offset positioning (first, last, next, timestamp, specific offset), and enforces publisher backpressure.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "RabbitMsgStore (Shared Message Store)",
+      "role": "Per-Vhost Shared Segment Storage Engine, Flying Event Deduplicator & Compactor",
+      "primaryFiles": [
+        "deps/rabbit/src/rabbit_msg_store.erl",
+        "deps/rabbit/src/rabbit_msg_store_gc.erl"
+      ],
+      "publicInterfaces": [
+        "start_link(Dir, IndexETS, FileHandlesETS, FileSummaryETS, FlyingETS)",
+        "write(MsgId, Msg, Ref, State)",
+        "read(MsgId, State)",
+        "remove(MsgId, State)",
+        "contains(MsgId, State)",
+        "compact_file(File, State)"
+      ],
+      "dependencies": [
+        "gen_server2",
+        "rabbit_msg_store_gc",
+        "rabbit_file"
+      ],
+      "stateManaged": [
+        "Segment file handles and write offsets (current_file, current_file_offset, file_handles_ets)",
+        "File summary index tracking valid message byte ratios (file_summary_ets)",
+        "Flying write and remove tracking table (flying_ets: 1=write, 3=written, 7=removed-before-sync)",
+        "Garbage collection candidate file sets (gc_candidates, gc_pid)"
+      ],
+      "evidence": {
+        "filePath": "deps/rabbit/src/rabbit_msg_store.erl",
+        "lineRange": [
+          45,
+          113
+        ],
+        "symbol": "rabbit_msg_store / #msstate / flying_ets",
+        "observation": "Persists large message bodies across shared .rdq segment files, bypasses disk writes for messages acknowledged prior to sync flush (flying_ets), and compacts sparse segments asynchronously.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "CreditFlow (Process Flow Control)",
+      "role": "Intra-Node Actor Backpressure Protocol & Mailbox Flood Protection",
+      "primaryFiles": [
+        "deps/rabbit_common/src/credit_flow.erl"
+      ],
+      "publicInterfaces": [
+        "send(From)",
+        "send(From, CreditSpec)",
+        "ack(To)",
+        "ack(To, CreditSpec)",
+        "handle_bump_msg(BumpMsg)",
+        "blocked()",
+        "state()"
+      ],
+      "dependencies": [
+        "persistent_term",
+        "rabbit_event"
+      ],
+      "stateManaged": [
+        "Process dictionary credit balances (credit_from, credit_to)",
+        "Process blocking flags and timestamps (credit_blocked, credit_blocked_at)",
+        "Configured initial credits and bump thresholds (default 400, bump after 200)"
+      ],
+      "evidence": {
+        "filePath": "deps/rabbit_common/src/credit_flow.erl",
+        "lineRange": [
+          113,
+          148
+        ],
+        "symbol": "send / ack / handle_bump_msg / blocked",
+        "observation": "Implements point-to-point token exchange across Erlang actor chains (reader -> channel -> queue -> msg_store), preventing runaway mailbox allocations by blocking socket readers when credits reach zero.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "RabbitAlarm (Resource Monitor & Alarm Coordinator)",
+      "role": "Cluster-Wide Memory and Disk Alarm Aggregator & Connection Throttle Gateway",
+      "primaryFiles": [
+        "deps/rabbit/src/rabbit_alarm.erl"
+      ],
+      "publicInterfaces": [
+        "start_link()",
+        "set_alarm(Alarm)",
+        "clear_alarm(Alarm)",
+        "get_alarms()",
+        "get_local_alarms()",
+        "register(Pid, AlertMFA)",
+        "on_node_up(Node)",
+        "on_node_down(Node)"
+      ],
+      "dependencies": [
+        "gen_event",
+        "vm_memory_monitor",
+        "rabbit_disk_monitor",
+        "background_gc"
+      ],
+      "stateManaged": [
+        "Registered connection listener processes (alertees dict)",
+        "Active cluster alarm registry partitioned by node and resource (alarmed_nodes dict)",
+        "Memory high watermark thresholds and free disk limits"
+      ],
+      "evidence": {
+        "filePath": "deps/rabbit/src/rabbit_alarm.erl",
+        "lineRange": [
+          176,
+          225
+        ],
+        "symbol": "handle_event({set_alarm, ...}) / handle_event({node_down, ...})",
+        "observation": "Listens for memory and disk limit breaches from OS monitors, broadcasts resource alerts to all nodes in the cluster, and commands reader processes to throttle publishing clients.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    }
+  ],
+  "stateMachines": [
+    {
+      "name": "ConnectionLifecycle",
+      "states": [
+        "pre_init",
+        "securing",
+        "running",
+        "blocking",
+        "blocked",
+        "closing",
+        "closed"
+      ],
+      "initialState": "pre_init",
+      "terminalStates": [
+        "closed"
+      ],
+      "transitions": [
+        {
+          "from": "pre_init",
+          "to": "securing",
+          "event": "Socket Handshake & TLS/SASL Negotiation",
+          "guardConditions": [
+            "Valid AMQP protocol header received",
+            "Authentication backend reachable"
+          ],
+          "evidence": {
+            "filePath": "deps/rabbit/src/rabbit_reader.erl",
+            "lineRange": [
+              350,
+              420
+            ],
+            "observation": "Socket connection starts in pre_init, performs SSL/TLS handshake or SASL exchange in securing.",
+            "luaOrCodeBehavior": "rabbit_reader:init -> auth_phase -> start_connection",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "securing",
+          "to": "running",
+          "event": "connection.open Handshake Complete",
+          "guardConditions": [
+            "User credentials validated",
+            "Virtual host access granted"
+          ],
+          "evidence": {
+            "filePath": "deps/rabbit/src/rabbit_reader.erl",
+            "lineRange": [
+              450,
+              510
+            ],
+            "observation": "Emits connection.open-ok and enters normal frame dispatch loop.",
+            "luaOrCodeBehavior": "handle_method(#'connection.open'{}) -> State#v1{connection_state = running}",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "running",
+          "to": "blocked",
+          "event": "Resource Alarm Set or Credit Depleted",
+          "guardConditions": [
+            "Memory high watermark exceeded OR disk free space below limit OR credit_flow:blocked() is true"
+          ],
+          "evidence": {
+            "filePath": "deps/rabbit/src/rabbit_reader.erl",
+            "lineRange": [
+              1120,
+              1180
+            ],
+            "observation": "Suspends socket reading loop, sends connection.blocked frame if capability supported, and sets throttle state.",
+            "luaOrCodeBehavior": "conserve_resources/3 -> State#v1{connection_state = blocked, throttle = #throttle{should_block = true}}",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "blocked",
+          "to": "running",
+          "event": "Resource Alarm Cleared and Credits Replenished",
+          "guardConditions": [
+            "All node resource alarms cleared",
+            "credit_flow granted positive tokens"
+          ],
+          "evidence": {
+            "filePath": "deps/rabbit/src/rabbit_reader.erl",
+            "lineRange": [
+              1185,
+              1220
+            ],
+            "observation": "Resumes socket readloop and emits connection.unblocked frame to client.",
+            "luaOrCodeBehavior": "conserve_resources(false) -> send_connection_unblocked -> State#v1{connection_state = running}",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "running",
+          "to": "closing",
+          "event": "connection.close Received or Fatal Protocol Error",
+          "guardConditions": [
+            "Client requested graceful termination OR channel threw fatal exception"
+          ],
+          "evidence": {
+            "filePath": "deps/rabbit/src/rabbit_reader.erl",
+            "lineRange": [
+              600,
+              660
+            ],
+            "observation": "Closes all open channels, flushes pending metrics, and waits for connection.close-ok.",
+            "luaOrCodeBehavior": "handle_method(#'connection.close'{}) -> State#v1{connection_state = closing}",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "closing",
+          "to": "closed",
+          "event": "Socket Teardown Complete",
+          "guardConditions": [
+            "All channel supervisors terminated",
+            "Exclusive queues cleaned up"
+          ],
+          "evidence": {
+            "filePath": "deps/rabbit/src/rabbit_reader.erl",
+            "lineRange": [
+              680,
+              720
+            ],
+            "observation": "Terminates reader process and closes TCP socket.",
+            "luaOrCodeBehavior": "terminate/2 -> gen_tcp:close(Sock)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    },
+    {
+      "name": "QuorumQueueMessageLifecycle",
+      "states": [
+        "Uncommitted",
+        "CommittedReady",
+        "CheckedOut",
+        "Settled",
+        "DeadLettered",
+        "Purged"
+      ],
+      "initialState": "Uncommitted",
+      "terminalStates": [
+        "Settled",
+        "DeadLettered",
+        "Purged"
+      ],
+      "transitions": [
+        {
+          "from": "Uncommitted",
+          "to": "CommittedReady",
+          "event": "Raft Quorum Log Consensus",
+          "guardConditions": [
+            "Strict majority of Raft replicas acknowledge WAL write"
+          ],
+          "evidence": {
+            "filePath": "deps/rabbit/src/rabbit_fifo.erl",
+            "lineRange": [
+              1973,
+              1983
+            ],
+            "observation": "Raft leader applies committed command to state machine, enqueues message into rabbit_fifo_pq, and sends basic.ack confirm to publisher.",
+            "luaOrCodeBehavior": "apply_enqueue -> maybe_enqueue -> State#?STATE{messages = rabbit_fifo_pq:in(...)}",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "CommittedReady",
+          "to": "CheckedOut",
+          "event": "Consumer Checkout (Delivery)",
+          "guardConditions": [
+            "Active consumer possesses positive credit",
+            "Message TTL not expired"
+          ],
+          "evidence": {
+            "filePath": "deps/rabbit/src/rabbit_fifo.erl",
+            "lineRange": [
+              410,
+              438
+            ],
+            "observation": "Decrements consumer credit, moves message descriptor to checked_out map, and emits delivery effect to consumer channel.",
+            "luaOrCodeBehavior": "checkout_one -> Con#consumer{checked_out = CheckedOut#{MsgId => Msg}, credit = Credit - 1}",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "CheckedOut",
+          "to": "Settled",
+          "event": "Consumer basic.ack / Settle Command",
+          "guardConditions": [
+            "Ack received from matching consumer channel"
+          ],
+          "evidence": {
+            "filePath": "deps/rabbit/src/rabbit_fifo.erl",
+            "lineRange": [
+              301,
+              312
+            ],
+            "observation": "Removes message from checked_out map, increments reclaimable_bytes, and releases consumer memory.",
+            "luaOrCodeBehavior": "complete_and_checkout -> Con#consumer{checked_out = maps:remove(MsgId, Checked0)}",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "CheckedOut",
+          "to": "CommittedReady",
+          "event": "Consumer basic.nack (requeue=true) or Disconnection",
+          "guardConditions": [
+            "Requeue requested AND delivery_count < delivery_limit"
+          ],
+          "evidence": {
+            "filePath": "deps/rabbit/src/rabbit_fifo.erl",
+            "lineRange": [
+              351,
+              376
+            ],
+            "observation": "Increments message acquired_count / delivery_count and returns message to priority queue head.",
+            "luaOrCodeBehavior": "apply_(#requeue{}) -> Header = update_header(acquired_count, incr, 1, Hdr)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "CheckedOut",
+          "to": "DeadLettered",
+          "event": "Delivery Count Limit Exceeded or basic.reject (requeue=false)",
+          "guardConditions": [
+            "delivery_count >= configured delivery_limit OR explicit non-requeue reject"
+          ],
+          "evidence": {
+            "filePath": "deps/rabbit/src/rabbit_fifo.erl",
+            "lineRange": [
+              313,
+              322
+            ],
+            "observation": "Discards message from queue and routes to configured Dead Letter Exchange (DLX) with x-death metadata.",
+            "luaOrCodeBehavior": "discard -> discard_or_dead_letter -> rabbit_dead_letter:publish",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "CommittedReady",
+          "to": "Purged",
+          "event": "Queue Purge or MaxLength Drop-Head Eviction",
+          "guardConditions": [
+            "queue.purge issued OR queue byte/count limits exceeded under drop-head overflow strategy"
+          ],
+          "evidence": {
+            "filePath": "deps/rabbit/src/rabbit_fifo.erl",
+            "lineRange": [
+              1988,
+              2002
+            ],
+            "observation": "Pops oldest message from queue head, adjusts total message counters, and frees storage.",
+            "luaOrCodeBehavior": "drop_head -> take_next_msg -> decr_total",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-01",
+      "atomicStatement": "Quorum queues require Raft log consensus across a strict majority of cluster replicas before emitting a publisher basic.ack confirmation.",
+      "enforcingMechanism": "ra:pipeline_command inside rabbit_fifo_client:enqueue followed by Raft majority append acknowledgement before rabbit_channel triggers confirm dispatch",
+      "sourceLocation": {
+        "filePath": "deps/rabbit/src/rabbit_quorum_queue.erl",
+        "lineRange": [
+          1349,
+          1366
+        ]
+      },
+      "testEvidence": {
+        "filePath": "deps/rabbit/test/quorum_queue_SUITE.erl",
+        "testFunction": "simple_confirm_availability_on_leader_change",
+        "lineRange": [
+          3579,
+          3605
+        ],
+        "observation": "Verifies that publisher confirmations succeed across Raft leader changes and remain blocked when majority quorum is lost until a new leader is elected."
+      },
+      "historicalContext": {
+        "commitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
+        "issueOrPr": "QQ-RAFT-CONSENSUS",
+        "context": "Guarantees linearizable publisher confirms and prevents message loss across node crash-restarts."
+      }
+    },
+    {
+      "id": "INV-02",
+      "atomicStatement": "Credit flow flow control suspends TCP socket reads when downstream process token reserves reach zero, resuming immediately upon receiving bump_credit control tokens.",
+      "enforcingMechanism": "credit_flow:send/2 decrementing credit_from in process dictionary and calling credit_flow:block/1 when balance reaches 0",
+      "sourceLocation": {
+        "filePath": "deps/rabbit_common/src/credit_flow.erl",
+        "lineRange": [
+          113,
+          136
+        ]
+      },
+      "testEvidence": {
+        "filePath": "deps/rabbit/test/unit_credit_flow_SUITE.erl",
+        "testFunction": "credit_flow_settings1",
+        "lineRange": [
+          69,
+          83
+        ],
+        "observation": "Asserts that processes initialize with configured credit specs (e.g. 400 initial, 200 threshold) and correctly block and unblock upon credit exchange."
+      },
+      "historicalContext": {
+        "commitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
+        "issueOrPr": "CORE-CREDIT-FLOW",
+        "context": "Eliminates unbounded Erlang actor mailbox growth and protects RabbitMQ nodes from out-of-memory crashes during fast producer spikes."
+      }
+    },
+    {
+      "id": "INV-03",
+      "atomicStatement": "Resource alarms triggered by memory high-watermark or disk free-space thresholds broadcast to all cluster nodes and suspend publisher socket reading via connection.blocked framing.",
+      "enforcingMechanism": "vm_memory_monitor and rabbit_disk_monitor notifying rabbit_alarm:set_alarm, which executes conserve_resources/3 across all registered reader processes",
+      "sourceLocation": {
+        "filePath": "deps/rabbit/src/rabbit_alarm.erl",
+        "lineRange": [
+          189,
+          208
+        ]
+      },
+      "testEvidence": {
+        "filePath": "deps/rabbit/test/disconnect_detected_during_alarm_SUITE.erl",
+        "testFunction": "all",
+        "lineRange": [
+          25,
+          45
+        ],
+        "observation": "Verifies that connections entering alarm states correctly halt ingress message delivery and resume when resource limits clear."
+      },
+      "historicalContext": {
+        "commitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
+        "issueOrPr": "CORE-RESOURCE-ALARM",
+        "context": "Provides hard memory and disk failure boundaries preventing OS kernel OOM killer terminations."
+      }
+    },
+    {
+      "id": "INV-04",
+      "atomicStatement": "Quorum queue consumers failing to acknowledge delivered messages within consumer-timeout are cancelled via basic.cancel when basic_cancel capability is advertised.",
+      "enforcingMechanism": "Quorum queue periodic tick checking consumer checkout timestamps against consumer_timeout policy and issuing consumer cancellation effects",
+      "sourceLocation": {
+        "filePath": "deps/rabbit/src/rabbit_fifo.erl",
+        "lineRange": [
+          622,
+          640
+        ]
+      },
+      "testEvidence": {
+        "filePath": "deps/rabbit/test/consumer_timeout_SUITE.erl",
+        "testFunction": "consumer_timeout_with_basic_cancel_capability",
+        "lineRange": [
+          148,
+          182
+        ],
+        "observation": "Asserts that an unacknowledged delivery exceeding CONSUMER_TIMEOUT triggers a server-initiated basic.cancel frame to the consumer channel."
+      },
+      "historicalContext": {
+        "commitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
+        "issueOrPr": "QQ-CONSUMER-TIMEOUT",
+        "context": "Reclaims unacknowledged messages stranded on unresponsive consumer clients."
+      }
+    },
+    {
+      "id": "INV-05",
+      "atomicStatement": "Single Active Consumer (SAC) queues guarantee that exactly one consumer process receives message deliveries at any given time, automatically promoting the next highest-priority consumer upon failure.",
+      "enforcingMechanism": "Single active consumer election and priority sorting in rabbit_fifo:activate_next_consumer",
+      "sourceLocation": {
+        "filePath": "deps/rabbit/src/rabbit_fifo.erl",
+        "lineRange": [
+          490,
+          500
+        ]
+      },
+      "testEvidence": {
+        "filePath": "deps/rabbit/test/quorum_queue_SUITE.erl",
+        "testFunction": "single_active_consumer_priority_take_over",
+        "lineRange": [
+          1221,
+          1260
+        ],
+        "observation": "Verifies that higher priority consumer instances immediately take over delivery from lower priority instances upon registration or leader failover."
+      },
+      "historicalContext": {
+        "commitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
+        "issueOrPr": "QQ-SAC-PRIORITY",
+        "context": "Ensures strict total message processing order across competing consumer instances."
+      }
+    },
+    {
+      "id": "INV-06",
+      "atomicStatement": "Shared message store elides disk writes for messages acknowledged before disk sync flushing by tracking in-flight events in flying_ets.",
+      "enforcingMechanism": "flying_ets lookup evaluating FLYING_IS_IGNORED state (?FLYING_WRITE + ?FLYING_REMOVE = 5) in rabbit_msg_store",
+      "sourceLocation": {
+        "filePath": "deps/rabbit/src/rabbit_msg_store.erl",
+        "lineRange": [
+          50,
+          69
+        ]
+      },
+      "testEvidence": {
+        "filePath": "deps/rabbit/test/per_vhost_msg_store_SUITE.erl",
+        "testFunction": "all",
+        "lineRange": [
+          20,
+          40
+        ],
+        "observation": "Verifies that fast transient message pipelines execute without generating persistent disk file allocations."
+      },
+      "historicalContext": {
+        "commitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
+        "issueOrPr": "MS-FLYING-WRITES",
+        "context": "Reduces disk write amplification for high-frequency short-lived queue messages."
+      }
+    },
+    {
+      "id": "INV-07",
+      "atomicStatement": "Non-clean classic queue restarts set redeliver_seq_id to the most recent queue sequence ID, marking all recovered unacknowledged messages as previously delivered.",
+      "enforcingMechanism": "redeliver_seq_id assignment during dirty recovery in rabbit_variable_queue:init1 and delivery annotation in annotate_delivery_count",
+      "sourceLocation": {
+        "filePath": "deps/rabbit/src/rabbit_variable_queue.erl",
+        "lineRange": [
+          570,
+          581
+        ]
+      },
+      "testEvidence": {
+        "filePath": "deps/rabbit/test/crashing_queues_SUITE.erl",
+        "testFunction": "all",
+        "lineRange": [
+          20,
+          40
+        ],
+        "observation": "Asserts that messages delivered prior to unexpected node crash are flagged with redelivered=true upon subsequent consumer fetch."
+      },
+      "historicalContext": {
+        "commitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
+        "issueOrPr": "VQ-DIRTY-RECOVERY",
+        "context": "Guarantees at-least-once safety by warning consumers of potential duplicate execution following broker crashes."
+      }
+    },
+    {
+      "id": "INV-08",
+      "atomicStatement": "RabbitMQ Streams support non-destructive offset reading, allowing multiple independent consumer groups to read and replay log chunks from arbitrary offsets without mutating stream state.",
+      "enforcingMechanism": "osiris_log:chunk_iterator traversal in rabbit_stream_queue:stream_entries preserving immutable segment files",
+      "sourceLocation": {
+        "filePath": "deps/rabbit/src/rabbit_stream_queue.erl",
+        "lineRange": [
+          535,
+          553
+        ]
+      },
+      "testEvidence": {
+        "filePath": "deps/rabbit/test/rabbit_stream_queue_SUITE.erl",
+        "testFunction": "all",
+        "lineRange": [
+          25,
+          45
+        ],
+        "observation": "Verifies that stream consumers reading from offset=first receive historical messages without depleting messages for other consumers."
+      },
+      "historicalContext": {
+        "commitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
+        "issueOrPr": "STREAM-LOG-REPLAY",
+        "context": "Provides event-sourcing semantics decoupled from destructive queue dequeue operations."
+      }
+    },
+    {
+      "id": "INV-09",
+      "atomicStatement": "AMQP 0-9-1 transactional channels isolate uncommitted publishes and consumer acknowledgements in memory until tx.commit, aborting all staged operations upon tx.rollback.",
+      "enforcingMechanism": "State#ch{tx = {Msgs, Acks}} buffering in rabbit_channel:handle_method",
+      "sourceLocation": {
+        "filePath": "deps/rabbit/src/rabbit_channel.erl",
+        "lineRange": [
+          1228,
+          1235
+        ]
+      },
+      "testEvidence": {
+        "filePath": "deps/rabbit/test/channel_SUITE.erl",
+        "testFunction": "all",
+        "lineRange": [
+          25,
+          50
+        ],
+        "observation": "Asserts that published messages inside an uncommitted transaction remain invisible to queues until tx.commit is received."
+      },
+      "historicalContext": {
+        "commitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
+        "issueOrPr": "CH-TRANSACTIONS",
+        "context": "Enforces atomic batch publish and acknowledge semantics for AMQP 0-9-1 clients."
+      }
+    },
+    {
+      "id": "INV-10",
+      "atomicStatement": "Quorum queue delivery-limit policy terminates repeatedly requeued poison pill messages and routes them to configured Dead Letter Exchanges (DLX) with x-death reason 'rejected'.",
+      "enforcingMechanism": "acquired_count check against cfg.delivery_limit triggering discard_or_dead_letter in rabbit_fifo",
+      "sourceLocation": {
+        "filePath": "deps/rabbit/src/rabbit_fifo.erl",
+        "lineRange": [
+          1988,
+          2002
+        ]
+      },
+      "testEvidence": {
+        "filePath": "deps/rabbit/test/dead_lettering_SUITE.erl",
+        "testFunction": "dead_letter_nack_requeue",
+        "lineRange": [
+          28,
+          45
+        ],
+        "observation": "Verifies that rejected messages reaching delivery limit are forwarded to DLX with updated death headers and purged from source queue."
+      },
+      "historicalContext": {
+        "commitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
+        "issueOrPr": "QQ-DLX-DELIVERY-LIMIT",
+        "context": "Prevents infinite consumer crash-requeue poison pill loops from locking queue progress."
+      }
+    },
+    {
+      "id": "INV-11",
+      "atomicStatement": "Classic queue gen_server2 prioritization elevates consumer notify_sent events to priority 2 when egress/ingress rate ratio falls below CONSUMER_BIAS_RATIO (2.0), mitigating consumer starvation.",
+      "enforcingMechanism": "consumer_bias calculation in rabbit_amqqueue_process:prioritise_cast",
+      "sourceLocation": {
+        "filePath": "deps/rabbit/src/rabbit_amqqueue_process.erl",
+        "lineRange": [
+          1268,
+          1286
+        ]
+      },
+      "testEvidence": {
+        "filePath": "deps/rabbit/test/classic_queue_SUITE.erl",
+        "testFunction": "all",
+        "lineRange": [
+          25,
+          50
+        ],
+        "observation": "Verifies that under heavy publishing pressure, queue processes prioritize consumer notification dispatch over ingress message ingestion."
+      },
+      "historicalContext": {
+        "commitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
+        "issueOrPr": "QUEUE-CONSUMER-BIAS",
+        "context": "Maintains queue drain responsiveness and bounds queue depth under sustained producer load."
+      }
+    },
+    {
+      "id": "INV-12",
+      "atomicStatement": "Mirrored supervisors detect minority network partitions and terminate local dynamic children (Shovels/Federation links), preventing split-brain dual execution across partition boundaries.",
+      "enforcingMechanism": "partition_status/0 check inside mirrored_supervisor:reconcile terminating dynamic child processes when node lacks cluster quorum",
+      "sourceLocation": {
+        "filePath": "deps/rabbit/src/mirrored_supervisor.erl",
+        "lineRange": [
+          120,
+          180
+        ]
+      },
+      "testEvidence": {
+        "filePath": "deps/rabbit/test/mirrored_supervisor_SUITE.erl",
+        "testFunction": "all",
+        "lineRange": [
+          20,
+          45
+        ],
+        "observation": "Asserts that when a 3-node cluster partitions 2:1, dynamic shovel children on the minority node terminate and run exclusively on the majority partition."
+      },
+      "historicalContext": {
+        "commitHash": "5446e8b7560f9f330346061719b3e7732830c824",
+        "issueOrPr": "#16662",
+        "context": "Eliminated duplicate message movements in dynamic shovels and federation links during cluster network partitions."
+      }
+    }
+  ],
+  "failureModesAndDefenses": [
+    {
+      "failureMode": "Cluster Network Partition & Minority Split-Brain",
+      "detectionMechanism": "Erlang distributed node disconnection (noconnection) and Raft heartbeat loss in Ra",
+      "recoveryAction": "Quorum queues reject writes on minority side due to inability to achieve majority commit; mirrored supervisors terminate dynamic children on minority nodes",
+      "sourceEvidence": {
+        "filePath": "deps/rabbit/src/rabbit_quorum_queue.erl",
+        "lineRange": [
+          1177,
+          1200
+        ],
+        "observation": "Consuming and getting messages on a partitioned minority node immediately raises INTERNAL_ERROR and closes AMQP channel."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "#16662",
+        "rootCause": "Dynamic shovels and federation links ran simultaneously on both sides of a partition due to uncoordinated local supervisors.",
+        "fixDescription": "Added minority partition detection and debounced reconciliation loop to mirrored_supervisor."
+      },
+      "prescribedMitigation": "Deploy odd-numbered cluster nodes (3, 5, 7) across independent availability zones and utilize Quorum Queues or Streams rather than legacy mirrored queues."
+    },
+    {
+      "failureMode": "Node Memory Exhaustion (OOM Panic Risk)",
+      "detectionMechanism": "vm_memory_monitor polling Erlang runtime memory against vm_memory_high_watermark (default 0.40)",
+      "recoveryAction": "Triggers background_gc:run(), sets cluster-wide memory alarm in rabbit_alarm, and commands rabbit_reader actors to block publisher TCP sockets",
+      "sourceEvidence": {
+        "filePath": "deps/rabbit/src/rabbit_alarm.erl",
+        "lineRange": [
+          70,
+          85
+        ],
+        "observation": "Immediately throttles all publishing producers across the entire cluster while permitting consumers to continue draining queues."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "CORE-MEM-ALARM",
+        "rootCause": "Uncontrolled producer message rates exceeding broker disk write throughput caused Erlang VM heap exhaustion.",
+        "fixDescription": "Implemented dual-threshold memory monitor with automatic background GC invocation."
+      },
+      "prescribedMitigation": "Configure vm_memory_high_watermark between 0.4 and 0.7, enable credit_flow backpressure on clients, and monitor rabbitmq_process_resident_memory_bytes in Prometheus."
+    },
+    {
+      "failureMode": "Stream Coordinator Hot-Loop on Rolling Node Restarts",
+      "detectionMechanism": "osiris:start_replica failing with {shutdown, writer_unavailable} or {shutdown, noproc}",
+      "recoveryAction": "Classified shutdown errors as 'short' backoff class, parking member with backoff timer and waking parked members on set_running_to_stopped",
+      "sourceEvidence": {
+        "filePath": "deps/rabbit/src/rabbit_stream_coordinator.erl",
+        "lineRange": [
+          280,
+          310
+        ],
+        "observation": "Prevents hot-loop churn (hundreds of failed start attempts/sec) and enables await_online_quorum_plus_one gates to resolve cleanly."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "commit c9e654b7bf8c8f1666376fdd1a56d63045d0b1d2",
+        "rootCause": "Replica starts racing writer shutdowns fell through backoff classification to 'none', triggering immediate tight retry loops.",
+        "fixDescription": "Added short backoff classification and unified wake handlers."
+      },
+      "prescribedMitigation": "Ensure rolling cluster upgrade scripts invoke await_online_quorum_plus_one before stopping consecutive nodes."
+    },
+    {
+      "failureMode": "Poison Pill Consumer Crash Loops",
+      "detectionMechanism": "Quorum queue acquired_count tracking exceeding configured delivery-limit",
+      "recoveryAction": "Stops requeueing malformed message, emits discard event, and routes payload to Dead Letter Exchange with x-death metadata",
+      "sourceEvidence": {
+        "filePath": "deps/rabbit/src/rabbit_fifo.erl",
+        "lineRange": [
+          1988,
+          2002
+        ],
+        "observation": "Purges poison message from active queue, preventing infinite crash loops on worker applications."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "QQ-DELIVERY-LIMIT",
+        "rootCause": "Malformed application payloads caused consumer process crashes on every delivery, locking queue progress.",
+        "fixDescription": "Introduced Raft-tracked delivery-limit counters and automated DLX routing."
+      },
+      "prescribedMitigation": "Configure x-delivery-limit policy (e.g. 5 or 10) on all Quorum Queues and monitor messages_dead_lettered counters."
+    },
+    {
+      "failureMode": "STOMP Quorum Delivery Limit Burn on Subscription Teardown",
+      "detectionMechanism": "ACK/NACK received after subscription deletion failing lookup in subscription table",
+      "recoveryAction": "Settles deliveries directly from pending-ack ledger rather than subscription table, matching subscription and delivery tag from ack ID",
+      "sourceEvidence": {
+        "filePath": "deps/rabbitmq_stomp/src/rabbit_stomp_processor.erl",
+        "lineRange": [
+          160,
+          180
+        ],
+        "observation": "Prevents stranded deliveries from burning delivery limits upon connection disconnect."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "commit b39c83c363665e5b2b2b8e3b4ae713ff69a489cb",
+        "rootCause": "Deliveries acknowledged after subscription removal were rejected and stranded until connection termination.",
+        "fixDescription": "Decoupled settlement lookup from subscription table into pending-ack ledger."
+      },
+      "prescribedMitigation": "Use explicit transaction blocks or AMQP 1.0 links for strict consumer settlement across dynamic subscription lifecycles."
+    }
+  ],
+  "historicalEvolution": [
+    {
+      "milestoneOrBug": "Stream Coordinator Backoff on Writer-Shutdown Replica Failures",
+      "commitHash": "c9e654b7bf8c8f1666376fdd1a56d63045d0b1d2",
+      "issueOrPr": "STREAM-COORDINATOR-RETRY",
+      "rootCause": "When replica start raced writer shutdown during rolling restarts, osiris:start_replica failed with {shutdown, writer_unavailable}. backoff_class/1 fell through to 'none', creating a hot retry loop of hundreds of attempts per second.",
+      "architecturalFix": "Classified {shutdown, _} as 'short' backoff so members park instead of looping; updated set_running_to_stopped/1 to wake timed parks for re-election.",
+      "affectedFiles": [
+        "deps/rabbit/src/rabbit_stream_coordinator.erl",
+        "deps/rabbit/test/rabbit_stream_coordinator_SUITE.erl"
+      ],
+      "evidence": {
+        "filePath": "deps/rabbit/src/rabbit_stream_coordinator.erl",
+        "observation": "Coordinates stream replica backoff and wakes sleeping members when writer shuts down."
+      }
+    },
+    {
+      "milestoneOrBug": "Stream Coordinator O(footprint) Node Reconnection Optimization",
+      "commitHash": "ae2534f937a891f586316bb15e4a98cbc83748cb",
+      "issueOrPr": "STREAM-NODEUP-SCALE",
+      "rootCause": "apply({nodeup, Node}) performed a three-pass scan over all streams and SAC groups, scaling with total cluster cardinality (55ms pause per apply on 50k streams) and stalling coordinator consensus.",
+      "architecturalFix": "Replaced blanket scan with single guarded fold touching only streams parked for nodeup (v8-gated); preserved reverse index in pids_groups to skip group scans; reduced nodeup execution to < 3ms.",
+      "affectedFiles": [
+        "deps/rabbit/src/rabbit_stream_coordinator.erl",
+        "deps/rabbit/src/rabbit_stream_sac_coordinator.erl",
+        "deps/rabbit/test/rabbit_stream_coordinator_SUITE.erl",
+        "deps/rabbit/test/rabbit_stream_sac_coordinator_SUITE.erl"
+      ],
+      "evidence": {
+        "filePath": "deps/rabbit/src/rabbit_stream_coordinator.erl",
+        "observation": "Optimized nodeup handler to fold strictly over affected parked streams."
+      }
+    },
+    {
+      "milestoneOrBug": "Mirrored Supervisor Network Partition Duplicate Child Prevention",
+      "commitHash": "5446e8b7560f9f330346061719b3e7732830c824",
+      "issueOrPr": "#16662",
+      "rootCause": "During network partitions, mirrored supervisors on both sides kept dynamic shovel and federation children running, producing duplicate message movement. Furthermore, failover on minority nodes stalled on Khepri timeouts (30s).",
+      "architecturalFix": "Added minority partition detection (partition_status/0) to stop children on minority side; added debounced pg:monitor/1 reconciliation on membership changes; marked supervisors as permanent.",
+      "affectedFiles": [
+        "deps/rabbit/src/mirrored_supervisor.erl",
+        "deps/rabbit/test/mirrored_supervisor_SUITE.erl",
+        "deps/rabbitmq_exchange_federation/src/rabbit_exchange_federation_sup.erl",
+        "deps/rabbitmq_shovel/src/rabbit_shovel_sup.erl"
+      ],
+      "evidence": {
+        "filePath": "deps/rabbit/src/mirrored_supervisor.erl",
+        "observation": "mirrored_supervisor stops local children on minority partition side and reclaims orphans on majority side."
+      }
+    },
+    {
+      "milestoneOrBug": "Queue Decorator Crash on Undefined Decorators Post Khepri Migration",
+      "commitHash": "9526fd6f2ea55cd8d1cbc89d59d0600f4718af53",
+      "issueOrPr": "Fixes #16843",
+      "rootCause": "Quorum queues migrated from Mnesia to Khepri retained decorators = undefined. When federation registered a decorator, rabbit_queue_decorator:select/1 crashed at boot with error:{bad_generator, undefined}.",
+      "architecturalFix": "Added undefined and none guard clauses to rabbit_queue_decorator:select/1 returning empty list [].",
+      "affectedFiles": [
+        "deps/rabbit/src/rabbit_queue_decorator.erl"
+      ],
+      "evidence": {
+        "filePath": "deps/rabbit/src/rabbit_queue_decorator.erl",
+        "observation": "Guarded select/1 against undefined decorator records."
+      }
+    },
+    {
+      "milestoneOrBug": "STOMP Delivery Settlement Decoupled from Subscription Table",
+      "commitHash": "b39c83c363665e5b2b2b8e3b4ae713ff69a489cb",
+      "issueOrPr": "STOMP-SETTLE-LEDGER",
+      "rootCause": "ACK and NACK resolved delivery tags through subscription table. Deliveries settled after subscription deletion were stranded, burning quorum delivery limit attempts upon connection teardown.",
+      "architecturalFix": "Recorded ack mode in pending-ack ledger and settled directly from ledger matching subscription and tag.",
+      "affectedFiles": [
+        "deps/rabbitmq_stomp/src/rabbit_stomp_processor.erl",
+        "deps/rabbitmq_stomp/test/system_SUITE.erl"
+      ],
+      "evidence": {
+        "filePath": "deps/rabbitmq_stomp/src/rabbit_stomp_processor.erl",
+        "observation": "Settles STOMP deliveries directly from pending-ack ledger."
+      }
+    }
+  ],
+  "unresolvedContradictionsAndBypasses": [
+    {
+      "claimOrGuarantee": "Memory and disk resource alarms throttle publishers without impacting consumer message drain.",
+      "contradictionOrBypass": "When client applications multiplex publishing producers and consuming subscribers over the SAME AMQP connection, rabbit_reader blocks the entire TCP socket. The consumer is unable to receive delivery frames or send ACKs over the blocked socket, creating a deadlock where memory cannot be drained to clear the alarm.",
+      "codeLocation": "deps/rabbit/src/rabbit_reader.erl:1120-1180",
+      "evidence": "rabbit_reader operates at the TCP connection boundary; blocking the socket halts all ingress and egress frame processing on all multiplexed channels."
+    },
+    {
+      "claimOrGuarantee": "Credit flow provides strict end-to-end backpressure from storage to network sockets.",
+      "contradictionOrBypass": "Credit flow tracks point-to-point process pairs (channel -> queue). When a channel publishes to a fanout or topic exchange routing to 10,000 distinct queues, the channel consumes 1 credit token per queue, resulting in an uncoordinated credit burst that bypasses point-to-point throttling until queue process mailboxes grow large enough to trigger global memory alarms.",
+      "codeLocation": "deps/rabbit/src/rabbit_channel.erl:2122-2155",
+      "evidence": "deliver_to_queues iterates over all routed queues independently, multiplying downstream message delivery beyond initial single-queue credit boundaries."
+    },
+    {
+      "claimOrGuarantee": "Quorum queues provide linearizable total order across all consumer deliveries.",
+      "contradictionOrBypass": "When a consumer channel crashes or times out while holding unacknowledged messages, those messages are requeued at the head of the Raft priority queue (rabbit_fifo_pq). If subsequent messages were already checked out to other active consumers in the interim, the requeued message is delivered out-of-order relative to the original publish sequence.",
+      "codeLocation": "deps/rabbit/src/rabbit_fifo.erl:351-376",
+      "evidence": "apply_(#requeue{}) prepends unacknowledged messages to messages_ready without revoking already in-flight checkouts."
+    },
+    {
+      "claimOrGuarantee": "Classic Mirrored Queues (deprecated/removed in 4.0) guaranteed high availability across cluster nodes.",
+      "contradictionOrBypass": "During network partitions, classic mirrored queues promoted unsynchronized slaves to masters, leading to silent data loss of all messages acknowledged on the original master but not yet replicated to the promoted mirror.",
+      "codeLocation": "deps/rabbit/src/rabbit_mirror_queue_misc.erl:1-55",
+      "evidence": "Classic mirrored queue architecture lacked a Raft consensus log, resulting in complete removal in RabbitMQ 4.0 in favor of Quorum Queues."
+    }
+  ],
+  "adversarialCritique": {
+    "boundaryConditions": [
+      "Multiplexed connection deadlock: Producers and consumers sharing an AMQP connection freeze under memory alarms because TCP socket suspension prevents consumer acknowledgements.",
+      "Asymmetric Raft partitions: A Quorum Queue leader partitioned from followers can continue receiving publisher TCP connections but cannot commit messages, stalling publisher confirm buffers until election timeouts trigger.",
+      "High cardinality stream nodeup stalls: Clusters with > 50,000 streams on pre-v8 machine versions can experience multi-second coordinator pauses during rolling node restarts.",
+      "NTP clock drift on consumer timeouts: Severe backward clock jumps can prematurely trigger or substantially delay consumer timeout cancellation checks."
+    ],
+    "untestedAssumptions": [
+      "Underlying block storage guarantees atomic fsync semantics for Raft WAL segment appends without silent disk controller write cache tearing.",
+      "Client applications provision dedicated connections for publishing and consuming to avoid mutual resource alarm deadlocks.",
+      "Erlang VM scheduler allocates balanced reduction budgets between socket readers and Raft consensus processes under heavy CPU saturation."
+    ],
+    "acceptedTradeOffs": [
+      "Quorum Queues trade raw write throughput for Raft consensus safety, incurring disk fsync and network roundtrip costs for every committed message batch compared to Classic Queues.",
+      "Streams prioritize sequential disk throughput and non-destructive offset replay over individual per-message acknowledgement tracking and fine-grained selective deletion.",
+      "Credit flow uses local process-dictionary token counting rather than centralized distributed lock coordination, trading strict global fair-share bandwidth allocation for low CPU overhead."
+    ]
+  }
+}

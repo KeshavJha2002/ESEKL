@@ -1,0 +1,2932 @@
+[
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_breathing.py",
+    "testFunction": "test_breathing",
+    "subScenarioName": "breathing",
+    "line": 21,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_breathing"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_breathing.py",
+    "testFunction": "test_print_help",
+    "subScenarioName": "print help",
+    "line": 33,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_print_help"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_breathing.py",
+    "testFunction": "test_wrong_argument",
+    "subScenarioName": "wrong argument",
+    "line": 43,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_wrong_argument"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_cslfile.py",
+    "testFunction": "test_short_result",
+    "subScenarioName": "short result",
+    "line": 33,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_short_result"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_cslfile.py",
+    "testFunction": "test_short_json",
+    "subScenarioName": "short json",
+    "line": 54,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_short_json"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_cslfile.py",
+    "testFunction": "test_detail_result",
+    "subScenarioName": "detail result",
+    "line": 72,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_detail_result"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_cslfile.py",
+    "testFunction": "test_detail_json",
+    "subScenarioName": "detail json",
+    "line": 86,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_detail_json"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_cslfile.py",
+    "testFunction": "test_summary_result",
+    "subScenarioName": "summary result",
+    "line": 110,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_summary_result"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_cslfile.py",
+    "testFunction": "test_summary_json",
+    "subScenarioName": "summary json",
+    "line": 124,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_summary_json"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_cslfile.py",
+    "testFunction": "test_search_range",
+    "subScenarioName": "search range",
+    "line": 150,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_search_range"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_cslfile.py",
+    "testFunction": "test_search_offset",
+    "subScenarioName": "search offset",
+    "line": 212,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_search_offset"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_cslfile.py",
+    "testFunction": "test_search_seqnum",
+    "subScenarioName": "search seqnum",
+    "line": 252,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_search_seqnum"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_journalfile.py",
+    "testFunction": "test_short_result",
+    "subScenarioName": "short result",
+    "line": 29,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_short_result"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_journalfile.py",
+    "testFunction": "test_short_json",
+    "subScenarioName": "short json",
+    "line": 60,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_short_json"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_journalfile.py",
+    "testFunction": "test_detail_result",
+    "subScenarioName": "detail result",
+    "line": 85,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_detail_result"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_journalfile.py",
+    "testFunction": "test_detail_json",
+    "subScenarioName": "detail json",
+    "line": 121,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_detail_json"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_journalfile.py",
+    "testFunction": "test_payload_dump",
+    "subScenarioName": "payload dump",
+    "line": 147,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_payload_dump"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_journalfile.py",
+    "testFunction": "test_summary_result",
+    "subScenarioName": "summary result",
+    "line": 195,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_summary_result"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_journalfile.py",
+    "testFunction": "test_summary_result_with_queue_info",
+    "subScenarioName": "summary result with queue info",
+    "line": 216,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_summary_result_with_queue_info"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_journalfile.py",
+    "testFunction": "test_summary_with_queue_info_json",
+    "subScenarioName": "summary with queue info json",
+    "line": 241,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_summary_with_queue_info_json"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_journalfile.py",
+    "testFunction": "test_confirmed_outstanding_result",
+    "subScenarioName": "confirmed outstanding result",
+    "line": 278,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_confirmed_outstanding_result"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_journalfile.py",
+    "testFunction": "test_queueop_result",
+    "subScenarioName": "queueop result",
+    "line": 303,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_queueop_result"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_journalfile.py",
+    "testFunction": "test_journalop_result",
+    "subScenarioName": "journalop result",
+    "line": 316,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_journalop_result"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_journalfile.py",
+    "testFunction": "test_queueop_journalop_json",
+    "subScenarioName": "queueop journalop json",
+    "line": 329,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_queueop_journalop_json"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_journalfile.py",
+    "testFunction": "test_queueop_journalop_summary_result",
+    "subScenarioName": "queueop journalop summary result",
+    "line": 353,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_queueop_journalop_summary_result"
+  },
+  {
+    "filePath": "src/applications/bmqstoragetool/integration-tests/test_journalfile.py",
+    "testFunction": "test_queueop_journalop_summary_json",
+    "subScenarioName": "queueop journalop summary json",
+    "line": 375,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_queueop_journalop_summary_json"
+  },
+  {
+    "filePath": "src/fuzz-tests/test_fuzz.py",
+    "testFunction": "test_fuzz_request",
+    "subScenarioName": "fuzz request",
+    "line": 44,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_fuzz_request"
+  },
+  {
+    "filePath": "src/fuzz-tests/test_fuzz.py",
+    "testFunction": "test_fuzz_properties",
+    "subScenarioName": "fuzz properties",
+    "line": 49,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_fuzz_properties"
+  },
+  {
+    "filePath": "src/integration-tests/test_admin_client.py",
+    "testFunction": "test_breathing",
+    "subScenarioName": "breathing",
+    "line": 136,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_breathing"
+  },
+  {
+    "filePath": "src/integration-tests/test_admin_client.py",
+    "testFunction": "test_queue_stats",
+    "subScenarioName": "queue stats",
+    "line": 177,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_queue_stats"
+  },
+  {
+    "filePath": "src/integration-tests/test_admin_client.py",
+    "testFunction": "test_app_id_stats",
+    "subScenarioName": "app id stats",
+    "line": 312,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_app_id_stats"
+  },
+  {
+    "filePath": "src/integration-tests/test_admin_client.py",
+    "testFunction": "test_admin_encoding",
+    "subScenarioName": "admin encoding",
+    "line": 427,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_admin_encoding"
+  },
+  {
+    "filePath": "src/integration-tests/test_admin_client.py",
+    "testFunction": "test_purge_breathing",
+    "subScenarioName": "purge breathing",
+    "line": 518,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_purge_breathing"
+  },
+  {
+    "filePath": "src/integration-tests/test_admin_client.py",
+    "testFunction": "test_purge_inactive",
+    "subScenarioName": "purge inactive",
+    "line": 621,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_purge_inactive"
+  },
+  {
+    "filePath": "src/integration-tests/test_admin_client.py",
+    "testFunction": "test_commands_on_non_existing_domain",
+    "subScenarioName": "commands on non existing domain",
+    "line": 779,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_commands_on_non_existing_domain"
+  },
+  {
+    "filePath": "src/integration-tests/test_admin_command_routing.py",
+    "testFunction": "test_primary_rerouting",
+    "subScenarioName": "primary rerouting",
+    "line": 35,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_primary_rerouting"
+  },
+  {
+    "filePath": "src/integration-tests/test_admin_command_routing.py",
+    "testFunction": "test_cluster_rerouting",
+    "subScenarioName": "cluster rerouting",
+    "line": 118,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_cluster_rerouting"
+  },
+  {
+    "filePath": "src/integration-tests/test_admin_command_routing.py",
+    "testFunction": "test_multi_response_encoding",
+    "subScenarioName": "multi response encoding",
+    "line": 193,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_multi_response_encoding"
+  },
+  {
+    "filePath": "src/integration-tests/test_admin_command_routing.py",
+    "testFunction": "test_concurrently_routed_commands",
+    "subScenarioName": "concurrently routed commands",
+    "line": 271,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_concurrently_routed_commands"
+  },
+  {
+    "filePath": "src/integration-tests/test_admin_res_log.py",
+    "testFunction": "test_adminsession_res_log_stat",
+    "subScenarioName": "adminsession res log stat",
+    "line": 32,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_adminsession_res_log_stat"
+  },
+  {
+    "filePath": "src/integration-tests/test_admin_res_log.py",
+    "testFunction": "test_adminsession_res_log_purge",
+    "subScenarioName": "adminsession res log purge",
+    "line": 73,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_adminsession_res_log_purge"
+  },
+  {
+    "filePath": "src/integration-tests/test_admin_res_log.py",
+    "testFunction": "test_adminsession_res_log_reconfigure",
+    "subScenarioName": "adminsession res log reconfigure",
+    "line": 118,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_adminsession_res_log_reconfigure"
+  },
+  {
+    "filePath": "src/integration-tests/test_alarms.py",
+    "testFunction": "test_no_alarms_if_disabled",
+    "subScenarioName": "no alarms if disabled",
+    "line": 35,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_no_alarms_if_disabled"
+  },
+  {
+    "filePath": "src/integration-tests/test_alarms.py",
+    "testFunction": "test_broadcast_no_alarms",
+    "subScenarioName": "broadcast no alarms",
+    "line": 56,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_broadcast_no_alarms"
+  },
+  {
+    "filePath": "src/integration-tests/test_alarms.py",
+    "testFunction": "test_priority_no_alarms_for_a_slow_queue",
+    "subScenarioName": "priority no alarms for a slow queue",
+    "line": 80,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_priority_no_alarms_for_a_slow_queue"
+  },
+  {
+    "filePath": "src/integration-tests/test_alarms.py",
+    "testFunction": "test_priority_transition_active_alarm_active",
+    "subScenarioName": "priority transition active alarm active",
+    "line": 117,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_priority_transition_active_alarm_active"
+  },
+  {
+    "filePath": "src/integration-tests/test_alarms.py",
+    "testFunction": "test_priority_alarm_when_consumer_dropped",
+    "subScenarioName": "priority alarm when consumer dropped",
+    "line": 159,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_priority_alarm_when_consumer_dropped"
+  },
+  {
+    "filePath": "src/integration-tests/test_alarms.py",
+    "testFunction": "test_priority_enable_disable_alarm",
+    "subScenarioName": "priority enable disable alarm",
+    "line": 189,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_priority_enable_disable_alarm"
+  },
+  {
+    "filePath": "src/integration-tests/test_alarms.py",
+    "testFunction": "test_priority_reconfigure_max_idle_time",
+    "subScenarioName": "priority reconfigure max idle time",
+    "line": 232,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_priority_reconfigure_max_idle_time"
+  },
+  {
+    "filePath": "src/integration-tests/test_alarms.py",
+    "testFunction": "test_priority_alarms_subscription_mismatch",
+    "subScenarioName": "priority alarms subscription mismatch",
+    "line": 288,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_priority_alarms_subscription_mismatch"
+  },
+  {
+    "filePath": "src/integration-tests/test_alarms.py",
+    "testFunction": "test_fanout_no_alarms_for_a_slow_queue",
+    "subScenarioName": "fanout no alarms for a slow queue",
+    "line": 334,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_fanout_no_alarms_for_a_slow_queue"
+  },
+  {
+    "filePath": "src/integration-tests/test_alarms.py",
+    "testFunction": "test_fanout_transition_active_alarm_active",
+    "subScenarioName": "fanout transition active alarm active",
+    "line": 382,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_fanout_transition_active_alarm_active"
+  },
+  {
+    "filePath": "src/integration-tests/test_alarms.py",
+    "testFunction": "test_fanout_alarms_subscription_mismatch",
+    "subScenarioName": "fanout alarms subscription mismatch",
+    "line": 440,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_fanout_alarms_subscription_mismatch"
+  },
+  {
+    "filePath": "src/integration-tests/test_alarms.py",
+    "testFunction": "test_capacity_alarm_subscription_mismatch",
+    "subScenarioName": "capacity alarm subscription mismatch",
+    "line": 497,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_capacity_alarm_subscription_mismatch"
+  },
+  {
+    "filePath": "src/integration-tests/test_app_subscriptions.py",
+    "testFunction": "test_app_subscription_fanout",
+    "subScenarioName": "app subscription fanout",
+    "line": 72,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_app_subscription_fanout"
+  },
+  {
+    "filePath": "src/integration-tests/test_app_subscriptions.py",
+    "testFunction": "test_app_subscription_priority",
+    "subScenarioName": "app subscription priority",
+    "line": 159,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_app_subscription_priority"
+  },
+  {
+    "filePath": "src/integration-tests/test_app_subscriptions.py",
+    "testFunction": "test_app_subscription_with_consumer_subscription",
+    "subScenarioName": "app subscription with consumer subscription",
+    "line": 220,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_app_subscription_with_consumer_subscription"
+  },
+  {
+    "filePath": "src/integration-tests/test_app_subscriptions.py",
+    "testFunction": "test_app_subscription_broadcast",
+    "subScenarioName": "app subscription broadcast",
+    "line": 341,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_app_subscription_broadcast"
+  },
+  {
+    "filePath": "src/integration-tests/test_app_subscriptions.py",
+    "testFunction": "test_app_subscription_fanout_all_negative",
+    "subScenarioName": "app subscription fanout all negative",
+    "line": 391,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_app_subscription_fanout_all_negative"
+  },
+  {
+    "filePath": "src/integration-tests/test_app_subscriptions.py",
+    "testFunction": "test_invalid_configuration",
+    "subScenarioName": "invalid configuration",
+    "line": 500,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_invalid_configuration"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_open_alarm_authorize_post",
+    "subScenarioName": "open alarm authorize post",
+    "line": 38,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_open_alarm_authorize_post"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_create_authorize_open_post",
+    "subScenarioName": "create authorize open post",
+    "line": 158,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_create_authorize_open_post"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_load_domain_authorize_open_post",
+    "subScenarioName": "load domain authorize open post",
+    "line": 186,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_load_domain_authorize_open_post"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_unregister_in_presence_of_queues",
+    "subScenarioName": "unregister in presence of queues",
+    "line": 253,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_unregister_in_presence_of_queues"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_dynamic_twice_alarm_once",
+    "subScenarioName": "dynamic twice alarm once",
+    "line": 336,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_dynamic_twice_alarm_once"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_unauthorized_appid_doesnt_hold_messages",
+    "subScenarioName": "unauthorized appid doesnt hold messages",
+    "line": 382,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_unauthorized_appid_doesnt_hold_messages"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_deauthorized_appid_doesnt_hold_messages",
+    "subScenarioName": "deauthorized appid doesnt hold messages",
+    "line": 432,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_deauthorized_appid_doesnt_hold_messages"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_unauthorization",
+    "subScenarioName": "unauthorization",
+    "line": 485,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_unauthorization"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_two_consumers_of_unauthorized_app",
+    "subScenarioName": "two consumers of unauthorized app",
+    "line": 517,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_two_consumers_of_unauthorized_app"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_open_authorize_restart_from_non_FSM_to_FSM",
+    "subScenarioName": "open authorize restart from non FSM to FSM",
+    "line": 554,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_open_authorize_restart_from_non_FSM_to_FSM"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_csl_repair_after_stop",
+    "subScenarioName": "csl repair after stop",
+    "line": 660,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_csl_repair_after_stop"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_open_authorize_change_primary",
+    "subScenarioName": "open authorize change primary",
+    "line": 693,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_open_authorize_change_primary"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_old_data_new_app",
+    "subScenarioName": "old data new app",
+    "line": 753,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_old_data_new_app"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_proxy_partial_push",
+    "subScenarioName": "proxy partial push",
+    "line": 925,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_proxy_partial_push"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_gc_old_data_new_app",
+    "subScenarioName": "gc old data new app",
+    "line": 962,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_gc_old_data_new_app"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_new_app_after_restart",
+    "subScenarioName": "new app after restart",
+    "line": 1018,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_new_app_after_restart"
+  },
+  {
+    "filePath": "src/integration-tests/test_appids.py",
+    "testFunction": "test_add_remove_add_app",
+    "subScenarioName": "add remove add app",
+    "line": 1077,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_add_remove_add_app"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_authenticate_basic_success",
+    "subScenarioName": "authenticate basic success",
+    "line": 66,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_authenticate_basic_success"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_authenticate_basic_failure",
+    "subScenarioName": "authenticate basic failure",
+    "line": 95,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_authenticate_basic_failure"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_authenticate_concurrent",
+    "subScenarioName": "authenticate concurrent",
+    "line": 129,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_authenticate_concurrent"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_reauthenticate_success",
+    "subScenarioName": "reauthenticate success",
+    "line": 173,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reauthenticate_success"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_reauthenticate_failure",
+    "subScenarioName": "reauthenticate failure",
+    "line": 208,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reauthenticate_failure"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_reauthenticate_mechanism_mismatch",
+    "subScenarioName": "reauthenticate mechanism mismatch",
+    "line": 251,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reauthenticate_mechanism_mismatch"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_reauthenticate_principal_change",
+    "subScenarioName": "reauthenticate principal change",
+    "line": 293,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reauthenticate_principal_change"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_default_anonymous_single_node",
+    "subScenarioName": "default anonymous single node",
+    "line": 330,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_default_anonymous_single_node"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_default_anonymous_multi_node",
+    "subScenarioName": "default anonymous multi node",
+    "line": 345,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_default_anonymous_multi_node"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_empty_authenticators_reject_basic",
+    "subScenarioName": "empty authenticators reject basic",
+    "line": 359,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_empty_authenticators_reject_basic"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_anonymous_disallowed",
+    "subScenarioName": "anonymous disallowed",
+    "line": 380,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_anonymous_disallowed"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_anonymous_credential_invalid",
+    "subScenarioName": "anonymous credential invalid",
+    "line": 410,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_anonymous_credential_invalid"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_anonymous_credential_mechanism_match",
+    "subScenarioName": "anonymous credential mechanism match",
+    "line": 440,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_anonymous_credential_mechanism_match"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_anon_fail_authenticator",
+    "subScenarioName": "anon fail authenticator",
+    "line": 482,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_anon_fail_authenticator"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_basic_auth_allows_anonymous",
+    "subScenarioName": "basic auth allows anonymous",
+    "line": 517,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_basic_auth_allows_anonymous"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_basic_auth_rejects_other_mechanisms",
+    "subScenarioName": "basic auth rejects other mechanisms",
+    "line": 556,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_basic_auth_rejects_other_mechanisms"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_basic_with_anonymous_disallowed",
+    "subScenarioName": "basic with anonymous disallowed",
+    "line": 584,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_basic_with_anonymous_disallowed"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_mechanism_case_insensitive",
+    "subScenarioName": "mechanism case insensitive",
+    "line": 619,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_mechanism_case_insensitive"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_admin_with_default_anonymous",
+    "subScenarioName": "admin with default anonymous",
+    "line": 657,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_admin_with_default_anonymous"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_duplicate_mechanism_fails_startup",
+    "subScenarioName": "duplicate mechanism fails startup",
+    "line": 714,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_duplicate_mechanism_fails_startup"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_mismatched_anonymous_credential_fails_startup",
+    "subScenarioName": "mismatched anonymous credential fails startup",
+    "line": 747,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_mismatched_anonymous_credential_fails_startup"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_custom_anonymous_without_credential_fails_startup",
+    "subScenarioName": "custom anonymous without credential fails startup",
+    "line": 769,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_custom_anonymous_without_credential_fails_startup"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_authenticate_with_delay",
+    "subScenarioName": "authenticate with delay",
+    "line": 800,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_authenticate_with_delay"
+  },
+  {
+    "filePath": "src/integration-tests/test_authn.py",
+    "testFunction": "test_authenticate_client_disconnect_during_auth",
+    "subScenarioName": "authenticate client disconnect during auth",
+    "line": 831,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_authenticate_client_disconnect_during_auth"
+  },
+  {
+    "filePath": "src/integration-tests/test_breathing.py",
+    "testFunction": "test_open_queue",
+    "subScenarioName": "open queue",
+    "line": 200,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_open_queue"
+  },
+  {
+    "filePath": "src/integration-tests/test_breathing.py",
+    "testFunction": "test_client_user_agent",
+    "subScenarioName": "client user agent",
+    "line": 216,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_client_user_agent"
+  },
+  {
+    "filePath": "src/integration-tests/test_breathing.py",
+    "testFunction": "test_broker_user_agent",
+    "subScenarioName": "broker user agent",
+    "line": 232,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_broker_user_agent"
+  },
+  {
+    "filePath": "src/integration-tests/test_breathing.py",
+    "testFunction": "test_verify_priority",
+    "subScenarioName": "verify priority",
+    "line": 242,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_verify_priority"
+  },
+  {
+    "filePath": "src/integration-tests/test_breathing.py",
+    "testFunction": "test_verify_fanout",
+    "subScenarioName": "verify fanout",
+    "line": 376,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_verify_fanout"
+  },
+  {
+    "filePath": "src/integration-tests/test_breathing.py",
+    "testFunction": "test_verify_broadcast",
+    "subScenarioName": "verify broadcast",
+    "line": 502,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_verify_broadcast"
+  },
+  {
+    "filePath": "src/integration-tests/test_breathing.py",
+    "testFunction": "test_verify_redelivery",
+    "subScenarioName": "verify redelivery",
+    "line": 565,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_verify_redelivery"
+  },
+  {
+    "filePath": "src/integration-tests/test_breathing.py",
+    "testFunction": "test_verify_priority_queue_redelivery",
+    "subScenarioName": "verify priority queue redelivery",
+    "line": 629,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_verify_priority_queue_redelivery"
+  },
+  {
+    "filePath": "src/integration-tests/test_breathing.py",
+    "testFunction": "test_verify_partial_close",
+    "subScenarioName": "verify partial close",
+    "line": 677,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_verify_partial_close"
+  },
+  {
+    "filePath": "src/integration-tests/test_breathing.py",
+    "testFunction": "test_multi_interface_connect",
+    "subScenarioName": "multi interface connect",
+    "line": 709,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_multi_interface_connect"
+  },
+  {
+    "filePath": "src/integration-tests/test_breathing.py",
+    "testFunction": "test_multi_interface_share_queues",
+    "subScenarioName": "multi interface share queues",
+    "line": 736,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_multi_interface_share_queues"
+  },
+  {
+    "filePath": "src/integration-tests/test_breathing.py",
+    "testFunction": "test_command_timeout",
+    "subScenarioName": "command timeout",
+    "line": 765,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_command_timeout"
+  },
+  {
+    "filePath": "src/integration-tests/test_breathing.py",
+    "testFunction": "test_queue_purge_command",
+    "subScenarioName": "queue purge command",
+    "line": 790,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_queue_purge_command"
+  },
+  {
+    "filePath": "src/integration-tests/test_breathing.py",
+    "testFunction": "test_wrong_domain",
+    "subScenarioName": "wrong domain",
+    "line": 862,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_wrong_domain"
+  },
+  {
+    "filePath": "src/integration-tests/test_breathing.py",
+    "testFunction": "test_message_properties",
+    "subScenarioName": "message properties",
+    "line": 882,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_message_properties"
+  },
+  {
+    "filePath": "src/integration-tests/test_broadcast.py",
+    "testFunction": "test_breathing",
+    "subScenarioName": "breathing",
+    "line": 30,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_breathing"
+  },
+  {
+    "filePath": "src/integration-tests/test_broadcast.py",
+    "testFunction": "test_multi_consumers",
+    "subScenarioName": "multi consumers",
+    "line": 58,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_multi_consumers"
+  },
+  {
+    "filePath": "src/integration-tests/test_broadcast.py",
+    "testFunction": "test_multi_producers_consumers",
+    "subScenarioName": "multi producers consumers",
+    "line": 82,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_multi_producers_consumers"
+  },
+  {
+    "filePath": "src/integration-tests/test_broadcast.py",
+    "testFunction": "test_resubscribe",
+    "subScenarioName": "resubscribe",
+    "line": 115,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_resubscribe"
+  },
+  {
+    "filePath": "src/integration-tests/test_broadcast.py",
+    "testFunction": "test_add_consumers",
+    "subScenarioName": "add consumers",
+    "line": 155,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_add_consumers"
+  },
+  {
+    "filePath": "src/integration-tests/test_broadcast.py",
+    "testFunction": "test_dynamic_priorities",
+    "subScenarioName": "dynamic priorities",
+    "line": 199,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_dynamic_priorities"
+  },
+  {
+    "filePath": "src/integration-tests/test_broadcast.py",
+    "testFunction": "test_priority_failover",
+    "subScenarioName": "priority failover",
+    "line": 280,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_priority_failover"
+  },
+  {
+    "filePath": "src/integration-tests/test_broadcast.py",
+    "testFunction": "test_add_variable_priority_consumers",
+    "subScenarioName": "add variable priority consumers",
+    "line": 336,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_add_variable_priority_consumers"
+  },
+  {
+    "filePath": "src/integration-tests/test_broadcast.py",
+    "testFunction": "test_ttl_zero_delivers_to_subscribed_consumer",
+    "subScenarioName": "ttl zero delivers to subscribed consumer",
+    "line": 438,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_ttl_zero_delivers_to_subscribed_consumer"
+  },
+  {
+    "filePath": "src/integration-tests/test_client_timeout.py",
+    "testFunction": "test_client_timeout_open",
+    "subScenarioName": "client timeout open",
+    "line": 28,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_client_timeout_open"
+  },
+  {
+    "filePath": "src/integration-tests/test_client_timeout.py",
+    "testFunction": "test_client_timeout_reopen",
+    "subScenarioName": "client timeout reopen",
+    "line": 82,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_client_timeout_reopen"
+  },
+  {
+    "filePath": "src/integration-tests/test_client_timeout.py",
+    "testFunction": "test_client_timeout_close",
+    "subScenarioName": "client timeout close",
+    "line": 145,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_client_timeout_close"
+  },
+  {
+    "filePath": "src/integration-tests/test_cluster_node_shutdown.py",
+    "testFunction": "test_primary_shutdown_with_proxy",
+    "subScenarioName": "primary shutdown with proxy",
+    "line": 94,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_primary_shutdown_with_proxy"
+  },
+  {
+    "filePath": "src/integration-tests/test_cluster_node_shutdown.py",
+    "testFunction": "test_replica_shutdown_with_proxy",
+    "subScenarioName": "replica shutdown with proxy",
+    "line": 102,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_replica_shutdown_with_proxy"
+  },
+  {
+    "filePath": "src/integration-tests/test_cluster_node_shutdown.py",
+    "testFunction": "test_open_queue_while_cluster_blips_quorum",
+    "subScenarioName": "open queue while cluster blips quorum",
+    "line": 200,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_open_queue_while_cluster_blips_quorum"
+  },
+  {
+    "filePath": "src/integration-tests/test_cluster_node_shutdown.py",
+    "testFunction": "test_open_queue_while_cluster_blips_quorum_leader_change",
+    "subScenarioName": "open queue while cluster blips quorum leader change",
+    "line": 265,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_open_queue_while_cluster_blips_quorum_leader_change"
+  },
+  {
+    "filePath": "src/integration-tests/test_cluster_node_shutdown.py",
+    "testFunction": "test_open_queue_while_cluster_blips_quorum_and_kill_all_non_leader",
+    "subScenarioName": "open queue while cluster blips quorum and kill all non leader",
+    "line": 351,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_open_queue_while_cluster_blips_quorum_and_kill_all_non_leader"
+  },
+  {
+    "filePath": "src/integration-tests/test_cluster_node_shutdown.py",
+    "testFunction": "test_open_queue_after_quorum_bump_up",
+    "subScenarioName": "open queue after quorum bump up",
+    "line": 406,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_open_queue_after_quorum_bump_up"
+  },
+  {
+    "filePath": "src/integration-tests/test_compression.py",
+    "testFunction": "test_compression_restart",
+    "subScenarioName": "compression restart",
+    "line": 32,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_compression_restart"
+  },
+  {
+    "filePath": "src/integration-tests/test_confirm_after_killing_primary.py",
+    "testFunction": "test_confirm_after_killing_primary",
+    "subScenarioName": "confirm after killing primary",
+    "line": 30,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_confirm_after_killing_primary"
+  },
+  {
+    "filePath": "src/integration-tests/test_confirms_buffering.py",
+    "testFunction": "test_kill_primary_confirm_puts_close_app_start_primary",
+    "subScenarioName": "kill primary confirm puts close app start primary",
+    "line": 56,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_kill_primary_confirm_puts_close_app_start_primary"
+  },
+  {
+    "filePath": "src/integration-tests/test_connection_loss.py",
+    "testFunction": "test_broker_client",
+    "subScenarioName": "broker client",
+    "line": 45,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_broker_client"
+  },
+  {
+    "filePath": "src/integration-tests/test_connection_loss.py",
+    "testFunction": "test_force_leader_primary_divergence",
+    "subScenarioName": "force leader primary divergence",
+    "line": 91,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_force_leader_primary_divergence"
+  },
+  {
+    "filePath": "src/integration-tests/test_create_new_domain.py",
+    "testFunction": "test_deploy_new_domain_existing_cluster",
+    "subScenarioName": "deploy new domain existing cluster",
+    "line": 29,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_deploy_new_domain_existing_cluster"
+  },
+  {
+    "filePath": "src/integration-tests/test_create_new_domain.py",
+    "testFunction": "test_deploy_new_domain_new_cluster",
+    "subScenarioName": "deploy new domain new cluster",
+    "line": 48,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_deploy_new_domain_new_cluster"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_remove_domain_when_cluster_unhealthy",
+    "subScenarioName": "remove domain when cluster unhealthy",
+    "line": 48,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_remove_domain_when_cluster_unhealthy"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_remove_different_domain",
+    "subScenarioName": "remove different domain",
+    "line": 102,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_remove_different_domain"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_open_queue_after_remove_domain",
+    "subScenarioName": "open queue after remove domain",
+    "line": 166,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_open_queue_after_remove_domain"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_remove_domain_with_producer_queue_open",
+    "subScenarioName": "remove domain with producer queue open",
+    "line": 208,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_remove_domain_with_producer_queue_open"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_remove_domain_with_consumer_queue_open",
+    "subScenarioName": "remove domain with consumer queue open",
+    "line": 250,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_remove_domain_with_consumer_queue_open"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_remove_domain_with_both_queue_open_and_closed",
+    "subScenarioName": "remove domain with both queue open and closed",
+    "line": 292,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_remove_domain_with_both_queue_open_and_closed"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_try_open_removed_domain",
+    "subScenarioName": "try open removed domain",
+    "line": 339,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_try_open_removed_domain"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_remove_domain_with_unconfirmed_message",
+    "subScenarioName": "remove domain with unconfirmed message",
+    "line": 390,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_remove_domain_with_unconfirmed_message"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_remove_domain_not_on_disk",
+    "subScenarioName": "remove domain not on disk",
+    "line": 425,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_remove_domain_not_on_disk"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_remove_domain_on_disk_not_in_cache",
+    "subScenarioName": "remove domain on disk not in cache",
+    "line": 443,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_remove_domain_on_disk_not_in_cache"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_send_to_replicas",
+    "subScenarioName": "send to replicas",
+    "line": 461,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_send_to_replicas"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_second_round",
+    "subScenarioName": "second round",
+    "line": 516,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_second_round"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_purge_then_remove",
+    "subScenarioName": "purge then remove",
+    "line": 583,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_purge_then_remove"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_remove_without_connection",
+    "subScenarioName": "remove without connection",
+    "line": 610,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_remove_without_connection"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_remove_then_restart",
+    "subScenarioName": "remove then restart",
+    "line": 636,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_remove_then_restart"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_remove_with_reconfig",
+    "subScenarioName": "remove with reconfig",
+    "line": 707,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_remove_with_reconfig"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_remove_cache_remains",
+    "subScenarioName": "remove cache remains",
+    "line": 767,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_remove_cache_remains"
+  },
+  {
+    "filePath": "src/integration-tests/test_domain_remove.py",
+    "testFunction": "test_remove_cache_cleaned",
+    "subScenarioName": "remove cache cleaned",
+    "line": 815,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_remove_cache_cleaned"
+  },
+  {
+    "filePath": "src/integration-tests/test_fanout_priorities.py",
+    "testFunction": "test_fanout_priorities",
+    "subScenarioName": "fanout priorities",
+    "line": 32,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_fanout_priorities"
+  },
+  {
+    "filePath": "src/integration-tests/test_fsm_partition_sync.py",
+    "testFunction": "test_sync_after_missed_rollover",
+    "subScenarioName": "sync after missed rollover",
+    "line": 42,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_sync_after_missed_rollover"
+  },
+  {
+    "filePath": "src/integration-tests/test_fsm_partition_sync.py",
+    "testFunction": "test_sync_after_missed_rollover_after_restart",
+    "subScenarioName": "sync after missed rollover after restart",
+    "line": 115,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_sync_after_missed_rollover_after_restart"
+  },
+  {
+    "filePath": "src/integration-tests/test_fsm_partition_sync.py",
+    "testFunction": "test_sync_after_missed_records",
+    "subScenarioName": "sync after missed records",
+    "line": 222,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_sync_after_missed_records"
+  },
+  {
+    "filePath": "src/integration-tests/test_fsm_partition_sync.py",
+    "testFunction": "test_sync_if_leader_missed_records",
+    "subScenarioName": "sync if leader missed records",
+    "line": 281,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_sync_if_leader_missed_records"
+  },
+  {
+    "filePath": "src/integration-tests/test_fsm_partition_sync.py",
+    "testFunction": "test_sync_if_leader_missed_rollover",
+    "subScenarioName": "sync if leader missed rollover",
+    "line": 359,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_sync_if_leader_missed_rollover"
+  },
+  {
+    "filePath": "src/integration-tests/test_fsm_partition_sync.py",
+    "testFunction": "test_sync_after_replicas_missed_various_records",
+    "subScenarioName": "sync after replicas missed various records",
+    "line": 446,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_sync_after_replicas_missed_various_records"
+  },
+  {
+    "filePath": "src/integration-tests/test_fsm_partition_sync.py",
+    "testFunction": "test_sync_after_replicas_missed_or_extra_records",
+    "subScenarioName": "sync after replicas missed or extra records",
+    "line": 539,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_sync_after_replicas_missed_or_extra_records"
+  },
+  {
+    "filePath": "src/integration-tests/test_fsm_partition_sync.py",
+    "testFunction": "test_sync_after_primary_extra_records",
+    "subScenarioName": "sync after primary extra records",
+    "line": 638,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_sync_after_primary_extra_records"
+  },
+  {
+    "filePath": "src/integration-tests/test_graceful_shutdown.py",
+    "testFunction": "test_shutting_down_primary",
+    "subScenarioName": "shutting down primary",
+    "line": 227,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_shutting_down_primary"
+  },
+  {
+    "filePath": "src/integration-tests/test_graceful_shutdown.py",
+    "testFunction": "test_shutting_down_replica",
+    "subScenarioName": "shutting down replica",
+    "line": 236,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_shutting_down_replica"
+  },
+  {
+    "filePath": "src/integration-tests/test_graceful_shutdown.py",
+    "testFunction": "test_wait_unconfirmed_proxy",
+    "subScenarioName": "wait unconfirmed proxy",
+    "line": 246,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_wait_unconfirmed_proxy"
+  },
+  {
+    "filePath": "src/integration-tests/test_graceful_shutdown.py",
+    "testFunction": "test_wait_unconfirmed_replica",
+    "subScenarioName": "wait unconfirmed replica",
+    "line": 256,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_wait_unconfirmed_replica"
+  },
+  {
+    "filePath": "src/integration-tests/test_graceful_shutdown.py",
+    "testFunction": "test_give_up_unconfirmed",
+    "subScenarioName": "give up unconfirmed",
+    "line": 266,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_give_up_unconfirmed"
+  },
+  {
+    "filePath": "src/integration-tests/test_graceful_shutdown.py",
+    "testFunction": "test_multiple_stop_requests",
+    "subScenarioName": "multiple stop requests",
+    "line": 303,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_multiple_stop_requests"
+  },
+  {
+    "filePath": "src/integration-tests/test_graceful_shutdown.py",
+    "testFunction": "test_active_node_shutdown_timeout",
+    "subScenarioName": "active node shutdown timeout",
+    "line": 338,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_active_node_shutdown_timeout"
+  },
+  {
+    "filePath": "src/integration-tests/test_heartbeat.py",
+    "testFunction": "test_dead_leader",
+    "subScenarioName": "dead leader",
+    "line": 58,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_dead_leader"
+  },
+  {
+    "filePath": "src/integration-tests/test_heartbeat.py",
+    "testFunction": "test_dead_proxy",
+    "subScenarioName": "dead proxy",
+    "line": 128,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_dead_proxy"
+  },
+  {
+    "filePath": "src/integration-tests/test_heartbeat.py",
+    "testFunction": "test_dead_replica",
+    "subScenarioName": "dead replica",
+    "line": 185,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_dead_replica"
+  },
+  {
+    "filePath": "src/integration-tests/test_journal_full_recovery.py",
+    "testFunction": "test_journal_full_purge_recovery",
+    "subScenarioName": "journal full purge recovery",
+    "line": 40,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_journal_full_purge_recovery"
+  },
+  {
+    "filePath": "src/integration-tests/test_leader_node_delay.py",
+    "testFunction": "test_leader_node_delay",
+    "subScenarioName": "leader node delay",
+    "line": 32,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_leader_node_delay"
+  },
+  {
+    "filePath": "src/integration-tests/test_list_messages.py",
+    "testFunction": "test_list_messages_fanout",
+    "subScenarioName": "list messages fanout",
+    "line": 37,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_list_messages_fanout"
+  },
+  {
+    "filePath": "src/integration-tests/test_list_messages.py",
+    "testFunction": "test_list_messages_priority",
+    "subScenarioName": "list messages priority",
+    "line": 113,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_list_messages_priority"
+  },
+  {
+    "filePath": "src/integration-tests/test_maxqueues.py",
+    "testFunction": "test_max_queue",
+    "subScenarioName": "max queue",
+    "line": 45,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_max_queue"
+  },
+  {
+    "filePath": "src/integration-tests/test_maxqueues.py",
+    "testFunction": "test_max_queue_restore",
+    "subScenarioName": "max queue restore",
+    "line": 147,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_max_queue_restore"
+  },
+  {
+    "filePath": "src/integration-tests/test_maxunconfirmed.py",
+    "testFunction": "test_maxunconfirmed",
+    "subScenarioName": "maxunconfirmed",
+    "line": 54,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_maxunconfirmed"
+  },
+  {
+    "filePath": "src/integration-tests/test_maxunconfirmed.py",
+    "testFunction": "test_stuck_downstream",
+    "subScenarioName": "stuck downstream",
+    "line": 101,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_stuck_downstream"
+  },
+  {
+    "filePath": "src/integration-tests/test_poison_messages.py",
+    "testFunction": "test_poison_proxy_and_replica_priority",
+    "subScenarioName": "poison proxy and replica priority",
+    "line": 428,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_poison_proxy_and_replica_priority"
+  },
+  {
+    "filePath": "src/integration-tests/test_poison_messages.py",
+    "testFunction": "test_poison_proxy_and_replica_fanout",
+    "subScenarioName": "poison proxy and replica fanout",
+    "line": 439,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_poison_proxy_and_replica_fanout"
+  },
+  {
+    "filePath": "src/integration-tests/test_poison_messages.py",
+    "testFunction": "test_poison_rda_reset_priority_active",
+    "subScenarioName": "poison rda reset priority active",
+    "line": 454,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_poison_rda_reset_priority_active"
+  },
+  {
+    "filePath": "src/integration-tests/test_poison_messages.py",
+    "testFunction": "test_poison_rda_reset_priority_non_active",
+    "subScenarioName": "poison rda reset priority non active",
+    "line": 470,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_poison_rda_reset_priority_non_active"
+  },
+  {
+    "filePath": "src/integration-tests/test_poison_messages.py",
+    "testFunction": "test_poison_fanout_crash_one_app",
+    "subScenarioName": "poison fanout crash one app",
+    "line": 483,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_poison_fanout_crash_one_app"
+  },
+  {
+    "filePath": "src/integration-tests/test_poison_messages.py",
+    "testFunction": "test_poison_consumer_graceful_shutdown",
+    "subScenarioName": "poison consumer graceful shutdown",
+    "line": 499,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_poison_consumer_graceful_shutdown"
+  },
+  {
+    "filePath": "src/integration-tests/test_poison_messages.py",
+    "testFunction": "test_poison_replica_receives_updated_rda",
+    "subScenarioName": "poison replica receives updated rda",
+    "line": 510,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_poison_replica_receives_updated_rda"
+  },
+  {
+    "filePath": "src/integration-tests/test_poison_messages.py",
+    "testFunction": "test_poison_no_reject_broker_crash",
+    "subScenarioName": "poison no reject broker crash",
+    "line": 522,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_poison_no_reject_broker_crash"
+  },
+  {
+    "filePath": "src/integration-tests/test_poison_messages.py",
+    "testFunction": "test_poison_no_reject_broker_graceful_shutdown",
+    "subScenarioName": "poison no reject broker graceful shutdown",
+    "line": 532,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_poison_no_reject_broker_graceful_shutdown"
+  },
+  {
+    "filePath": "src/integration-tests/test_puts_retransmission.py",
+    "testFunction": "test_shutdown_primary_convert_replica",
+    "subScenarioName": "shutdown primary convert replica",
+    "line": 545,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_shutdown_primary_convert_replica"
+  },
+  {
+    "filePath": "src/integration-tests/test_puts_retransmission.py",
+    "testFunction": "test_shutdown_primary_keep_replica",
+    "subScenarioName": "shutdown primary keep replica",
+    "line": 565,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_shutdown_primary_keep_replica"
+  },
+  {
+    "filePath": "src/integration-tests/test_puts_retransmission.py",
+    "testFunction": "test_shutdown_replica",
+    "subScenarioName": "shutdown replica",
+    "line": 589,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_shutdown_replica"
+  },
+  {
+    "filePath": "src/integration-tests/test_puts_retransmission.py",
+    "testFunction": "test_kill_primary_convert_replica",
+    "subScenarioName": "kill primary convert replica",
+    "line": 607,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_kill_primary_convert_replica"
+  },
+  {
+    "filePath": "src/integration-tests/test_puts_retransmission.py",
+    "testFunction": "test_kill_primary_keep_replica",
+    "subScenarioName": "kill primary keep replica",
+    "line": 626,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_kill_primary_keep_replica"
+  },
+  {
+    "filePath": "src/integration-tests/test_puts_retransmission.py",
+    "testFunction": "test_kill_replica",
+    "subScenarioName": "kill replica",
+    "line": 643,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_kill_replica"
+  },
+  {
+    "filePath": "src/integration-tests/test_puts_retransmission.py",
+    "testFunction": "test_watermarks",
+    "subScenarioName": "watermarks",
+    "line": 655,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_watermarks"
+  },
+  {
+    "filePath": "src/integration-tests/test_puts_retransmission.py",
+    "testFunction": "test_kill_proxy",
+    "subScenarioName": "kill proxy",
+    "line": 677,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_kill_proxy"
+  },
+  {
+    "filePath": "src/integration-tests/test_puts_retransmission.py",
+    "testFunction": "test_shutdown_upstream_proxy",
+    "subScenarioName": "shutdown upstream proxy",
+    "line": 704,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_shutdown_upstream_proxy"
+  },
+  {
+    "filePath": "src/integration-tests/test_queue_close.py",
+    "testFunction": "test_close_queue",
+    "subScenarioName": "close queue",
+    "line": 29,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_close_queue"
+  },
+  {
+    "filePath": "src/integration-tests/test_queue_close.py",
+    "testFunction": "test_close_while_reopening",
+    "subScenarioName": "close while reopening",
+    "line": 52,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_close_while_reopening"
+  },
+  {
+    "filePath": "src/integration-tests/test_queue_close.py",
+    "testFunction": "test_close_open",
+    "subScenarioName": "close open",
+    "line": 117,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_close_open"
+  },
+  {
+    "filePath": "src/integration-tests/test_queue_close.py",
+    "testFunction": "test_close_while_retrying_reopen",
+    "subScenarioName": "close while retrying reopen",
+    "line": 142,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_close_while_retrying_reopen"
+  },
+  {
+    "filePath": "src/integration-tests/test_queue_reopen.py",
+    "testFunction": "test_reopen_empty_queue",
+    "subScenarioName": "reopen empty queue",
+    "line": 29,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reopen_empty_queue"
+  },
+  {
+    "filePath": "src/integration-tests/test_queue_reopen.py",
+    "testFunction": "test_reopen_substream",
+    "subScenarioName": "reopen substream",
+    "line": 68,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reopen_substream"
+  },
+  {
+    "filePath": "src/integration-tests/test_queue_reopen.py",
+    "testFunction": "test_open_queue_after_close_and_failover",
+    "subScenarioName": "open queue after close and failover",
+    "line": 87,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_open_queue_after_close_and_failover"
+  },
+  {
+    "filePath": "src/integration-tests/test_reconfigure_domains.py",
+    "testFunction": "test_reconfigure_domain_message_limits",
+    "subScenarioName": "reconfigure domain message limits",
+    "line": 81,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reconfigure_domain_message_limits"
+  },
+  {
+    "filePath": "src/integration-tests/test_reconfigure_domains.py",
+    "testFunction": "test_reconfigure_queue_message_limits",
+    "subScenarioName": "reconfigure queue message limits",
+    "line": 147,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reconfigure_queue_message_limits"
+  },
+  {
+    "filePath": "src/integration-tests/test_reconfigure_domains.py",
+    "testFunction": "test_reconfigure_with_leader_change",
+    "subScenarioName": "reconfigure with leader change",
+    "line": 183,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reconfigure_with_leader_change"
+  },
+  {
+    "filePath": "src/integration-tests/test_reconfigure_domains.py",
+    "testFunction": "test_reconfigure_max_clients",
+    "subScenarioName": "reconfigure max clients",
+    "line": 223,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reconfigure_max_clients"
+  },
+  {
+    "filePath": "src/integration-tests/test_reconfigure_domains.py",
+    "testFunction": "test_reconfigure_max_queues",
+    "subScenarioName": "reconfigure max queues",
+    "line": 264,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reconfigure_max_queues"
+  },
+  {
+    "filePath": "src/integration-tests/test_reconfigure_domains.py",
+    "testFunction": "test_reconfigure_max_idle_time",
+    "subScenarioName": "reconfigure max idle time",
+    "line": 291,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reconfigure_max_idle_time"
+  },
+  {
+    "filePath": "src/integration-tests/test_reconfigure_domains.py",
+    "testFunction": "test_reconfigure_message_ttl",
+    "subScenarioName": "reconfigure message ttl",
+    "line": 337,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reconfigure_message_ttl"
+  },
+  {
+    "filePath": "src/integration-tests/test_reconfigure_domains.py",
+    "testFunction": "test_reconfigure_max_delivery_attempts",
+    "subScenarioName": "reconfigure max delivery attempts",
+    "line": 377,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reconfigure_max_delivery_attempts"
+  },
+  {
+    "filePath": "src/integration-tests/test_reconfigure_domains.py",
+    "testFunction": "test_reconfigure_max_delivery_attempts_finite",
+    "subScenarioName": "reconfigure max delivery attempts finite",
+    "line": 423,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reconfigure_max_delivery_attempts_finite"
+  },
+  {
+    "filePath": "src/integration-tests/test_reconfigure_domains.py",
+    "testFunction": "test_reconfigure_max_delivery_attempts_on_existing_messages",
+    "subScenarioName": "reconfigure max delivery attempts on existing messages",
+    "line": 476,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reconfigure_max_delivery_attempts_on_existing_messages"
+  },
+  {
+    "filePath": "src/integration-tests/test_redeploy.py",
+    "testFunction": "test_redeploy_basic",
+    "subScenarioName": "redeploy basic",
+    "line": 69,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_redeploy_basic"
+  },
+  {
+    "filePath": "src/integration-tests/test_redeploy.py",
+    "testFunction": "test_redeploy_whole_cluster_restart",
+    "subScenarioName": "redeploy whole cluster restart",
+    "line": 109,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_redeploy_whole_cluster_restart"
+  },
+  {
+    "filePath": "src/integration-tests/test_redeploy.py",
+    "testFunction": "test_redeploy_one_by_one",
+    "subScenarioName": "redeploy one by one",
+    "line": 158,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_redeploy_one_by_one"
+  },
+  {
+    "filePath": "src/integration-tests/test_reopen_queue_failure.py",
+    "testFunction": "test_reopen_queue_failure",
+    "subScenarioName": "reopen queue failure",
+    "line": 32,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reopen_queue_failure"
+  },
+  {
+    "filePath": "src/integration-tests/test_replica_data_request.py",
+    "testFunction": "test_non_primary_replica_data_request_is_refused",
+    "subScenarioName": "non primary replica data request is refused",
+    "line": 191,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_non_primary_replica_data_request_is_refused"
+  },
+  {
+    "filePath": "src/integration-tests/test_replica_data_request.py",
+    "testFunction": "test_replica_data_request_invalid_partition_is_refused",
+    "subScenarioName": "replica data request invalid partition is refused",
+    "line": 238,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_replica_data_request_invalid_partition_is_refused"
+  },
+  {
+    "filePath": "src/integration-tests/test_restart_basic.py",
+    "testFunction": "test_basic",
+    "subScenarioName": "basic",
+    "line": 39,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_basic"
+  },
+  {
+    "filePath": "src/integration-tests/test_restart_basic.py",
+    "testFunction": "test_migrate_domain_to_another_cluster",
+    "subScenarioName": "migrate domain to another cluster",
+    "line": 71,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_migrate_domain_to_another_cluster"
+  },
+  {
+    "filePath": "src/integration-tests/test_restart_between_modes.py",
+    "testFunction": "test_restart_between_Legacy_and_FSM_basic",
+    "subScenarioName": "restart between Legacy and FSM basic",
+    "line": 493,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_restart_between_Legacy_and_FSM_basic"
+  },
+  {
+    "filePath": "src/integration-tests/test_restart_between_modes.py",
+    "testFunction": "test_restart_between_Legacy_and_FSM_unassign_queue",
+    "subScenarioName": "restart between Legacy and FSM unassign queue",
+    "line": 574,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_restart_between_Legacy_and_FSM_unassign_queue"
+  },
+  {
+    "filePath": "src/integration-tests/test_restart_between_modes.py",
+    "testFunction": "test_restart_between_legacy_and_fsm_add_remove_app",
+    "subScenarioName": "restart between legacy and fsm add remove app",
+    "line": 770,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_restart_between_legacy_and_fsm_add_remove_app"
+  },
+  {
+    "filePath": "src/integration-tests/test_restart_between_modes.py",
+    "testFunction": "test_restart_between_legacy_and_fsm_purge_queue_app",
+    "subScenarioName": "restart between legacy and fsm purge queue app",
+    "line": 896,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_restart_between_legacy_and_fsm_purge_queue_app"
+  },
+  {
+    "filePath": "src/integration-tests/test_rollover_csl.py",
+    "testFunction": "test_csl_cleanup",
+    "subScenarioName": "csl cleanup",
+    "line": 39,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_csl_cleanup"
+  },
+  {
+    "filePath": "src/integration-tests/test_rollover_csl.py",
+    "testFunction": "test_rollover_queues_and_apps",
+    "subScenarioName": "rollover queues and apps",
+    "line": 65,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_rollover_queues_and_apps"
+  },
+  {
+    "filePath": "src/integration-tests/test_rollover_journal.py",
+    "testFunction": "test_journal_cleanup",
+    "subScenarioName": "journal cleanup",
+    "line": 37,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_journal_cleanup"
+  },
+  {
+    "filePath": "src/integration-tests/test_rollover_journal.py",
+    "testFunction": "test_rollover_queues_and_apps",
+    "subScenarioName": "rollover queues and apps",
+    "line": 88,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_rollover_queues_and_apps"
+  },
+  {
+    "filePath": "src/integration-tests/test_rollover_journal.py",
+    "testFunction": "test_rollover_replica_rejected",
+    "subScenarioName": "rollover replica rejected",
+    "line": 102,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_rollover_replica_rejected"
+  },
+  {
+    "filePath": "src/integration-tests/test_startup.py",
+    "testFunction": "test_early_assign",
+    "subScenarioName": "early assign",
+    "line": 25,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_early_assign"
+  },
+  {
+    "filePath": "src/integration-tests/test_startup.py",
+    "testFunction": "test_replica_late_join",
+    "subScenarioName": "replica late join",
+    "line": 70,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_replica_late_join"
+  },
+  {
+    "filePath": "src/integration-tests/test_storage_commands.py",
+    "testFunction": "test_command_rollover_partitionid",
+    "subScenarioName": "command rollover partitionid",
+    "line": 28,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_command_rollover_partitionid"
+  },
+  {
+    "filePath": "src/integration-tests/test_storage_commands.py",
+    "testFunction": "test_command_storage_partition_summary_partitionid",
+    "subScenarioName": "command storage partition summary partitionid",
+    "line": 58,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_command_storage_partition_summary_partitionid"
+  },
+  {
+    "filePath": "src/integration-tests/test_strong_consistency.py",
+    "testFunction": "test_suspend_post_resume",
+    "subScenarioName": "suspend post resume",
+    "line": 144,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_suspend_post_resume"
+  },
+  {
+    "filePath": "src/integration-tests/test_strong_consistency.py",
+    "testFunction": "test_kill_post_start",
+    "subScenarioName": "kill post start",
+    "line": 151,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_kill_post_start"
+  },
+  {
+    "filePath": "src/integration-tests/test_strong_consistency.py",
+    "testFunction": "test_strong_consistency_local",
+    "subScenarioName": "strong consistency local",
+    "line": 158,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_strong_consistency_local"
+  },
+  {
+    "filePath": "src/integration-tests/test_strong_consistency.py",
+    "testFunction": "test_timeout_receipt",
+    "subScenarioName": "timeout receipt",
+    "line": 179,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_timeout_receipt"
+  },
+  {
+    "filePath": "src/integration-tests/test_strong_consistency.py",
+    "testFunction": "test_dynamic_replication_factor",
+    "subScenarioName": "dynamic replication factor",
+    "line": 186,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_dynamic_replication_factor"
+  },
+  {
+    "filePath": "src/integration-tests/test_strong_consistency.py",
+    "testFunction": "test_change_consistency",
+    "subScenarioName": "change consistency",
+    "line": 231,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_change_consistency"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_second_configure",
+    "subScenarioName": "second configure",
+    "line": 476,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_second_configure"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_open",
+    "subScenarioName": "open",
+    "line": 510,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_open"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_non_blocking",
+    "subScenarioName": "non blocking",
+    "line": 535,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_non_blocking"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_configure_subscription",
+    "subScenarioName": "configure subscription",
+    "line": 580,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_configure_subscription"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_reconfigure_subscription",
+    "subScenarioName": "reconfigure subscription",
+    "line": 608,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reconfigure_subscription"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_non_overlapping",
+    "subScenarioName": "non overlapping",
+    "line": 660,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_non_overlapping"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_priorities",
+    "subScenarioName": "priorities",
+    "line": 694,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_priorities"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_fanout",
+    "subScenarioName": "fanout",
+    "line": 734,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_fanout"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_broadcast",
+    "subScenarioName": "broadcast",
+    "line": 768,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_broadcast"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_round_robin",
+    "subScenarioName": "round robin",
+    "line": 808,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_round_robin"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_redelivery",
+    "subScenarioName": "redelivery",
+    "line": 858,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_redelivery"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_max_unconfirmed",
+    "subScenarioName": "max unconfirmed",
+    "line": 896,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_max_unconfirmed"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_max_unconfirmed_low_priority_spillover",
+    "subScenarioName": "max unconfirmed low priority spillover",
+    "line": 1006,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_max_unconfirmed_low_priority_spillover"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_many_subscriptions",
+    "subScenarioName": "many subscriptions",
+    "line": 1076,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_many_subscriptions"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_complex_expressions",
+    "subScenarioName": "complex expressions",
+    "line": 1106,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_complex_expressions"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_incorrect_expressions",
+    "subScenarioName": "incorrect expressions",
+    "line": 1138,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_incorrect_expressions"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_non_bool_expressions",
+    "subScenarioName": "non bool expressions",
+    "line": 1195,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_non_bool_expressions"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_numeric_limits",
+    "subScenarioName": "numeric limits",
+    "line": 1232,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_numeric_limits"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_empty_subscription",
+    "subScenarioName": "empty subscription",
+    "line": 1309,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_empty_subscription"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_empty_expression",
+    "subScenarioName": "empty expression",
+    "line": 1351,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_empty_expression"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_non_existent_property",
+    "subScenarioName": "non existent property",
+    "line": 1410,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_non_existent_property"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_date_time",
+    "subScenarioName": "date time",
+    "line": 1444,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_date_time"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_consumer_multiple_priorities",
+    "subScenarioName": "consumer multiple priorities",
+    "line": 1509,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_consumer_multiple_priorities"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_no_capacity_all_optimization",
+    "subScenarioName": "no capacity all optimization",
+    "line": 1550,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_no_capacity_all_optimization"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_no_capacity_all_fanout",
+    "subScenarioName": "no capacity all fanout",
+    "line": 1656,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_no_capacity_all_fanout"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_primary_node_crash",
+    "subScenarioName": "primary node crash",
+    "line": 1744,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_primary_node_crash"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_redelivery_on_primary_node_crash",
+    "subScenarioName": "redelivery on primary node crash",
+    "line": 1807,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_redelivery_on_primary_node_crash"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_reconfigure_on_primary_node_crash",
+    "subScenarioName": "reconfigure on primary node crash",
+    "line": 1877,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_reconfigure_on_primary_node_crash"
+  },
+  {
+    "filePath": "src/integration-tests/test_subscriptions.py",
+    "testFunction": "test_poison",
+    "subScenarioName": "poison",
+    "line": 1967,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_poison"
+  },
+  {
+    "filePath": "src/integration-tests/test_wipe_partitions.py",
+    "testFunction": "test_wipe_single_partition_files",
+    "subScenarioName": "wipe single partition files",
+    "line": 36,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_wipe_single_partition_files"
+  },
+  {
+    "filePath": "src/integration-tests/test_wipe_partitions.py",
+    "testFunction": "test_wipe_all_partitions_and_csl",
+    "subScenarioName": "wipe all partitions and csl",
+    "line": 107,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_wipe_all_partitions_and_csl"
+  },
+  {
+    "filePath": "src/integration-tests/test_wipe_partitions.py",
+    "testFunction": "test_wipe_csl_only",
+    "subScenarioName": "wipe csl only",
+    "line": 179,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_wipe_csl_only"
+  },
+  {
+    "filePath": "src/integration-tests/test_wipe_partitions.py",
+    "testFunction": "test_wipe_storage_all_but_one_node",
+    "subScenarioName": "wipe storage all but one node",
+    "line": 247,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_wipe_storage_all_but_one_node"
+  },
+  {
+    "filePath": "src/integration-tests/test_wipe_partitions.py",
+    "testFunction": "test_wipe_qlist_all_nodes",
+    "subScenarioName": "wipe qlist all nodes",
+    "line": 334,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_wipe_qlist_all_nodes"
+  },
+  {
+    "filePath": "src/integration-tests/test_wipe_partitions.py",
+    "testFunction": "test_wipe_partitions_stale_replica",
+    "subScenarioName": "wipe partitions stale replica",
+    "line": 399,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_wipe_partitions_stale_replica"
+  },
+  {
+    "filePath": "src/integration-tests/test_wipe_partitions.py",
+    "testFunction": "test_single_node_wipe_partition_keep_csl",
+    "subScenarioName": "single node wipe partition keep csl",
+    "line": 487,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_single_node_wipe_partition_keep_csl"
+  },
+  {
+    "filePath": "src/plugins/bmqprometheus/tests/bmqprometheus_prometheusstatconsumer_test.py",
+    "testFunction": "test_local_cluster",
+    "subScenarioName": "local cluster",
+    "line": 115,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_local_cluster"
+  },
+  {
+    "filePath": "src/python/blazingmq/dev/it/process/tests/test_client.py",
+    "testFunction": "test_bool_lower",
+    "subScenarioName": "bool lower",
+    "line": 19,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_bool_lower"
+  },
+  {
+    "filePath": "src/python/blazingmq/dev/it/process/tests/test_client.py",
+    "testFunction": "test_build_command",
+    "subScenarioName": "build command",
+    "line": 24,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_build_command"
+  },
+  {
+    "filePath": "src/python/blazingmq/dev/it/tests/test_logging.py",
+    "testFunction": "test_clip",
+    "subScenarioName": "clip",
+    "line": 19,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_clip"
+  },
+  {
+    "filePath": "src/python/blazingmq/dev/it/tests/test_tweaks.py",
+    "testFunction": "test_broker_tweak",
+    "subScenarioName": "broker tweak",
+    "line": 27,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_broker_tweak"
+  },
+  {
+    "filePath": "src/python/blazingmq/dev/it/tests/test_tweaks.py",
+    "testFunction": "test_domain_tweak",
+    "subScenarioName": "domain tweak",
+    "line": 36,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_domain_tweak"
+  },
+  {
+    "filePath": "src/python/blazingmq/dev/it/tests/test_tweaks.py",
+    "testFunction": "test_cluster_tweak",
+    "subScenarioName": "cluster tweak",
+    "line": 45,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_cluster_tweak"
+  },
+  {
+    "filePath": "src/python/blazingmq/util/test/logging_test.py",
+    "testFunction": "test_normalize_levels",
+    "subScenarioName": "normalize levels",
+    "line": 41,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_normalize_levels"
+  },
+  {
+    "filePath": "src/python/blazingmq/util/test/logging_test.py",
+    "testFunction": "test_logging_parser",
+    "subScenarioName": "logging parser",
+    "line": 45,
+    "assertionTypes": [
+      "pytest/unittest"
+    ],
+    "inferredInvariant": "Guarantees invariant: test_logging_parser"
+  }
+]

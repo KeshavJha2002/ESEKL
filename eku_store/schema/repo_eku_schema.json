@@ -1,0 +1,190 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RepoEKU",
+  "description": "Evidence-bearing, repo-local Empirical Knowledge Unit capturing concrete implementation mechanisms, source snippets, tests, keywords, facets, and historical provenance.",
+  "type": "object",
+  "required": [
+    "id",
+    "repository",
+    "domain",
+    "substrate",
+    "objectType",
+    "claim",
+    "mechanism",
+    "applicabilityConditions",
+    "evidenceIds",
+    "commonKeywords",
+    "uniqueKeywords",
+    "localContext",
+    "linkedDomainEkus",
+    "linkedClaims",
+    "abstractionLevel",
+    "epistemicLabels",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^REKU-[A-Z0-9_-]+-\\d+$",
+      "description": "Unique Repo EKU Identifier (e.g. REKU-RIVER-001, REKU-BULLMQ-001)"
+    },
+    "repository": {
+      "type": "string",
+      "description": "Repository identifier (e.g. river, bullmq, litequeue, asynq)"
+    },
+    "domain": {
+      "type": "string",
+      "description": "Problem domain (e.g. Queue, Broker & Distributed Workflow Systems)"
+    },
+    "substrate": {
+      "type": "string",
+      "enum": [
+        "postgres",
+        "redis",
+        "sqlite",
+        "memory",
+        "file",
+        "raft",
+        "amqp",
+        "native"
+      ],
+      "description": "Explicit underlying storage engine or execution substrate"
+    },
+    "objectType": {
+      "type": "string",
+      "enum": [
+        "BEHAVIORAL_INVARIANT",
+        "IMPLEMENTATION_PATTERN",
+        "FAILURE_RECOVERY_MECHANISM"
+      ],
+      "description": "High-level knowledge object category"
+    },
+    "claim": {
+      "type": "string",
+      "description": "Precise mechanical statement of what this repository mechanism guarantees or requires"
+    },
+    "mechanism": {
+      "type": "string",
+      "description": "Concrete technical mechanism name (e.g. Relational Lock-Free Dequeue, Atomic Lua Lock Deletion)"
+    },
+    "commonKeywords": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Shared cross-cutting keywords common across similar queue mechanisms across repos"
+    },
+    "uniqueKeywords": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Unique keywords that preserve repo-specific implementation and substrate nuances"
+    },
+    "keywordFacets": {
+      "type": "object",
+      "description": "Structured multi-dimensional taxonomy facets across standardized architectural dimensions",
+      "properties": {
+        "concurrencyControl": { "type": "array", "items": { "type": "string" } },
+        "stateStorage": { "type": "array", "items": { "type": "string" } },
+        "ownershipModel": { "type": "array", "items": { "type": "string" } },
+        "failureRecovery": { "type": "array", "items": { "type": "string" } },
+        "scheduling": { "type": "array", "items": { "type": "string" } },
+        "shutdownDrain": { "type": "array", "items": { "type": "string" } },
+        "substrate": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    },
+    "applicabilityConditions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Substrate, runtime, and environment constraints under which this mechanism holds"
+    },
+    "localContext": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Architectural explanation of why this mechanism exists and how it operates in this specific repository"
+    },
+    "evidenceIds": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Down-traceable atomic observation (OBS-*) and historical failure (HIST-*) IDs"
+    },
+    "linkedDomainEkus": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "pattern": "^EKU-[A-Z0-9_-]+-\\d+$" },
+      "description": "Domain-level EKUs supported by or connected to this Repo-Local EKU"
+    },
+    "linkedClaims": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "pattern": "^CLM-\\d+$" },
+      "description": "Domain-level Claims supported by or connected to this Repo-Local EKU"
+    },
+    "sourceProvenance": {
+      "type": "object",
+      "description": "Source code location and verbatim snippet",
+      "properties": {
+        "filePath": { "type": "string" },
+        "lineRange": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "type": "integer" }
+        },
+        "queryOrCodeSnippet": { "type": "string" },
+        "symbol": { "type": "string" }
+      },
+      "required": ["filePath"]
+    },
+    "testProvenance": {
+      "type": "object",
+      "description": "Test suite verification location",
+      "properties": {
+        "filePath": { "type": "string" },
+        "testName": { "type": "string" },
+        "assertionSnippet": { "type": "string" }
+      },
+      "required": ["filePath", "testName"]
+    },
+    "historyProvenance": {
+      "type": "object",
+      "description": "Historical failure or postmortem provenance",
+      "properties": {
+        "commitHash": { "type": "string" },
+        "failureId": { "type": "string" },
+        "prOrIssue": { "type": "string" },
+        "fixDescription": { "type": "string" }
+      }
+    },
+    "epistemicLabels": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "SOURCE_OBSERVED",
+          "TEST_OBSERVED",
+          "HISTORY_SUPPORTED",
+          "DOCUMENTED",
+          "MODEL_INFERRED_PENDING_SOURCE_TRACE"
+        ]
+      },
+      "description": "Epistemic grounding classifications"
+    },
+    "abstractionLevel": {
+      "type": "string",
+      "enum": ["REPO_LOCAL"],
+      "description": "Fixed abstraction tier for repo-local units"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["ACTIVE", "DEPRECATED", "PROMOTED_TO_DOMAIN"],
+      "description": "Lifecycle status of the knowledge unit"
+    }
+  }
+}

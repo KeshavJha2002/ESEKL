@@ -1,0 +1,482 @@
+[
+  {
+    "id": "OBS-BULLMQ-001",
+    "repo": "bullmq",
+    "filePath": "src/commands/moveToActive-11.lua",
+    "lineRange": [
+      1,
+      45
+    ],
+    "symbol": "moveToActive",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "moveToActive-11.lua atomically pops a job ID from wait list, pushes it to active list, and creates a lock key with worker token and PX TTL in Redis.",
+    "testFile": "tests/worker.test.ts",
+    "testName": "should emit active event when calling getNextJob",
+    "extractedSnippet": "--[[\n  Move next job to be processed to active, lock it and fetch its data. The job\n  may be delayed, in that case we need to move it to the delayed set instead.\n\n  This operation guarantees that the ",
+    "snippetSha256": "a0c2d4cb9ff0a50f8c573b049bd42811109dea833d013d8f81b570e45876029a"
+  },
+  {
+    "id": "OBS-BULLMQ-002",
+    "repo": "bullmq",
+    "filePath": "src/commands/includes/removeLock.lua",
+    "lineRange": [
+      1,
+      19
+    ],
+    "symbol": "removeLock",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "removeLock.lua compares redis.call('GET', KEYS[1]) with ARGV[1]; returns error code -6 on token mismatch, preventing zombie worker completion.",
+    "testFile": "tests/lock_manager.test.ts",
+    "testName": "should extend locks for tracked jobs",
+    "extractedSnippet": "local function removeLock(jobKey, stalledKey, token, jobId)\n  if token ~= \"0\" then\n    local lockKey = jobKey .. ':lock'\n    local lockToken = rcall(\"GET\", lockKey)\n    if lockToken == token then\n    ",
+    "snippetSha256": "b88f066760e53683fd27727b086d7dcd0e792a0d0a65e12e1f3e829339d808ba"
+  },
+  {
+    "id": "OBS-BULLMQ-003",
+    "repo": "bullmq",
+    "filePath": "src/commands/moveStalledJobsToWait-9.lua",
+    "lineRange": [
+      1,
+      50
+    ],
+    "symbol": "moveStalledJobsToWait",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "moveStalledJobsToWait executes two-phase mark-and-sweep: Pass 1 writes stalled-check timestamp; Pass 2 reclaims unrenewed tasks after 1 cycle.",
+    "testFile": "tests/stalled_jobs.test.ts",
+    "testName": "process stalled jobs when starting a queue",
+    "extractedSnippet": "--[[\n  Move stalled jobs to wait.\n\n    Input:\n      KEYS[1] 'stalled' (SET)\n      KEYS[2] 'wait',   (LIST)\n      KEYS[3] 'active', (LIST)\n      KEYS[4] 'stalled-check', (KEY)\n      KEYS[5] 'meta', (KE",
+    "snippetSha256": "3fd6ea74026369f751377d630d118d2d85f1adac2b9804853c86efa5eaa5b4d6"
+  },
+  {
+    "id": "OBS-RIVER-001",
+    "repo": "river",
+    "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+    "lineRange": [
+      200,
+      230
+    ],
+    "symbol": "JobGetAvailable",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "JobGetAvailable executes CTE with SELECT ... FOR UPDATE SKIP LOCKED chained into UPDATE river_job SET state = 'running', attempt = attempt + 1 RETURNING *.",
+    "testFile": "example_unique_job_test.go",
+    "testName": "Example_uniqueJob",
+    "extractedSnippet": "-- name: JobGetAvailable :many\nWITH locked_jobs AS (\n    SELECT\n        *\n    FROM\n        /* TEMPLATE: schema */river_job\n    WHERE\n        state = 'available'\n        AND queue = @queue::text\n      ",
+    "snippetSha256": "411b0d1b2622043926fd6a6843d8c4fd3ec1263a8a1a51fa277faa2307fda2a6"
+  },
+  {
+    "id": "OBS-RIVER-002",
+    "repo": "river",
+    "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+    "lineRange": [
+      218,
+      230
+    ],
+    "symbol": "JobGetAvailable",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "JobGetAvailable atomically increments attempt = river_job.attempt + 1 during dequeue, protecting delivery limits against worker process crashes.",
+    "testFile": "example_unique_job_test.go",
+    "testName": "Example_uniqueJob",
+    "extractedSnippet": "UPDATE\n    /* TEMPLATE: schema */river_job\nSET\n    state = 'running',\n    attempt = river_job.attempt + 1,\n    attempted_at = coalesce(sqlc.narg('now')::timestamptz, now()),\n    attempted_by = array_a",
+    "snippetSha256": "d87adaeeb0cd5512ed7bb4b415ac67e5a95d7bf3615cad385152e877b44ee692"
+  },
+  {
+    "id": "OBS-RIVER-003",
+    "repo": "river",
+    "filePath": "internal/maintenance/job_rescuer.go",
+    "lineRange": [
+      80,
+      140
+    ],
+    "symbol": "JobRescuer",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "JobRescuer evaluates updated_at < now() - worker_timeout with default 1-hour rescue buffer for unconfigured timeouts.",
+    "testFile": "internal/maintenance/job_rescuer_test.go",
+    "testName": "TestJobRescuer",
+    "extractedSnippet": "\t\tpanic(\"RescuerConfig.Interval must be above zero\")\n\t}\n\tif c.Pilot == nil {\n\t\tpanic(\"RescuerConfig.Pilot must be set\")\n\t}\n\tif c.RescueAfter <= 0 {\n\t\tpanic(\"RescuerConfig.JobDuration must be above zer",
+    "snippetSha256": "e57e0f770f9e898f91992e921bb89e92a060ddb486b124c02259bd3a0e44b0e5"
+  },
+  {
+    "id": "OBS-RIVER-004",
+    "repo": "river",
+    "filePath": "internal/leadership/elector.go",
+    "lineRange": [
+      70,
+      130
+    ],
+    "symbol": "Elector",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "Leader election is scoped to an explicit database term tuple (leader_id, elected_at) with row lock fencing on unlogged table river_leader.",
+    "testFile": "internal/leadership/elector_test.go",
+    "testName": "TestElector",
+    "extractedSnippet": "}\n\nfunc (s *Subscription) stop() {\n\ts.relay.stop()\n}\n\nfunc (s *Subscription) Unlisten() {\n\ts.unlistenOnce.Do(func() {\n\t\ts.e.unlisten(s)\n\t})\n}\n\n// subscriptionRelay decouples elector publication from s",
+    "snippetSha256": "290f0c63a466e75e9a3f78d43c17350ef045ffcad93855da2449a9827b68c470"
+  },
+  {
+    "id": "OBS-RIVER-005",
+    "repo": "river",
+    "filePath": "internal/jobexecutor/job_executor.go",
+    "lineRange": [
+      160,
+      220
+    ],
+    "symbol": "JobExecutor",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "JobExecutor traps SIGTERM, halts fetcher, waits up to GracefulShutdownTimeout, and calls JobSetStateInterrupted to requeue cleanly without incrementing attempt count.",
+    "testFile": "internal/jobexecutor/job_executor_test.go",
+    "testName": "TestJobExecutor",
+    "extractedSnippet": "\n\tvar multiJobErrors withJobsAndErrorsByID\n\tif res.Err != nil {\n\t\tmultiJobErrors, _ = res.Err.(withJobsAndErrorsByID)\n\t}\n\n\tif multiJobErrors == nil {\n\t\te.reportResult(ctx, e.JobRow, res)\n\t} else {\n\t\te",
+    "snippetSha256": "8b97243b6dbf146dc9435322ba387477973d8bab2656419bb95727feb3b7018c"
+  },
+  {
+    "id": "OBS-ASYNQ-001",
+    "repo": "asynq",
+    "filePath": "internal/rdb/rdb.go",
+    "lineRange": [
+      85,
+      140
+    ],
+    "symbol": "dequeueCmd",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "dequeueCmd atomically pops task from pending list, pushes to active list, and registers lease score in Sorted Set inside EVAL script.",
+    "testFile": "internal/rdb/rdb_test.go",
+    "testName": "TestBatchEnqueue",
+    "extractedSnippet": "// enqueueCmd enqueues a given task message.\n//\n// Input:\n// KEYS[1] -> asynq:{<qname>}:t:<task_id>\n// KEYS[2] -> asynq:{<qname>}:pending\n// --\n// ARGV[1] -> task message data\n// ARGV[2] -> task ID\n//",
+    "snippetSha256": "bf69a09c95dc78f014dfae06ab85a538a4f7c77b355e4b420555f871ea909994"
+  },
+  {
+    "id": "OBS-ASYNQ-002",
+    "repo": "asynq",
+    "filePath": "internal/rdb/rdb.go",
+    "lineRange": [
+      397,
+      418
+    ],
+    "symbol": "doneCmd",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "doneCmd executes unconditional LREM activeKey and HDEL taskKey by msg_id without token or lease expiration verification (Counterexample).",
+    "testFile": "internal/rdb/rdb_test.go",
+    "testName": "TestBatchEnqueue",
+    "extractedSnippet": "var doneCmd = redis.NewScript(`\nif redis.call(\"LREM\", KEYS[1], 0, ARGV[1]) == 0 then\n  return redis.error_reply(\"NOT FOUND\")\nend\nif redis.call(\"ZREM\", KEYS[2], ARGV[1]) == 0 then\n  return redis.error_",
+    "snippetSha256": "a28d1f9387240f9ee94a94c480fde2e4e77847d1aba7ba3b2ec1330b26ec8cf9"
+  },
+  {
+    "id": "OBS-ASYNQ-003",
+    "repo": "asynq",
+    "filePath": "internal/rdb/rdb.go",
+    "lineRange": [
+      280,
+      330
+    ],
+    "symbol": "recoverLeaseExpiredTasks",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "recoverLeaseExpiredTasks queries lease ZSet with score < (now - 30s), enforcing an explicit 30-second safety margin for NTP clock drift.",
+    "testFile": "internal/rdb/rdb_test.go",
+    "testName": "TestBatchEnqueue",
+    "extractedSnippet": "           \"pending_since\", ARGV[4],\n           \"unique_key\", KEYS[1])\nredis.call(\"LPUSH\", KEYS[3], ARGV[1])\nreturn 1\n`)\n\n// EnqueueUnique inserts the given task if the task's uniqueness lock can be a",
+    "snippetSha256": "dbe042dd86718790ea5478d3c81ade17dba0f7168a9698f23679cd45dfecab09"
+  },
+  {
+    "id": "OBS-PGMQ-001",
+    "repo": "pgmq",
+    "filePath": "pgmq-rs/src/queue/sql.rs",
+    "lineRange": [
+      15,
+      35
+    ],
+    "symbol": "READ",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "READ SQL statement executes CTE with SELECT msg_id FROM pgmq.q_<name> WHERE vt <= clock_timestamp() FOR UPDATE SKIP LOCKED LIMIT 1 updating vt.",
+    "testFile": "pgmq-rs/tests/pg_ext_integration_test.rs",
+    "testName": "test_ext_send_read_delete_i64",
+    "extractedSnippet": "// language=PostgreSQL\npub(crate) const READ: &str = \"SELECT msg_id, read_ct, enqueued_at, last_read_at, vt, message, headers FROM pgmq.read(queue_name=>$1::text, vt=>$2::integer, qty=>$3::integer)\";\n",
+    "snippetSha256": "1dafd09a97c03a63f2c17c38095ab4bb578ac64f533e8a9c2c3f3f8e20227f7c"
+  },
+  {
+    "id": "OBS-PGMQ-002",
+    "repo": "pgmq",
+    "filePath": "pgmq-rs/src/queue/sql.rs",
+    "lineRange": [
+      25,
+      35
+    ],
+    "symbol": "DELETE",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "DELETE SQL statement executes unconditional DELETE FROM pgmq.q_<name> WHERE msg_id = $1 without worker token validation (Counterexample).",
+    "testFile": "pgmq-rs/tests/pg_ext_integration_test.rs",
+    "testName": "test_ext_delete_batch",
+    "extractedSnippet": "// language=PostgreSQL\npub(crate) const DELETE: &str =\n    \"SELECT * from pgmq.delete(queue_name=>$1::text, msg_ids=>$2::bigint[])\";\n\n// language=PostgreSQL\npub(crate) const SET_VT: &str = \"SELECT msg",
+    "snippetSha256": "5f69c61bb141d2946dec2dcb6c6f6f47cef5714c61a10b987cc44946e1bedbd4"
+  },
+  {
+    "id": "OBS-LITEQUEUE-001",
+    "repo": "litequeue",
+    "filePath": "src/litequeue/__init__.py",
+    "lineRange": [
+      554,
+      577
+    ],
+    "symbol": "_pop_returning",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "_pop_returning executes single-statement UPDATE Queue SET status=1, lock_time=:now, claim_id=claim_id+1 WHERE rowid = (SELECT rowid FROM Queue WHERE status=0 LIMIT 1) RETURNING *.",
+    "testFile": "tests/test_litequeue.py",
+    "testName": "test_pop",
+    "extractedSnippet": "    def _pop_returning(self) -> Message | None:\n        \"\"\"Atomically claim the oldest ready message and increment its claim ID.\"\"\"\n        with self.transaction(mode=\"IMMEDIATE\"):\n            message",
+    "snippetSha256": "3960cacd2d4482e0e7d0499b58263d4e2f789c20dd8e4a5cf0fb850faace3f98"
+  },
+  {
+    "id": "OBS-LITEQUEUE-002",
+    "repo": "litequeue",
+    "filePath": "src/litequeue/__init__.py",
+    "lineRange": [
+      668,
+      690
+    ],
+    "symbol": "done",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "done executes UPDATE Queue SET status=2, done_time=:now WHERE message_id=:message_id AND claim_id=:claim_id; returns False if claim_id was superseded.",
+    "testFile": "tests/test_litequeue.py",
+    "testName": "test_done",
+    "extractedSnippet": "    def done(self, message_id: str, *, claim_id: int) -> bool:\n        \"\"\"Mark the current message claim as done.\n\n        Return `True` when the message is locked with the specified claim ID.\n       ",
+    "snippetSha256": "99ff070bf2d711b73f0b1be5a6ca1795b550b26b8482885f6475232495da7cfc"
+  },
+  {
+    "id": "OBS-REDPANDA-001",
+    "repo": "redpanda",
+    "filePath": "src/v/storage/segment_appender.cc",
+    "lineRange": [
+      50,
+      110
+    ],
+    "symbol": "append",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "Writes Seastar DMA memory buffers with O_DIRECT aligned to physical 4096-byte sector boundaries directly to block device.",
+    "testFile": "src/v/storage/tests/segment_appender_test.cc",
+    "testName": "TestConcurrentFlushesPageBoundaryWrites",
+    "extractedSnippet": " * into an aligned buffer, a `segment_appender_chunk`, and resolves without\n * waiting for the data to reach disk (write-behind). That keeps disk latency\n * off the append path and lets one write cove",
+    "snippetSha256": "8d92a86a11a05ed4a6fd6b00ffa5361292ceb54e6b4aacb5ec2448b9fc91d508"
+  },
+  {
+    "id": "OBS-REDPANDA-002",
+    "repo": "redpanda",
+    "filePath": "src/v/raft/consensus.cc",
+    "lineRange": [
+      310,
+      380
+    ],
+    "symbol": "handle_append_entries",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "handle_append_entries rejects requests with reply_result::failure when request term < _term, enforcing monotonic Raft term fencing.",
+    "testFile": "src/v/raft/tests/basic_raft_fixture_test.cc",
+    "testName": "test_term_conditional_replication",
+    "extractedSnippet": "ss::future<xshard_transfer_state> consensus::stop() {\n    vlog(_ctxlog.info, \"Stopping\");\n    shutdown_input();\n    for (auto& idx : _fstates) {\n        idx.second.follower_state_change.broken();\n    ",
+    "snippetSha256": "55f4973e14895b274a9224e4dde4e97fdd93f775881475f5270e1b3e648b46be"
+  },
+  {
+    "id": "OBS-RABBITMQ-001",
+    "repo": "rabbitmq",
+    "filePath": "deps/rabbit_common/src/credit_flow.erl",
+    "lineRange": [
+      80,
+      145
+    ],
+    "symbol": "ack",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "credit_flow tracks token bucket between Erlang process pairs; suspends TCP socket reads when downstream tokens reach 0.",
+    "testFile": "deps/rabbit/test/unit_credit_flow_SUITE.erl",
+    "testName": "credit_flow_settings",
+    "extractedSnippet": "-ifdef(CREDIT_FLOW_TRACING).\n-define(TRACE_BLOCKED(SELF, FROM), rabbit_event:notify(credit_flow_blocked,\n                                     [{process, SELF},\n                                      {p",
+    "snippetSha256": "0aaaf7a2070e505562bc8ed6cd9ee551f342c799f9e837d03dd642013330b052"
+  },
+  {
+    "id": "OBS-ROCKETMQ-001",
+    "repo": "rocketmq",
+    "filePath": "store/src/main/java/org/apache/rocketmq/store/CommitLog.java",
+    "lineRange": [
+      1087,
+      1144
+    ],
+    "symbol": "putMessagePositionInfo",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "CommitLog appends physical messages sequentially under PutMessageSpinLock; ReputMessageService constructs 20B fixed ConsumeQueue units.",
+    "testFile": "store/src/test/java/org/apache/rocketmq/store/DefaultMessageStoreTest.java",
+    "testName": "testWriteAndRead",
+    "extractedSnippet": "            putMessageLock.lock(); //spin or ReentrantLock, depending on store config\n            try {\n                long beginLockTimestamp = this.defaultMessageStore.getSystemClock().now();\n     ",
+    "snippetSha256": "d7623faad9472b350f9986a9d8a2ac1f5f1c07fba4a8081eedc75e983f9b380f"
+  },
+  {
+    "id": "OBS-ROCKETMQ-002",
+    "repo": "rocketmq",
+    "filePath": "broker/src/main/java/org/apache/rocketmq/broker/latency/BrokerFastFailure.java",
+    "lineRange": [
+      92,
+      115
+    ],
+    "symbol": "cleanExpiredRequestInQueue",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "BrokerFastFailure monitors CommitLog lock holding time > 1000ms and send queue wait > 200ms, immediately shedding publishes with SYSTEM_BUSY.",
+    "testFile": "broker/src/test/java/org/apache/rocketmq/broker/latency/BrokerFastFailureTest.java",
+    "testName": "testCleanExpiredRequestInQueue",
+    "extractedSnippet": "    private void cleanExpiredRequest() {\n\n        while (this.brokerController.getMessageStore().isOSPageCacheBusy()) {\n            try {\n                if (!this.brokerController.getSendThreadPoolQu",
+    "snippetSha256": "f90d93e4a468e985716b6f52350195bca80c27a28e1596ad276ca6218d4090f3"
+  },
+  {
+    "id": "OBS-NSQ-001",
+    "repo": "nsq",
+    "filePath": "nsqd/protocol_v2.go",
+    "lineRange": [
+      190,
+      240
+    ],
+    "symbol": "Exec",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "Server pushes messages only when client.RDY > 0, decrementing RDY per message and halting immediately when RDY == 0.",
+    "testFile": "nsqd/protocol_v2_test.go",
+    "testName": "TestMaxRdyCount",
+    "extractedSnippet": "\t\treturn p.RDY(client, params)\n\tcase bytes.Equal(params[0], []byte(\"REQ\")):\n\t\treturn p.REQ(client, params)\n\tcase bytes.Equal(params[0], []byte(\"PUB\")):\n\t\treturn p.PUB(client, params)\n\tcase bytes.Equal",
+    "snippetSha256": "612e1615e1e6b9d1f36a1bb4f118064312e9f2ac096714d8a80ebdd7276595b0"
+  },
+  {
+    "id": "OBS-NATS-001",
+    "repo": "nats-server",
+    "filePath": "server/client.go",
+    "lineRange": [
+      850,
+      910
+    ],
+    "symbol": "writeLoop",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "writeLoop monitors client outbound buffer; forcibly terminates client connection if buffer exceeds MaxPending (64MB).",
+    "testFile": "server/client_test.go",
+    "testName": "TestClientMaxPending",
+    "extractedSnippet": "\t\tc.maxAccountConnExceeded()\n\t\treturn\n\t}\n\tc.Errorf(\"Problem registering with account %q: %s\", acc.Name, err)\n\tc.sendErr(\"Failed Account Registration\")\n}\n\n// Kind returns the client kind and will be on",
+    "snippetSha256": "39387a081f95e58235045e644ff14de476edcda94ee3f8158ae442361c91192b"
+  },
+  {
+    "id": "OBS-ARTEMIS-001",
+    "repo": "artemis",
+    "filePath": "artemis-journal/src/main/java/org/apache/activemq/artemis/core/journal/impl/JournalImpl.java",
+    "lineRange": [
+      850,
+      920
+    ],
+    "symbol": "appendRecord",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "Linux libaio 4KB sector aligned circular append journal writes Direct memory buffers bypassing JVM PageCache copies.",
+    "testFile": "tests/unit-tests/src/test/java/org/apache/activemq/artemis/tests/unit/core/journal/impl/AlignedJournalImplTest.java",
+    "testName": "testBasicAlignment",
+    "extractedSnippet": "                  wholeFileBuffer.get(extraData);\n\n                  reader.onReadPrepareRecord(transactionID, extraData, transactionCheckNumberOfRecords);\n\n                  break;\n               }\n ",
+    "snippetSha256": "2226336e16e50151e6a5e052be605e073f2a35bc2019b274c8dd9fd450cfdd94"
+  },
+  {
+    "id": "OBS-RIVER-006",
+    "repo": "river",
+    "filePath": "riverdriver/riverdatabasesql/internal/dbsqlc/river_job.sql.go",
+    "lineRange": [
+      1463,
+      1529
+    ],
+    "symbol": "JobSetStateCompleted",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "River job finalization is guarded by job state, but not by an owner token or claim generation; stale completion needs additional domain-specific fencing when ownership can be superseded.",
+    "testFile": "riverdriver/riverdrivertest/job_update.go",
+    "testName": "JobSetStateCompleted unknown/stale completion handling",
+    "extractedSnippet": "WHERE river_job.id = job_input.id\n      AND (river_job.state = 'running' OR job_input.metadata_do_merge)",
+    "snippetSha256": "cd7bd699685784253f4f1656ffb1a1b0180ee43b6d77cfb5893214f6ec28fdf1"
+  },
+  {
+    "id": "OBS-PGMQ-003",
+    "repo": "pgmq",
+    "filePath": "pgmq-extension/sql/pgmq.sql",
+    "lineRange": [
+      114,
+      156
+    ],
+    "symbol": "create queue advisory locks",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "PGMQ uses PostgreSQL advisory locks for queue creation / FIFO group coordination, but this is not a durable per-delivery owner fence for stale-worker finalization.",
+    "testFile": "pgmq-rs/tests/pg_ext_integration_test.rs",
+    "testName": "queue creation / FIFO behavior",
+    "extractedSnippet": "PERFORM pg_advisory_xact_lock(hashtext('pgmq.queue_' || queue_name));",
+    "snippetSha256": "6fdba800f04589c912fbc0793e0fcb0b56fe57f981fc6bca989e0fa9b41a2990"
+  },
+  {
+    "id": "OBS-RIVER-007",
+    "repo": "river",
+    "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
+    "lineRange": [
+      209,
+      223
+    ],
+    "symbol": "JobGetAvailable",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "River job SQL uses coalesce(sqlc.narg('now')::timestamptz, now()), allowing production callers to preserve DB-time semantics but also making caller-supplied VM time a possible footgun if used outside tests.",
+    "testFile": "internal/leadership/elector_test.go",
+    "testName": "TestElector",
+    "extractedSnippet": "attempted_at = coalesce(sqlc.narg('now')::timestamptz, now())",
+    "snippetSha256": "b542875ad40d79b7938677ee574c1d5f5fe9f5db6af8eb78038222880a8a6cc7"
+  },
+  {
+    "id": "OBS-BULLMQ-004",
+    "repo": "bullmq",
+    "filePath": "src/commands/includes/prepareJobForProcessing.lua",
+    "lineRange": [
+      40,
+      42
+    ],
+    "symbol": "attemptsStarted",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "BullMQ increments attemptsStarted before processing and keeps it distinct from attemptsMade; stalled-job tests also expose stalledCounter/maxStalledCount as a separate worker-loss budget.",
+    "testFile": "tests/stalled_jobs.test.ts",
+    "testName": "stalled attempts / attemptsStarted scenarios",
+    "extractedSnippet": "rcall(\"HINCRBY\", jobKey, \"ats\", 1)",
+    "snippetSha256": "53787d046b5e8a8b8ce59bb4b435046098f0c7b50ca098b814ea3e4ecbbaf4ad"
+  },
+  {
+    "id": "OBS-BULLMQ-005",
+    "repo": "bullmq",
+    "filePath": "src/commands/moveStalledJobsToWait-9.lua",
+    "lineRange": [
+      77,
+      98
+    ],
+    "symbol": "repeatable stalled handling",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "BullMQ stalled-job logic contains repeatable-job special handling before permanent failure; this is an alternative mechanism that can be unsafe for non-repeatable poison payload domains requiring bounded attempts.",
+    "testFile": "tests/stalled_jobs.test.ts",
+    "testName": "stalled jobs",
+    "extractedSnippet": "if stalledCount > maxStalledJobCount and not isRepeatableJob then",
+    "snippetSha256": "b9c4cc624877f80d78d877180cf9111cbbafdaccbdd0a3c2475a401dc4c661c3"
+  },
+  {
+    "id": "OBS-REDPANDA-003",
+    "repo": "redpanda",
+    "filePath": "src/v/transform/memory_limiter.cc",
+    "lineRange": [
+      121,
+      129
+    ],
+    "symbol": "memory_limiter",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "Redpanda memory limiting can queue waiters until memory becomes available; bounded memory reservations are not sufficient overload protection unless waiter counts and wait budgets are also bounded.",
+    "testFile": "src/v/kafka/server/handlers/produce.cc",
+    "testName": "produce error response paths",
+    "extractedSnippet": "auto it = _waiters.emplace(_waiters.end(), amount);",
+    "snippetSha256": "ccb544caad28f6dd5949ff4110c2e2c2caa53084a5becc0077ba5d2dee2e0bca"
+  },
+  {
+    "id": "OBS-NATS-002",
+    "repo": "nats-server",
+    "filePath": "server/client.go",
+    "lineRange": [
+      6002,
+      6009
+    ],
+    "symbol": "closeConnection",
+    "epistemicType": "SOURCE_OBSERVED",
+    "observation": "NATS applies a shortened write deadline when closing clients and uses lame-duck shutdown to stop accepting before draining, showing shutdown protocols need explicit socket deadline behavior separate from worker drain.",
+    "testFile": "server/client_test.go",
+    "testName": "client close / slow consumer shutdown behavior",
+    "extractedSnippet": "const lowWriteDeadline = 100 * time.Millisecond",
+    "snippetSha256": "48035f746ecce5719f739902ad0576de5960174b168f6598bf6d1ef774086740"
+  }
+]

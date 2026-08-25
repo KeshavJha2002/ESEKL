@@ -1,0 +1,947 @@
+{
+  "repoName": "pgmq/pgmq",
+  "domain": "message_queues",
+  "gitCommitHash": "c41b93adc4a93914339bde0ec3792311191f9e73",
+  "analyzedAt": "2026-08-22T15:40:00.000Z",
+  "overview": {
+    "purpose": "Lightweight, robust distributed message queue running entirely natively within PostgreSQL using standard SQL objects, table-driven message storage, SKIP LOCKED concurrency control, and visibility timeout semantics without background daemons or external dependencies.",
+    "architectureType": "PostgreSQL relational table-backed message queue with MVCC row leasing via SELECT FOR UPDATE SKIP LOCKED, visibility timeout expiration, transactional topic-based routing, pg_partman partition management, and trigger-driven throttled NOTIFY publication.",
+    "keyDifferentiators": [
+      "Pure PostgreSQL native implementation: zero external brokers, daemons, or sidecars required; operations execute via standard SQL functions and transactional tables",
+      "Native transactional outbox and two-phase atomic commit: message ingestion, dequeuing, and state changes participate in the application's native PostgreSQL ACID transactions",
+      "Three distinct FIFO consumption models: standard per-group batch filling (AWS SQS style via read_grouped), fair layered round-robin (read_grouped_rr with group advisory locking), and parallel multi-group head extraction (read_grouped_head)",
+      "High-performance partition maintenance and retention: optional integration with pg_partman for automated message table and archive table partitioning by msg_id or enqueued_at/archived_at timestamps",
+      "Transactional AMQP topic routing: wildcard topic matching (* and #) with pre-compiled SQL regular expressions executing multi-queue fan-out within a single atomic PostgreSQL transaction",
+      "Trigger-based insert notification with unlogged rate-limiting: unlogged throttle table with millisecond interval gating prevents LISTEN/NOTIFY flooding during high-volume ingestion"
+    ]
+  },
+  "components": [
+    {
+      "name": "Queue Storage & Table Manager",
+      "role": "Schema & DDL Supervisor",
+      "primaryFiles": [
+        "pgmq-extension/sql/pgmq.sql",
+        "pgmq-rs/src/pg_ext/mod.rs"
+      ],
+      "publicInterfaces": [
+        "pgmq.create(queue_name TEXT)",
+        "pgmq.create_non_partitioned(queue_name TEXT)",
+        "pgmq.create_unlogged(queue_name TEXT)",
+        "pgmq.create_partitioned(queue_name TEXT, partition_interval TEXT, retention_interval TEXT)",
+        "pgmq.drop_queue(queue_name TEXT)",
+        "pgmq.purge_queue(queue_name TEXT)",
+        "pgmq.list_queues()",
+        "pgmq.acquire_queue_lock(queue_name TEXT)"
+      ],
+      "dependencies": [
+        "pg_partman (optional for partitioned queues)"
+      ],
+      "stateManaged": [
+        "pgmq.meta (registry of queue metadata: queue_name, is_partitioned, is_unlogged, created_at)",
+        "pgmq.q_<queue_name> (active queue tables / partitions)",
+        "pgmq.a_<queue_name> (archive tables / partitions)",
+        "PostgreSQL advisory locks (hashtext('pgmq.queue_' || queue_name))"
+      ],
+      "evidence": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          1178,
+          1244
+        ],
+        "symbol": "pgmq.create_non_partitioned",
+        "observation": "Acquires transaction-level advisory lock via pgmq.acquire_queue_lock, validates queue name length (<= 47 chars), creates active table pgmq.q_<name> with IDENTITY msg_id and vt index, creates archive table pgmq.a_<name> with archived_at index, and inserts metadata row into pgmq.meta.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Message Ingestion & Batch Engine",
+      "role": "Producer & Enqueue API",
+      "primaryFiles": [
+        "pgmq-extension/sql/pgmq.sql",
+        "pgmq-rs/src/pg_ext/mod.rs",
+        "pgmq-rs/src/queue/sql.rs"
+      ],
+      "publicInterfaces": [
+        "pgmq.send(queue_name TEXT, msg JSONB)",
+        "pgmq.send(queue_name TEXT, msg JSONB, headers JSONB)",
+        "pgmq.send(queue_name TEXT, msg JSONB, delay INTEGER)",
+        "pgmq.send(queue_name TEXT, msg JSONB, headers JSONB, delay TIMESTAMP WITH TIME ZONE)",
+        "pgmq.send_batch(queue_name TEXT, msgs JSONB[])",
+        "pgmq.send_batch(queue_name TEXT, msgs JSONB[], headers JSONB[], delay TIMESTAMP WITH TIME ZONE)"
+      ],
+      "dependencies": [
+        "Queue Storage & Table Manager"
+      ],
+      "stateManaged": [
+        "pgmq.q_<queue_name> rows (vt timestamp, message jsonb, headers jsonb, read_ct=0, enqueued_at=now())"
+      ],
+      "evidence": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          776,
+          809
+        ],
+        "symbol": "pgmq._send_batch and pgmq.send_batch",
+        "observation": "Validates batch parameter non-emptiness and headers/msgs array length equality via pgmq._validate_batch_params, then inserts unnested JSONB arrays into target queue table in a single INSERT statement returning generated msg_id sequence numbers.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Message Consumer & Lease Dispatcher",
+      "role": "Consumer Dequeue & Visibility Engine",
+      "primaryFiles": [
+        "pgmq-extension/sql/pgmq.sql",
+        "pgmq-rs/src/pg_ext/mod.rs",
+        "pgmq-rs/src/queue/sql.rs"
+      ],
+      "publicInterfaces": [
+        "pgmq.read(queue_name TEXT, vt INTEGER, qty INTEGER, conditional JSONB)",
+        "pgmq.read_with_poll(queue_name TEXT, vt INTEGER, qty INTEGER, max_poll_seconds INTEGER, poll_interval_ms INTEGER, conditional JSONB)",
+        "pgmq.pop(queue_name TEXT, qty INTEGER)",
+        "pgmq.set_vt(queue_name TEXT, msg_id BIGINT, vt TIMESTAMP WITH TIME ZONE)",
+        "pgmq.set_vt(queue_name TEXT, msg_ids BIGINT[], vt INTEGER)"
+      ],
+      "dependencies": [
+        "Queue Storage & Table Manager"
+      ],
+      "stateManaged": [
+        "Message lease expiration (vt timestamp)",
+        "Read count (read_ct integer)",
+        "Last access timestamp (last_read_at timestamptz)"
+      ],
+      "evidence": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          338,
+          376
+        ],
+        "symbol": "pgmq.read",
+        "observation": "Executes CTE selecting visible messages (vt <= clock_timestamp() and optional JSONB containment match) with FOR UPDATE SKIP LOCKED up to limit $1, then immediately updates vt = clock_timestamp() + vt_interval, read_ct = read_ct + 1, and last_read_at = clock_timestamp().",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "FIFO & Message Group Coordinator",
+      "role": "Ordered Processing & Group Scheduling Engine",
+      "primaryFiles": [
+        "pgmq-extension/sql/pgmq.sql",
+        "pgmq-rs/src/pg_ext/mod.rs"
+      ],
+      "publicInterfaces": [
+        "pgmq.read_grouped(queue_name TEXT, vt INTEGER, qty INTEGER)",
+        "pgmq.read_grouped_with_poll(queue_name TEXT, vt INTEGER, qty INTEGER, max_poll_seconds INTEGER, poll_interval_ms INTEGER)",
+        "pgmq.read_grouped_rr(queue_name TEXT, vt INTEGER, qty INTEGER)",
+        "pgmq.read_grouped_rr_with_poll(queue_name TEXT, vt INTEGER, qty INTEGER, max_poll_seconds INTEGER, poll_interval_ms INTEGER)",
+        "pgmq.read_grouped_head(queue_name TEXT, vt INTEGER, qty INTEGER)",
+        "pgmq.read_grouped_head_with_poll(queue_name TEXT, vt INTEGER, qty INTEGER, max_poll_seconds INTEGER, poll_interval_ms INTEGER)",
+        "pgmq.create_fifo_index(queue_name TEXT)",
+        "pgmq.create_fifo_indexes_all()"
+      ],
+      "dependencies": [
+        "Queue Storage & Table Manager",
+        "Message Consumer & Lease Dispatcher"
+      ],
+      "stateManaged": [
+        "Group keys extracted from headers (headers->>'x-pgmq-group')",
+        "Transaction-level group advisory locks (pg_try_advisory_xact_lock(hashtextextended(fifo_key, 0)))",
+        "GIN index on headers (q_<queue_name>_fifo_idx)"
+      ],
+      "evidence": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          126,
+          207
+        ],
+        "symbol": "pgmq.read_grouped_rr",
+        "observation": "Identifies absolute head msg_id per FIFO group, filters eligible groups where head vt <= clock_timestamp() and acquires pg_try_advisory_xact_lock, assigns layered round-robin ranks, locks ordered messages with FOR UPDATE SKIP LOCKED, and updates vt and read_ct.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Topic Routing & Fan-Out Engine",
+      "role": "AMQP-Style Publish/Subscribe Router",
+      "primaryFiles": [
+        "pgmq-extension/sql/pgmq.sql",
+        "pgmq-rs/src/pg_ext/mod.rs"
+      ],
+      "publicInterfaces": [
+        "pgmq.bind_topic(pattern TEXT, queue_name TEXT)",
+        "pgmq.unbind_topic(pattern TEXT, queue_name TEXT)",
+        "pgmq.test_routing(routing_key TEXT)",
+        "pgmq.send_topic(routing_key TEXT, msg JSONB, headers JSONB, delay INTEGER)",
+        "pgmq.send_batch_topic(routing_key TEXT, msgs JSONB[], headers JSONB[], delay TIMESTAMP WITH TIME ZONE)",
+        "pgmq.list_topic_bindings()",
+        "pgmq.list_topic_bindings(queue_name TEXT)"
+      ],
+      "dependencies": [
+        "Queue Storage & Table Manager",
+        "Message Ingestion & Batch Engine"
+      ],
+      "stateManaged": [
+        "pgmq.topic_bindings (pattern, queue_name, bound_at, compiled_regex GENERATED STORED)",
+        "Covering index idx_topic_bindings_covering ON pgmq.topic_bindings (pattern) INCLUDE (queue_name, compiled_regex)"
+      ],
+      "evidence": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          1967,
+          2001
+        ],
+        "symbol": "pgmq.send_topic",
+        "observation": "Validates routing key format, scans topic_bindings using index-backed regex matching (routing_key ~ tb.compiled_regex), dedupes target queues, and dispatches pgmq.send into all matching queues inside a single atomic PostgreSQL transaction.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Insert Notification & Throttle Manager",
+      "role": "PostgreSQL LISTEN/NOTIFY Event Publisher",
+      "primaryFiles": [
+        "pgmq-extension/sql/pgmq.sql",
+        "pgmq-rs/src/pg_ext/mod.rs"
+      ],
+      "publicInterfaces": [
+        "pgmq.enable_notify_insert(queue_name TEXT, throttle_interval_ms INTEGER)",
+        "pgmq.disable_notify_insert(queue_name TEXT)",
+        "pgmq.update_notify_insert(queue_name TEXT, throttle_interval_ms INTEGER)",
+        "pgmq.list_notify_insert_throttles()",
+        "pgmq.notify_queue_listeners()"
+      ],
+      "dependencies": [
+        "Queue Storage & Table Manager"
+      ],
+      "stateManaged": [
+        "pgmq.notify_insert_throttle (unlogged table: queue_name, throttle_interval_ms, last_notified_at)",
+        "trigger_notify_queue_insert_listeners (deferrable AFTER INSERT constraint trigger on pgmq.q_<name>)"
+      ],
+      "evidence": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          1656,
+          1682
+        ],
+        "symbol": "pgmq.notify_queue_listeners",
+        "observation": "Trigger updates notify_insert_throttle setting last_notified_at = clock_timestamp() where elapsed time >= throttle interval; if GET DIAGNOSTICS ROW_COUNT > 0, performs PG_NOTIFY('pgmq.' || TG_TABLE_NAME || '.' || TG_OP, NULL).",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Archival & Deletion Engine",
+      "role": "Terminal State Finalizer",
+      "primaryFiles": [
+        "pgmq-extension/sql/pgmq.sql",
+        "pgmq-rs/src/pg_ext/mod.rs"
+      ],
+      "publicInterfaces": [
+        "pgmq.archive(queue_name TEXT, msg_id BIGINT)",
+        "pgmq.archive(queue_name TEXT, msg_ids BIGINT[])",
+        "pgmq.delete(queue_name TEXT, msg_id BIGINT)",
+        "pgmq.delete(queue_name TEXT, msg_ids BIGINT[])"
+      ],
+      "dependencies": [
+        "Queue Storage & Table Manager"
+      ],
+      "stateManaged": [
+        "Deletions from pgmq.q_<queue_name>",
+        "Insertions into pgmq.a_<queue_name> with archived_at timestamp"
+      ],
+      "evidence": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          578,
+          637
+        ],
+        "symbol": "pgmq.archive",
+        "observation": "Executes CTE deleting message from pgmq.q_<name> and inserting returned payload, headers, and metadata into pgmq.a_<name> with archived_at = now() within an atomic statement.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Rust Client SDK & Migration Driver",
+      "role": "Client Integration & Protocol Library",
+      "primaryFiles": [
+        "pgmq-rs/src/lib.rs",
+        "pgmq-rs/src/pg_ext/mod.rs",
+        "pgmq-rs/src/install/mod.rs",
+        "pgmq-rs/src/types/queue_name.rs"
+      ],
+      "publicInterfaces": [
+        "PGMQueueExt::new(url, max_connections)",
+        "PGMQueueExt::new_with_pool(pool)",
+        "PGMQueueExt::init()",
+        "PGMQueueExt::install_sql_from_embedded()",
+        "PGMQueueExt::install_sql_from_github(version)",
+        "PGMQueueExt::queue_insert_listener(queue_name)"
+      ],
+      "dependencies": [
+        "sqlx",
+        "tokio",
+        "serde",
+        "serde_json",
+        "chrono"
+      ],
+      "stateManaged": [
+        "Connection pool (sqlx::Pool<Postgres>)",
+        "Applied migrations registry table (pgmq_migrations)",
+        "Queue name validation constraints"
+      ],
+      "evidence": {
+        "filePath": "pgmq-rs/src/pg_ext/mod.rs",
+        "lineRange": [
+          154,
+          170
+        ],
+        "symbol": "PGMQueueExt::init_with_cxn",
+        "observation": "Acquires init_lock advisory lock (pg_advisory_xact_lock(123456)) inside a dedicated transaction before executing CREATE EXTENSION IF NOT EXISTS pgmq CASCADE to prevent catalog race conditions.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    }
+  ],
+  "stateMachines": [
+    {
+      "name": "TaskLifecycle",
+      "states": [
+        "Pending",
+        "Active",
+        "Delayed",
+        "Archived",
+        "Deleted"
+      ],
+      "initialState": "Pending",
+      "terminalStates": [
+        "Archived",
+        "Deleted"
+      ],
+      "transitions": [
+        {
+          "from": "Pending",
+          "to": "Active",
+          "event": "Consumer Read / Dequeue",
+          "guardConditions": [
+            "vt <= clock_timestamp()",
+            "message matches conditional filter (if specified)",
+            "message is not locked by concurrent transaction"
+          ],
+          "mechanism": "pgmq.read CTE with SELECT msg_id FROM pgmq.q_<queue> WHERE vt <= clock_timestamp() ORDER BY msg_id ASC LIMIT $1 FOR UPDATE SKIP LOCKED followed by UPDATE setting vt = clock_timestamp() + interval and read_ct = read_ct + 1",
+          "evidence": {
+            "filePath": "pgmq-extension/sql/pgmq.sql",
+            "lineRange": [
+              351,
+              375
+            ],
+            "observation": "Locks candidate rows using SKIP LOCKED and updates vt, read_ct, and last_read_at atomically.",
+            "luaOrCodeBehavior": "WITH cte AS (SELECT msg_id FROM pgmq.q_<queue> WHERE vt <= clock_timestamp() ORDER BY msg_id ASC LIMIT $1 FOR UPDATE SKIP LOCKED) UPDATE pgmq.q_<queue> m SET last_read_at = clock_timestamp(), vt = clock_timestamp() + $interval, read_ct = read_ct + 1 FROM cte WHERE m.msg_id = cte.msg_id RETURNING ...",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Active",
+          "to": "Active",
+          "event": "Visibility Timeout Extension (Heartbeat)",
+          "guardConditions": [
+            "message exists in pgmq.q_<queue>"
+          ],
+          "mechanism": "pgmq.set_vt(queue_name, msg_id, vt) executes UPDATE pgmq.q_<queue> SET vt = $1 WHERE msg_id = $2 RETURNING ...",
+          "evidence": {
+            "filePath": "pgmq-extension/sql/pgmq.sql",
+            "lineRange": [
+              998,
+              1008
+            ],
+            "observation": "Updates vt timestamp directly without modifying read_ct or enqueued_at, extending consumer exclusive lease.",
+            "luaOrCodeBehavior": "UPDATE pgmq.%I SET vt = $1 WHERE msg_id = $2 RETURNING msg_id, read_ct, enqueued_at, last_read_at, vt, message, headers;",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Active",
+          "to": "Pending",
+          "event": "Visibility Timeout Expiration (Task Stalled / Worker Crash)",
+          "guardConditions": [
+            "clock_timestamp() > vt",
+            "message was not deleted or archived"
+          ],
+          "mechanism": "Automatic time progression: vt <= clock_timestamp() makes message eligible for subsequent SELECT ... FOR UPDATE SKIP LOCKED scans.",
+          "evidence": {
+            "filePath": "pgmq-extension/sql/pgmq.sql",
+            "lineRange": [
+              355,
+              361
+            ],
+            "observation": "Messages with vt in the past are immediately selected by subsequent pgmq.read calls with incremented read_ct.",
+            "luaOrCodeBehavior": "WHERE vt <= clock_timestamp()",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Active",
+          "to": "Archived",
+          "event": "Message Archival",
+          "guardConditions": [
+            "message exists in pgmq.q_<queue>"
+          ],
+          "mechanism": "pgmq.archive executing atomic CTE: WITH archived AS (DELETE FROM pgmq.q_<queue> WHERE msg_id = $1 RETURNING ...) INSERT INTO pgmq.a_<queue> SELECT ...",
+          "evidence": {
+            "filePath": "pgmq-extension/sql/pgmq.sql",
+            "lineRange": [
+              591,
+              605
+            ],
+            "observation": "Deletes from active queue table and inserts row into archive table in a single atomic SQL statement.",
+            "luaOrCodeBehavior": "WITH archived AS (DELETE FROM pgmq.%I WHERE msg_id = $1 RETURNING msg_id, vt, read_ct, enqueued_at, last_read_at, message, headers) INSERT INTO pgmq.%I (msg_id, vt, read_ct, enqueued_at, last_read_at, message, headers) SELECT msg_id, vt, read_ct, enqueued_at, last_read_at, message, headers FROM archived RETURNING msg_id;",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Active",
+          "to": "Deleted",
+          "event": "Message Deletion",
+          "guardConditions": [
+            "message exists in pgmq.q_<queue>"
+          ],
+          "mechanism": "pgmq.delete executes DELETE FROM pgmq.q_<queue> WHERE msg_id = $1 RETURNING msg_id",
+          "evidence": {
+            "filePath": "pgmq-extension/sql/pgmq.sql",
+            "lineRange": [
+              651,
+              661
+            ],
+            "observation": "Permanently deletes message row from active queue table.",
+            "luaOrCodeBehavior": "DELETE FROM pgmq.%I WHERE msg_id = $1 RETURNING msg_id",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Pending",
+          "to": "Deleted",
+          "event": "Message Pop",
+          "guardConditions": [
+            "vt <= clock_timestamp()",
+            "row locked via FOR UPDATE SKIP LOCKED"
+          ],
+          "mechanism": "pgmq.pop executes CTE WITH cte AS (SELECT msg_id FROM pgmq.q_<queue> WHERE vt <= clock_timestamp() ORDER BY msg_id ASC LIMIT $1 FOR UPDATE SKIP LOCKED) DELETE FROM pgmq.q_<queue> WHERE msg_id IN (SELECT msg_id FROM cte) RETURNING ...",
+          "evidence": {
+            "filePath": "pgmq-extension/sql/pgmq.sql",
+            "lineRange": [
+              970,
+              987
+            ],
+            "observation": "Combines visible message selection and permanent deletion in a single atomic CTE statement, skipping the active lease state entirely.",
+            "luaOrCodeBehavior": "WITH cte AS (SELECT msg_id FROM pgmq.%I WHERE vt <= clock_timestamp() ORDER BY msg_id ASC LIMIT $1 FOR UPDATE SKIP LOCKED) DELETE from pgmq.%I WHERE msg_id IN (select msg_id from cte) RETURNING msg_id, read_ct, enqueued_at, last_read_at, vt, message, headers;",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Delayed",
+          "to": "Pending",
+          "event": "Delay Expiration",
+          "guardConditions": [
+            "clock_timestamp() >= vt"
+          ],
+          "mechanism": "Time progression: message was inserted with future vt (e.g. clock_timestamp() + interval); once current time passes vt, it satisfies vt <= clock_timestamp() predicate.",
+          "evidence": {
+            "filePath": "pgmq-extension/sql/pgmq.sql",
+            "lineRange": [
+              700,
+              707
+            ],
+            "observation": "send() inserts row with vt set to future timestamp; no background daemon needed to transition state.",
+            "luaOrCodeBehavior": "INSERT INTO pgmq.%I (vt, message, headers) VALUES ($2, $1, $3) RETURNING msg_id;",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-01",
+      "atomicStatement": "pgmq.read locks candidate rows matching vt <= clock_timestamp() using SELECT FOR UPDATE SKIP LOCKED inside a CTE and advances their vt by make_interval(secs => vt), guaranteeing that concurrent workers never block each other and never acquire the same message lease.",
+      "enforcingMechanism": "CTE with SELECT msg_id FROM pgmq.q_<queue> WHERE vt <= clock_timestamp() ORDER BY msg_id ASC LIMIT $1 FOR UPDATE SKIP LOCKED joined to UPDATE pgmq.q_<queue>.",
+      "sourceLocation": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          350,
+          375
+        ]
+      },
+      "testEvidence": {
+        "filePath": "pgmq-extension/test/sql/base.sql",
+        "testFunction": "test_lifecycle",
+        "lineRange": [
+          29,
+          59
+        ],
+        "observation": "Asserts message read with vt=5 seconds becomes invisible to subsequent read calls until vt expires or is manually reset via set_vt."
+      },
+      "historicalContext": {
+        "commitHash": "9e75580538987d6788c66abf9c501d9785a597e8",
+        "issueOrPr": "PR #501 / Issue #487",
+        "context": "Explicitly selected named return columns in CTE returning statement to prevent deserialization mismatch across extension upgrades."
+      }
+    },
+    {
+      "id": "INV-02",
+      "atomicStatement": "pgmq.archive executes an atomic CTE deleting the message from the active queue table and inserting the returned record into the archive table in a single SQL statement, guaranteeing zero message loss between queue removal and archive persistence.",
+      "enforcingMechanism": "WITH archived AS (DELETE FROM pgmq.q_<queue> WHERE msg_id = $1 RETURNING ...) INSERT INTO pgmq.a_<queue> SELECT ... RETURNING msg_id.",
+      "sourceLocation": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          589,
+          606
+        ]
+      },
+      "testEvidence": {
+        "filePath": "pgmq-extension/test/sql/base.sql",
+        "testFunction": "test_lifecycle",
+        "lineRange": [
+          129,
+          135
+        ],
+        "observation": "Verifies that archiving msg_id 1 removes the message from pgmq.q_test_metrics_queue while preserving it in the archive table."
+      },
+      "historicalContext": {
+        "commitHash": "f5c04a4f20305cba66907c6d7fafa7672d960b8b",
+        "issueOrPr": "PR #338",
+        "context": "Added headers column persistence during message archival to preserve full message envelope."
+      }
+    },
+    {
+      "id": "INV-03",
+      "atomicStatement": "pgmq.pop selects visible messages with FOR UPDATE SKIP LOCKED and deletes them in a single atomic CTE statement, returning the full message record and guaranteeing exactly-once destructive consumption without an intermediate active lease state.",
+      "enforcingMechanism": "WITH cte AS (SELECT msg_id FROM pgmq.q_<queue> WHERE vt <= clock_timestamp() ORDER BY msg_id ASC LIMIT $1 FOR UPDATE SKIP LOCKED) DELETE FROM pgmq.q_<queue> WHERE msg_id IN (SELECT msg_id FROM cte) RETURNING ...",
+      "sourceLocation": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          962,
+          988
+        ]
+      },
+      "testEvidence": {
+        "filePath": "pgmq-extension/test/sql/base.sql",
+        "testFunction": "test_lifecycle",
+        "lineRange": [
+          78,
+          80
+        ],
+        "observation": "Asserts pop removes and returns messages atomically without requiring subsequent delete call."
+      },
+      "historicalContext": {
+        "commitHash": "e7c5c9349e3bee19bbb1df6c915b575660716d7a",
+        "issueOrPr": "PR #433 / #1",
+        "context": "Added multi-value batch pop with qty parameter defaulting to 1."
+      }
+    },
+    {
+      "id": "INV-04",
+      "atomicStatement": "pgmq.read_grouped enforces AWS SQS-style FIFO ordering by filtering out entire message groups if an older message in that group is currently in-flight (m2.vt > clock_timestamp() AND m2.msg_id < gp.min_msg_id).",
+      "enforcingMechanism": "filtered_groups CTE checks NOT EXISTS (SELECT 1 FROM pgmq.q_<queue> m2 WHERE COALESCE(m2.headers->>'x-pgmq-group', '_default_fifo_group') = gp.fifo_key AND m2.vt > clock_timestamp() AND m2.msg_id < gp.min_msg_id).",
+      "sourceLocation": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          423,
+          433
+        ]
+      },
+      "testEvidence": {
+        "filePath": "pgmq-extension/test/sql/fifo_tests.sql",
+        "testFunction": "test_fifo_sqs_style_basic_batch_filling",
+        "lineRange": [
+          26,
+          33
+        ],
+        "observation": "Asserts that batch read on multiple groups returns all messages from group A first before filling remaining batch slots from group B."
+      },
+      "historicalContext": {
+        "commitHash": "6e102ce3f450bf013b56b674121c179f1be42a89",
+        "issueOrPr": "PR #497 / Issue #496",
+        "context": "Bounded lateral subquery in read_grouped with LIMIT $1 to prevent sequential scan over entire message groups."
+      }
+    },
+    {
+      "id": "INV-05",
+      "atomicStatement": "pgmq.read_grouped_rr acquires transaction-level advisory locks on individual FIFO group keys via pg_try_advisory_xact_lock(hashtextextended(fifo_key, 0)) to guarantee mutual exclusion across concurrent workers processing the same message group.",
+      "enforcingMechanism": "eligible_groups CTE filter predicate: h.vt <= clock_timestamp() AND pg_try_advisory_xact_lock(pg_catalog.hashtextextended(g.fifo_key, 0)).",
+      "sourceLocation": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          146,
+          157
+        ]
+      },
+      "testEvidence": {
+        "filePath": "pgmq-extension/test/sql/fifo_rr_tests.sql",
+        "testFunction": "test_layered_round_robin_pattern",
+        "lineRange": [
+          58,
+          76
+        ],
+        "observation": "Verifies that read_grouped_rr interleaves messages across groups g1, g2, g3 in exact rank order ['g1','g2','g3','g1','g2','g3',...] while locking each group exclusively."
+      },
+      "historicalContext": {
+        "commitHash": "2129a38119afa29a5d302fea48cfe28e442984ff",
+        "issueOrPr": "PR #477 / Issue #476",
+        "context": "Fixed selection order assignment prior to FOR UPDATE locking to guarantee strict round-robin layering."
+      }
+    },
+    {
+      "id": "INV-06",
+      "atomicStatement": "pgmq.read_grouped_head selects at most one message per distinct FIFO group (the head message with MIN(msg_id) where vt <= clock_timestamp()) across N groups in a single query with FOR UPDATE SKIP LOCKED.",
+      "enforcingMechanism": "selected_messages CTE selects head_msg_id from grouped head messages, filtered by q.vt <= clock_timestamp() with ORDER BY q.msg_id LIMIT $1 FOR UPDATE SKIP LOCKED.",
+      "sourceLocation": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          257,
+          274
+        ]
+      },
+      "testEvidence": {
+        "filePath": "pgmq-extension/client-tests/read_grouped_head_test.py",
+        "testFunction": "test_read_grouped_head",
+        "lineRange": [
+          76,
+          126
+        ],
+        "observation": "Asserts two concurrent database connections (conn1 and conn2) calling read_grouped_head simultaneously acquire completely disjoint sets of group heads without contention or duplicate delivery."
+      },
+      "historicalContext": {
+        "commitHash": "6331a0ef0716e891a13289ee541dfe3586397acd",
+        "issueOrPr": "PR #481 / Issue #478",
+        "context": "Introduced dedicated read_grouped_head function to optimize parallel worker scaling across thousands of independent message groups."
+      }
+    },
+    {
+      "id": "INV-07",
+      "atomicStatement": "Queue DDL operations (create, create_unlogged, create_partitioned, drop_queue) acquire an exclusive transaction-level advisory lock pg_advisory_xact_lock(hashtext('pgmq.queue_' || queue_name)), guaranteeing idempotent queue management without catalog race conditions.",
+      "enforcingMechanism": "PERFORM pg_advisory_xact_lock(hashtext('pgmq.queue_' || queue_name)) inside pgmq.acquire_queue_lock.",
+      "sourceLocation": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          117,
+          122
+        ]
+      },
+      "testEvidence": {
+        "filePath": "pgmq-rs/tests/pg_ext_integration_test.rs",
+        "testFunction": "init_queue_ext",
+        "lineRange": [
+          38,
+          44
+        ],
+        "observation": "Tests concurrent queue creation and deletion verifying that idempotent operations complete with Ok(true) / Ok(false) rather than PostgreSQL unique constraint errors."
+      },
+      "historicalContext": {
+        "commitHash": "196482b797a1a7d6c68db03af25fc98c812a1677",
+        "issueOrPr": "PR #520",
+        "context": "Wrapped PGMQueueExt::create in an explicit transaction with pgmq.acquire_queue_lock to fix race condition returning Ok(true) concurrently."
+      }
+    },
+    {
+      "id": "INV-08",
+      "atomicStatement": "pgmq.send_topic evaluates message routing keys against precompiled SQL regular expressions in pgmq.topic_bindings and fans out inserts across all matched distinct queue tables within a single atomic PostgreSQL transaction.",
+      "enforcingMechanism": "WHERE routing_key ~ tb.compiled_regex filter with DISTINCT tb.queue_name loop invoking pgmq.send in caller transaction.",
+      "sourceLocation": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          1989,
+          2000
+        ]
+      },
+      "testEvidence": {
+        "filePath": "pgmq-extension/client-tests/topics_test.py",
+        "testFunction": "test_send_topic",
+        "lineRange": [
+          1,
+          100
+        ],
+        "observation": "Asserts that sending a topic message with routing key 'app.user-service.auth' routes copies to all bound queues matching 'app.*.auth' and 'app.#' and returns total queue count."
+      },
+      "historicalContext": {
+        "commitHash": "8625be2fe0238162876cc386db68e0d3a0c0db90",
+        "issueOrPr": "PR #486 / Issue #455",
+        "context": "Implemented AMQP topic routing with wildcard translations (* to [^.]+, # to .*) stored in generated compiled_regex columns."
+      }
+    },
+    {
+      "id": "INV-09",
+      "atomicStatement": "pgmq.notify_queue_listeners executes an atomic conditional update against unlogged table pgmq.notify_insert_throttle and only issues PG_NOTIFY if clock_timestamp() - last_notified_at >= throttle_interval_ms, preventing notification flooding.",
+      "enforcingMechanism": "UPDATE pgmq.notify_insert_throttle SET last_notified_at = clock_timestamp() WHERE queue_name = queue_name_extracted AND (throttle_interval_ms = 0 OR clock_timestamp() - last_notified_at >= throttle_interval_ms * INTERVAL '1 millisecond') followed by GET DIAGNOSTICS updated_count = ROW_COUNT.",
+      "sourceLocation": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          1664,
+          1678
+        ]
+      },
+      "testEvidence": {
+        "filePath": "pgmq-extension/client-tests/extended_notify_test.py",
+        "testFunction": "test_throttling_mechanism",
+        "lineRange": [
+          283,
+          327
+        ],
+        "observation": "Asserts that rapidly sending 5 messages with a 1000ms throttle interval emits exactly 1 notification, and subsequent message sent after 1.5s emits a second notification."
+      },
+      "historicalContext": {
+        "commitHash": "ce0a4a6c6be7db51b6509b93272ababbc0fdd3f3",
+        "issueOrPr": "PR #493 / #491",
+        "context": "Added rate-limiting table and throttle management APIs for insert notifications."
+      }
+    },
+    {
+      "id": "INV-10",
+      "atomicStatement": "pgmq.purge_queue queries current row count and executes TRUNCATE TABLE pgmq.q_<queue_name>, immediately resetting table storage and sequence pages for high-throughput clearing without generating individual row-delete WAL entries.",
+      "enforcingMechanism": "EXECUTE format('SELECT count(*) FROM pgmq.%I', qtable) INTO deleted_count; EXECUTE format('TRUNCATE TABLE pgmq.%I', qtable); RETURN deleted_count;",
+      "sourceLocation": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          934,
+          949
+        ]
+      },
+      "testEvidence": {
+        "filePath": "pgmq-extension/test/sql/fifo_tests.sql",
+        "testFunction": "purge_queue_cleanup",
+        "lineRange": [
+          35,
+          36
+        ],
+        "observation": "Verifies that purge_queue truncates queue table and resets row count to 0 between test scenarios."
+      },
+      "historicalContext": {
+        "commitHash": "11bc0202183cd981e07ffb5c63303235ad55625e",
+        "issueOrPr": "PR #448",
+        "context": "Standardized purge_queue return type to BIGINT representing purged row count."
+      }
+    }
+  ],
+  "failureModesAndDefenses": [
+    {
+      "failureMode": "Worker Crash or Network Partition during Message Processing causing Active Lease Starvation",
+      "detectionMechanism": "Automatic expiration of visibility timeout: current time exceeds vt (clock_timestamp() > vt).",
+      "recoveryAction": "No background sweeper or dead-letter daemon required. Any subsequent consumer calling pgmq.read or pgmq.pop will match vt <= clock_timestamp() and re-lease the message with an incremented read_ct.",
+      "sourceEvidence": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          355,
+          368
+        ],
+        "observation": "WHERE vt <= clock_timestamp() automatically re-includes abandoned messages in candidate dequeue sets."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "Core Architecture",
+        "rootCause": "Traditional message queues require central heartbeat monitors or lease swept lists that can fail during coordinator partitions.",
+        "fixDescription": "Utilized PostgreSQL row-level timestamps (vt) and transactional MVCC state to make stalled message recovery purely query-driven."
+      },
+      "prescribedMitigation": "Consumers must track read_ct and route messages to an application-level dead-letter queue or archive table when read_ct exceeds a maximum threshold (e.g. read_ct > 5)."
+    },
+    {
+      "failureMode": "Concurrent Queue Extension Initialization Race Violating pg_namespace Unique Constraint",
+      "detectionMechanism": "PostgreSQL error 23505 (duplicate key value violates unique constraint 'pg_namespace_nspname_index' on pg_namespace) when multiple application instances call PGMQueueExt::init concurrently during service boot.",
+      "recoveryAction": "Acquire explicit transaction-level advisory lock pg_advisory_xact_lock(123456) in init_with_cxn before executing CREATE EXTENSION IF NOT EXISTS pgmq CASCADE.",
+      "sourceEvidence": {
+        "filePath": "pgmq-rs/src/pg_ext/mod.rs",
+        "lineRange": [
+          158,
+          164
+        ],
+        "observation": "Calls crate::util::init_lock(&mut txn) before executing CREATE EXTENSION."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "Fixes #519 (commit 142c7f8491f64cb87baa6bfa1f2d9b4d09dbd0f7)",
+        "rootCause": "CREATE EXTENSION IF NOT EXISTS in PostgreSQL performs non-atomic catalog lookups and insertions that conflict under high concurrency.",
+        "fixDescription": "Added transaction advisory lock init_lock on lock key 123456 before running extension DDL."
+      },
+      "prescribedMitigation": "Always gate database extension creation and schema migrations behind a global transaction-level advisory lock."
+    },
+    {
+      "failureMode": "High-Frequency Enqueue Flooding LISTEN/NOTIFY Channels Exhausting PostgreSQL Notification Queue",
+      "detectionMechanism": "PostgreSQL NOTIFY queue buffer saturation (8GB limit) or excessive CPU consumption on connected listener sockets under high-throughput batch inserts.",
+      "recoveryAction": "Gated NOTIFY trigger execution behind an unlogged rate-limiting table pgmq.notify_insert_throttle, enforcing a configurable millisecond cooldown (default 250ms).",
+      "sourceEvidence": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          1664,
+          1678
+        ],
+        "observation": "Trigger updates last_notified_at in pgmq.notify_insert_throttle and skips PG_NOTIFY if elapsed time < throttle_interval_ms."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "PR #493 / Issue #491",
+        "rootCause": "Un-throttled AFTER INSERT triggers emitted one PG_NOTIFY message per inserted row, overwhelming client event loops during batch ingestion.",
+        "fixDescription": "Implemented unlogged notify_insert_throttle table and conditional trigger logic with enable_notify_insert / update_notify_insert APIs."
+      },
+      "prescribedMitigation": "Use UNLOGGED throttle tables for transient rate-limiting state and configure client listeners to combine push notifications with polling fallbacks."
+    },
+    {
+      "failureMode": "Integer Division Underflow in read_with_poll Causing 100% CPU Busy-Wait Spinning",
+      "detectionMechanism": "read_with_poll using 100% CPU when poll_interval_ms is set to a sub-second interval (< 1000ms).",
+      "recoveryAction": "Explicitly cast poll_interval_ms to numeric before dividing by 1000 in pg_sleep(poll_interval_ms::numeric / 1000).",
+      "sourceEvidence": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          237,
+          238
+        ],
+        "observation": "Executes PERFORM pg_sleep(poll_interval_ms::numeric / 1000) to ensure fractional second sleep intervals."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "PR #343 (commit 897f666c7aab27ab221a03b5365cb95c2e977b51)",
+        "rootCause": "In PL/pgSQL, integer division (e.g. 250 / 1000) truncates to integer 0, causing pg_sleep(0) to execute in a zero-delay tight loop.",
+        "fixDescription": "Cast poll_interval_ms to ::numeric before division."
+      },
+      "prescribedMitigation": "Always cast integer millisecond parameters to numeric or float before performing unit conversion arithmetic in SQL functions."
+    },
+    {
+      "failureMode": "Message Column Deserialization Mismatch Across Upgrades Due to RETURNING * Wildcard",
+      "detectionMechanism": "Rust Diesel / SQLx client deserialization errors (column index mismatch or missing fields) after adding headers or last_read_at columns to message tables.",
+      "recoveryAction": "Explicitly enumerate all returned column names in exact order matching message_record type (msg_id, read_ct, enqueued_at, last_read_at, vt, message, headers) across all DML functions.",
+      "sourceEvidence": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "lineRange": [
+          370,
+          371
+        ],
+        "observation": "RETURNING clause explicitly names m.msg_id, m.read_ct, m.enqueued_at, m.last_read_at, m.vt, m.message, m.headers."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "PR #501 / Issue #487",
+        "rootCause": "Using RETURNING * in SQL functions returned columns in underlying physical storage order, breaking client drivers that expect stable ordinal column positions.",
+        "fixDescription": "Replaced all RETURNING * statements with explicit column lists in read, pop, set_vt, and archive functions."
+      },
+      "prescribedMitigation": "Never use SELECT * or RETURNING * in public database extension APIs; explicitly name all projected columns."
+    }
+  ],
+  "historicalEvolution": [
+    {
+      "milestoneOrBug": "Race Condition in PGMQueueExt::create Concurrent Execution",
+      "commitHash": "196482b797a1a7d6c68db03af25fc98c812a1677",
+      "issueOrPr": "PR #520",
+      "rootCause": "PGMQueueExt::create performed existence check on pgmq.meta without locking, allowing two concurrent processes to both receive Ok(true) and race on table creation.",
+      "architecturalFix": "Wrapped creation check and table creation inside an explicit transaction acquiring pgmq.acquire_queue_lock before checking pgmq.meta.",
+      "affectedFiles": [
+        "pgmq-rs/src/pg_ext/mod.rs",
+        "pgmq-rs/tests/pg_ext_integration_test.rs"
+      ],
+      "evidence": {
+        "filePath": "pgmq-rs/src/pg_ext/mod.rs",
+        "observation": "Acquires queue lock transaction via acquire_queue_lock_with_cxn before querying pgmq.meta existence."
+      }
+    },
+    {
+      "milestoneOrBug": "Race Condition in PGMQueueExt::init Extension Creation",
+      "commitHash": "142c7f8491f64cb87baa6bfa1f2d9b4d09dbd0f7",
+      "issueOrPr": "PR #519",
+      "rootCause": "Concurrent initialization of PGMQ extension across multiple worker threads raised unique constraint violation 23505 on pg_namespace.",
+      "architecturalFix": "Added transaction advisory lock init_lock (pg_advisory_xact_lock(123456)) before executing CREATE EXTENSION IF NOT EXISTS pgmq CASCADE.",
+      "affectedFiles": [
+        "pgmq-rs/src/pg_ext/mod.rs",
+        "pgmq-rs/src/util.rs"
+      ],
+      "evidence": {
+        "filePath": "pgmq-rs/src/pg_ext/mod.rs",
+        "observation": "Executes crate::util::init_lock(&mut txn) inside init_with_cxn."
+      }
+    },
+    {
+      "milestoneOrBug": "Lateral Subquery Limit Optimization in read_grouped",
+      "commitHash": "6e102ce3f450bf013b56b674121c179f1be42a89",
+      "issueOrPr": "PR #497 / Issue #496",
+      "rootCause": "read_grouped lateral join scanned and ranked all messages across each message group, degrading query performance on large backlogs.",
+      "architecturalFix": "Added LIMIT $1 to the CROSS JOIN LATERAL subquery to restrict message scanning per group to requested batch size qty.",
+      "affectedFiles": [
+        "pgmq-extension/sql/pgmq.sql",
+        "pgmq-extension/test/sql/fifo_tests.sql"
+      ],
+      "evidence": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "observation": "Appended LIMIT $1 to lateral subquery in available_messages CTE."
+      }
+    },
+    {
+      "milestoneOrBug": "Transactional AMQP-Style Topic Routing with Precompiled Regex",
+      "commitHash": "8625be2fe0238162876cc386db68e0d3a0c0db90",
+      "issueOrPr": "PR #486 / Issue #455",
+      "rootCause": "Lack of publish-subscribe and pattern-based fan-out required application code to manually enumerate and send messages to multiple queues.",
+      "architecturalFix": "Added pgmq.topic_bindings table with STORED generated column compiled_regex, converting wildcard patterns (* to [^.]+, # to .*) and executing atomic multi-queue fan-out in send_topic / send_batch_topic.",
+      "affectedFiles": [
+        "pgmq-extension/sql/pgmq.sql",
+        "pgmq-extension/client-tests/topics_test.py",
+        "pgmq-extension/test/sql/topic_tests.sql"
+      ],
+      "evidence": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "observation": "Stores compiled regex in generated column and scans bindings using index-only pattern matching."
+      }
+    },
+    {
+      "milestoneOrBug": "Parallel Multi-Group Head Dequeuing via read_grouped_head",
+      "commitHash": "6331a0ef0716e891a13289ee541dfe3586397acd",
+      "issueOrPr": "PR #481 / Issue #478",
+      "rootCause": "Standard FIFO dequeuing concentrated batch reads into a single group, limiting horizontal throughput across independent groups.",
+      "architecturalFix": "Introduced read_grouped_head and read_grouped_head_with_poll to extract exactly 1 head message per group across N distinct groups with FOR UPDATE SKIP LOCKED.",
+      "affectedFiles": [
+        "pgmq-extension/sql/pgmq.sql",
+        "pgmq-extension/client-tests/read_grouped_head_test.py",
+        "pgmq-extension/test/sql/fifo_per_group_tests.sql"
+      ],
+      "evidence": {
+        "filePath": "pgmq-extension/sql/pgmq.sql",
+        "observation": "Aggregates MIN(msg_id) per FIFO group and locks head rows with LIMIT $1 FOR UPDATE SKIP LOCKED."
+      }
+    }
+  ],
+  "unresolvedContradictionsAndBypasses": [
+    {
+      "claimOrGuarantee": "Worker has exclusive ownership of a message during its visibility timeout window.",
+      "contradictionOrBypass": "If worker execution stalls (e.g. long GC pause, slow HTTP request) for longer than visibility timeout vt, the message becomes visible again in PostgreSQL and a second worker can read it. When the first worker completes, its call to pgmq.delete(queue, msg_id) or pgmq.archive(queue, msg_id) lacks token fencing (it only matches msg_id without checking current vt, worker_id, or read_ct). The stalled worker will successfully delete or archive the row while the second worker is still executing, leading to silent dual execution and race conditions.",
+      "codeLocation": "pgmq-extension/sql/pgmq.sql:L641-L685 and pgmq-extension/sql/pgmq.sql:L578-L637",
+      "evidence": "DELETE FROM pgmq.q_<queue> WHERE msg_id = $1 executes unconditionally on msg_id with zero lease token validation."
+    },
+    {
+      "claimOrGuarantee": "Partitioned queues scale write and read throughput smoothly across large backlogs.",
+      "contradictionOrBypass": "When pg_partman creates new partition tables dynamically during message ingestion, PostgreSQL requires ACCESS EXCLUSIVE locks on the parent table pgmq.q_<queue>. Under high concurrent enqueue/dequeue loads, this lock acquisition blocks all concurrent transactions and can trigger lock wait timeouts or deadlocks.",
+      "codeLocation": "pgmq-extension/sql/pgmq.sql:L1357-L1509",
+      "evidence": "create_partitioned configures automatic_maintenance on pg_partman parent tables, requiring table lock escalation during partition rollout."
+    },
+    {
+      "claimOrGuarantee": "Conditional message filtering in pgmq.read allows high-performance content-based consumption.",
+      "contradictionOrBypass": "The queue table index is only on vt ASC (q_<queue>_vt_idx). When conditional is passed (e.g. message @> '{\"priority\": \"high\"}'), PostgreSQL must perform sequential filter evaluations on JSONB payloads during CTE candidate selection. In queues with millions of visible rows, this causes heavy CPU consumption and slow index scans unless custom partial or GIN indexes are manually added.",
+      "codeLocation": "pgmq-extension/sql/pgmq.sql:L355-L361",
+      "evidence": "WHERE vt <= clock_timestamp() AND CASE WHEN %L != '{}'::jsonb THEN (message @> %2$L)::integer ELSE 1 END = 1 relies on B-tree vt index without JSONB message indexing."
+    },
+    {
+      "claimOrGuarantee": "purge_queue safely clears a queue within active production workloads.",
+      "contradictionOrBypass": "purge_queue executes TRUNCATE TABLE pgmq.q_<queue>. TRUNCATE acquires an ACCESS EXCLUSIVE lock on the table, blocking all concurrent transactions (read, send, archive, delete) until the truncate transaction completes.",
+      "codeLocation": "pgmq-extension/sql/pgmq.sql:L934-L949",
+      "evidence": "EXECUTE format('TRUNCATE TABLE pgmq.%I', qtable) forces table-level ACCESS EXCLUSIVE lock."
+    },
+    {
+      "claimOrGuarantee": "Insert notifications reliably alert workers of incoming messages in real-time.",
+      "contradictionOrBypass": "PostgreSQL NOTIFY is an asynchronous, fire-and-forget protocol that does not persist messages. If no worker is currently connected and actively listening via LISTEN, or if a network disconnect occurs, the notification is permanently dropped. Furthermore, pgmq.notify_insert_throttle is an UNLOGGED table whose state is wiped on database restart or failover, resetting all throttle timers.",
+      "codeLocation": "pgmq-extension/sql/pgmq.sql:L35-L46 and pgmq-extension/sql/pgmq.sql:L1656-L1682",
+      "evidence": "CREATE UNLOGGED TABLE pgmq.notify_insert_throttle does not write WAL and PG_NOTIFY does not queue undelivered events."
+    }
+  ],
+  "adversarialCritique": {
+    "boundaryConditions": [
+      "Process stalls, heavy GC pauses, or slow network I/O exceeding visibility timeout vt cause duplicate execution because PGMQ lacks monotonic worker fencing tokens on delete/archive operations.",
+      "Dynamic partition creation in pg_partman triggers ACCESS EXCLUSIVE lock escalation on parent queue tables, creating latency spikes and transaction queueing under high concurrent write loads.",
+      "High-throughput conditional read queries (message @> conditional) without custom GIN indexes degrade to sequential filter evaluations across visible rows, causing CPU saturation.",
+      "PostgreSQL NOTIFY buffer limits (8GB shared memory queue) can overflow if high-volume queues are un-throttled or listeners fall behind processing notifications.",
+      "TRUNCATE in purge_queue halts all concurrent reader and writer transactions due to ACCESS EXCLUSIVE lock acquisition."
+    ],
+    "untestedAssumptions": [
+      "Assumes consumer task completion time is strictly less than visibility timeout vt; does not provide automatic background lease renewal in client libraries.",
+      "Assumes client applications gracefully handle at-least-once duplicate delivery resulting from network partitions, worker crashes, or lease expiration races.",
+      "Assumes application code establishes reliable fallback polling mechanisms (read_with_poll) alongside insert notifications (LISTEN/NOTIFY) to handle lost transient notifications.",
+      "Assumes database server system clock advances monotonically; clock jumps backward can stall visible message dequeueing or prematurely re-expose in-flight tasks."
+    ],
+    "acceptedTradeOffs": [
+      "At-least-once delivery over strict exactly-once: duplicates can occur under worker crash or lease expiration without requiring distributed two-phase commit coordinators across workers.",
+      "Relational table storage over in-memory append-only logs: trades extreme raw throughput (e.g. Redis/Kafka) for native PostgreSQL ACID transactions, relational querying, and seamless integration with existing database schemas.",
+      "Unlogged throttle state over WAL-logged durability: trades persistence of notification rate-limiting metadata across server restarts for reduced write amplification and zero WAL overhead on high-frequency triggers.",
+      "B-tree index on vt over multi-column indexes: keeps write amplification low during message insertion at the expense of requiring custom indexes for heavy JSONB conditional filtering.",
+      "TRUNCATE in purge_queue over row-by-row DELETE: accepts short ACCESS EXCLUSIVE lock interruption to achieve instantaneous queue clearing without generating massive WAL volume."
+    ]
+  }
+}

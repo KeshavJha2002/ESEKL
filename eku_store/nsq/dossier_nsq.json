@@ -1,0 +1,1187 @@
+{
+  "repoName": "nsqio/nsq",
+  "domain": "message_queues",
+  "gitCommitHash": "85cf10c09c6c3c86160d6f0eb156f62d0efc1648",
+  "analyzedAt": "2026-08-22T16:10:00.000Z",
+  "overview": {
+    "purpose": "Distributed realtime message processing platform designed to operate at scale, handling billions of messages per day across decentralized topologies without single points of failure.",
+    "architectureType": "Decentralized daemon-based message queue (nsqd) with in-memory Go channels backed by bounded diskqueue spilling, client-driven RDY flow control, probabilistic priority-queue timeout sweepers, and independent discovery nodes (nsqlookupd).",
+    "keyDifferentiators": [
+      "Zero-broker centralized coordination: nsqd nodes operate completely autonomously without peer-to-peer data replication or single points of failure",
+      "Seamless memory-to-disk spilling: high-throughput in-memory channels automatically spill to go-diskqueue files without blocking publishing clients when capacity is reached",
+      "Push-based streaming with client-managed backpressure: consumers dictate batch sizes via RDY count updates, eliminating polling overhead while preventing consumer buffer saturation",
+      "Probabilistic Redis-style queue scanner: worker pool periodically samples random channels for expired in-flight and deferred messages, dynamically looping without sleep under heavy workload bursts",
+      "Independent discovery mesh via nsqlookupd: consumers query stateless lookup daemons for topic producers and establish direct TCP connections to all relevant nsqd daemons"
+    ]
+  },
+  "components": [
+    {
+      "name": "NSQD",
+      "role": "Broker Supervisor & Subsystem Coordinator",
+      "primaryFiles": [
+        "nsqd/nsqd.go",
+        "nsqd/options.go"
+      ],
+      "publicInterfaces": [
+        "New(opts *Options) (*NSQD, error)",
+        "Main() error",
+        "Exit()",
+        "GetTopic(topicName string) *Topic",
+        "GetExistingTopic(topicName string) (*Topic, error)",
+        "DeleteExistingTopic(topicName string) error",
+        "PersistMetadata() error",
+        "LoadMetadata() error",
+        "Notify(v interface{}, persist bool)",
+        "SetHealth(err error)",
+        "IsHealthy() bool"
+      ],
+      "dependencies": [
+        "Topic",
+        "Channel",
+        "tcpServer",
+        "dirlock.DirLock",
+        "clusterinfo.ClusterInfo",
+        "diskqueue.BackendQueue"
+      ],
+      "stateManaged": [
+        "Topic catalog (topicMap sync.RWMutex)",
+        "Daemon runtime state (isLoading, isExiting atomic int32)",
+        "Lookup peer connections (lookupPeers atomic.Value)",
+        "Filesystem directory lock (dirlock.DirLock)",
+        "Queue scan worker pool size (poolSize int)"
+      ],
+      "evidence": {
+        "filePath": "nsqd/nsqd.go",
+        "lineRange": [
+          77,
+          193
+        ],
+        "symbol": "New",
+        "observation": "Initializes NSQD daemon, acquires exclusive non-blocking directory flock on DataPath, builds TLS and ClientTLS configurations, sets up TCP/HTTP/HTTPS listeners, and initializes lookup peer slice.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Topic",
+      "role": "Fan-Out Message Router & Memory/Disk Buffer",
+      "primaryFiles": [
+        "nsqd/topic.go"
+      ],
+      "publicInterfaces": [
+        "NewTopic(topicName string, nsqd *NSQD, deleteCallback func(*Topic)) *Topic",
+        "Start()",
+        "GetChannel(channelName string) *Channel",
+        "GetExistingChannel(channelName string) (*Channel, error)",
+        "DeleteExistingChannel(channelName string) error",
+        "PutMessage(m *Message) error",
+        "PutMessages(msgs []*Message) error",
+        "Pause() error",
+        "UnPause() error",
+        "IsPaused() bool",
+        "Delete() error",
+        "Close() error",
+        "Empty() error",
+        "Depth() int64",
+        "GenerateID() MessageID"
+      ],
+      "dependencies": [
+        "Channel",
+        "NSQD",
+        "BackendQueue (go-diskqueue)",
+        "guidFactory"
+      ],
+      "stateManaged": [
+        "Channel registry (channelMap map[string]*Channel with sync.RWMutex)",
+        "In-memory message FIFO buffer (memoryMsgChan chan *Message)",
+        "Disk queue message FIFO buffer (backend BackendQueue)",
+        "Topic lifecycle flags (exitFlag, paused int32)",
+        "Topic message counters (messageCount, messageBytes uint64)"
+      ],
+      "evidence": {
+        "filePath": "nsqd/topic.go",
+        "lineRange": [
+          223,
+          244
+        ],
+        "symbol": "Topic.put",
+        "observation": "Attempts non-blocking write of incoming Message pointer to memoryMsgChan; on default (channel full or mem-queue-size==0), serializes message to diskqueue via writeMessageToBackend without blocking client.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "Channel",
+      "role": "Isolated Consumer Queue, In-Flight Lease Manager & Priority Queues",
+      "primaryFiles": [
+        "nsqd/channel.go",
+        "nsqd/in_flight_pqueue.go"
+      ],
+      "publicInterfaces": [
+        "NewChannel(topicName string, channelName string, nsqd *NSQD, deleteCallback func(*Channel)) *Channel",
+        "PutMessage(m *Message) error",
+        "PutMessageDeferred(msg *Message, timeout time.Duration)",
+        "TouchMessage(clientID int64, id MessageID, clientMsgTimeout time.Duration) error",
+        "FinishMessage(clientID int64, id MessageID) error",
+        "RequeueMessage(clientID int64, id MessageID, timeout time.Duration) error",
+        "AddClient(clientID int64, client Consumer) error",
+        "RemoveClient(clientID int64)",
+        "StartInFlightTimeout(msg *Message, clientID int64, timeout time.Duration) error",
+        "StartDeferredTimeout(msg *Message, timeout time.Duration) error",
+        "Pause() error",
+        "UnPause() error",
+        "Delete() error",
+        "Close() error",
+        "Empty() error",
+        "Depth() int64"
+      ],
+      "dependencies": [
+        "NSQD",
+        "BackendQueue (go-diskqueue)",
+        "inFlightPqueue",
+        "pqueue.PriorityQueue",
+        "quantile.Quantile"
+      ],
+      "stateManaged": [
+        "Subscribed consumers (clients map[int64]Consumer)",
+        "In-flight messages (inFlightMessages map[MessageID]*Message and inFlightPQ inFlightPqueue with inFlightMutex)",
+        "Deferred messages (deferredMessages map[MessageID]*pqueue.Item and deferredPQ pqueue.PriorityQueue with deferredMutex)",
+        "Memory & Disk queues (memoryMsgChan, zoneLocalMsgChan, regionLocalMsgChan, backend)",
+        "Channel delivery stats (messageCount, requeueCount, timeoutCount uint64)"
+      ],
+      "evidence": {
+        "filePath": "nsqd/channel.go",
+        "lineRange": [
+          557,
+          571
+        ],
+        "symbol": "Channel.popInFlightMessage",
+        "observation": "Atomically locates message in inFlightMessages map, verifies that msg.clientID matches caller clientID, and deletes the entry under inFlightMutex lock before returning msg.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "protocolV2",
+      "role": "Wire Protocol Parser, Client Demultiplexer & Frame Serializer",
+      "primaryFiles": [
+        "nsqd/protocol_v2.go"
+      ],
+      "publicInterfaces": [
+        "NewClient(conn net.Conn) protocol.Client",
+        "IOLoop(c protocol.Client) error",
+        "Exec(client *clientV2, params [][]byte) ([]byte, error)",
+        "Send(client *clientV2, frameType int32, data []byte) error",
+        "SendMessage(client *clientV2, msg *Message) error"
+      ],
+      "dependencies": [
+        "NSQD",
+        "clientV2",
+        "Topic",
+        "Channel",
+        "internal/protocol"
+      ],
+      "stateManaged": [
+        "Client protocol command execution",
+        "Framed response serialization (frameTypeResponse, frameTypeError, frameTypeMessage)",
+        "Client message pump lifecycle and output buffering synchronization"
+      ],
+      "evidence": {
+        "filePath": "nsqd/protocol_v2.go",
+        "lineRange": [
+          213,
+          391
+        ],
+        "symbol": "protocolV2.messagePump",
+        "observation": "Selects over memoryMsgChan, backendMsgChan, client ReadyStateChan, subEventChan, identifyEventChan, heartbeatChan, and flusherChan, delivering messages to client and transitioning messages into inFlight queue with StartInFlightTimeout.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "clientV2",
+      "role": "Client Session State, Heartbeat Monitor & Ready Flow Controller",
+      "primaryFiles": [
+        "nsqd/client_v2.go"
+      ],
+      "publicInterfaces": [
+        "newClientV2(id int64, conn net.Conn, nsqd *NSQD) *clientV2",
+        "Identify(data identifyDataV2) error",
+        "IsReadyForMessages() bool",
+        "SetReadyCount(count int64)",
+        "FinishedMessage()",
+        "SendingMessage()",
+        "TimedOutMessage()",
+        "RequeuedMessage()",
+        "StartClose()",
+        "Pause()",
+        "UnPause()",
+        "Stats(topicName string) ClientStats"
+      ],
+      "dependencies": [
+        "NSQD",
+        "Channel",
+        "internal/auth"
+      ],
+      "stateManaged": [
+        "Client connection and protocol state (State atomic int32)",
+        "Flow control counts (ReadyCount, InFlightCount atomic int64)",
+        "Delivery metrics (MessageCount, FinishCount, RequeueCount uint64)",
+        "Negotiated TLS, Deflate, Snappy compressors and buffered I/O writers"
+      ],
+      "evidence": {
+        "filePath": "nsqd/client_v2.go",
+        "lineRange": [
+          418,
+          433
+        ],
+        "symbol": "clientV2.IsReadyForMessages",
+        "observation": "Evaluates whether consumer channel is not paused, readyCount > 0, and inFlightCount < readyCount to determine if message pump should dequeue messages for transmission.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "QueueScanWorkerPool",
+      "role": "Probabilistic Queue Sweeper & Timeout Recoverer",
+      "primaryFiles": [
+        "nsqd/nsqd.go"
+      ],
+      "publicInterfaces": [
+        "queueScanLoop()",
+        "queueScanWorker(workCh chan *Channel, responseCh chan bool, closeCh chan int)",
+        "resizePool(num int, workCh chan *Channel, responseCh chan bool, closeCh chan int)"
+      ],
+      "dependencies": [
+        "NSQD",
+        "Channel",
+        "internal/pqueue"
+      ],
+      "stateManaged": [
+        "Worker pool size (poolSize int bounded between 1 and QueueScanWorkerPoolMax)",
+        "Channel selection cache refreshed every QueueScanRefreshInterval (default 5s)",
+        "Work and response channels (workCh, responseCh)"
+      ],
+      "evidence": {
+        "filePath": "nsqd/nsqd.go",
+        "lineRange": [
+          676,
+          741
+        ],
+        "symbol": "NSQD.queueScanLoop",
+        "observation": "Samples random subset (QueueScanSelectionCount=20) of channels every QueueScanInterval (100ms); if dirty ratio exceeds QueueScanDirtyPercent (25%), immediately loops to process more expired items without sleeping.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "RegistrationDB",
+      "role": "Decentralized Topic/Channel Metadata Registry",
+      "primaryFiles": [
+        "nsqlookupd/registration_db.go",
+        "nsqlookupd/lookup_protocol_v1.go"
+      ],
+      "publicInterfaces": [
+        "NewRegistrationDB() *RegistrationDB",
+        "AddRegistration(k Registration)",
+        "AddProducer(k Registration, p *Producer) bool",
+        "RemoveProducer(k Registration, id string) (bool, int)",
+        "RemoveRegistration(k Registration)",
+        "FindRegistrations(category string, key string, subkey string) Registrations",
+        "FindProducers(category string, key string, subkey string) Producers"
+      ],
+      "dependencies": [
+        "NSQLookupd"
+      ],
+      "stateManaged": [
+        "Registration mapping (registrationMap map[Registration]ProducerMap with sync.RWMutex)",
+        "Producer active status, broadcast addresses, ports, and tombstone timestamps"
+      ],
+      "evidence": {
+        "filePath": "nsqlookupd/registration_db.go",
+        "lineRange": [
+          74,
+          87
+        ],
+        "symbol": "RegistrationDB.AddProducer",
+        "observation": "Registers a producer instance under a given Registration key (category/key/subkey) in memory map, returning true if this was a new insertion.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "guidFactory",
+      "role": "Flake-Based Distributed Monotonic Message ID Generator",
+      "primaryFiles": [
+        "nsqd/guid.go"
+      ],
+      "publicInterfaces": [
+        "NewGUIDFactory(nodeID int64) *guidFactory",
+        "NewGUID() (guid, error)",
+        "Hex() MessageID"
+      ],
+      "dependencies": [],
+      "stateManaged": [
+        "Generator mutex (sync.Mutex)",
+        "Node identifier (nodeID int64, 10 bits)",
+        "Timestamp millisecond shift (lastTimestamp int64)",
+        "Per-millisecond sequence counter (sequence int64, 12 bits)",
+        "Last generated GUID (lastID guid)"
+      ],
+      "evidence": {
+        "filePath": "nsqd/guid.go",
+        "lineRange": [
+          51,
+          88
+        ],
+        "symbol": "guidFactory.NewGUID",
+        "observation": "Generates a 64-bit GUID composed of 41-bit millisecond timestamp relative to twepoch, 10-bit node ID, and 12-bit rollover sequence counter; aborts with ErrTimeBackwards if clock regresses.",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    },
+    {
+      "name": "BackendQueue",
+      "role": "Bounded Memory Overflow & Persistent FIFO Disk Storage",
+      "primaryFiles": [
+        "nsqd/backend_queue.go",
+        "nsqd/dummy_backend_queue.go"
+      ],
+      "publicInterfaces": [
+        "Put([]byte) error",
+        "ReadChan() <-chan []byte",
+        "Close() error",
+        "Delete() error",
+        "Depth() int64",
+        "Empty() error"
+      ],
+      "dependencies": [
+        "github.com/nsqio/go-diskqueue"
+      ],
+      "stateManaged": [
+        "Disk write/read file positions and segment file rotation (MaxBytesPerFile)",
+        "Periodic synchronization timers (SyncEvery, SyncTimeout)",
+        "Queue depth counter"
+      ],
+      "evidence": {
+        "filePath": "nsqd/backend_queue.go",
+        "lineRange": [
+          5,
+          12
+        ],
+        "symbol": "BackendQueue interface",
+        "observation": "Defines the storage abstraction contract implemented by diskqueue.DiskQueue (disk-backed FIFO) and dummyBackendQueue (no-op backend for ephemeral topics/channels).",
+        "epistemicLevel": "L1_STATIC_FACT"
+      }
+    }
+  ],
+  "stateMachines": [
+    {
+      "name": "MessageDeliveryLifecycle",
+      "states": [
+        "Ingested",
+        "BufferedMemory",
+        "BufferedDisk",
+        "InFlight",
+        "Deferred",
+        "Finished",
+        "TimedOut",
+        "Requeued"
+      ],
+      "initialState": "Ingested",
+      "terminalStates": [
+        "Finished"
+      ],
+      "transitions": [
+        {
+          "from": "Ingested",
+          "to": "BufferedMemory",
+          "event": "Topic.put or Channel.put",
+          "guardConditions": [
+            "memoryMsgChan buffer has available capacity",
+            "m.deferred == 0"
+          ],
+          "mechanism": "Go non-blocking select on memoryMsgChan <- m",
+          "evidence": {
+            "filePath": "nsqd/topic.go",
+            "lineRange": [
+              227,
+              234
+            ],
+            "observation": "Attempts non-blocking write to memoryMsgChan; succeeds immediately if buffer space available.",
+            "luaOrCodeBehavior": "select { case t.memoryMsgChan <- m: return nil default: break }",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Ingested",
+          "to": "BufferedDisk",
+          "event": "Topic.put or Channel.put Spill",
+          "guardConditions": [
+            "memoryMsgChan is full or cap == 0",
+            "topic/channel is not ephemeral"
+          ],
+          "mechanism": "writeMessageToBackend into diskqueue.DiskQueue",
+          "evidence": {
+            "filePath": "nsqd/topic.go",
+            "lineRange": [
+              235,
+              243
+            ],
+            "observation": "Serializes message via msg.WriteTo into diskqueue backend buffer and updates nsqd health.",
+            "luaOrCodeBehavior": "writeMessageToBackend(m, t.backend) -> bq.Put(buf.Bytes())",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "BufferedMemory",
+          "to": "InFlight",
+          "event": "protocolV2.messagePump Dispatch",
+          "guardConditions": [
+            "client.IsReadyForMessages() == true",
+            "client.InFlightCount < client.ReadyCount"
+          ],
+          "mechanism": "Channel.StartInFlightTimeout + protocolV2.SendMessage",
+          "evidence": {
+            "filePath": "nsqd/protocol_v2.go",
+            "lineRange": [
+              369,
+              379
+            ],
+            "observation": "Increments msg.Attempts, registers message in inFlightMessages map + inFlightPQ min-heap with absolute expiration timestamp (now + msgTimeout), increments client.InFlightCount, and transmits framed message across TCP socket.",
+            "luaOrCodeBehavior": "subChannel.StartInFlightTimeout(msg, client.ID, msgTimeout); client.SendingMessage(); p.SendMessage(client, msg)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "BufferedDisk",
+          "to": "InFlight",
+          "event": "protocolV2.messagePump Dispatch from Backend",
+          "guardConditions": [
+            "client.IsReadyForMessages() == true",
+            "backendChan receives decoded message payload"
+          ],
+          "mechanism": "decodeMessage(buf) + Channel.StartInFlightTimeout + protocolV2.SendMessage",
+          "evidence": {
+            "filePath": "nsqd/protocol_v2.go",
+            "lineRange": [
+              358,
+              379
+            ],
+            "observation": "Reads binary payload from backendChan (diskqueue ReadChan), deserializes Message struct, and registers in in-flight queue before sending to client.",
+            "luaOrCodeBehavior": "msg, err = decodeMessage(b); subChannel.StartInFlightTimeout(msg, client.ID, msgTimeout); p.SendMessage(client, msg)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "InFlight",
+          "to": "Finished",
+          "event": "Client FIN Command",
+          "guardConditions": [
+            "client owns message (msg.clientID == client.ID)",
+            "message ID exists in inFlightMessages"
+          ],
+          "mechanism": "Channel.FinishMessage -> popInFlightMessage + removeFromInFlightPQ",
+          "evidence": {
+            "filePath": "nsqd/channel.go",
+            "lineRange": [
+              422,
+              432
+            ],
+            "observation": "Pops message from inFlightMessages map verifying client ownership, removes item from inFlightPQ min-heap, records e2e latency percentile, and decrements client in-flight count.",
+            "luaOrCodeBehavior": "msg, err := c.popInFlightMessage(clientID, id); c.removeFromInFlightPQ(msg); client.FinishedMessage()",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "InFlight",
+          "to": "InFlight",
+          "event": "Client TOUCH Command",
+          "guardConditions": [
+            "client owns message",
+            "message not already expired"
+          ],
+          "mechanism": "Channel.TouchMessage -> update msg.pri clamped to deliveryTS + MaxMsgTimeout",
+          "evidence": {
+            "filePath": "nsqd/channel.go",
+            "lineRange": [
+              398,
+              419
+            ],
+            "observation": "Pops message from in-flight map, updates deadline priority clamped to deliveryTS + MaxMsgTimeout, re-inserts into inFlightMessages and pushes into inFlightPQ.",
+            "luaOrCodeBehavior": "newTimeout = min(now + clientMsgTimeout, deliveryTS + MaxMsgTimeout); msg.pri = newTimeout.UnixNano(); c.addToInFlightPQ(msg)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "InFlight",
+          "to": "Requeued",
+          "event": "Client REQ Command (Immediate)",
+          "guardConditions": [
+            "timeout == 0",
+            "client owns message"
+          ],
+          "mechanism": "Channel.RequeueMessage -> popInFlightMessage + Channel.put",
+          "evidence": {
+            "filePath": "nsqd/channel.go",
+            "lineRange": [
+              440,
+              462
+            ],
+            "observation": "Pops message from in-flight structures, increments requeueCount metric, and calls c.put(msg) to re-insert into memory channel or diskqueue.",
+            "luaOrCodeBehavior": "msg, err := c.popInFlightMessage(clientID, id); c.removeFromInFlightPQ(msg); c.put(msg)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "InFlight",
+          "to": "Deferred",
+          "event": "Client REQ Command (Deferred with Timeout)",
+          "guardConditions": [
+            "timeout > 0",
+            "timeout <= MaxReqTimeout",
+            "client owns message"
+          ],
+          "mechanism": "Channel.RequeueMessage -> StartDeferredTimeout",
+          "evidence": {
+            "filePath": "nsqd/channel.go",
+            "lineRange": [
+              460,
+              462
+            ],
+            "observation": "Pops message from in-flight queue and registers in deferredMessages map + deferredPQ min-heap with priority now + timeout.",
+            "luaOrCodeBehavior": "c.StartDeferredTimeout(msg, timeout) -> pqueue.Item{Value: msg, Priority: absTs}",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "InFlight",
+          "to": "TimedOut",
+          "event": "queueScanWorker Lease Expiration Sweep",
+          "guardConditions": [
+            "msg.pri <= now (currentTime >= priority)"
+          ],
+          "mechanism": "Channel.processInFlightQueue -> inFlightPQ.PeekAndShift + Channel.put",
+          "evidence": {
+            "filePath": "nsqd/channel.go",
+            "lineRange": [
+              658,
+              697
+            ],
+            "observation": "Extracts expired in-flight messages from min-heap, removes from map, increments timeoutCount, notifies client via TimedOutMessage(), and requeues message via c.put(msg).",
+            "luaOrCodeBehavior": "msg, _ := c.inFlightPQ.PeekAndShift(t); c.popInFlightMessage(msg.clientID, msg.ID); client.TimedOutMessage(); c.put(msg)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "Deferred",
+          "to": "BufferedMemory",
+          "event": "queueScanWorker Deferred Ready Sweep",
+          "guardConditions": [
+            "item.Priority <= now"
+          ],
+          "mechanism": "Channel.processDeferredQueue -> deferredPQ.PeekAndShift + Channel.put",
+          "evidence": {
+            "filePath": "nsqd/channel.go",
+            "lineRange": [
+              623,
+              656
+            ],
+            "observation": "Extracts mature deferred messages from deferred min-heap, removes from map, and requeues message into memoryMsgChan or diskqueue via c.put(msg).",
+            "luaOrCodeBehavior": "item, _ := c.deferredPQ.PeekAndShift(t); c.popDeferredMessage(msg.ID); c.put(msg)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ClientConnectionState",
+      "states": [
+        "stateInit",
+        "stateSubscribed",
+        "stateClosing",
+        "stateDisconnected"
+      ],
+      "initialState": "stateInit",
+      "terminalStates": [
+        "stateDisconnected"
+      ],
+      "transitions": [
+        {
+          "from": "stateInit",
+          "to": "stateSubscribed",
+          "event": "Client SUB Command",
+          "guardConditions": [
+            "client.State == stateInit",
+            "client.HeartbeatInterval > 0",
+            "valid topic and channel names",
+            "authorization check passes",
+            "channel consumer count < MaxChannelConsumers"
+          ],
+          "mechanism": "protocolV2.SUB -> channel.AddClient + atomic.StoreInt32(&client.State, stateSubscribed)",
+          "evidence": {
+            "filePath": "nsqd/protocol_v2.go",
+            "lineRange": [
+              631,
+              687
+            ],
+            "observation": "Validates stateInit and heartbeatInterval, authenticates topic/channel, adds client to channel client map, sets client.State = stateSubscribed, and pushes channel to client.SubEventChan.",
+            "luaOrCodeBehavior": "atomic.StoreInt32(&client.State, stateSubscribed); client.Channel = channel; client.SubEventChan <- channel",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "stateSubscribed",
+          "to": "stateClosing",
+          "event": "Client CLS Command",
+          "guardConditions": [
+            "client.State == stateSubscribed"
+          ],
+          "mechanism": "protocolV2.CLS -> client.StartClose()",
+          "evidence": {
+            "filePath": "nsqd/protocol_v2.go",
+            "lineRange": [
+              799,
+              807
+            ],
+            "observation": "Forces readyCount to 0 via SetReadyCount(0), sets client.State = stateClosing, and responds with CLOSE_WAIT to allow draining of outstanding in-flight messages.",
+            "luaOrCodeBehavior": "client.StartClose() -> c.SetReadyCount(0); atomic.StoreInt32(&c.State, stateClosing)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "stateSubscribed",
+          "to": "stateDisconnected",
+          "event": "IOLoop Network Disconnect / EOF / Heartbeat Deadline",
+          "guardConditions": [
+            "read or write error encountered",
+            "heartbeat response timed out"
+          ],
+          "mechanism": "protocolV2.IOLoop exit -> close(client.ExitChan) + channel.RemoveClient",
+          "evidence": {
+            "filePath": "nsqd/protocol_v2.go",
+            "lineRange": [
+              119,
+              126
+            ],
+            "observation": "Closes client.ExitChan, removes client from channel subscriber map (triggering ephemeral cleanup if last consumer), and closes underlying socket.",
+            "luaOrCodeBehavior": "close(client.ExitChan); if client.Channel != nil { client.Channel.RemoveClient(client.ID) }",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        },
+        {
+          "from": "stateClosing",
+          "to": "stateDisconnected",
+          "event": "Final Message FIN or Socket Teardown",
+          "guardConditions": [
+            "client closes socket or all in-flight messages drained"
+          ],
+          "mechanism": "protocolV2.IOLoop exit teardown",
+          "evidence": {
+            "filePath": "nsqd/protocol_v2.go",
+            "lineRange": [
+              119,
+              126
+            ],
+            "observation": "Exits IOLoop, deregisters client, and triggers channel deletion if channel is ephemeral and empty.",
+            "luaOrCodeBehavior": "close(client.ExitChan); client.Channel.RemoveClient(client.ID)",
+            "epistemicLevel": "L1_STATIC_FACT"
+          }
+        }
+      ]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-01",
+      "atomicStatement": "When memoryMsgChan buffer is saturated, Topic.put and Channel.put atomically overflow incoming messages to diskqueue via writeMessageToBackend without blocking the publishing client.",
+      "enforcingMechanism": "Non-blocking Go select statement on memoryMsgChan with default fallback branch executing writeMessageToBackend(m, backend) and nsqd.SetHealth(err).",
+      "sourceLocation": {
+        "filePath": "nsqd/topic.go",
+        "lineRange": [
+          223,
+          244
+        ]
+      },
+      "testEvidence": {
+        "filePath": "nsqd/topic_test.go",
+        "testFunction": "TestHealth",
+        "lineRange": [
+          68,
+          115
+        ],
+        "observation": "Sets MemQueueSize=2, fills memoryMsgChan with 2 messages, injects errorBackendQueue, asserts 3rd message overflows to diskqueue backend and trips HTTP /ping status code 500 (NOK - never gonna happen)."
+      },
+      "historicalContext": {
+        "commitHash": "470346fb434f27fe2d67f8b99c2876828a8dfd4c",
+        "issueOrPr": "PR #1159",
+        "context": "Set memoryMsgChan as nil when --mem-queue-size=0 to guarantee strict FIFO disk ordering by completely bypassing Go channel select."
+      }
+    },
+    {
+      "id": "INV-02",
+      "atomicStatement": "Channel.FinishMessage, RequeueMessage, and TouchMessage reject operations on in-flight messages if the caller clientID does not match the registered msg.clientID.",
+      "enforcingMechanism": "popInFlightMessage lock verification checking msg.clientID != clientID under inFlightMutex protection.",
+      "sourceLocation": {
+        "filePath": "nsqd/channel.go",
+        "lineRange": [
+          557,
+          571
+        ]
+      },
+      "testEvidence": {
+        "filePath": "nsqd/protocol_v2_test.go",
+        "testFunction": "TestBadFin",
+        "lineRange": [
+          1501,
+          1525
+        ],
+        "observation": "Verifies that FIN sent with invalid or unowned message ID returns frameTypeError with E_INVALID invalid message ID."
+      },
+      "historicalContext": {
+        "commitHash": "cfbd287826cd2182c28ef7071e62e3a5c98f72ce",
+        "issueOrPr": "Concurrency Safety Patch",
+        "context": "Strict inFlightMutex and deferredMutex locking prevents race conditions during multi-client concurrent message acknowledgement and requeuing."
+      }
+    },
+    {
+      "id": "INV-03",
+      "atomicStatement": "TouchMessage extends in-flight message lease priority to time.Now().Add(clientMsgTimeout) but strictly clamps cumulative lease duration to deliveryTS.Add(MaxMsgTimeout).",
+      "enforcingMechanism": "Timeout arithmetic check in Channel.TouchMessage: if newTimeout.Sub(msg.deliveryTS) >= MaxMsgTimeout { newTimeout = msg.deliveryTS.Add(MaxMsgTimeout) }.",
+      "sourceLocation": {
+        "filePath": "nsqd/channel.go",
+        "lineRange": [
+          398,
+          419
+        ]
+      },
+      "testEvidence": {
+        "filePath": "nsqd/protocol_v2_test.go",
+        "testFunction": "TestTouch",
+        "lineRange": [
+          702,
+          748
+        ],
+        "observation": "Configures MsgTimeout=150ms, waits 75ms, sends TOUCH command, waits another 75ms, and finishes message; asserts timeoutCount remains 0."
+      },
+      "historicalContext": {
+        "commitHash": "9ea507128926c83b7dd8f32d8c38bbbe8ef41beb",
+        "issueOrPr": "#1504 / #1499",
+        "context": "Added configurable max defer timeout options to enforce upper bounds on deferred and touched message horizons."
+      }
+    },
+    {
+      "id": "INV-04",
+      "atomicStatement": "protocolV2.messagePump suspends message delivery to a consumer client whenever client.InFlightCount >= client.ReadyCount or ReadyCount <= 0.",
+      "enforcingMechanism": "Atomic comparison inside clientV2.IsReadyForMessages() checking inFlightCount >= readyCount || readyCount <= 0 before selecting from channel message queues.",
+      "sourceLocation": {
+        "filePath": "nsqd/client_v2.go",
+        "lineRange": [
+          418,
+          433
+        ]
+      },
+      "testEvidence": {
+        "filePath": "nsqd/protocol_v2_test.go",
+        "testFunction": "TestBasicV2",
+        "lineRange": [
+          132,
+          164
+        ],
+        "observation": "Sends RDY 1, receives exactly 1 message, and verifies no further messages are delivered until subsequent RDY or FIN reduces InFlightCount."
+      },
+      "historicalContext": {
+        "commitHash": "cbdcd547aa3240b98c9d340a62591973b63e82f3",
+        "issueOrPr": "PR #1134",
+        "context": "Refactored client count and connection tracking to ensure accurate in-flight and ready count synchronization."
+      }
+    },
+    {
+      "id": "INV-05",
+      "atomicStatement": "queueScanLoop samples a random selection of channels every QueueScanInterval (100ms) and continues immediately without sleeping if the ratio of dirty channels exceeds QueueScanDirtyPercent (25%).",
+      "enforcingMechanism": "Probabilistic loop condition in NSQD.queueScanLoop: if float64(numDirty)/float64(num) > QueueScanDirtyPercent { goto loop }.",
+      "sourceLocation": {
+        "filePath": "nsqd/nsqd.go",
+        "lineRange": [
+          676,
+          741
+        ]
+      },
+      "testEvidence": {
+        "filePath": "nsqd/channel_test.go",
+        "testFunction": "TestInFlightWorker",
+        "lineRange": [
+          64,
+          108
+        ],
+        "observation": "Pushes 250 in-flight messages with 100ms timeout into channel, asserts inFlightMessages and inFlightPQ reach 250, sleeps 400ms, and asserts scanner completely drains all 250 messages to 0."
+      },
+      "historicalContext": {
+        "commitHash": "8db8c50e5e583bbde3528de93a5e363edd788868",
+        "issueOrPr": "#1243",
+        "context": "Ported Redis probabilistic key expiration algorithm into Go goroutine pool to process high-cardinality in-flight channels with bounded CPU usage."
+      }
+    },
+    {
+      "id": "INV-06",
+      "atomicStatement": "Ephemeral channels (names ending in #ephemeral) automatically delete all internal storage and deregister from the topic once their active client count drops to 0.",
+      "enforcingMechanism": "Channel.RemoveClient executes deleter.Do(func() { c.deleteCallback(c) }) when numClients == 0 and c.ephemeral == true.",
+      "sourceLocation": {
+        "filePath": "nsqd/channel.go",
+        "lineRange": [
+          509,
+          517
+        ]
+      },
+      "testEvidence": {
+        "filePath": "nsqd/nsqd_test.go",
+        "testFunction": "TestEphemeralTopicsAndChannels",
+        "lineRange": [
+          156,
+          203
+        ],
+        "observation": "Connects client to ephemeral topic/channel, publishes message, removes client, sleeps 100ms, and asserts topicMap and channelMap lengths are both 0."
+      },
+      "historicalContext": {
+        "commitHash": "7521c9db979bcdc484816e92b6492d55d946743a",
+        "issueOrPr": "PR #1314 / #1251",
+        "context": "Fixed live-lock race condition where late subscribers to exiting ephemeral channels were trapped in endless retry loops."
+      }
+    },
+    {
+      "id": "INV-07",
+      "atomicStatement": "NSQD.GetTopic queries all configured nsqlookupd HTTP instances to pre-create existing non-ephemeral channels before starting the topic messagePump goroutine.",
+      "enforcingMechanism": "NSQD.GetTopic invokes ci.GetLookupdTopicChannels() and calls t.GetChannel(channelName) for each channel before executing t.Start().",
+      "sourceLocation": {
+        "filePath": "nsqd/nsqd.go",
+        "lineRange": [
+          528,
+          549
+        ]
+      },
+      "testEvidence": {
+        "filePath": "nsqd/nsqd_test.go",
+        "testFunction": "TestCluster",
+        "lineRange": [
+          325,
+          423
+        ],
+        "observation": "Starts nsqlookupd and nsqd with lookup connection, creates topic and channel ch via HTTP API, queries lookupd /debug and /lookup endpoints, and verifies registered producers and channel sets."
+      },
+      "historicalContext": {
+        "commitHash": "c3a47b9e016d942175df64b7c50e189c2751c901",
+        "issueOrPr": "PR #1297 / #1073",
+        "context": "Separated broadcast TCP and HTTP ports to prevent misrouting during cluster discovery and topic pre-creation."
+      }
+    },
+    {
+      "id": "INV-08",
+      "atomicStatement": "guidFactory.NewGUID rejects ID generation with ErrTimeBackwards if local system clock moves backward relative to lastTimestamp.",
+      "enforcingMechanism": "Monotonic timestamp check in guidFactory.NewGUID: if ts < f.lastTimestamp { return 0, ErrTimeBackwards }.",
+      "sourceLocation": {
+        "filePath": "nsqd/guid.go",
+        "lineRange": [
+          51,
+          61
+        ]
+      },
+      "testEvidence": {
+        "filePath": "nsqd/guid_test.go",
+        "testFunction": "BenchmarkGUID",
+        "lineRange": [
+          25,
+          42
+        ],
+        "observation": "Executes tight loop of NewGUID() invocations asserting no duplicate IDs (id == previd) and logging any error occurrences."
+      },
+      "historicalContext": {
+        "commitHash": "f61cda2a7e728acd7d6d402774e3c224fd80a9b3",
+        "issueOrPr": "PR #1485",
+        "context": "Snowflake-derived GUID factory enforces monotonic 64-bit ID generation partitioned across 10-bit node ID spaces."
+      }
+    },
+    {
+      "id": "INV-09",
+      "atomicStatement": "tcpServer tracks all accepted connections in pendingConns sync.Map prior to protocol handshake so tcpServer.Close() can close idle/slow connections during daemon shutdown.",
+      "enforcingMechanism": "p.pendingConns.Store(conn.RemoteAddr(), conn) before io.ReadFull(conn, buf) in tcpServer.Handle, and pendingConns.Range closure in tcpServer.Close.",
+      "sourceLocation": {
+        "filePath": "nsqd/tcp.go",
+        "lineRange": [
+          33,
+          89
+        ]
+      },
+      "testEvidence": {
+        "filePath": "nsqd/tcp_test.go",
+        "testFunction": "TestTCPServerShutdownHangsOnSlowClient",
+        "lineRange": [
+          74,
+          121
+        ],
+        "observation": "Uses testing/synctest with fake net.Pipe listener, dials client without sending 4-byte magic, invokes tcpServer.Close(), and asserts TCPServer cleanly unblocks from wg.Wait()."
+      },
+      "historicalContext": {
+        "commitHash": "e9ba0b486844e426918065e897b8a36cca5c6aaf",
+        "issueOrPr": "PR #1534 / #1534",
+        "context": "Fixed critical shutdown deadlock where clients connecting without sending protocol magic remained invisible to Close() and blocked protocol.TCPServer WaitGroup indefinitely."
+      }
+    },
+    {
+      "id": "INV-10",
+      "atomicStatement": "When TopologyAwareConsumption experiment is enabled, Channel.put prioritizes zoneLocalMsgChan and regionLocalMsgChan delivery before attempting memoryMsgChan.",
+      "enforcingMechanism": "Tiered progressive select statement inside Channel.put evaluating zoneLocalMsgChan, regionLocalMsgChan, and memoryMsgChan in sequential priority stages.",
+      "sourceLocation": {
+        "filePath": "nsqd/channel.go",
+        "lineRange": [
+          340,
+          370
+        ]
+      },
+      "testEvidence": {
+        "filePath": "nsqd/protocol_v2_test.go",
+        "testFunction": "TestSameZoneConsumerV2",
+        "lineRange": [
+          218,
+          290
+        ],
+        "observation": "Enables TopologyAwareConsumption experiment, starts 4 consumers across local zone and remote zone2, publishes 20 messages, and asserts local zone consumers receive majority of messages."
+      },
+      "historicalContext": {
+        "commitHash": "d182ee2fb26c6c60dd00cc20b421cb1cd6e9978d",
+        "issueOrPr": "#1499",
+        "context": "Introduced topology-aware multi-tier routing to reduce cross-zone data transfer costs in cloud environments."
+      }
+    }
+  ],
+  "failureModesAndDefenses": [
+    {
+      "failureMode": "TCP Server Shutdown Deadlock from Idle Clients Connecting Without Protocol Magic",
+      "detectionMechanism": "TCPServer accepted raw TCP socket and incremented WaitGroup, but tcpServer.Handle only registered the connection in conns map after reading 4-byte magic via io.ReadFull without pre-set deadline.",
+      "recoveryAction": "Track accepted raw sockets in pendingConns sync.Map immediately upon Accept(); iterate and close both conns and pendingConns in tcpServer.Close().",
+      "sourceEvidence": {
+        "filePath": "nsqd/tcp.go",
+        "lineRange": [
+          33,
+          89
+        ],
+        "observation": "p.pendingConns.Store(conn.RemoteAddr(), conn) is called before io.ReadFull, and p.pendingConns.Delete is called once handshake completes or errors."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "PR #1534",
+        "rootCause": "A client opening a TCP connection without sending data caused io.ReadFull to block indefinitely, leaving the connection invisible to Close() and blocking nsqd.Exit() in waitGroup.Wait().",
+        "fixDescription": "Added pendingConns map in tcpServer and registered connections before io.ReadFull (commit e9ba0b486844e426918065e897b8a36cca5c6aaf, test in tcp_test.go)."
+      },
+      "prescribedMitigation": "Always register newly accepted network connections into active tracking collections before initiating blocking read handshakes."
+    },
+    {
+      "failureMode": "Ephemeral Channel Live-Lock Race Condition During Consumer Subscription and Topic Deletion",
+      "detectionMechanism": "When the last consumer disconnected from an ephemeral channel, channel deletion ran asynchronously; a concurrent SUB command could retrieve the channel pointer via GetChannel() before AddClient() failed due to closing state, causing tight retry loops.",
+      "recoveryAction": "Bound ephemeral SUB retry attempts to maximum 2 iterations with a 100ms backoff sleep before failing fatally with E_SUB_FAILED.",
+      "sourceEvidence": {
+        "filePath": "nsqd/protocol_v2.go",
+        "lineRange": [
+          660,
+          680
+        ],
+        "observation": "protocolV2.SUB executes a retry loop: if (channel.ephemeral && channel.Exiting()), it removes client, sleeps 100ms, and aborts after 2 tries."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "PR #1314 / Issue #1251",
+        "rootCause": "Race window between GetChannel() and AddClient() on ephemeral channel being destroyed led to CPU-spinning subscription live-locks.",
+        "fixDescription": "Added iteration counter (i < 2) and 100ms sleep in protocolV2.SUB (commit 7521c9db979bcdc484816e92b6492d55d946743a)."
+      },
+      "prescribedMitigation": "Guard dynamic entity creation/lookup with monotonic lifecycle state checks and bounded retry counts."
+    },
+    {
+      "failureMode": "DiskQueue Write Failure Due to Filesystem Exhaustion or Permissions Corruption",
+      "detectionMechanism": "writeMessageToBackend returns non-nil error when backend.Put fails (e.g. ENOSPC or EACCES).",
+      "recoveryAction": "Record failure in atomic errValue via nsqd.SetHealth(err); log error and immediately return HTTP 500 status on /ping endpoint to alert load balancers and orchestrators.",
+      "sourceEvidence": {
+        "filePath": "nsqd/topic.go",
+        "lineRange": [
+          235,
+          244
+        ],
+        "observation": "Calls writeMessageToBackend(m, t.backend) and updates daemon health status via t.nsqd.SetHealth(err)."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "Architecture Core / TestHealth",
+        "rootCause": "Disk full or corrupted data directory prevents message persistence on memory queue overflow.",
+        "fixDescription": "Integrated SetHealth with atomic.Value errValue and exposed in /ping HTTP handler."
+      },
+      "prescribedMitigation": "Expose degraded health signals immediately through liveness/readiness probes to remove failing brokers from upstream publish pools."
+    },
+    {
+      "failureMode": "Consumer Stall or GC Pause Exceeding MsgTimeout Causing Dual Delivery",
+      "detectionMechanism": "queueScanWorker inspects inFlightPQ priority heap; when currentTime >= msg.pri, message lease is deemed expired.",
+      "recoveryAction": "Pop message from inFlightMessages, increment channel timeoutCount, notify client via TimedOutMessage() to decrement inFlightCount, and requeue message via Channel.put().",
+      "sourceEvidence": {
+        "filePath": "nsqd/channel.go",
+        "lineRange": [
+          658,
+          697
+        ],
+        "observation": "processInFlightQueue pops expired items from inFlightPQ, notifies client, and re-inserts message into channel queue."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "Architecture Core / TestInFlightWorker",
+        "rootCause": "Slow consumers or network partitions cause message visibility timeout expiration while worker is still processing.",
+        "fixDescription": "Implemented TOUCH command allowing consumers to dynamically reset msg.pri up to MaxMsgTimeout."
+      },
+      "prescribedMitigation": "Consumers must periodically send TOUCH heartbeats for long-running jobs and make message processing handlers strictly idempotent."
+    },
+    {
+      "failureMode": "NTP Clock Step Backwards Breaking GUID Monotonicity",
+      "detectionMechanism": "guidFactory.NewGUID detects time.Now().UnixNano() >> 20 < lastTimestamp.",
+      "recoveryAction": "Reject GUID generation with ErrTimeBackwards; Topic.GenerateID retries once per millisecond while logging error every 10,000 attempts until clock catches up.",
+      "sourceEvidence": {
+        "filePath": "nsqd/guid.go",
+        "lineRange": [
+          51,
+          88
+        ],
+        "observation": "guidFactory.NewGUID returns ErrTimeBackwards when current timestamp is less than lastTimestamp."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "Core Architecture / Snowflake Spec",
+        "rootCause": "NTP backward clock adjustments or leap seconds cause non-monotonic snowflake ID collisions.",
+        "fixDescription": "Added ErrTimeBackwards guard and retry loop in Topic.GenerateID (topic.go:L500-L513)."
+      },
+      "prescribedMitigation": "Use monotonic clock primitives or halt ID generation until wall clock exceeds previously recorded high-water mark."
+    },
+    {
+      "failureMode": "Output Buffer Timeout Misconfiguration Causing Client Connection Starvation",
+      "detectionMechanism": "Client specifying excessively low or high output_buffer_timeout in IDENTIFY payload.",
+      "recoveryAction": "Enforce strict boundary validation in SetOutputBuffer: clamp timeout between MinOutputBufferTimeout (25ms) and MaxOutputBufferTimeout (30s).",
+      "sourceEvidence": {
+        "filePath": "nsqd/client_v2.go",
+        "lineRange": [
+          520,
+          560
+        ],
+        "observation": "Validates desiredTimeout against MinOutputBufferTimeout and MaxOutputBufferTimeout options."
+      },
+      "historicalOccurrence": {
+        "issueOrPr": "PR #1133 / #1125",
+        "rootCause": "Unbounded client output buffer timeouts caused high CPU overhead on nsqd when set too small, or excessive delivery latency when set too large.",
+        "fixDescription": "Added --min-output-buffer-timeout (default 25ms) and increased --max-output-buffer-timeout default to 30s (commit 41e5692367a2c6a39e2cc69e0e64efe4423b8a60)."
+      },
+      "prescribedMitigation": "Enforce strict server-side upper and lower bounds on all client-negotiable timeout and buffer parameters."
+    }
+  ],
+  "historicalEvolution": [
+    {
+      "milestoneOrBug": "TCP Shutdown Deadlock from Pre-Handshake Client Connections",
+      "commitHash": "e9ba0b486844e426918065e897b8a36cca5c6aaf",
+      "issueOrPr": "PR #1534",
+      "rootCause": "TCPServer counted incoming connections in WaitGroup upon Accept(), but Handle() only stored connections in conns map after io.ReadFull finished reading 4-byte magic. Clients that connected and sent nothing blocked nsqd.Exit() forever.",
+      "architecturalFix": "Introduced pendingConns sync.Map to track raw net.Conn objects immediately upon acceptance and updated tcpServer.Close() to iterate and close both conns and pendingConns.",
+      "affectedFiles": [
+        "nsqd/tcp.go",
+        "nsqd/tcp_test.go"
+      ],
+      "evidence": {
+        "filePath": "nsqd/tcp.go",
+        "observation": "p.pendingConns.Store(conn.RemoteAddr(), conn) registers connection before io.ReadFull."
+      }
+    },
+    {
+      "milestoneOrBug": "Ephemeral Channel Subscription Live-Lock Race Fix",
+      "commitHash": "7521c9db979bcdc484816e92b6492d55d946743a",
+      "issueOrPr": "PR #1314 / Issue #1251",
+      "rootCause": "Concurrent SUB request retrieved closing ephemeral channel from GetChannel() before AddClient() failed, triggering infinite spinning retry loops.",
+      "architecturalFix": "Added bounded retry loop (maximum 2 iterations) with 100ms backoff sleep in protocolV2.SUB before terminating with fatal client error.",
+      "affectedFiles": [
+        "nsqd/protocol_v2.go"
+      ],
+      "evidence": {
+        "filePath": "nsqd/protocol_v2.go",
+        "observation": "Iterates retry loop with time.Sleep(100 * time.Millisecond) when subscribing to exiting ephemeral topic/channel."
+      }
+    },
+    {
+      "milestoneOrBug": "Zero Memory Queue Size Configuration for Strict Disk-Only FIFO Ordering",
+      "commitHash": "470346fb434f27fe2d67f8b99c2876828a8dfd4c",
+      "issueOrPr": "PR #1159",
+      "rootCause": "When --mem-queue-size=0 was configured, memoryMsgChan was still allocated with buffer 0, causing non-deterministic select interleaving between unbuffered channel and diskqueue.",
+      "architecturalFix": "Set memoryMsgChan = nil when mem-queue-size == 0 (unless ephemeral), ensuring topic and channel message pumps only select from backend diskqueue for strict sequential ordering.",
+      "affectedFiles": [
+        "nsqd/topic.go",
+        "nsqd/channel.go"
+      ],
+      "evidence": {
+        "filePath": "nsqd/channel.go",
+        "observation": "Only initializes memoryMsgChan if MemQueueSize > 0 or c.ephemeral is true."
+      }
+    },
+    {
+      "milestoneOrBug": "Enforcement of Min and Max Output Buffer Timeouts",
+      "commitHash": "41e5692367a2c6a39e2cc69e0e64efe4423b8a60",
+      "issueOrPr": "PR #1133 / #1125",
+      "rootCause": "Clients could request arbitrarily small output buffer timeouts, placing heavy scheduling load on runtime tickers and degrading throughput.",
+      "architecturalFix": "Added --min-output-buffer-timeout option (default 25ms) and clamped requested client buffer timeouts within [MinOutputBufferTimeout, MaxOutputBufferTimeout].",
+      "affectedFiles": [
+        "apps/nsqd/main.go",
+        "nsqd/client_v2.go",
+        "nsqd/options.go"
+      ],
+      "evidence": {
+        "filePath": "nsqd/client_v2.go",
+        "observation": "SetOutputBuffer validates desiredTimeout against MinOutputBufferTimeout and MaxOutputBufferTimeout options."
+      }
+    },
+    {
+      "milestoneOrBug": "Producer TCP Connection Shutdown Teardown",
+      "commitHash": "c3c5af987e3ace68cc6174a77596975188b5ce2e",
+      "issueOrPr": "PR #1198 / PR #1190",
+      "rootCause": "Closing topics only closed consumer connections attached to channels, leaving pure publish (producer) TCP connections open and causing nsqd.Exit() to stall in waitGroup.Wait().",
+      "architecturalFix": "Added tcpServer.Close() to explicitly iterate all client connections and terminate producer sockets upon daemon exit.",
+      "affectedFiles": [
+        "nsqd/nsqd.go",
+        "nsqd/tcp.go"
+      ],
+      "evidence": {
+        "filePath": "nsqd/nsqd.go",
+        "observation": "NSQD.Exit calls n.tcpServer.Close() before closing topics and waiting on waitGroup."
+      }
+    }
+  ],
+  "unresolvedContradictionsAndBypasses": [
+    {
+      "claimOrGuarantee": "Messages are delivered with at-least-once reliability to subscribed channels.",
+      "contradictionOrBypass": "Ungraceful process termination (SIGKILL, host power failure, OOM) before backend diskqueue sync (governed by SyncEvery count and SyncTimeout interval) causes in-memory messages in memoryMsgChan and un-fsynced disk segments to be permanently lost without recovery.",
+      "codeLocation": "nsqd/topic.go:L67-L76 and nsqd/channel.go:L124-L134",
+      "evidence": "diskqueue is instantiated with SyncEvery and SyncTimeout parameters; writes to memoryMsgChan and un-synced OS page cache are not durable until fsync occurs or graceful exit flush() executes."
+    },
+    {
+      "claimOrGuarantee": "A message is leased exclusively to one consumer during its in-flight processing window.",
+      "contradictionOrBypass": "If a consumer encounters a network partition or prolonged GC pause exceeding MsgTimeout without sending TOUCH, queueScanWorker evicts the lease and requeues the message. A second consumer dequeues and executes the task concurrently with the original stalled worker. When the first worker finishes, its FIN is rejected with E_FIN_FAILED, but duplicate business execution has already occurred.",
+      "codeLocation": "nsqd/channel.go:L658-L697 and nsqd/protocol_v2.go:L726-L750",
+      "evidence": "processInFlightQueue removes the message from inFlightMessages map upon timeout. Subsequent FIN from the original client fails popInFlightMessage with 'ID not in flight'."
+    },
+    {
+      "claimOrGuarantee": "Topic messages preserve FIFO publication order when delivered to channels.",
+      "contradictionOrBypass": "When memoryMsgChan is filled to capacity, new messages spill into diskqueue. As consumers drain messages, the messagePump selects concurrently across memoryMsgChan and backend.ReadChan(); messages stored in memory are delivered ahead of older messages that spilled to diskqueue during peak load.",
+      "codeLocation": "nsqd/topic.go:L284-L320 and nsqd/channel.go:L340-L379",
+      "evidence": "Go select statement between memoryMsgChan and backendChan exhibits pseudo-random selection semantics when both channels have ready items, violating global FIFO ordering."
+    },
+    {
+      "claimOrGuarantee": "In-flight message timeouts are reclaimed promptly at expiration.",
+      "contradictionOrBypass": "queueScanLoop uses probabilistic sampling (selecting 20 random channels every 100ms). When a cluster hosts thousands of channels with sparse message traffic, an expired in-flight message in an unselected channel can remain un-requeued for several seconds past its exact expiration deadline.",
+      "codeLocation": "nsqd/nsqd.go:L676-L741",
+      "evidence": "queueScanLoop only samples num = QueueScanSelectionCount (20) channels per tick; channels outside the random sample are not checked until selected in subsequent ticks."
+    }
+  ],
+  "adversarialCritique": {
+    "boundaryConditions": [
+      "Process crash or power failure prior to diskqueue SyncTimeout/SyncEvery leads to silent loss of up to MemQueueSize messages in memory plus un-synced disk write buffers.",
+      "NTP backward clock adjustments exceeding 0 milliseconds cause guidFactory to reject ID generation (ErrTimeBackwards), blocking publisher PutMessage calls in 1ms retry loops.",
+      "High channel cardinalities (10,000+ channels) dilute the 20-channel probabilistic scanner, causing expired message reclamation latency to stretch far beyond QueueScanInterval.",
+      "Ephemeral channels experiencing abrupt client disconnection during heavy publishing bursts can drop pending messages if deleter runs before messagePump drains."
+    ],
+    "untestedAssumptions": [
+      "Assumes consumers are strictly idempotent and capable of safely processing duplicate message deliveries resulting from network stalls or timeout sweeps.",
+      "Assumes local filesystem write latency on DataPath is bounded and will not block writeMessageToBackend or dirlock operations.",
+      "Assumes client network partitions do not outlive HeartbeatInterval * 2 read deadlines.",
+      "Assumes consumer applications gracefully handle TCP reset frames upon daemon shutdown rather than expecting server-side message reassignment."
+    ],
+    "acceptedTradeOffs": [
+      "At-least-once delivery over strict exactly-once processing: eliminates distributed transactions, 2PC, and Raft consensus overhead in exchange for high single-node throughput.",
+      "Probabilistic channel scanning over global timer heaps: avoids centralized lock contention across all topics/channels at the expense of non-deterministic eviction timing.",
+      "Non-blocking memory spilling over publisher backpressure: ensures publishing clients never block on consumer slow-downs, trading strict FIFO ordering during overflow for uninterrupted ingestion.",
+      "Independent decentralized discovery (nsqlookupd) over strong metadata consensus: provides eventual consistency across cluster nodes without Paxos/Zookeeper operational complexity."
+    ]
+  }
+}

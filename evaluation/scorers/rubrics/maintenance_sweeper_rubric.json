@@ -1,0 +1,78 @@
+{
+  "suiteId": "RUBRIC-MAINTENANCE-SWEEPER-001",
+  "version": "1.0.0",
+  "name": "Multi-Region Scheduled Maintenance & Sweeper Rubric",
+  "domain": "Queue, Broker & Distributed Workflow Systems",
+  "hiddenKeys": [
+    {
+      "id": "KEY-001",
+      "description": "Authoritative Database Storage-Time Recovery (EKU-QUEUE-003 / CLM-003 / EKU-QUEUE-016)",
+      "targetInvariants": [
+        "EKU-QUEUE-003",
+        "CLM-003",
+        "EKU-QUEUE-016"
+      ],
+      "acceptable_phrasings": [
+        "clock_timestamp",
+        "storage-time",
+        "database server time",
+        "server time",
+        "unixepoch",
+        "inter-server clock skew",
+        "clock drift"
+      ],
+      "pointWeight": 2.5
+    },
+    {
+      "id": "KEY-002",
+      "description": "Safety Margin Buffer Window in Sweeper Recovery (EKU-QUEUE-003)",
+      "targetInvariants": [
+        "EKU-QUEUE-003",
+        "CLM-003"
+      ],
+      "acceptable_phrasings": [
+        "safety margin",
+        "safety buffer",
+        "2x lease",
+        "safety window",
+        "safety buffer window"
+      ],
+      "pointWeight": 2.5
+    },
+    {
+      "id": "KEY-003",
+      "description": "Poison Payload & Crash Isolation from Cron Exemptions (EKU-QUEUE-018 / CLM-018)",
+      "targetInvariants": [
+        "EKU-QUEUE-018",
+        "CLM-018"
+      ],
+      "acceptable_phrasings": [
+        "SIGKILL",
+        "attempts_started",
+        "attempt counter",
+        "quarantine",
+        "QUARANTINED",
+        "dead-letter",
+        "cron crash loops",
+        "native process termination"
+      ],
+      "pointWeight": 2.5
+    },
+    {
+      "id": "KEY-004",
+      "description": "Decoupled Worker Drain & Long-Running Maintenance Deadlines (EKU-QUEUE-020 / CLM-020)",
+      "targetInvariants": [
+        "EKU-QUEUE-020",
+        "CLM-020"
+      ],
+      "acceptable_phrasings": [
+        "drain deadline",
+        "decoupled worker drain",
+        "drain window",
+        "long-running compaction",
+        "60-second drain"
+      ],
+      "pointWeight": 2.5
+    }
+  ]
+}
