@@ -54,7 +54,7 @@ The knowledge store (`eku_store/`) ships **bundled inside the npm package**. No 
 
 No installation step is required.
 
-The `eku_store/` directory is bundled directly inside the `esekl` npm package. When `npx esekl mcp` starts, the server resolves the store from the package directory — no local copy, no `init`, no per-project setup.
+The `eku_store/` directory is bundled directly inside the `esekl` npm package. When `npx --package=@esekl/mcp esekl mcp` starts, the server resolves the store from the package directory — no local copy, no `init`, no per-project setup.
 
 Wire the MCP server into your agent host using one of the configs below.
 
@@ -69,7 +69,7 @@ This single JSON block works on every machine, for every project, with no paths 
   "mcpServers": {
     "esekl": {
       "command": "npx",
-      "args": ["-y", "esekl", "mcp"]
+      "args": ["--yes", "--package=@esekl/mcp", "esekl", "mcp"]
     }
   }
 }
@@ -96,7 +96,7 @@ Add to `~/.codex/config.toml`:
 ```toml
 [mcp_servers.esekl]
 command = "npx"
-args = ["-y", "esekl", "mcp"]
+args = ["--yes", "--package=@esekl/mcp", "esekl", "mcp"]
 ```
 
 For Codex environments that accept JSON `mcpServers` config, use the JSON block above.
@@ -258,6 +258,43 @@ eku_middleware/          npm package root (published as esekl)
 analyzer/                Validation scripts (not shipped in npm package)
 factory/                 Local raw repository cache for research rounds (git-ignored)
 ```
+
+---
+
+## Roadmap: Domain Expansion
+
+The current package (`@esekl/mcp`) bundles the queue and broker corpus. As new domains are researched, the corpus splits into independently versioned scoped packages under the `@esekl/` org:
+
+```
+@esekl/mcp               Core MCP server — always installed, always the entry point
+@esekl/store-queues      Queue and broker corpus (asynq, bullmq, pgmq, river, nats, ...)  ← current
+@esekl/store-databases   Database internals corpus (postgres, sqlite, redis internals, ...)
+@esekl/store-networking  Networking and protocol corpus (gRPC, HTTP/2, QUIC, ...)
+@esekl/store-all         Meta-package: installs all domain stores
+```
+
+**MCP config never changes.** The single JSON block works regardless of which domain stores are installed:
+
+```json
+{
+  "mcpServers": {
+    "esekl": {
+      "command": "npx",
+      "args": ["--yes", "--package=@esekl/mcp", "esekl", "mcp"]
+    }
+  }
+}
+```
+
+**Opting into a domain** (when additional stores ship):
+
+```bash
+npm install @esekl/store-databases
+# MCP server discovers and loads it automatically on next start — no config change.
+```
+
+**Why scoped packages instead of a CLI-download model:**
+The store is read-only versioned data, not source code you own. npm is the right distribution primitive: reproducible installs, per-domain changelogs, and automatic caching via `npx`. Domain updates ship as npm version bumps; the MCP server picks them up without any re-configuration.
 
 ---
 
