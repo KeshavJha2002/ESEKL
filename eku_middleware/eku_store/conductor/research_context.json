@@ -1,0 +1,4997 @@
+{
+  "project": {
+    "name": "conductor",
+    "repoPath": "/home/keshav2002latest/dev/knowledge_base/factory/conductor",
+    "analyzedAt": "2026-08-26T12:49:57.026Z",
+    "fileStats": {
+      "totalFiles": 1152,
+      "codeFiles": 557,
+      "testFiles": 48,
+      "docFiles": 118
+    },
+    "languages": [
+      ".java",
+      ".js",
+      ".ts"
+    ]
+  },
+  "readmeSnippet": "",
+  "codeInventory": [
+    {
+      "path": "annotations/src/main/java/com/netflix/conductor/annotations/protogen/ProtoEnum.java",
+      "sizeBytes": 1024,
+      "isTest": false
+    },
+    {
+      "path": "annotations/src/main/java/com/netflix/conductor/annotations/protogen/ProtoField.java",
+      "sizeBytes": 1531,
+      "isTest": false
+    },
+    {
+      "path": "annotations/src/main/java/com/netflix/conductor/annotations/protogen/ProtoMessage.java",
+      "sizeBytes": 1974,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/example/java/com/example/Example.java",
+      "sizeBytes": 880,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/AbstractMessage.java",
+      "sizeBytes": 4164,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/Enum.java",
+      "sizeBytes": 3363,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/Message.java",
+      "sizeBytes": 5008,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/ProtoFile.java",
+      "sizeBytes": 2406,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/ProtoGen.java",
+      "sizeBytes": 5330,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/ProtoGenTask.java",
+      "sizeBytes": 4333,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/AbstractType.java",
+      "sizeBytes": 3427,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/ExternMessageType.java",
+      "sizeBytes": 2034,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/GenericType.java",
+      "sizeBytes": 2281,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/ListType.java",
+      "sizeBytes": 3575,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/MapType.java",
+      "sizeBytes": 4738,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/MessageType.java",
+      "sizeBytes": 2598,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/ScalarType.java",
+      "sizeBytes": 2648,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/TypeMapper.java",
+      "sizeBytes": 4195,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/WrappedType.java",
+      "sizeBytes": 3255,
+      "isTest": false
+    },
+    {
+      "path": "annotations-processor/src/test/java/com/netflix/conductor/annotationsprocessor/protogen/ProtoGenTest.java",
+      "sizeBytes": 2596,
+      "isTest": false
+    },
+    {
+      "path": "awss3-storage/src/main/java/com/netflix/conductor/s3/config/S3Configuration.java",
+      "sizeBytes": 1956,
+      "isTest": false
+    },
+    {
+      "path": "awss3-storage/src/main/java/com/netflix/conductor/s3/config/S3Properties.java",
+      "sizeBytes": 1900,
+      "isTest": false
+    },
+    {
+      "path": "awss3-storage/src/main/java/com/netflix/conductor/s3/storage/S3PayloadStorage.java",
+      "sizeBytes": 7241,
+      "isTest": false
+    },
+    {
+      "path": "awssqs-event-queue/src/main/java/com/netflix/conductor/sqs/config/SQSEventQueueConfiguration.java",
+      "sizeBytes": 4877,
+      "isTest": false
+    },
+    {
+      "path": "awssqs-event-queue/src/main/java/com/netflix/conductor/sqs/config/SQSEventQueueProperties.java",
+      "sizeBytes": 2850,
+      "isTest": false
+    },
+    {
+      "path": "awssqs-event-queue/src/main/java/com/netflix/conductor/sqs/config/SQSEventQueueProvider.java",
+      "sizeBytes": 2513,
+      "isTest": false
+    },
+    {
+      "path": "awssqs-event-queue/src/main/java/com/netflix/conductor/sqs/eventqueue/SQSObservableQueue.java",
+      "sizeBytes": 14229,
+      "isTest": false
+    },
+    {
+      "path": "awssqs-event-queue/src/test/java/com/netflix/conductor/sqs/eventqueue/DefaultEventQueueProcessorTest.java",
+      "sizeBytes": 6437,
+      "isTest": false
+    },
+    {
+      "path": "awssqs-event-queue/src/test/java/com/netflix/conductor/sqs/eventqueue/SQSObservableQueueTest.java",
+      "sizeBytes": 3947,
+      "isTest": false
+    },
+    {
+      "path": "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/config/CassandraConfiguration.java",
+      "sizeBytes": 4756,
+      "isTest": false
+    },
+    {
+      "path": "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/config/CassandraProperties.java",
+      "sizeBytes": 5639,
+      "isTest": false
+    },
+    {
+      "path": "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/config/cache/CacheableEventHandlerDAO.java",
+      "sizeBytes": 5486,
+      "isTest": false
+    },
+    {
+      "path": "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/config/cache/CacheableMetadataDAO.java",
+      "sizeBytes": 6028,
+      "isTest": false
+    },
+    {
+      "path": "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/config/cache/CachingConfig.java",
+      "sizeBytes": 1282,
+      "isTest": false
+    },
+    {
+      "path": "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/dao/CassandraBaseDAO.java",
+      "sizeBytes": 13152,
+      "isTest": false
+    },
+    {
+      "path": "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/dao/CassandraEventHandlerDAO.java",
+      "sizeBytes": 6181,
+      "isTest": false
+    },
+    {
+      "path": "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/dao/CassandraExecutionDAO.java",
+      "sizeBytes": 39920,
+      "isTest": false
+    },
+    {
+      "path": "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/dao/CassandraMetadataDAO.java",
+      "sizeBytes": 20556,
+      "isTest": false
+    },
+    {
+      "path": "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/dao/CassandraPollDataDAO.java",
+      "sizeBytes": 1721,
+      "isTest": false
+    },
+    {
+      "path": "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/util/Constants.java",
+      "sizeBytes": 2317,
+      "isTest": false
+    },
+    {
+      "path": "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/util/Statements.java",
+      "sizeBytes": 25034,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/automator/PollingSemaphore.java",
+      "sizeBytes": 2243,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/automator/TaskPollExecutor.java",
+      "sizeBytes": 18544,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/automator/TaskRunnerConfigurer.java",
+      "sizeBytes": 11305,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/config/ConductorClientConfiguration.java",
+      "sizeBytes": 2121,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/config/DefaultConductorClientConfiguration.java",
+      "sizeBytes": 1342,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/config/PropertyFactory.java",
+      "sizeBytes": 3468,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/exception/ConductorClientException.java",
+      "sizeBytes": 3854,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/http/ClientBase.java",
+      "sizeBytes": 15540,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/http/ClientRequestHandler.java",
+      "sizeBytes": 3212,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/http/EventClient.java",
+      "sizeBytes": 4915,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/http/MetadataClient.java",
+      "sizeBytes": 7228,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/http/PayloadStorage.java",
+      "sizeBytes": 7390,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/http/TaskClient.java",
+      "sizeBytes": 19753,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/http/WorkflowClient.java",
+      "sizeBytes": 22036,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/telemetry/MetricsContainer.java",
+      "sizeBytes": 8664,
+      "isTest": false
+    },
+    {
+      "path": "client/src/main/java/com/netflix/conductor/client/worker/Worker.java",
+      "sizeBytes": 4075,
+      "isTest": false
+    },
+    {
+      "path": "client/src/test/java/com/netflix/conductor/client/automator/PollingSemaphoreTest.java",
+      "sizeBytes": 3292,
+      "isTest": false
+    },
+    {
+      "path": "client/src/test/java/com/netflix/conductor/client/automator/TaskPollExecutorTest.java",
+      "sizeBytes": 29354,
+      "isTest": false
+    },
+    {
+      "path": "client/src/test/java/com/netflix/conductor/client/automator/TaskRunnerConfigurerTest.java",
+      "sizeBytes": 10286,
+      "isTest": false
+    },
+    {
+      "path": "client/src/test/java/com/netflix/conductor/client/config/TestPropertyFactory.java",
+      "sizeBytes": 2758,
+      "isTest": false
+    },
+    {
+      "path": "client/src/test/java/com/netflix/conductor/client/sample/Main.java",
+      "sizeBytes": 1681,
+      "isTest": false
+    },
+    {
+      "path": "client/src/test/java/com/netflix/conductor/client/sample/SampleWorker.java",
+      "sizeBytes": 1531,
+      "isTest": false
+    },
+    {
+      "path": "client/src/test/java/com/netflix/conductor/client/testing/AbstractWorkflowTests.java",
+      "sizeBytes": 6066,
+      "isTest": false
+    },
+    {
+      "path": "client/src/test/java/com/netflix/conductor/client/testing/LoanWorkflowInput.java",
+      "sizeBytes": 1109,
+      "isTest": false
+    },
+    {
+      "path": "client/src/test/java/com/netflix/conductor/client/testing/LoanWorkflowTest.java",
+      "sizeBytes": 4873,
+      "isTest": false
+    },
+    {
+      "path": "client/src/test/java/com/netflix/conductor/client/testing/RegressionTest.java",
+      "sizeBytes": 3262,
+      "isTest": false
+    },
+    {
+      "path": "client/src/test/java/com/netflix/conductor/client/testing/SubWorkflowTest.java",
+      "sizeBytes": 3085,
+      "isTest": false
+    },
+    {
+      "path": "client/src/test/java/com/netflix/conductor/client/worker/TestWorkflowTask.java",
+      "sizeBytes": 2586,
+      "isTest": false
+    },
+    {
+      "path": "client-spring/src/main/java/com/netflix/conductor/client/spring/ClientProperties.java",
+      "sizeBytes": 2930,
+      "isTest": false
+    },
+    {
+      "path": "client-spring/src/main/java/com/netflix/conductor/client/spring/ConductorClientAutoConfiguration.java",
+      "sizeBytes": 2936,
+      "isTest": false
+    },
+    {
+      "path": "client-spring/src/main/java/com/netflix/conductor/client/spring/ConductorWorkerAutoConfiguration.java",
+      "sizeBytes": 2180,
+      "isTest": false
+    },
+    {
+      "path": "client-spring/src/main/java/com/netflix/conductor/client/spring/SpringWorkerConfiguration.java",
+      "sizeBytes": 1608,
+      "isTest": false
+    },
+    {
+      "path": "client-spring/src/test/java/com/netflix/conductor/client/spring/ExampleClient.java",
+      "sizeBytes": 1487,
+      "isTest": false
+    },
+    {
+      "path": "client-spring/src/test/java/com/netflix/conductor/client/spring/Workers.java",
+      "sizeBytes": 1906,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/config/ObjectMapperBuilderConfiguration.java",
+      "sizeBytes": 1629,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/config/ObjectMapperConfiguration.java",
+      "sizeBytes": 1547,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/config/ObjectMapperProvider.java",
+      "sizeBytes": 2469,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/constraints/NoSemiColonConstraint.java",
+      "sizeBytes": 2077,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/constraints/OwnerEmailMandatoryConstraint.java",
+      "sizeBytes": 2288,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/constraints/TaskReferenceNameUniqueConstraint.java",
+      "sizeBytes": 4893,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/constraints/TaskTimeoutConstraint.java",
+      "sizeBytes": 2643,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/jackson/JsonProtoModule.java",
+      "sizeBytes": 6663,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/Auditable.java",
+      "sizeBytes": 2163,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/BaseDef.java",
+      "sizeBytes": 1966,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/acl/Permission.java",
+      "sizeBytes": 772,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/events/EventExecution.java",
+      "sizeBytes": 4503,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/events/EventHandler.java",
+      "sizeBytes": 9788,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/tasks/PollData.java",
+      "sizeBytes": 3084,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/tasks/Task.java",
+      "sizeBytes": 28623,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskDef.java",
+      "sizeBytes": 14110,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskExecLog.java",
+      "sizeBytes": 2450,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskResult.java",
+      "sizeBytes": 9629,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskType.java",
+      "sizeBytes": 3883,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/workflow/DynamicForkJoinTask.java",
+      "sizeBytes": 2811,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/workflow/DynamicForkJoinTaskList.java",
+      "sizeBytes": 1537,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/workflow/RerunWorkflowRequest.java",
+      "sizeBytes": 2176,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/workflow/SkipTaskRequest.java",
+      "sizeBytes": 2001,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/workflow/StartWorkflowRequest.java",
+      "sizeBytes": 4444,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/workflow/SubWorkflowParams.java",
+      "sizeBytes": 4129,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/workflow/WorkflowDef.java",
+      "sizeBytes": 12925,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/workflow/WorkflowDefSummary.java",
+      "sizeBytes": 2778,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/metadata/workflow/WorkflowTask.java",
+      "sizeBytes": 22898,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/model/BulkResponse.java",
+      "sizeBytes": 2624,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/run/ExternalStorageLocation.java",
+      "sizeBytes": 1432,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/run/SearchResult.java",
+      "sizeBytes": 1448,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/run/TaskSummary.java",
+      "sizeBytes": 12292,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/run/Workflow.java",
+      "sizeBytes": 17694,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/run/WorkflowSummary.java",
+      "sizeBytes": 10782,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/run/WorkflowTestRequest.java",
+      "sizeBytes": 3183,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/utils/ConstraintParamUtil.java",
+      "sizeBytes": 6356,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/utils/EnvUtils.java",
+      "sizeBytes": 1519,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/utils/ExternalPayloadStorage.java",
+      "sizeBytes": 3372,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/utils/SummaryUtil.java",
+      "sizeBytes": 2490,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/utils/TaskUtils.java",
+      "sizeBytes": 1227,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/validation/ErrorResponse.java",
+      "sizeBytes": 1852,
+      "isTest": false
+    },
+    {
+      "path": "common/src/main/java/com/netflix/conductor/common/validation/ValidationError.java",
+      "sizeBytes": 1878,
+      "isTest": false
+    },
+    {
+      "path": "common/src/test/java/com/netflix/conductor/common/config/TestObjectMapperConfiguration.java",
+      "sizeBytes": 1080,
+      "isTest": false
+    },
+    {
+      "path": "common/src/test/java/com/netflix/conductor/common/events/EventHandlerTest.java",
+      "sizeBytes": 1893,
+      "isTest": false
+    },
+    {
+      "path": "common/src/test/java/com/netflix/conductor/common/run/TaskSummaryTest.java",
+      "sizeBytes": 1635,
+      "isTest": false
+    },
+    {
+      "path": "common/src/test/java/com/netflix/conductor/common/tasks/TaskDefTest.java",
+      "sizeBytes": 4451,
+      "isTest": false
+    },
+    {
+      "path": "common/src/test/java/com/netflix/conductor/common/tasks/TaskResultTest.java",
+      "sizeBytes": 3067,
+      "isTest": false
+    },
+    {
+      "path": "common/src/test/java/com/netflix/conductor/common/tasks/TaskTest.java",
+      "sizeBytes": 5408,
+      "isTest": false
+    },
+    {
+      "path": "common/src/test/java/com/netflix/conductor/common/utils/ConstraintParamUtilTest.java",
+      "sizeBytes": 10658,
+      "isTest": false
+    },
+    {
+      "path": "common/src/test/java/com/netflix/conductor/common/utils/SummaryUtilTest.java",
+      "sizeBytes": 3916,
+      "isTest": false
+    },
+    {
+      "path": "common/src/test/java/com/netflix/conductor/common/workflow/SubWorkflowParamsTest.java",
+      "sizeBytes": 5031,
+      "isTest": false
+    },
+    {
+      "path": "common/src/test/java/com/netflix/conductor/common/workflow/WorkflowDefValidatorTest.java",
+      "sizeBytes": 13811,
+      "isTest": false
+    },
+    {
+      "path": "common/src/test/java/com/netflix/conductor/common/workflow/WorkflowTaskTest.java",
+      "sizeBytes": 2792,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/annotations/Audit.java",
+      "sizeBytes": 945,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/annotations/Trace.java",
+      "sizeBytes": 893,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/annotations/VisibleForTesting.java",
+      "sizeBytes": 958,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/LifecycleAwareComponent.java",
+      "sizeBytes": 1425,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/WorkflowContext.java",
+      "sizeBytes": 1683,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/config/ConductorCoreConfiguration.java",
+      "sizeBytes": 5361,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/config/ConductorProperties.java",
+      "sizeBytes": 19499,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/config/SchedulerConfiguration.java",
+      "sizeBytes": 3257,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/dal/ExecutionDAOFacade.java",
+      "sizeBytes": 33398,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/event/WorkflowCreationEvent.java",
+      "sizeBytes": 1088,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/event/WorkflowEvaluationEvent.java",
+      "sizeBytes": 1039,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/events/ActionProcessor.java",
+      "sizeBytes": 896,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/events/DefaultEventProcessor.java",
+      "sizeBytes": 15761,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/events/DefaultEventQueueManager.java",
+      "sizeBytes": 6910,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/events/EventQueueManager.java",
+      "sizeBytes": 793,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/events/EventQueueProvider.java",
+      "sizeBytes": 1294,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/events/EventQueues.java",
+      "sizeBytes": 2596,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/events/ScriptEvaluator.java",
+      "sizeBytes": 2810,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/events/SimpleActionProcessor.java",
+      "sizeBytes": 10356,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/events/queue/ConductorEventQueueProvider.java",
+      "sizeBytes": 2532,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/events/queue/ConductorObservableQueue.java",
+      "sizeBytes": 5106,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/events/queue/DefaultEventQueueProcessor.java",
+      "sizeBytes": 11927,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/events/queue/Message.java",
+      "sizeBytes": 3038,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/events/queue/ObservableQueue.java",
+      "sizeBytes": 2633,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/exception/ConflictException.java",
+      "sizeBytes": 998,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/exception/NonTransientException.java",
+      "sizeBytes": 895,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/exception/NotFoundException.java",
+      "sizeBytes": 998,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/exception/TerminateWorkflowException.java",
+      "sizeBytes": 1582,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/exception/TransientException.java",
+      "sizeBytes": 886,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/AsyncSystemTaskExecutor.java",
+      "sizeBytes": 9673,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/DeciderService.java",
+      "sizeBytes": 39748,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/StartWorkflowInput.java",
+      "sizeBytes": 6190,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "sizeBytes": 82094,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/evaluators/Evaluator.java",
+      "sizeBytes": 1088,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/evaluators/JavascriptEvaluator.java",
+      "sizeBytes": 1786,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/evaluators/ValueParamEvaluator.java",
+      "sizeBytes": 1726,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/DecisionTaskMapper.java",
+      "sizeBytes": 7618,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/DoWhileTaskMapper.java",
+      "sizeBytes": 4570,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/DynamicTaskMapper.java",
+      "sizeBytes": 7622,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/EventTaskMapper.java",
+      "sizeBytes": 2932,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/ExclusiveJoinTaskMapper.java",
+      "sizeBytes": 2234,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/ForkJoinDynamicTaskMapper.java",
+      "sizeBytes": 21943,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/ForkJoinTaskMapper.java",
+      "sizeBytes": 4736,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/HTTPTaskMapper.java",
+      "sizeBytes": 4466,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/HumanTaskMapper.java",
+      "sizeBytes": 2680,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/InlineTaskMapper.java",
+      "sizeBytes": 3287,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/JoinTaskMapper.java",
+      "sizeBytes": 2789,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/JsonJQTransformTaskMapper.java",
+      "sizeBytes": 2890,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/KafkaPublishTaskMapper.java",
+      "sizeBytes": 4279,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/LambdaTaskMapper.java",
+      "sizeBytes": 3219,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/NoopTaskMapper.java",
+      "sizeBytes": 1634,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/SetVariableTaskMapper.java",
+      "sizeBytes": 1741,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/SimpleTaskMapper.java",
+      "sizeBytes": 4591,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/StartWorkflowTaskMapper.java",
+      "sizeBytes": 2086,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/SubWorkflowTaskMapper.java",
+      "sizeBytes": 7066,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapper.java",
+      "sizeBytes": 6972,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/TaskMapper.java",
+      "sizeBytes": 972,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/TaskMapperContext.java",
+      "sizeBytes": 10200,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/TerminateTaskMapper.java",
+      "sizeBytes": 2422,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/UserDefinedTaskMapper.java",
+      "sizeBytes": 5090,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/mapper/WaitTaskMapper.java",
+      "sizeBytes": 5208,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/Decision.java",
+      "sizeBytes": 1560,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/DoWhile.java",
+      "sizeBytes": 12276,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/Event.java",
+      "sizeBytes": 7262,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/ExclusiveJoin.java",
+      "sizeBytes": 5513,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/ExecutionConfig.java",
+      "sizeBytes": 1498,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/Fork.java",
+      "sizeBytes": 917,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/Human.java",
+      "sizeBytes": 1482,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/Inline.java",
+      "sizeBytes": 5225,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/IsolatedTaskQueueProducer.java",
+      "sizeBytes": 5214,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/Join.java",
+      "sizeBytes": 4531,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/Lambda.java",
+      "sizeBytes": 4145,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/Noop.java",
+      "sizeBytes": 1287,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/SetVariable.java",
+      "sizeBytes": 5234,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/StartWorkflow.java",
+      "sizeBytes": 6468,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/SubWorkflow.java",
+      "sizeBytes": 8721,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/Switch.java",
+      "sizeBytes": 1383,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/SystemTaskRegistry.java",
+      "sizeBytes": 1957,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/SystemTaskWorker.java",
+      "sizeBytes": 7543,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/SystemTaskWorkerCoordinator.java",
+      "sizeBytes": 3000,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/Terminate.java",
+      "sizeBytes": 4237,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/Wait.java",
+      "sizeBytes": 1881,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/execution/tasks/WorkflowSystemTask.java",
+      "sizeBytes": 3959,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/index/NoopIndexDAO.java",
+      "sizeBytes": 5248,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/index/NoopIndexDAOConfiguration.java",
+      "sizeBytes": 1132,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/listener/TaskStatusListener.java",
+      "sizeBytes": 1399,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/listener/TaskStatusListenerStub.java",
+      "sizeBytes": 2216,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/listener/WorkflowStatusListener.java",
+      "sizeBytes": 1616,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/listener/WorkflowStatusListenerStub.java",
+      "sizeBytes": 1453,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/metadata/MetadataMapperService.java",
+      "sizeBytes": 8967,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/operation/StartWorkflowOperation.java",
+      "sizeBytes": 8245,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/operation/WorkflowOperation.java",
+      "sizeBytes": 713,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowReconciler.java",
+      "sizeBytes": 4157,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowRepairService.java",
+      "sizeBytes": 8916,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java",
+      "sizeBytes": 8251,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/storage/DummyPayloadStorage.java",
+      "sizeBytes": 3640,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/sync/Lock.java",
+      "sizeBytes": 2450,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/sync/local/LocalOnlyLock.java",
+      "sizeBytes": 4573,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/sync/local/LocalOnlyLockConfiguration.java",
+      "sizeBytes": 1127,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/sync/noop/NoopLock.java",
+      "sizeBytes": 1210,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/utils/DateTimeUtils.java",
+      "sizeBytes": 2181,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/utils/ExternalPayloadStorageUtils.java",
+      "sizeBytes": 12561,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/utils/IDGenerator.java",
+      "sizeBytes": 1541,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/utils/JsonUtils.java",
+      "sizeBytes": 3512,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/utils/ParametersUtils.java",
+      "sizeBytes": 16232,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/utils/QueueUtils.java",
+      "sizeBytes": 4185,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/utils/SemaphoreUtil.java",
+      "sizeBytes": 2237,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/core/utils/Utils.java",
+      "sizeBytes": 3238,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/dao/ConcurrentExecutionLimitDAO.java",
+      "sizeBytes": 1729,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/dao/EventHandlerDAO.java",
+      "sizeBytes": 1731,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/dao/ExecutionDAO.java",
+      "sizeBytes": 7215,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/dao/IndexDAO.java",
+      "sizeBytes": 8533,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/dao/MetadataDAO.java",
+      "sizeBytes": 2523,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/dao/PollDataDAO.java",
+      "sizeBytes": 2376,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/dao/QueueDAO.java",
+      "sizeBytes": 6104,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/dao/RateLimitingDAO.java",
+      "sizeBytes": 1320,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/metrics/Monitors.java",
+      "sizeBytes": 20948,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/metrics/WorkflowMonitor.java",
+      "sizeBytes": 6474,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/model/TaskModel.java",
+      "sizeBytes": 26498,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/model/WorkflowModel.java",
+      "sizeBytes": 18295,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/service/AdminService.java",
+      "sizeBytes": 2330,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/service/AdminServiceImpl.java",
+      "sizeBytes": 5036,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/service/EventService.java",
+      "sizeBytes": 2162,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/service/EventServiceImpl.java",
+      "sizeBytes": 2378,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/service/ExecutionLockService.java",
+      "sizeBytes": 4086,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/service/ExecutionService.java",
+      "sizeBytes": 26344,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/service/MetadataService.java",
+      "sizeBytes": 5746,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/service/MetadataServiceImpl.java",
+      "sizeBytes": 9043,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/service/TaskService.java",
+      "sizeBytes": 8490,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/service/TaskServiceImpl.java",
+      "sizeBytes": 13038,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/service/WorkflowBulkService.java",
+      "sizeBytes": 2891,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/service/WorkflowBulkServiceImpl.java",
+      "sizeBytes": 6496,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/service/WorkflowService.java",
+      "sizeBytes": 16132,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/service/WorkflowServiceImpl.java",
+      "sizeBytes": 19348,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/service/WorkflowTestService.java",
+      "sizeBytes": 6973,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/validations/ValidationContext.java",
+      "sizeBytes": 1194,
+      "isTest": false
+    },
+    {
+      "path": "core/src/main/java/com/netflix/conductor/validations/WorkflowTaskTypeConstraint.java",
+      "sizeBytes": 25873,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/TestUtils.java",
+      "sizeBytes": 1208,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/dal/ExecutionDAOFacadeTest.java",
+      "sizeBytes": 8989,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/events/MockObservableQueue.java",
+      "sizeBytes": 2397,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/events/MockQueueProvider.java",
+      "sizeBytes": 1155,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/events/TestDefaultEventProcessor.java",
+      "sizeBytes": 25088,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/events/TestScriptEval.java",
+      "sizeBytes": 1696,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/events/TestSimpleActionProcessor.java",
+      "sizeBytes": 13643,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderOutcomes.java",
+      "sizeBytes": 27531,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderService.java",
+      "sizeBytes": 61817,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowDef.java",
+      "sizeBytes": 8823,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+      "sizeBytes": 113406,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/WorkflowSystemTaskStub.java",
+      "sizeBytes": 1299,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/DecisionTaskMapperTest.java",
+      "sizeBytes": 12023,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/DoWhileTaskMapperTest.java",
+      "sizeBytes": 5023,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/DynamicTaskMapperTest.java",
+      "sizeBytes": 5684,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/EventTaskMapperTest.java",
+      "sizeBytes": 2906,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/ForkJoinDynamicTaskMapperTest.java",
+      "sizeBytes": 21053,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/ForkJoinTaskMapperTest.java",
+      "sizeBytes": 8052,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/HTTPTaskMapperTest.java",
+      "sizeBytes": 4419,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/HumanTaskMapperTest.java",
+      "sizeBytes": 2664,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/InlineTaskMapperTest.java",
+      "sizeBytes": 4535,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/JoinTaskMapperTest.java",
+      "sizeBytes": 2352,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/JsonJQTransformTaskMapperTest.java",
+      "sizeBytes": 4869,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/KafkaPublishTaskMapperTest.java",
+      "sizeBytes": 4984,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/LambdaTaskMapperTest.java",
+      "sizeBytes": 4275,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/NoopTaskMapperTest.java",
+      "sizeBytes": 2207,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/SetVariableTaskMapperTest.java",
+      "sizeBytes": 2237,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/SimpleTaskMapperTest.java",
+      "sizeBytes": 4281,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/SubWorkflowTaskMapperTest.java",
+      "sizeBytes": 7724,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapperTest.java",
+      "sizeBytes": 12443,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/TerminateTaskMapperTest.java",
+      "sizeBytes": 2526,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/UserDefinedTaskMapperTest.java",
+      "sizeBytes": 4648,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/mapper/WaitTaskMapperTest.java",
+      "sizeBytes": 9202,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/tasks/EventQueueResolutionTest.java",
+      "sizeBytes": 7235,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/tasks/InlineTest.java",
+      "sizeBytes": 5692,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestLambda.java",
+      "sizeBytes": 2368,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestNoop.java",
+      "sizeBytes": 1314,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestSubWorkflow.java",
+      "sizeBytes": 19317,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestSystemTaskWorker.java",
+      "sizeBytes": 6872,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestSystemTaskWorkerCoordinator.java",
+      "sizeBytes": 2300,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestTerminate.java",
+      "sizeBytes": 6172,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/metadata/MetadataMapperServiceTest.java",
+      "sizeBytes": 13781,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowRepairService.java",
+      "sizeBytes": 12132,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowSweeper.java",
+      "sizeBytes": 15108,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/storage/DummyPayloadStorageTest.java",
+      "sizeBytes": 3259,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/sync/local/LocalOnlyLockTest.java",
+      "sizeBytes": 5918,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/utils/ExternalPayloadStorageUtilsTest.java",
+      "sizeBytes": 11607,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/utils/JsonUtilsTest.java",
+      "sizeBytes": 4671,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/utils/ParametersUtilsTest.java",
+      "sizeBytes": 15723,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/utils/QueueUtilsTest.java",
+      "sizeBytes": 2991,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/core/utils/SemaphoreUtilTest.java",
+      "sizeBytes": 3311,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/dao/ExecutionDAOTest.java",
+      "sizeBytes": 16849,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/dao/PollDataDAOTest.java",
+      "sizeBytes": 2083,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/metrics/WorkflowMonitorTest.java",
+      "sizeBytes": 2633,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/service/EventServiceTest.java",
+      "sizeBytes": 4332,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/service/ExecutionServiceTest.java",
+      "sizeBytes": 12973,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/service/MetadataServiceTest.java",
+      "sizeBytes": 22915,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/service/TaskServiceTest.java",
+      "sizeBytes": 9855,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/service/WorkflowBulkServiceTest.java",
+      "sizeBytes": 5599,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/service/WorkflowServiceTest.java",
+      "sizeBytes": 20463,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/validations/WorkflowDefConstraintTest.java",
+      "sizeBytes": 7548,
+      "isTest": false
+    },
+    {
+      "path": "core/src/test/java/com/netflix/conductor/validations/WorkflowTaskTypeConstraintTest.java",
+      "sizeBytes": 24313,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/config/ElasticSearchConditions.java",
+      "sizeBytes": 1543,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/config/ElasticSearchProperties.java",
+      "sizeBytes": 7290,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/config/ElasticSearchV6Configuration.java",
+      "sizeBytes": 7353,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/config/IsHttpProtocol.java",
+      "sizeBytes": 1413,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/config/IsTcpProtocol.java",
+      "sizeBytes": 1412,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/index/BulkRequestBuilderWrapper.java",
+      "sizeBytes": 1967,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/index/BulkRequestWrapper.java",
+      "sizeBytes": 1636,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/index/ElasticSearchBaseDAO.java",
+      "sizeBytes": 2819,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/index/ElasticSearchDAOV6.java",
+      "sizeBytes": 46135,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/index/ElasticSearchRestDAOV6.java",
+      "sizeBytes": 52469,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/query/parser/Expression.java",
+      "sizeBytes": 3307,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/query/parser/FilterProvider.java",
+      "sizeBytes": 845,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/query/parser/GroupedExpression.java",
+      "sizeBytes": 1666,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/query/parser/NameValue.java",
+      "sizeBytes": 5194,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/query/parser/internal/AbstractNode.java",
+      "sizeBytes": 5147,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/query/parser/internal/BooleanOp.java",
+      "sizeBytes": 1617,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/query/parser/internal/ComparisonOp.java",
+      "sizeBytes": 3135,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/query/parser/internal/ConstValue.java",
+      "sizeBytes": 4071,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/query/parser/internal/FunctionThrowingException.java",
+      "sizeBytes": 769,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/query/parser/internal/ListConst.java",
+      "sizeBytes": 2000,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/query/parser/internal/Name.java",
+      "sizeBytes": 1139,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/query/parser/internal/ParserException.java",
+      "sizeBytes": 913,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/query/parser/internal/Range.java",
+      "sizeBytes": 1970,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/ElasticSearchDaoBaseTest.java",
+      "sizeBytes": 3369,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/ElasticSearchRestDaoBaseTest.java",
+      "sizeBytes": 2581,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/ElasticSearchTest.java",
+      "sizeBytes": 2735,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchDAOV6.java",
+      "sizeBytes": 21035,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchDAOV6Batch.java",
+      "sizeBytes": 3344,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchRestDAOV6.java",
+      "sizeBytes": 21242,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchRestDAOV6Batch.java",
+      "sizeBytes": 3352,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/query/parser/TestExpression.java",
+      "sizeBytes": 6248,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/query/parser/internal/TestAbstractParser.java",
+      "sizeBytes": 963,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/query/parser/internal/TestBooleanOp.java",
+      "sizeBytes": 1485,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/query/parser/internal/TestComparisonOp.java",
+      "sizeBytes": 1544,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/query/parser/internal/TestConstValue.java",
+      "sizeBytes": 3676,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/query/parser/internal/TestName.java",
+      "sizeBytes": 1102,
+      "isTest": false
+    },
+    {
+      "path": "es6-persistence/src/test/java/com/netflix/conductor/es6/utils/TestUtils.java",
+      "sizeBytes": 2990,
+      "isTest": false
+    },
+    {
+      "path": "grpc/src/main/java/com/netflix/conductor/grpc/AbstractProtoMapper.java",
+      "sizeBytes": 65423,
+      "isTest": false
+    },
+    {
+      "path": "grpc/src/main/java/com/netflix/conductor/grpc/ProtoMapper.java",
+      "sizeBytes": 6925,
+      "isTest": false
+    },
+    {
+      "path": "grpc/src/test/java/com/netflix/conductor/grpc/TestProtoMapper.java",
+      "sizeBytes": 2204,
+      "isTest": false
+    },
+    {
+      "path": "grpc-client/src/main/java/com/netflix/conductor/client/grpc/ClientBase.java",
+      "sizeBytes": 2131,
+      "isTest": false
+    },
+    {
+      "path": "grpc-client/src/main/java/com/netflix/conductor/client/grpc/EventClient.java",
+      "sizeBytes": 3684,
+      "isTest": false
+    },
+    {
+      "path": "grpc-client/src/main/java/com/netflix/conductor/client/grpc/MetadataClient.java",
+      "sizeBytes": 5337,
+      "isTest": false
+    },
+    {
+      "path": "grpc-client/src/main/java/com/netflix/conductor/client/grpc/TaskClient.java",
+      "sizeBytes": 9147,
+      "isTest": false
+    },
+    {
+      "path": "grpc-client/src/main/java/com/netflix/conductor/client/grpc/WorkflowClient.java",
+      "sizeBytes": 15118,
+      "isTest": false
+    },
+    {
+      "path": "grpc-client/src/test/java/com/netflix/conductor/client/grpc/EventClientTest.java",
+      "sizeBytes": 5177,
+      "isTest": false
+    },
+    {
+      "path": "grpc-client/src/test/java/com/netflix/conductor/client/grpc/TaskClientTest.java",
+      "sizeBytes": 7196,
+      "isTest": false
+    },
+    {
+      "path": "grpc-client/src/test/java/com/netflix/conductor/client/grpc/WorkflowClientTest.java",
+      "sizeBytes": 7750,
+      "isTest": false
+    },
+    {
+      "path": "grpc-server/src/main/java/com/netflix/conductor/grpc/server/GRPCServer.java",
+      "sizeBytes": 1625,
+      "isTest": false
+    },
+    {
+      "path": "grpc-server/src/main/java/com/netflix/conductor/grpc/server/GRPCServerProperties.java",
+      "sizeBytes": 1344,
+      "isTest": false
+    },
+    {
+      "path": "grpc-server/src/main/java/com/netflix/conductor/grpc/server/GrpcConfiguration.java",
+      "sizeBytes": 1641,
+      "isTest": false
+    },
+    {
+      "path": "grpc-server/src/main/java/com/netflix/conductor/grpc/server/service/EventServiceImpl.java",
+      "sizeBytes": 3430,
+      "isTest": false
+    },
+    {
+      "path": "grpc-server/src/main/java/com/netflix/conductor/grpc/server/service/GRPCHelper.java",
+      "sizeBytes": 7666,
+      "isTest": false
+    },
+    {
+      "path": "grpc-server/src/main/java/com/netflix/conductor/grpc/server/service/HealthServiceImpl.java",
+      "sizeBytes": 1386,
+      "isTest": false
+    },
+    {
+      "path": "grpc-server/src/main/java/com/netflix/conductor/grpc/server/service/MetadataServiceImpl.java",
+      "sizeBytes": 6242,
+      "isTest": false
+    },
+    {
+      "path": "grpc-server/src/main/java/com/netflix/conductor/grpc/server/service/TaskServiceImpl.java",
+      "sizeBytes": 12074,
+      "isTest": false
+    },
+    {
+      "path": "grpc-server/src/main/java/com/netflix/conductor/grpc/server/service/WorkflowServiceImpl.java",
+      "sizeBytes": 15614,
+      "isTest": false
+    },
+    {
+      "path": "grpc-server/src/test/java/com/netflix/conductor/grpc/server/service/HealthServiceImplTest.java",
+      "sizeBytes": 4970,
+      "isTest": false
+    },
+    {
+      "path": "grpc-server/src/test/java/com/netflix/conductor/grpc/server/service/TaskServiceImplTest.java",
+      "sizeBytes": 8371,
+      "isTest": false
+    },
+    {
+      "path": "grpc-server/src/test/java/com/netflix/conductor/grpc/server/service/WorkflowServiceImplTest.java",
+      "sizeBytes": 13369,
+      "isTest": false
+    },
+    {
+      "path": "http-task/src/main/java/com/netflix/conductor/tasks/http/HttpTask.java",
+      "sizeBytes": 13205,
+      "isTest": false
+    },
+    {
+      "path": "http-task/src/main/java/com/netflix/conductor/tasks/http/providers/DefaultRestTemplateProvider.java",
+      "sizeBytes": 2683,
+      "isTest": false
+    },
+    {
+      "path": "http-task/src/main/java/com/netflix/conductor/tasks/http/providers/RestTemplateProvider.java",
+      "sizeBytes": 923,
+      "isTest": false
+    },
+    {
+      "path": "http-task/src/test/java/com/netflix/conductor/tasks/http/HttpTaskTest.java",
+      "sizeBytes": 16501,
+      "isTest": false
+    },
+    {
+      "path": "http-task/src/test/java/com/netflix/conductor/tasks/http/providers/DefaultRestTemplateProviderTest.java",
+      "sizeBytes": 2386,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/example/java/com/netflix/conductor/sdk/example/shipment/Order.java",
+      "sizeBytes": 2412,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/example/java/com/netflix/conductor/sdk/example/shipment/Shipment.java",
+      "sizeBytes": 1170,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/example/java/com/netflix/conductor/sdk/example/shipment/ShipmentState.java",
+      "sizeBytes": 1520,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/example/java/com/netflix/conductor/sdk/example/shipment/ShipmentWorkers.java",
+      "sizeBytes": 5567,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/example/java/com/netflix/conductor/sdk/example/shipment/ShipmentWorkflow.java",
+      "sizeBytes": 12210,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/example/java/com/netflix/conductor/sdk/example/shipment/User.java",
+      "sizeBytes": 2675,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/example/resources/script.js",
+      "sizeBytes": 160,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/healthcheck/HealthCheckClient.java",
+      "sizeBytes": 2179,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/testing/LocalServerRunner.java",
+      "sizeBytes": 8243,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/testing/WorkflowTestRunner.java",
+      "sizeBytes": 2256,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/ConductorWorkflow.java",
+      "sizeBytes": 11875,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/ValidationError.java",
+      "sizeBytes": 779,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/WorkflowBuilder.java",
+      "sizeBytes": 6607,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/DoWhile.java",
+      "sizeBytes": 3184,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/Dynamic.java",
+      "sizeBytes": 1516,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/DynamicFork.java",
+      "sizeBytes": 4486,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/DynamicForkInput.java",
+      "sizeBytes": 1495,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/Event.java",
+      "sizeBytes": 1789,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/ForkJoin.java",
+      "sizeBytes": 4907,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/Http.java",
+      "sizeBytes": 8600,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/JQ.java",
+      "sizeBytes": 1583,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/Javascript.java",
+      "sizeBytes": 4974,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/Join.java",
+      "sizeBytes": 1487,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/SetVariable.java",
+      "sizeBytes": 1385,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/SimpleTask.java",
+      "sizeBytes": 1578,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/SubWorkflow.java",
+      "sizeBytes": 3031,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/Switch.java",
+      "sizeBytes": 6090,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/Task.java",
+      "sizeBytes": 6827,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/TaskRegistry.java",
+      "sizeBytes": 1769,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/Terminate.java",
+      "sizeBytes": 2328,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/Wait.java",
+      "sizeBytes": 2338,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/executor/WorkflowExecutor.java",
+      "sizeBytes": 9808,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/executor/task/AnnotatedWorker.java",
+      "sizeBytes": 9829,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/executor/task/AnnotatedWorkerExecutor.java",
+      "sizeBytes": 8068,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/executor/task/DynamicForkWorker.java",
+      "sizeBytes": 4619,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/executor/task/NonRetryableException.java",
+      "sizeBytes": 1173,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/executor/task/TaskContext.java",
+      "sizeBytes": 2278,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/executor/task/WorkerConfiguration.java",
+      "sizeBytes": 1152,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/task/InputParam.java",
+      "sizeBytes": 967,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/task/OutputParam.java",
+      "sizeBytes": 928,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/task/WorkerTask.java",
+      "sizeBytes": 1126,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/utils/InputOutputGetter.java",
+      "sizeBytes": 2634,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/utils/MapBuilder.java",
+      "sizeBytes": 1192,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/utils/ObjectMapperProvider.java",
+      "sizeBytes": 1862,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/def/TaskConversionsTests.java",
+      "sizeBytes": 24362,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/def/WorkflowCreationTests.java",
+      "sizeBytes": 8139,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/def/WorkflowDefTaskTests.java",
+      "sizeBytes": 2004,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/def/WorkflowState.java",
+      "sizeBytes": 1100,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/executor/task/AnnotatedWorkerTests.java",
+      "sizeBytes": 12550,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/executor/task/TestWorkerConfig.java",
+      "sizeBytes": 1408,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/testing/Task1Input.java",
+      "sizeBytes": 1113,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/testing/TestWorkflowInput.java",
+      "sizeBytes": 1442,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/testing/WorkflowTestFrameworkTests.java",
+      "sizeBytes": 7183,
+      "isTest": false
+    },
+    {
+      "path": "java-sdk/src/test/resources/script.js",
+      "sizeBytes": 160,
+      "isTest": false
+    },
+    {
+      "path": "json-jq-task/src/main/java/com/netflix/conductor/tasks/json/JsonJqTransform.java",
+      "sizeBytes": 6093,
+      "isTest": false
+    },
+    {
+      "path": "json-jq-task/src/test/java/com/netflix/conductor/tasks/json/JsonJqTransformTest.java",
+      "sizeBytes": 8412,
+      "isTest": false
+    },
+    {
+      "path": "redis-concurrency-limit/src/main/java/com/netflix/conductor/redis/limit/RedisConcurrentExecutionLimitDAO.java",
+      "sizeBytes": 6963,
+      "isTest": false
+    },
+    {
+      "path": "redis-concurrency-limit/src/main/java/com/netflix/conductor/redis/limit/config/RedisConcurrentExecutionLimitConfiguration.java",
+      "sizeBytes": 3262,
+      "isTest": false
+    },
+    {
+      "path": "redis-concurrency-limit/src/main/java/com/netflix/conductor/redis/limit/config/RedisConcurrentExecutionLimitProperties.java",
+      "sizeBytes": 2244,
+      "isTest": false
+    },
+    {
+      "path": "redis-lock/src/main/java/com/netflix/conductor/redislock/config/RedisLockConfiguration.java",
+      "sizeBytes": 4828,
+      "isTest": false
+    },
+    {
+      "path": "redis-lock/src/main/java/com/netflix/conductor/redislock/config/RedisLockProperties.java",
+      "sizeBytes": 5041,
+      "isTest": false
+    },
+    {
+      "path": "redis-lock/src/main/java/com/netflix/conductor/redislock/lock/RedisLock.java",
+      "sizeBytes": 4005,
+      "isTest": false
+    },
+    {
+      "path": "redis-lock/src/test/java/com/netflix/conductor/redis/lock/RedisLockTest.java",
+      "sizeBytes": 7582,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/config/AnyRedisCondition.java",
+      "sizeBytes": 1611,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/config/DynomiteClusterConfiguration.java",
+      "sizeBytes": 2648,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/config/InMemoryRedisConfiguration.java",
+      "sizeBytes": 1666,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/config/JedisCommandsConfigurer.java",
+      "sizeBytes": 2378,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/config/RedisClusterConfiguration.java",
+      "sizeBytes": 3258,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/config/RedisCommonConfiguration.java",
+      "sizeBytes": 4677,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/config/RedisProperties.java",
+      "sizeBytes": 9371,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/config/RedisSentinelConfiguration.java",
+      "sizeBytes": 5026,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/config/RedisStandaloneConfiguration.java",
+      "sizeBytes": 3250,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/BaseDynoDAO.java",
+      "sizeBytes": 3887,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/DynoQueueDAO.java",
+      "sizeBytes": 5850,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisEventHandlerDAO.java",
+      "sizeBytes": 6119,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisExecutionDAO.java",
+      "sizeBytes": 33090,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisMetadataDAO.java",
+      "sizeBytes": 12943,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisPollDataDAO.java",
+      "sizeBytes": 4007,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisRateLimitingDAO.java",
+      "sizeBytes": 7454,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/dynoqueue/ConfigurationHostSupplier.java",
+      "sizeBytes": 3311,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/dynoqueue/LocalhostHostSupplier.java",
+      "sizeBytes": 1546,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/dynoqueue/RedisQueuesShardingStrategyProvider.java",
+      "sizeBytes": 2850,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/jedis/JedisCluster.java",
+      "sizeBytes": 27774,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/jedis/JedisMock.java",
+      "sizeBytes": 34320,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/jedis/JedisProxy.java",
+      "sizeBytes": 7413,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/jedis/JedisSentinel.java",
+      "sizeBytes": 37236,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/main/java/com/netflix/conductor/redis/jedis/JedisStandalone.java",
+      "sizeBytes": 30655,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/test/java/com/netflix/conductor/redis/config/utils/RedisQueuesShardingStrategyProviderTest.java",
+      "sizeBytes": 2193,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/test/java/com/netflix/conductor/redis/dao/BaseDynoDAOTest.java",
+      "sizeBytes": 2123,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/test/java/com/netflix/conductor/redis/dao/DynoQueueDAOTest.java",
+      "sizeBytes": 5402,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/test/java/com/netflix/conductor/redis/dao/RedisEventHandlerDAOTest.java",
+      "sizeBytes": 4311,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/test/java/com/netflix/conductor/redis/dao/RedisExecutionDAOTest.java",
+      "sizeBytes": 3691,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/test/java/com/netflix/conductor/redis/dao/RedisMetadataDAOTest.java",
+      "sizeBytes": 11702,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/test/java/com/netflix/conductor/redis/dao/RedisPollDataDAOTest.java",
+      "sizeBytes": 2208,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/test/java/com/netflix/conductor/redis/dao/RedisRateLimitDAOTest.java",
+      "sizeBytes": 3591,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/test/java/com/netflix/conductor/redis/jedis/ConfigurationHostSupplierTest.java",
+      "sizeBytes": 3135,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/test/java/com/netflix/conductor/redis/jedis/JedisClusterTest.java",
+      "sizeBytes": 14903,
+      "isTest": false
+    },
+    {
+      "path": "redis-persistence/src/test/java/com/netflix/conductor/redis/jedis/JedisSentinelTest.java",
+      "sizeBytes": 13657,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/main/java/com/netflix/conductor/rest/config/RequestMappingConstants.java",
+      "sizeBytes": 1035,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/main/java/com/netflix/conductor/rest/config/RestConfiguration.java",
+      "sizeBytes": 2040,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/main/java/com/netflix/conductor/rest/controllers/AdminResource.java",
+      "sizeBytes": 3227,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/main/java/com/netflix/conductor/rest/controllers/ApplicationExceptionMapper.java",
+      "sizeBytes": 3277,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/main/java/com/netflix/conductor/rest/controllers/EventResource.java",
+      "sizeBytes": 2910,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/main/java/com/netflix/conductor/rest/controllers/HealthCheckResource.java",
+      "sizeBytes": 1204,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/main/java/com/netflix/conductor/rest/controllers/MetadataResource.java",
+      "sizeBytes": 5221,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/main/java/com/netflix/conductor/rest/controllers/QueueAdminResource.java",
+      "sizeBytes": 3036,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/main/java/com/netflix/conductor/rest/controllers/TaskResource.java",
+      "sizeBytes": 8959,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/main/java/com/netflix/conductor/rest/controllers/ValidationExceptionMapper.java",
+      "sizeBytes": 6036,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/main/java/com/netflix/conductor/rest/controllers/WorkflowBulkResource.java",
+      "sizeBytes": 4669,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/main/java/com/netflix/conductor/rest/controllers/WorkflowResource.java",
+      "sizeBytes": 14185,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/main/java/com/netflix/conductor/rest/startup/KitchenSinkInitializer.java",
+      "sizeBytes": 5339,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/test/java/com/netflix/conductor/rest/controllers/AdminResourceTest.java",
+      "sizeBytes": 2698,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/test/java/com/netflix/conductor/rest/controllers/EventResourceTest.java",
+      "sizeBytes": 3235,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/test/java/com/netflix/conductor/rest/controllers/MetadataResourceTest.java",
+      "sizeBytes": 5700,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/test/java/com/netflix/conductor/rest/controllers/TaskResourceTest.java",
+      "sizeBytes": 8075,
+      "isTest": false
+    },
+    {
+      "path": "rest/src/test/java/com/netflix/conductor/rest/controllers/WorkflowResourceTest.java",
+      "sizeBytes": 8754,
+      "isTest": false
+    },
+    {
+      "path": "server/src/main/java/com/netflix/conductor/Conductor.java",
+      "sizeBytes": 2948,
+      "isTest": false
+    },
+    {
+      "path": "server/src/test/java/com/netflix/conductor/common/config/ConductorObjectMapperTest.java",
+      "sizeBytes": 4151,
+      "isTest": false
+    },
+    {
+      "path": "test-harness/src/test/java/com/netflix/conductor/ConductorTestApp.java",
+      "sizeBytes": 1418,
+      "isTest": false
+    },
+    {
+      "path": "test-harness/src/test/java/com/netflix/conductor/test/integration/AbstractEndToEndTest.java",
+      "sizeBytes": 12569,
+      "isTest": false
+    },
+    {
+      "path": "test-harness/src/test/java/com/netflix/conductor/test/integration/grpc/AbstractGrpcEndToEndTest.java",
+      "sizeBytes": 11294,
+      "isTest": false
+    },
+    {
+      "path": "test-harness/src/test/java/com/netflix/conductor/test/integration/grpc/GrpcEndToEndTest.java",
+      "sizeBytes": 1251,
+      "isTest": false
+    },
+    {
+      "path": "test-harness/src/test/java/com/netflix/conductor/test/integration/http/AbstractHttpEndToEndTest.java",
+      "sizeBytes": 22945,
+      "isTest": false
+    },
+    {
+      "path": "test-harness/src/test/java/com/netflix/conductor/test/integration/http/HttpEndToEndTest.java",
+      "sizeBytes": 1423,
+      "isTest": false
+    },
+    {
+      "path": "test-harness/src/test/java/com/netflix/conductor/test/utils/MockExternalPayloadStorage.java",
+      "sizeBytes": 7731,
+      "isTest": false
+    },
+    {
+      "path": "test-harness/src/test/java/com/netflix/conductor/test/utils/UserTask.java",
+      "sizeBytes": 2976,
+      "isTest": false
+    },
+    {
+      "path": "ui/cypress/e2e/spec.cy.js",
+      "sizeBytes": 1549,
+      "isTest": false
+    },
+    {
+      "path": "ui/cypress/support/commands.ts",
+      "sizeBytes": 1315,
+      "isTest": false
+    },
+    {
+      "path": "ui/cypress/support/component.ts",
+      "sizeBytes": 1129,
+      "isTest": false
+    },
+    {
+      "path": "ui/cypress/support/e2e.ts",
+      "sizeBytes": 669,
+      "isTest": false
+    },
+    {
+      "path": "ui/cypress.config.ts",
+      "sizeBytes": 235,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/components/diagram/TaskPointer.d.ts",
+      "sizeBytes": 62,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/components/diagram/TaskResult.d.ts",
+      "sizeBytes": 30,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/components/diagram/WorkflowDAG.js",
+      "sizeBytes": 17363,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+      "sizeBytes": 3992,
+      "isTest": true
+    },
+    {
+      "path": "ui/src/components/index.js",
+      "sizeBytes": 1397,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/data/actions.js",
+      "sizeBytes": 1786,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/data/bulkactions.js",
+      "sizeBytes": 1531,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/data/common.js",
+      "sizeBytes": 1479,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/data/misc.js",
+      "sizeBytes": 230,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/data/task.js",
+      "sizeBytes": 3888,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/data/workflow.js",
+      "sizeBytes": 5076,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/hooks/useTime.js",
+      "sizeBytes": 394,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/index.js",
+      "sizeBytes": 1269,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/pages/executions/executionsStyles.js",
+      "sizeBytes": 331,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/pages/kitchensink/sampleMovieData.js",
+      "sizeBytes": 79776,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/pages/styles.js",
+      "sizeBytes": 507,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/plugins/constants.js",
+      "sizeBytes": 0,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/plugins/env.js",
+      "sizeBytes": 96,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/plugins/fetch.js",
+      "sizeBytes": 1130,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/react-app-env.d.ts",
+      "sizeBytes": 40,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/schema/task.js",
+      "sizeBytes": 461,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/schema/workflow.js",
+      "sizeBytes": 9462,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/serviceWorker.js",
+      "sizeBytes": 5098,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/setupProxy.js",
+      "sizeBytes": 322,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/setupTests.js",
+      "sizeBytes": 255,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/theme/colorOverrides.js",
+      "sizeBytes": 948,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/theme/colors.js",
+      "sizeBytes": 17386,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/theme/index.js",
+      "sizeBytes": 100,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/theme/theme.js",
+      "sizeBytes": 16120,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/theme/variables.js",
+      "sizeBytes": 1338,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/utils/constants.js",
+      "sizeBytes": 1002,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/utils/helpers.js",
+      "sizeBytes": 2450,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/utils/localstorage.ts",
+      "sizeBytes": 995,
+      "isTest": false
+    },
+    {
+      "path": "ui/src/utils/path.js",
+      "sizeBytes": 319,
+      "isTest": false
+    }
+  ],
+  "testScenariosSummary": [
+    {
+      "filePath": "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+      "testFunction": "<WorkflowGraph>",
+      "subScenarioName": "Dynamic Fork - success",
+      "line": 6,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: <WorkflowGraph> -> Dynamic Fork - success"
+    },
+    {
+      "filePath": "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+      "testFunction": "<WorkflowGraph>",
+      "subScenarioName": "Dynamic Fork - one task failed",
+      "line": 21,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: <WorkflowGraph> -> Dynamic Fork - one task failed"
+    },
+    {
+      "filePath": "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+      "testFunction": "<WorkflowGraph>",
+      "subScenarioName": "Dynamic Fork - externalized input",
+      "line": 38,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: <WorkflowGraph> -> Dynamic Fork - externalized input"
+    },
+    {
+      "filePath": "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+      "testFunction": "<WorkflowGraph>",
+      "subScenarioName": "Dynamic Fork - not executed",
+      "line": 54,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: <WorkflowGraph> -> Dynamic Fork - not executed"
+    },
+    {
+      "filePath": "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+      "testFunction": "<WorkflowGraph>",
+      "subScenarioName": "Dynamic Fork - none spawned",
+      "line": 64,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: <WorkflowGraph> -> Dynamic Fork - none spawned"
+    },
+    {
+      "filePath": "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+      "testFunction": "<WorkflowGraph>",
+      "subScenarioName": "Do_while containing switch (definition)",
+      "line": 80,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: <WorkflowGraph> -> Do_while containing switch (definition)"
+    },
+    {
+      "filePath": "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+      "testFunction": "<WorkflowGraph>",
+      "subScenarioName": "Do_while containing switch (execution)",
+      "line": 97,
+      "assertionTypes": [
+        "vitest/jest/mocha"
+      ],
+      "inferredInvariant": "Guarantees: <WorkflowGraph> -> Do_while containing switch (execution)"
+    }
+  ],
+  "historicalFixesSummary": [
+    {
+      "commitHash": "41d4334e38312d0361e1326754b6822150c7bf73",
+      "authorDate": "2023-12-01T03:37:33+07:00",
+      "subject": "[Hot-fix] fix: remove redundant slash that cause proxy fail (#3873)",
+      "body": "",
+      "issueRefs": [
+        "#3873"
+      ],
+      "touchedFiles": [
+        "ui/src/components/NavLink.jsx",
+        "ui/src/plugins/AppLogo.jsx",
+        "ui/src/plugins/fetch.js"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "fb70f4944bc9fb2102020a1a7098d6238f775647",
+      "authorDate": "2023-11-26T11:04:42-08:00",
+      "subject": "fix formatting",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/executor/WorkflowExecutor.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "52dbb92e04c12a3bce2d58c0e98ddd15d61d8886",
+      "authorDate": "2023-11-25T01:58:27-05:00",
+      "subject": "Upgrading OSS libraries with known open CVEs (#3778)",
+      "body": "* Upgrading OSS libraries with known open CVEs\r\n\r\n* Updating the protobuf library.\r\n\r\n* Resolve the remaining build issues.\r\n\r\n---------\r\n\r\nCo-authored-by: Scott Carter <cartersc@vmware.com>",
+      "issueRefs": [
+        "#3778"
+      ],
+      "touchedFiles": [
+        "annotations-processor/dependencies.lock",
+        "annotations/dependencies.lock",
+        "awss3-storage/dependencies.lock",
+        "awssqs-event-queue/dependencies.lock",
+        "build.gradle",
+        "cassandra-persistence/dependencies.lock",
+        "client-spring/dependencies.lock",
+        "client/dependencies.lock",
+        "common/build.gradle",
+        "common/dependencies.lock",
+        "core/build.gradle",
+        "core/dependencies.lock",
+        "dependencies.gradle",
+        "dependencies.lock",
+        "es6-persistence/dependencies.lock",
+        "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/ElasticSearchTest.java",
+        "grpc-client/dependencies.lock",
+        "grpc-server/dependencies.lock",
+        "grpc/dependencies.lock",
+        "http-task/dependencies.lock",
+        "java-sdk/build.gradle",
+        "java-sdk/dependencies.lock",
+        "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/def/WorkflowCreationTests.java",
+        "json-jq-task/dependencies.lock",
+        "redis-concurrency-limit/dependencies.lock",
+        "redis-lock/dependencies.lock",
+        "redis-persistence/dependencies.lock",
+        "rest/dependencies.lock",
+        "server/dependencies.lock",
+        "test-harness/build.gradle",
+        "test-harness/dependencies.lock",
+        "test-harness/src/test/java/com/netflix/conductor/test/integration/AbstractEndToEndTest.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "43316a5eee513e7bfbb3a1cb6f070ba26619b39c",
+      "authorDate": "2023-11-25T11:04:32+05:30",
+      "subject": "ISICO-15108: javascript validation done on updating w/d (#3805)",
+      "body": "* ISICO-15108: javascript validation done on updating w/d\r\n\r\n* ISICO-14902: NPE while checking EvaluatorType is fixed\r\n\r\n* ISICO-14902: unused variables removed\r\n\r\n* ISICO-15108: javascript validation added in the constraint violation part\r\n\r\n* ISICO-15108: getExpression() is used for switch javascript code",
+      "issueRefs": [
+        "#3805"
+      ],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/validations/WorkflowTaskTypeConstraint.java",
+        "core/src/test/java/com/netflix/conductor/service/MetadataServiceTest.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "aaa46b55e365f26a4f3adfdd38699db5bea63df8",
+      "authorDate": "2023-11-25T13:31:58+08:00",
+      "subject": "Fix taskToDomain field not being echoed (#3806)",
+      "body": "",
+      "issueRefs": [
+        "#3806"
+      ],
+      "touchedFiles": [
+        "ui/src/pages/workbench/WorkbenchForm.jsx"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "07fd73a3c645dd8e3617999e72e6924958358147",
+      "authorDate": "2023-11-23T20:53:02-08:00",
+      "subject": "Fix typo in build-a-golang-task-worker.md (#3860)",
+      "body": "`provies` -> `provides`",
+      "issueRefs": [
+        "#3860"
+      ],
+      "touchedFiles": [
+        "docs/docs/how-tos/Workers/build-a-golang-task-worker.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "03cf0c1f1f7783a9550df414baea04207a74ac3a",
+      "authorDate": "2023-11-21T06:39:31+05:30",
+      "subject": "Update and rename WHOSUSING.md to USERS.md (#3850)",
+      "body": "Fix Conductor users broken links",
+      "issueRefs": [
+        "#3850"
+      ],
+      "touchedFiles": [
+        "USERS.md",
+        "WHOSUSING.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "b3a11965e08f4a10e52715e91ad2f3b37a7e408b",
+      "authorDate": "2023-11-12T16:53:11+08:00",
+      "subject": "Fix: include monaco sources into bundle (#3796)",
+      "body": "* Fix: include monaco sources into bundle",
+      "issueRefs": [
+        "#3796"
+      ],
+      "touchedFiles": [
+        ".gitignore",
+        "docker/README.md",
+        "docker/server/Dockerfile",
+        "docker/ui/Dockerfile",
+        "ui/package.json",
+        "ui/src/App.jsx",
+        "ui/yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "de2ca100f7aefa2a2d2c3041139fad089f56a734",
+      "authorDate": "2023-11-12T09:51:54+01:00",
+      "subject": "Fix WorkflowRepairService and AsyncSystemTaskExecutor race condition (#3836)",
+      "body": "Issue Summary:\r\nThere's a race condition in the system involving async system tasks and the WorkflowRepairService. For example, when a SUB_WORKFLOW task starts, the WorkflowRepairService sometimes erroneously reinserts the task into the processing queue because it perceives the task as out-of-sync between the ExecutorDAO and the queueDAO. This issue stems from the AsyncSystemTaskExecutor updating a task's status only after it removes it from the queue, creating a window where the WorkflowRepairService can wrongly assess the task state. This leads to duplicate subworkflows/http/… tasks being executed concurrently, which complicates maintaining idempotency of Tasks.\r\n\r\nProposed Solution:\r\nTo resolve the issue, it's suggested that the AsyncSystemTaskExecutor should update the status of tasks before removing them from the queue. This should close the window where the WorkflowRepairService can misidentify the task state and prevent unnecessary re-queuing of tasks. An edge case we’ve considered is if the process crashes after the task is updated but before it's removed from the queue. If that happens, the executor will simply remove the task from the queue the next time it runs, thereby not affecting system correctness.\r\n\r\nCo-authored-by: Jaim Silva <silvavelosa@gmail.com>",
+      "issueRefs": [
+        "#3836"
+      ],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/execution/AsyncSystemTaskExecutor.java"
+      ],
+      "fixCategory": "race_condition"
+    },
+    {
+      "commitHash": "be790a45341495a319badc739d2c1beb07bb1a7d",
+      "authorDate": "2023-11-12T11:10:41+08:00",
+      "subject": "Bugfix/Data inconsistency caused by updateEventHandler (#3843)",
+      "body": "* remove previous index of event handlers by event if event handler's event gets updated\r\n\r\n* run ./gradlew spotlessApply",
+      "issueRefs": [
+        "#3843"
+      ],
+      "touchedFiles": [
+        "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisEventHandlerDAO.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "898187857aa3c059374a63686c2e8bfb533adda7",
+      "authorDate": "2023-11-03T12:08:48+08:00",
+      "subject": "Fix JSONPath replace failed with line terminator (#3810)",
+      "body": "",
+      "issueRefs": [
+        "#3810"
+      ],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/utils/ParametersUtils.java",
+        "core/src/test/java/com/netflix/conductor/core/utils/ParametersUtilsTest.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "5ed77fbbf8011cba13dd73bcce13ce52cfb435a8",
+      "authorDate": "2023-09-27T14:41:48-07:00",
+      "subject": "Merge pull request #3756 from saksham2105/http-task-stuck-fix",
+      "body": "issue-3719: Fix for http task stuck due to NPE",
+      "issueRefs": [
+        "#3756"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "22ad0500c36656c6f87ddbc0834e1248cf613b7a",
+      "authorDate": "2023-09-27T10:11:40-07:00",
+      "subject": "Merge pull request #3779 from Young-Zen/ui-fix-validation-error-handling",
+      "body": "Fix validation error handling in workflow/task editor",
+      "issueRefs": [
+        "#3779"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "4c14bb7bda84376314a065d8df0847ad606f26ab",
+      "authorDate": "2023-09-27T09:53:45-07:00",
+      "subject": "Merge pull request #3786 from manan164/wait_task_test_fix",
+      "body": "Wait until calculation fix.",
+      "issueRefs": [
+        "#3786"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "ee190d52ba127f6812ad65fc403e18eda3c08ba8",
+      "authorDate": "2023-09-27T13:43:26+05:30",
+      "subject": "Wait until calculation fix.",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/execution/mapper/WaitTaskMapper.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "a68016e09c050887e26917ee56a9af33e34f9234",
+      "authorDate": "2023-09-21T12:05:56+08:00",
+      "subject": "Fix validation error handling in workflow/task editor",
+      "body": "Signed-off-by: yanghaojia <2453883990@qq.com>",
+      "issueRefs": [],
+      "touchedFiles": [
+        "ui/src/pages/definition/SaveTaskDialog.jsx",
+        "ui/src/pages/definition/SaveWorkflowDialog.jsx"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1c899db50778179bce5a95b058db69562b5b02e1",
+      "authorDate": "2023-09-23T11:27:21-07:00",
+      "subject": "Merge pull request #3782 from v1r3n/update_test_runs",
+      "body": "Fix test runs",
+      "issueRefs": [
+        "#3782"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "5f688d7ecdfed7f2fba75a8d2848ae156da6b6a8",
+      "authorDate": "2023-09-23T11:13:07-07:00",
+      "subject": "fix test runs",
+      "body": "1. Disable WorkflowCreationTest since it brings up a server and with JDK17, the test will not pass until a JDK17+ build is published.\n2. Clean up the ci.yaml",
+      "issueRefs": [],
+      "touchedFiles": [
+        ".github/workflows/ci.yml",
+        "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/def/WorkflowCreationTests.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "50b6fd41213c2fbbf7cf97f09b2e82aff21e7e12",
+      "authorDate": "2023-09-16T16:15:39+01:00",
+      "subject": "Merge pull request #3775 from manan164/wait_tasks_fix",
+      "body": "Make wait task async.",
+      "issueRefs": [
+        "#3775"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "4d0060b31d7bb225f7db178afea2a8564f7d269f",
+      "authorDate": "2023-09-15T20:27:07+05:30",
+      "subject": "fix test",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/WorkflowAndTaskConfigurationSpec.groovy"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "0e153f6438bb9bfff33ac2b21755df64568235f2",
+      "authorDate": "2023-09-15T17:19:54+05:30",
+      "subject": "Test fix",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "ac50271fede0fd7ae1cb379944c1915be02e4a3d",
+      "authorDate": "2023-09-14T13:22:49+01:00",
+      "subject": "Merge pull request #3772 from Young-Zen/fix-terminateReason-in-TERMINATE-task",
+      "body": "Fix: terminateReason in TERMINATE Task can use JSONPath expression to extract value",
+      "issueRefs": [
+        "#3772"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "19c3c70b4d9cdf7157df75d05a09d52aafa608c4",
+      "authorDate": "2023-09-14T15:51:17+08:00",
+      "subject": "Fix: terminateReason in TERMINATE Task can use JSONPath expression to extract value",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "d0ae08483c920401c2bfd4851ccb34496068dd69",
+      "authorDate": "2023-09-13T10:52:11-06:00",
+      "subject": "fix github actions",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        ".github/workflows/ci.yml"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1735708367db2c65db40130484a07ac4b8eac996",
+      "authorDate": "2023-09-08T01:00:19+05:30",
+      "subject": "issue-3719: removed any from location in test setup",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/test/java/com/netflix/conductor/core/storage/DummyPayloadStorageTest.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "13a689d133a414e223e19fc3a7ee75a094a12d56",
+      "authorDate": "2023-09-05T18:18:23+05:30",
+      "subject": "issue-3719: Added unit testcases to verify download functionality",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/test/java/com/netflix/conductor/core/storage/DummyPayloadStorageTest.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "4e993d354c16a8e375a3150af038b8b73b84cbd6",
+      "authorDate": "2023-09-02T13:44:08+05:30",
+      "subject": "issue-3719: Added disk based approach to prevent oom",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/storage/DummyPayloadStorage.java"
+      ],
+      "fixCategory": "memory_leak"
+    },
+    {
+      "commitHash": "46dd3df90320912eddcae050738bc19a8ed9702e",
+      "authorDate": "2023-09-02T04:02:40+05:30",
+      "subject": "issue-3719: Fix format violations",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/storage/DummyPayloadStorage.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "878a5128c2c6606393f33bbb64947ff8192f9d1a",
+      "authorDate": "2023-09-02T03:30:27+05:30",
+      "subject": "issue-3719: Fix for http task stuck due to NPE",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/storage/DummyPayloadStorage.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "4d99ff59c6390f76a9314a08364f27fdb20dd486",
+      "authorDate": "2023-08-29T00:52:53-07:00",
+      "subject": "Merge pull request #3692 from manan164/fix_docker_build",
+      "body": "Fix docker builds.",
+      "issueRefs": [
+        "#3692"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "d0a5883849439028aec35dfaf761c988e7d18fc8",
+      "authorDate": "2023-07-24T23:57:10-07:00",
+      "subject": "Merge pull request #3680 from JCHacking/fixed-docker-issues-build",
+      "body": "Fixed Docker issues",
+      "issueRefs": [
+        "#3680"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "f4c95a41bd6ae8406b842b84668e215d0d1891ca",
+      "authorDate": "2023-07-23T12:10:41-07:00",
+      "subject": "Merge pull request #3682 from ppolxda/merge",
+      "body": "Fix timeline not show when using the DO_WHILE loop.",
+      "issueRefs": [
+        "#3682"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "0afdef11a4e7be32c2f35eabedacc12ecfeee92b",
+      "authorDate": "2023-07-11T19:46:33+05:30",
+      "subject": "Fix docker builds.",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "docker/grpc/docker-compose.yaml",
+        "docker/server/config/config-local.properties",
+        "docker/server/config/config-mysql-grpc.properties",
+        "docker/server/config/config-mysql.properties",
+        "docker/server/config/config-postgres.properties"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c2903460ab8ca900a55d2a421c7a421bcb4228ef",
+      "authorDate": "2023-07-10T17:15:23+02:00",
+      "subject": "Merge branch 'main' into fixed-docker-issues-build",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "7a36c210283231f9e0ea23403d5b1eec1a60b15a",
+      "authorDate": "2023-07-07T08:02:47+02:00",
+      "subject": "Merge branch 'main' into fixed-docker-issues-build",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "cb39e12430de3ebfc90a6d198d48fa410dc3b0f9",
+      "authorDate": "2023-07-05T17:47:52+08:00",
+      "subject": "Fix timeline does not show when using the DO_WHILE loop.",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "ui/src/components/diagram/WorkflowDAG.js"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "8e4de4fa927bcaf5a3402e9efd67ef50a2cab871",
+      "authorDate": "2023-07-02T11:58:26-07:00",
+      "subject": "Merge pull request #3673 from supriyanta/switchTask_fix",
+      "body": "FIX: Switch Task remains in PENDING state when evaluator throws exception",
+      "issueRefs": [
+        "#3673"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "cfa0f697c3e4826f572f0e78f6cce64dfcc188f1",
+      "authorDate": "2023-07-01T16:10:31+02:00",
+      "subject": "Fixed Docker issues",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "docker/server/Dockerfile",
+        "docker/ui/Dockerfile"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1d5b4cac1cb85394abcc396a31d146341abdfa87",
+      "authorDate": "2023-06-27T16:52:54+05:30",
+      "subject": "FIX: Switch Task remains in PENDING state when evalutor throws exception",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapper.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapperTest.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "f07dc36f08dcaf91cb40ea6ee211c840de5ac8f3",
+      "authorDate": "2023-06-21T09:42:10-07:00",
+      "subject": "Merge pull request #3655 from manan164/join_task_fix2",
+      "body": "Lazy evaluate workflow only in case of task is successful.",
+      "issueRefs": [
+        "#3655"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "3920aee17f6bc0ae26deaaea8fa9a38cc8eb8f72",
+      "authorDate": "2023-06-19T09:28:07-07:00",
+      "subject": "Merge pull request #3639 from yohanyflores/fix-task-not-working-properly",
+      "body": "Fix WAIT task is not working properly (after v3.13.0)",
+      "issueRefs": [
+        "#3639"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "5d3228799f90e6b376f3d6464df638ba50d7ee0b",
+      "authorDate": "2023-06-14T20:11:19-05:00",
+      "subject": "Fix Wait one second more",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java",
+        "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowSweeper.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "ca1830c553f2e4b48de4ce9ff3e07708410176f6",
+      "authorDate": "2023-06-10T09:32:33-05:00",
+      "subject": "Merge branch 'main' into fix-task-not-working-properly",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "ca6717ef93a4440f4ed4b9320ec3d4f929a4e79f",
+      "authorDate": "2023-06-08T20:37:42-05:00",
+      "subject": "Support Wait with waittimeout = 0",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java",
+        "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowSweeper.java"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "878fcd933a7a9051eca770c22c9f71544ffe55da",
+      "authorDate": "2023-06-08T07:21:56-07:00",
+      "subject": "Merge pull request #3644 from astelmashenko/bugfix/message-queue-dead-tasks",
+      "body": "removing dead tasks from queue message",
+      "issueRefs": [
+        "#3644"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "e11a3e786985706aca039e67e80e29cd57d100ee",
+      "authorDate": "2023-06-08T07:21:02-07:00",
+      "subject": "Merge pull request #3594 from manan164/join_task_fix",
+      "body": "Join task callBackDuration",
+      "issueRefs": [
+        "#3594"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "a709ad26c4fa48408e9d8e851c0b678452710b5d",
+      "authorDate": "2023-06-08T15:52:56+03:00",
+      "subject": "fixed formatting",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/execution/AsyncSystemTaskExecutor.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "04b87478158d5e106b7ed4f4f7ed44398f40c585",
+      "authorDate": "2023-06-07T23:21:19-07:00",
+      "subject": "Merge pull request #3633 from lsfe87/sweeper_timeout_config",
+      "body": "Add property for the timeout of sweeper polling for workflows",
+      "issueRefs": [
+        "#3633"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "dc798ddb2077b3f7c476d91d5e976a8f208d937d",
+      "authorDate": "2023-06-05T13:31:49-05:00",
+      "subject": "Fix Fix WAIT task is not working properly (after v3.13.0) #3402 Add a test case for the issue #3402",
+      "body": "",
+      "issueRefs": [
+        "#3402"
+      ],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java",
+        "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowSweeper.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c5343ac82c6986001911d5886c91a13efcfeeb1d",
+      "authorDate": "2023-06-01T14:33:00+01:00",
+      "subject": "Add property for the timeout of sweeper polling",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "CHANGELOG.md",
+        "core/src/main/java/com/netflix/conductor/core/config/ConductorProperties.java",
+        "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowReconciler.java"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "53030362ee30843bbd5c17c34f78b927c46d48e2",
+      "authorDate": "2023-05-24T15:01:12+05:30",
+      "subject": "Fix spotlessJavaCheck.",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "java-sdk/src/main/java/com/netflix/conductor/sdk/testing/LocalServerRunner.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "2b4cfa03907c0d19053f8d3ed03ea22c31a20467",
+      "authorDate": "2023-05-24T14:47:02+05:30",
+      "subject": "Fix spotlessJavaCheck.",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "18319c16bf4f75a9365a7bac8737bdf2b6eb7ab0",
+      "authorDate": "2023-05-24T13:17:04+05:30",
+      "subject": "Fix spotlessJavaCheck in conductor-client.",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "client/src/main/java/com/netflix/conductor/client/http/EventClient.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "f9f14bffe70dc79f26bb1344e727687572552c45",
+      "authorDate": "2023-05-24T11:55:46+05:30",
+      "subject": "Fix unit test compilation.",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "8c58cf11d54529543f9441eec4970400881116ec",
+      "authorDate": "2023-05-24T11:36:15+05:30",
+      "subject": "Fix unit test compilation.",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "e49a8680ab0b0de07a9ed30765baaa3502031f64",
+      "authorDate": "2023-05-23T15:16:29+05:30",
+      "subject": "Added TaskStatusListener interface - for notifying when a task is scheduled. Addresses below issues: https://github.com/Netflix/conductor/discussions/3587 https://github.com/Netflix/conductor/issues/2020",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/config/ConductorCoreConfiguration.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+        "core/src/main/java/com/netflix/conductor/core/listener/TaskStatusListener.java",
+        "core/src/main/java/com/netflix/conductor/core/listener/TaskStatusListenerStub.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "4e70d5935d7f4a91ddfa66859bf2c5104d41efbb",
+      "authorDate": "2023-05-16T09:10:08-07:00",
+      "subject": "Merge pull request #3605 from Q-Bug4/docs-http-to-https",
+      "body": "update the link of Main Documentation Site",
+      "issueRefs": [
+        "#3605"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "b81a5cc73c51cce298c515b4b65a4e20a5808656",
+      "authorDate": "2023-05-16T09:09:44-07:00",
+      "subject": "Merge pull request #3612 from charybr/patch-1",
+      "body": "Issue-3611: TaskDef validation: Print actual value that is being validated",
+      "issueRefs": [
+        "#3612"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c698dc0388ab65b55e5691302d7daf4903506214",
+      "authorDate": "2023-05-11T14:51:04+05:30",
+      "subject": "Issue-3611: Print actual value that is being validated",
+      "body": "PR for https://github.com/Netflix/conductor/issues/3611",
+      "issueRefs": [],
+      "touchedFiles": [
+        "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskDef.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "5bcd22abfc9b8c1fc055d00721490dd04492cb00",
+      "authorDate": "2023-05-08T10:39:29-07:00",
+      "subject": "Merge pull request #3598 from james-deee/jtd/fix-npe-if-no-workflow-found-verify",
+      "body": "Fix NPE for verify and repair if workflow not found",
+      "issueRefs": [
+        "#3598"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "01c40fe9403b3a4b36c7edae876e44a81e945d97",
+      "authorDate": "2023-05-03T02:27:37-07:00",
+      "subject": "Merge pull request #3447 from sourabh30/taskOpenNotWorking",
+      "body": "fixed task card open in Chrome and Firefox",
+      "issueRefs": [
+        "#3447"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "34e37ef828b082e3c4df403c3f6c32dd15521482",
+      "authorDate": "2023-05-01T22:17:36-05:00",
+      "subject": "Fix NPE for verify and repair if workflow not found",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowRepairService.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "f29657b982ce5562ab9193233308e7bea0b017a8",
+      "authorDate": "2023-04-26T22:55:20+05:30",
+      "subject": "fix.",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/test/groovy/com/netflix/conductor/core/execution/AsyncSystemTaskExecutorTest.groovy"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "351243eaeefa295223a33843829e517424cfa908",
+      "authorDate": "2023-04-19T15:24:00-07:00",
+      "subject": "Merge pull request #3577 from manan164/failure_workflow_input_fix",
+      "body": "Pass complete workflow as input to failure workflow.",
+      "issueRefs": [
+        "#3577"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "f6d6e95aa8b18bb6fcdb06742ae91355eb3f6c15",
+      "authorDate": "2023-04-19T23:47:36+03:00",
+      "subject": "Fix queue publish mock called - shouldn't be called when no errors occur. Moved to the test with transient exception, that required republish",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/test/java/com/netflix/conductor/core/events/TestDefaultEventProcessor.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "e8f1bbe3319baa8d86f03c3d0e1493365215911a",
+      "authorDate": "2023-04-19T09:30:23-07:00",
+      "subject": "Merge pull request #3583 from eltociear/patch-1",
+      "body": "fix typo in clojure-sdk.md",
+      "issueRefs": [
+        "#3583"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "b1e2df671a5a31f61e999c700e05b78919ad94b4",
+      "authorDate": "2023-04-19T00:37:37-07:00",
+      "subject": "Merge pull request #3554 from davebarda/patch-1",
+      "body": "Fix a typo in error handling documentation",
+      "issueRefs": [
+        "#3554"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "fe3593fb9c37406b7d8a5f446a212301a5da9b16",
+      "authorDate": "2023-04-18T11:04:25+09:00",
+      "subject": "fix typo in clojure-sdk.md",
+      "body": "programatically -> programmatically",
+      "issueRefs": [],
+      "touchedFiles": [
+        "docs/docs/how-tos/clojure-sdk.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "0a180ac4cf8c7eb06766084956e959499f880195",
+      "authorDate": "2023-04-12T18:49:08+05:30",
+      "subject": "test fix",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "3d9b27f26e98f1b18d79dce281d3302e4b4bf3fd",
+      "authorDate": "2023-04-11T08:24:54-07:00",
+      "subject": "Merge pull request #3573 from marosmars/fixMissingOutputs",
+      "body": "Fix disappearing outputs from long running tasks",
+      "issueRefs": [
+        "#3573"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "2285531925bd8666685e1bd3a52db050bcc0497d",
+      "authorDate": "2023-04-11T10:23:25+02:00",
+      "subject": "Fix disappearing outputs from long running tasks",
+      "body": "with external storage enabled\n\nIn case of a:\n1. Long running task\n2. With big output (externalized)\n3. With output growing over time\n4. Causing multiple externalize / internalize executions\n5. ... such as a join task collecting outputs of all forked tasks\n6. Lost some of its outputs when finally completed\n\nThis issue was caused by / because:\n1. On an Nth execution of a task (such as described above)\n2. The task internalized its intermediate output from external storage\n3. The task was executed and it updated its output to current value in memory\n4. The task tried to externalize the new version of its output\n5. ... but while doing so, the outputPayload (last externalized value)\n   was combined with outputData (current, in-memory value) in a way\n   where output payload over-wrote the latest values\n6. Thus, newly calculated outputs have been lost\n\nSigned-off-by: Maros Marsalek <mmarsalek@frinx.io>",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/model/TaskModel.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "92ad5303e8b7283b260f66d059589662c66e9d3e",
+      "authorDate": "2023-04-05T09:26:29-07:00",
+      "subject": "Merge pull request #3543 from Netflix/fix_docker",
+      "body": "Fix docker builds",
+      "issueRefs": [
+        "#3543"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "2a476205ba15950678eaaac5413a68d83018468b",
+      "authorDate": "2023-03-20T13:16:44-07:00",
+      "subject": "fix docker builds",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "docker/docker-compose.yaml",
+        "docker/server/config/config-local.properties"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "960ed05ff79602f13acdad06d9589f0252cda030",
+      "authorDate": "2023-03-15T20:02:20-07:00",
+      "subject": "Merge pull request #3535 from dragorosson/fix_healthcheck",
+      "body": "Curl is not available in the rabbitmq image",
+      "issueRefs": [
+        "#3535"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "ec81ad5212228439e28c65a63301f0a1dcd2a3c6",
+      "authorDate": "2023-03-15T15:24:37-05:00",
+      "subject": "Curl is not available in the rabbitmq image",
+      "body": "Fixes #3534",
+      "issueRefs": [
+        "Fixes #3534"
+      ],
+      "touchedFiles": [
+        "docker/docker-compose.yaml"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "ce5e0d0a59ec86731c1106fc1ba10a3310f4fc51",
+      "authorDate": "2023-03-13T15:35:02-07:00",
+      "subject": "Merge pull request #3466 from ropereraLK/ropereraLK-doc-fixes",
+      "body": "[docs] Minor issue fixes",
+      "issueRefs": [
+        "#3466"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "ab7e05242a650da9bc001205ad86cf051bec4515",
+      "authorDate": "2023-02-21T16:13:48-08:00",
+      "subject": "Update switch-task.md",
+      "body": "Fix one word.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "docs/docs/reference-docs/switch-task.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "a72599fbd673408d62701fa376373f5154c7d948",
+      "authorDate": "2023-02-16T16:30:11+02:00",
+      "subject": "fixed formatting",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/events/queue/DefaultEventQueueProcessor.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "719677de34ff323fc30578ad13436865e18ccbac",
+      "authorDate": "2023-01-27T03:14:09+05:30",
+      "subject": "Documentation - minor issue fixes (#3462)",
+      "body": "Fixed spelling in documentation files.",
+      "issueRefs": [
+        "#3462"
+      ],
+      "touchedFiles": [
+        "docs/docs/reference-docs/event-task.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "eba3fc35cfcf70e7c86c8ad307d927a4e6e254c5",
+      "authorDate": "2023-01-23T10:11:52-05:00",
+      "subject": "Task details not showing in UI",
+      "body": "Event.path is deprecated in chrome as of the last update https://chromestatus.com/feature/5726124632965120. This is causing a bug when clicking on a task in the UI. This is also see in safari: https://github.com/Netflix/conductor/issues/3330. Updating to use composedPath() instead per guidance.\r\n\r\nThis is compatible with all browsers:\r\nhttps://developer.mozilla.org/en-US/docs/Web/API/Event/composedPath",
+      "issueRefs": [],
+      "touchedFiles": [
+        "ui/src/components/diagram/WorkflowGraph.jsx"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "58707e2c86e4992f5df030d935bd5ecc62541eea",
+      "authorDate": "2023-01-23T18:38:55-06:00",
+      "subject": "Fix unused version in Running Workflows metric (#3386)",
+      "body": "* Fix unused version in Running Workflows metric\r\n\r\n* spotless\r\n\r\n* Fix for sorting by version and adding test\r\n\r\n* Running spotless with java 11\r\n\r\n* undo spotless",
+      "issueRefs": [
+        "#3386"
+      ],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/metrics/Monitors.java",
+        "core/src/main/java/com/netflix/conductor/metrics/WorkflowMonitor.java",
+        "core/src/test/java/com/netflix/conductor/metrics/WorkflowMonitorTest.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "5d94791294ede0480b4776429afc34185b92d81b",
+      "authorDate": "2023-01-23T23:34:18+01:00",
+      "subject": "Improve Java Worker documentation (#3418)",
+      "body": "* Heal the Java Worker doc page\r\n\r\n* Fixed MD formatting issues\r\n* Fixed broken stylig\r\n* Improved spelling/grammar\r\n\r\n* Add missing 'conductor-common' dependency\r\n\r\nThe `Task`-related classes are located in the 'conductor-common' lib.\r\n\r\n* Bumped the lib version",
+      "issueRefs": [
+        "#3418"
+      ],
+      "touchedFiles": [
+        "docs/docs/how-tos/Workers/build-a-java-task-worker.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "bfb5430ce0a22c0a7adcf8b11fd32376b2dab629",
+      "authorDate": "2023-01-24T02:15:52+04:00",
+      "subject": "doc updates.md (#3364)",
+      "body": "* Update workflow_sdk.md\r\n\r\nFixed the 404 error for the existing task input link and some minor updates on the content.\r\n\r\n* fixed 404 link and some minor updates\r\n\r\nFixed 404 error link of WorkflowExecutor. Apart from that, few update on the content.\r\n\r\n* content update\r\n\r\nFew content updates",
+      "issueRefs": [
+        "#3364"
+      ],
+      "touchedFiles": [
+        "java-sdk/testing_framework.md",
+        "java-sdk/worker_sdk.md",
+        "java-sdk/workflow_sdk.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c0e152793ac7cf3c4cbf5133641c207c93bb241c",
+      "authorDate": "2023-01-23T14:13:52-08:00",
+      "subject": "Merge pull request #3363 from hanyf/main",
+      "body": "fix a spell mistake",
+      "issueRefs": [
+        "#3363"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "7bb2792a9ce898d7235813b50852ba13673f9020",
+      "authorDate": "2023-01-23T14:13:30-08:00",
+      "subject": "Merge pull request #3336 from paescuj/patch-1",
+      "body": "Fix typo in docs: Desiging → Designing",
+      "issueRefs": [
+        "#3336"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "0c30109d59d85f8ca3373f90ff5c2f66188b0724",
+      "authorDate": "2023-01-23T23:10:31+01:00",
+      "subject": "Remove tasks from Elasticsearch when workflow is removed (#3300)",
+      "body": "* Remove tasks from Elasticsearch when workflow is removed (#1505)\r\n\r\n* Add removeTask method for IndexDAO\r\n\r\nImplement removeTask and asyncRemoveTask methods to the IndexDAO\r\ninterface.\r\nImplemented in ElasticSearchDAOV6, ElasticSearchRestDAOV6, and\r\nNoopIndexDAO.\r\n\r\n* Implement removal of tasks for removeWorkflow\r\n\r\n- Update ExecutionDAOFacade#removeWorkflow with two new parameters:\r\nremoveTasks and archiveTasks\r\n- Added ExecutionDAOFacade#removeTaskIndex\r\n- Added methods updateTask and asyncUpdateWorkflow to IndexDAO\r\n- Added methods updateTask and asyncUpdateWorkflow to ElasticSearchDAOV6\r\n  and ElasticSearchRestDAOV6\r\n\r\n* Add tests for removing workflow through /workflow/remove\r\n\r\n- Introduced tests for WorkflowServiceTest\r\n- Introduced tests for WorkflowResourceTest\r\n- Introduced test for ExecutionDAOFacadeTest\r\n- Introduced test for QueueResilienceSpec.groovy\r\n\r\n* Update Javadoc to include task archival when workflow archived and removeTasks true\r\n\r\n* Implement fix for when tasks are not removed (#1505)\r\n\r\n- Now tasks are search and associated with workflows through a search\r\n  query directly embedded rather than constructed\r\n- If a task can not be removed it will error and return\r\n- Monitors are updated automatically\r\n- Updated TestElasticSearchRestDAOV6 and TestElasticSearchDAOV6\r\n\r\n* Removed rawJSON field from task archival from index DAO (#1505)\r\n\r\n* Removed removeTasks boolean parameter, now always removing tasks (#1505)\r\n\r\n* Update QueueResilienceSpec tests to include archive workflow\r\n\r\n* Update ExecutionDAOFacade to fix removeTask\r\n\r\nCurrently ExecutionDAOFacade would call removeTask double the amount of\r\ntimes, this has been fixed.\r\nNow the only bug still present is that tasks are not terminated once removed\r\nand with that the index may also not be removed.\r\n\r\n* Remove archival of workflow tasks from QueueResiliencySpec\r\n\r\n* Merged loops for removing task index and queue removal (#1505)",
+      "issueRefs": [
+        "#3300",
+        "#1505"
+      ],
+      "touchedFiles": [
+        "client/src/main/java/com/netflix/conductor/client/http/WorkflowClient.java",
+        "core/src/main/java/com/netflix/conductor/core/dal/ExecutionDAOFacade.java",
+        "core/src/main/java/com/netflix/conductor/core/index/NoopIndexDAO.java",
+        "core/src/main/java/com/netflix/conductor/dao/IndexDAO.java",
+        "core/src/main/java/com/netflix/conductor/service/WorkflowService.java",
+        "core/src/main/java/com/netflix/conductor/service/WorkflowServiceImpl.java",
+        "core/src/test/java/com/netflix/conductor/core/dal/ExecutionDAOFacadeTest.java",
+        "core/src/test/java/com/netflix/conductor/service/WorkflowServiceTest.java",
+        "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/index/ElasticSearchDAOV6.java",
+        "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/index/ElasticSearchRestDAOV6.java",
+        "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchDAOV6.java",
+        "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchRestDAOV6.java",
+        "es6-persistence/src/test/java/com/netflix/conductor/es6/utils/TestUtils.java",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/resiliency/QueueResiliencySpec.groovy"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "0908c0061a8354af3b2fa11548080c4d8c8a15ec",
+      "authorDate": "2023-01-16T16:38:04+05:30",
+      "subject": "fixed task card open in chrome and firefox",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "ui/src/components/diagram/WorkflowGraph.jsx"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c38ef47829f214fb9c07554fa210a2256d326799",
+      "authorDate": "2023-01-10T21:30:17+05:30",
+      "subject": "test fix",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "server/src/test/java/com/netflix/conductor/common/config/ConductorObjectMapperTest.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "18a34854d56a238c8dc007c15c1770c9bddfa4a8",
+      "authorDate": "2022-11-07T12:19:00+01:00",
+      "subject": "Fix typo in docs: Desiging → Designing",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "docs/docs/index.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "21abd2f1447d012837d124919770d1c54e812d25",
+      "authorDate": "2022-12-07T08:42:42+05:30",
+      "subject": "Do_while task relevant loop over task calculation fix (#3351)",
+      "body": "* Simplifying the logic to check relevant task for do_while task\r\n\r\nThe cases where decision/ fork_join, dynamic_fork is part of loop over task then ideally do_while task must wait before all the task gets completed.\r\n\r\n* integration tests\r\n\r\n* spotless\r\n\r\n* proper fix\r\n\r\n* spotless\r\n\r\n* integration test for remaining scenario.\r\n\r\n* removed not necessary test case.\r\n\r\nThe test case was when decision task is part of loop over task and decision task contains two tasks and only one task is scheduled. But there will not be any case where we schedule only one task given the decision case has two tasks.\r\n\r\n* spotless\r\n\r\n* spotless 2\r\n\r\n* spotless 3",
+      "issueRefs": [
+        "#3351"
+      ],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/execution/tasks/DoWhile.java",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DoWhileSpec.groovy",
+        "test-harness/src/test/resources/do_while_with_decision_task.json"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "12663ca0b3205bc3f008fbef4d20e9fbe8dd5182",
+      "authorDate": "2022-12-05T14:25:06-08:00",
+      "subject": "Allow overriding the thread count for the annotated workers (#3320)",
+      "body": "* Allow overriding the thread count for the annotated workers\r\n\r\n* Added AnnotatedWorkerTests to cover how invocation parameters are created from annotations or inferred from their type and the input data\r\n\r\n* Refactoring + fix NPE when input parameter type is List and its value is null\r\n\r\nCo-authored-by: Miguel Prieto <miguelprieto@orkes.io>",
+      "issueRefs": [
+        "#3320"
+      ],
+      "touchedFiles": [
+        "java-sdk/build.gradle",
+        "java-sdk/dependencies.lock",
+        "java-sdk/example/java/com/netflix/conductor/sdk/example/shipment/ShipmentWorkers.java",
+        "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/executor/task/AnnotatedWorker.java",
+        "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/executor/task/AnnotatedWorkerExecutor.java",
+        "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/task/WorkerTask.java",
+        "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/executor/task/AnnotatedWorkerTests.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "bd1a13e6f405f12bf0df7674f68dd526501f4f4a",
+      "authorDate": "2022-11-29T17:26:33+08:00",
+      "subject": "fix a spell mistake",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "ui/src/components/formik/FormikInput.jsx"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "9e80c4af02c504072dfc775fb97430907bc1097c",
+      "authorDate": "2022-10-20T13:38:00-05:00",
+      "subject": "Fix typo in website nav menu (#3308)",
+      "body": "",
+      "issueRefs": [
+        "#3308"
+      ],
+      "touchedFiles": [
+        "docs/mkdocs.yml"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c650223d840b5878fd68c95bd5f8079dcf4d288b",
+      "authorDate": "2022-10-17T23:28:19+02:00",
+      "subject": "[Docs] Small docs fixes (#3291)",
+      "body": "* Fixed syntax highliting in starting-workflows.md\r\n\r\n* Fixed links in debugging-workflows.md\r\n\r\nCo-authored-by: Lukas Rampa <lukas.rampa@aimtecglobal.com>",
+      "issueRefs": [
+        "#3291"
+      ],
+      "touchedFiles": [
+        "docs/docs/how-tos/Workflows/debugging-workflows.md",
+        "docs/docs/how-tos/Workflows/starting-workflows.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "48cf9625846139cd0600dca58cc6d9d8f991a98a",
+      "authorDate": "2022-10-17T22:36:48+05:30",
+      "subject": "typo fix in docs (workerdef) (#3297)",
+      "body": "Co-authored-by: Biswarup Dass <dbiswarup@vmware.com>",
+      "issueRefs": [
+        "#3297"
+      ],
+      "touchedFiles": [
+        "docs/docs/configuration/workerdef.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "7a328dd1ae56337c8379e1469b508a5ae180ecd9",
+      "authorDate": "2022-10-13T13:34:31-04:00",
+      "subject": "Add unit tests and revert change to set responseTimeout in TaskDef",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/dao/CassandraMetadataDAO.java",
+        "cassandra-persistence/src/test/groovy/com/netflix/conductor/cassandra/dao/CassandraMetadataDAOSpec.groovy",
+        "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskDef.java",
+        "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java",
+        "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowSweeper.java",
+        "core/src/test/java/com/netflix/conductor/service/MetadataServiceTest.java",
+        "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisMetadataDAO.java",
+        "redis-persistence/src/test/java/com/netflix/conductor/redis/dao/RedisMetadataDAOTest.java"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "7c12003344c7b296c07822d741104dab749c9581",
+      "authorDate": "2022-10-12T10:20:38-04:00",
+      "subject": "Add a special handling for WAIT taskTypes. Set responseTimeout to 1hr by default",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskDef.java",
+        "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java",
+        "core/src/test/java/com/netflix/conductor/service/MetadataServiceTest.java"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "be4e4d1a93bfe7a53630f6d4abe329b79b81f720",
+      "authorDate": "2022-09-29T10:45:53-07:00",
+      "subject": "fixed WaitTaskSpec missing method error",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/WaitTaskSpec.groovy"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "de8606bf844cb71d06b8b185de5ccbbf58f441a1",
+      "authorDate": "2022-09-26T13:32:53-07:00",
+      "subject": "fixed tests",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/execution/StartWorkflowInput.java",
+        "core/src/main/java/com/netflix/conductor/service/WorkflowServiceImpl.java",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/base/AbstractSpecification.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DecisionTaskSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DoWhileSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DynamicForkJoinSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/EventTaskSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/ExclusiveJoinSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/ExternalPayloadStorageSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/FailureWorkflowSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/ForkJoinSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/HierarchicalForkJoinSubworkflowRerunSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/HierarchicalForkJoinSubworkflowRestartSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/HierarchicalForkJoinSubworkflowRetrySpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/JsonJQTransformSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/LambdaAndTerminateTaskSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/NestedForkJoinSubWorkflowSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SetVariableTaskSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SimpleWorkflowSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/StartWorkflowSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SubWorkflowRerunSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SubWorkflowRestartSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SubWorkflowRetrySpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SubWorkflowSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SwitchTaskSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SystemTaskSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/TaskLimitsWorkflowSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/WaitTaskSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/WorkflowAndTaskConfigurationSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/resiliency/TaskResiliencySpec.groovy"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "7bde4b6d056965b20c134098e4207aff2aaf9ac1",
+      "authorDate": "2022-09-28T00:22:08+05:30",
+      "subject": "Update workflow in DAO in case of update of workflow related attribute. (#3221)",
+      "body": "* Update workflow incase of update of workflow related attribute.\r\n\r\n* move logic to update workflow in main decide method.\r\n\r\n* review comments.\r\n\r\n* review comments.\r\n\r\n* spotless\r\n\r\n* review comments.\r\n\r\n* Review comments\r\n\r\n* done\r\n\r\n* n\r\n\r\n* build fix\r\n\r\n* spotless\r\n\r\n* Not consulting task any more.\r\n\r\n* move logic to private method and use that for hash computation\r\n\r\n* review comments.\r\n\r\n* fix",
+      "issueRefs": [
+        "#3221"
+      ],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/execution/tasks/SetVariable.java",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/WaitTaskSpec.groovy",
+        "test-harness/src/test/resources/set_variable_workflow_integration_test.json"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "27b75831f53813415b2bc76e37e57a9142760528",
+      "authorDate": "2022-09-26T13:32:53-07:00",
+      "subject": "fixed tests",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "core/src/test/groovy/com/netflix/conductor/core/execution/AsyncSystemTaskExecutorTest.groovy",
+        "core/src/test/groovy/com/netflix/conductor/core/execution/tasks/StartWorkflowSpec.groovy",
+        "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "1040eaf97ee510cb758aae4e0b1ee96ecd7df4f6",
+      "authorDate": "2022-09-21T18:04:51+01:00",
+      "subject": "Update docker.md (#3253)",
+      "body": "Fixed small yet important typo in documentation.",
+      "issueRefs": [
+        "#3253"
+      ],
+      "touchedFiles": [
+        "docs/docs/gettingstarted/docker.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "312160b6ccfed6d1142ab7a4bb0d58092480a1bf",
+      "authorDate": "2022-09-13T01:22:29+04:00",
+      "subject": "fix missing update time because of different field names in WorkflowModel and Workflow (#3231)",
+      "body": "",
+      "issueRefs": [
+        "#3231"
+      ],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/model/WorkflowModel.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "b843af4544fde85816b74c5337ef270607c41599",
+      "authorDate": "2022-09-10T00:44:28-07:00",
+      "subject": "fix subworkflow output during repair (#3232)",
+      "body": "",
+      "issueRefs": [
+        "#3232"
+      ],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/execution/tasks/SubWorkflow.java",
+        "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowRepairService.java",
+        "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowRepairService.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "db841aceec30a2448b9ee0b532518df688d23064",
+      "authorDate": "2022-08-25T22:20:25+05:30",
+      "subject": "[Docs] Fixed Language issues. (#3200)",
+      "body": "* Fixed Language issues.\r\n\r\n* Fixed Language issues.",
+      "issueRefs": [
+        "#3200"
+      ],
+      "touchedFiles": [
+        "docs/docs/configuration/workflowdef.md",
+        "docs/docs/resources/contributing.md",
+        "ui/README.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "630b870cb7a055df537f8a703d8b316482b4ecb0",
+      "authorDate": "2022-08-24T10:07:49-07:00",
+      "subject": "Fix next task not scheduled after switch completes (#3197)",
+      "body": "",
+      "issueRefs": [
+        "#3197"
+      ],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/execution/mapper/ForkJoinDynamicTaskMapper.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/mapper/ForkJoinTaskMapper.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapper.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderOutcomes.java",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SwitchTaskSpec.groovy",
+        "test-harness/src/test/resources/switch_with_no_default_case_integration_test.json"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "6f8daab9fb91aa8860f9bcf8778a060974161839",
+      "authorDate": "2022-08-19T16:30:37-07:00",
+      "subject": "task lease extend (#3186)",
+      "body": "* Add method to extend lease for task\r\n\r\n* Client to do extend lease for long running tasks automatically\r\n\r\n* Fix format\r\n\r\n* Refactor",
+      "issueRefs": [
+        "#3186"
+      ],
+      "touchedFiles": [
+        "client/src/main/java/com/netflix/conductor/client/automator/TaskPollExecutor.java",
+        "client/src/main/java/com/netflix/conductor/client/automator/TaskRunnerConfigurer.java",
+        "client/src/main/java/com/netflix/conductor/client/telemetry/MetricsContainer.java",
+        "client/src/main/java/com/netflix/conductor/client/worker/Worker.java",
+        "client/src/test/java/com/netflix/conductor/client/automator/TaskPollExecutorTest.java",
+        "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskResult.java",
+        "core/src/main/java/com/netflix/conductor/core/dal/ExecutionDAOFacade.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+        "core/src/main/java/com/netflix/conductor/metrics/Monitors.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "33062f3ae506e49947bd11157dce279254f00347",
+      "authorDate": "2022-08-18T16:50:05-07:00",
+      "subject": "Failed task names (#3185)",
+      "body": "* Add support for tracking failed task names with workflow execution\r\n\r\n* Fix tests\r\n\r\n* Undo inadvertent variable name change",
+      "issueRefs": [
+        "#3185"
+      ],
+      "touchedFiles": [
+        "common/src/main/java/com/netflix/conductor/common/run/Workflow.java",
+        "common/src/main/java/com/netflix/conductor/common/run/WorkflowSummary.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+        "core/src/main/java/com/netflix/conductor/model/WorkflowModel.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+        "es6-persistence/src/main/resources/mappings_docType_workflow.json",
+        "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchDAOV6.java",
+        "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchRestDAOV6.java",
+        "grpc/src/main/java/com/netflix/conductor/grpc/AbstractProtoMapper.java",
+        "grpc/src/main/proto/model/workflow.proto",
+        "grpc/src/main/proto/model/workflowsummary.proto",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SimpleWorkflowSpec.groovy"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "2d514690eb7a52ec6140677a1bf083f6f940443d",
+      "authorDate": "2022-08-14T14:33:46-07:00",
+      "subject": "Performance improvements in Decider (#3070)",
+      "body": "* decider performance improvements\r\n\r\n* ignore tests - temp\r\n\r\n* Update WorkflowExecutor.java\r\n\r\n* formatting changes\r\n\r\n* fix merge conflicts\r\n\r\n* apply formatting\r\n\r\n* updates based on the PR comments\r\n\r\n* change the visibility of the method to package private\r\n\r\n* Update WorkflowExecutor.java\r\n\r\n* remove legacy code\r\n\r\n* enable tests",
+      "issueRefs": [
+        "#3070"
+      ],
+      "touchedFiles": [
+        "core/build.gradle",
+        "core/src/main/java/com/netflix/conductor/core/dal/ExecutionDAOFacade.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/DeciderService.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/mapper/ForkJoinDynamicTaskMapper.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/mapper/ForkJoinTaskMapper.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapper.java",
+        "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderOutcomes.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+        "test-harness/build.gradle",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DoWhileSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/ForkJoinSpec.groovy",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/NestedForkJoinSubWorkflowSpec.groovy"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "edc57810e25ce54746166bae68a55fed8ad2de8d",
+      "authorDate": "2022-08-11T14:36:43-07:00",
+      "subject": "[UI] Fix edge case where tasks have refs that resemble those inside of a loop. Format code.",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "ui/cypress/fixtures/doWhile/doWhileSwitch.json",
+        "ui/src/components/KeyValueTable.jsx",
+        "ui/src/components/ReactJson.jsx",
+        "ui/src/components/diagram/WorkflowDAG.js",
+        "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+        "ui/src/pages/execution/TaskSummary.jsx"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "5661251ea45b2583159bdca324c529b69ed0a68a",
+      "authorDate": "2022-08-11T13:15:04-07:00",
+      "subject": "Merge pull request #3174 from Netflix/fix-switch-loop",
+      "body": "Fix DO_WHILE loops containing a SWITCH task",
+      "issueRefs": [
+        "#3174"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "14223372d74424b9d5b7a7cfffe8d0e254db3bce",
+      "authorDate": "2022-08-11T12:52:12-07:00",
+      "subject": "Merge branch 'main' of github.com:Netflix/conductor into fix-switch-loop",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "6d514681df043a34b291d4d2e6ea1f1fd847c2db",
+      "authorDate": "2022-08-11T10:49:00-07:00",
+      "subject": "Merge branch 'main' into fix-switch-loop",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c526c65a73186fbdb89acef4988e5534d531e97f",
+      "authorDate": "2022-08-10T13:12:20-07:00",
+      "subject": "remove obsolete TODOs and refactor (#3161)",
+      "body": "* remove obsolete TODOs and refactor\r\n\r\n* spotless\r\n\r\n* using mockbean\r\n\r\n* Revert \"using mockbean\"\r\n\r\nThis reverts commit e1cb9867c78ae7c5884b7212339c9cea56485154.\r\n\r\n* revert changes to event processor\r\n\r\n* fix tests",
+      "issueRefs": [
+        "#3161"
+      ],
+      "touchedFiles": [
+        "annotations-processor/dependencies.lock",
+        "annotations/dependencies.lock",
+        "awss3-storage/dependencies.lock",
+        "awssqs-event-queue/dependencies.lock",
+        "cassandra-persistence/dependencies.lock",
+        "client-spring/dependencies.lock",
+        "client/dependencies.lock",
+        "common/dependencies.lock",
+        "core/dependencies.lock",
+        "core/src/main/java/com/netflix/conductor/core/events/DefaultEventProcessor.java",
+        "core/src/main/java/com/netflix/conductor/core/events/SimpleActionProcessor.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+        "core/src/main/java/com/netflix/conductor/service/ExecutionService.java",
+        "core/src/main/java/com/netflix/conductor/service/TaskServiceImpl.java",
+        "core/src/main/java/com/netflix/conductor/service/WorkflowServiceImpl.java",
+        "core/src/test/java/com/netflix/conductor/core/events/TestSimpleActionProcessor.java",
+        "dependencies.lock",
+        "es6-persistence/dependencies.lock",
+        "grpc-client/dependencies.lock",
+        "grpc-server/dependencies.lock",
+        "grpc/dependencies.lock",
+        "http-task/dependencies.lock",
+        "java-sdk/dependencies.lock",
+        "json-jq-task/dependencies.lock",
+        "redis-concurrency-limit/dependencies.lock",
+        "redis-lock/dependencies.lock",
+        "redis-persistence/dependencies.lock",
+        "redis-persistence/src/main/java/com/netflix/conductor/redis/dynoqueue/ConfigurationHostSupplier.java",
+        "rest/dependencies.lock",
+        "server/dependencies.lock",
+        "test-harness/dependencies.lock",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/resiliency/QueueResiliencySpec.groovy"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "e20a193e70d00c43b5e9af0f5df62b79150e28bf",
+      "authorDate": "2022-08-09T01:33:18-05:00",
+      "subject": "Fix a subworkflow performance issue without selecting tasks (#3152)",
+      "body": "* Try fixing subworkflow performance issue\r\n\r\n* Running spotless apply on conductor core\r\n\r\n* Revert \"Running spotless apply on conductor core\"\r\n\r\nThis reverts commit b5ebd4338b1827beacbfd2eceaf418454b25b3a2.\r\n\r\n* apply spotless java 11\r\n\r\n* fix unit tests\r\n\r\n* Try to log some info\r\n\r\n* Revert \"Try to log some info\"\r\n\r\nThis reverts commit 3411f5dde9c54f970fbe309b6d5e57761c7e1a9b.\r\n\r\n* See if this change fixes the broken test\r\n\r\n* Try again",
+      "issueRefs": [
+        "#3152"
+      ],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/execution/AsyncSystemTaskExecutor.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/tasks/SubWorkflow.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/tasks/WorkflowSystemTask.java",
+        "core/src/test/groovy/com/netflix/conductor/core/execution/AsyncSystemTaskExecutorTest.groovy"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "27fca2d9d0e75c3b5f11afa6297b217a82f6ea30",
+      "authorDate": "2022-08-08T10:57:35-07:00",
+      "subject": "Fix property name in ReadMe",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "docs/docs/gettingstarted/docker.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "b0b05da47f6f8d372f068b8489c37d3778dbcbec",
+      "authorDate": "2022-08-05T13:08:44-07:00",
+      "subject": "Jxu/springcache (#3143)",
+      "body": "* Switch to use spring cache for taskdef and event handler\r\n\r\n* Fix get and update taskdef cache\r\n\r\n* refactor",
+      "issueRefs": [
+        "#3143"
+      ],
+      "touchedFiles": [
+        "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/config/CassandraConfiguration.java",
+        "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/config/cache/CacheableEventHandlerDAO.java",
+        "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/config/cache/CacheableMetadataDAO.java",
+        "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/config/cache/CachingConfig.java",
+        "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/dao/CassandraMetadataDAO.java",
+        "core/src/main/java/com/netflix/conductor/dao/MetadataDAO.java",
+        "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisMetadataDAO.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "a88f133a4613a93845f72303927fc535e45bf541",
+      "authorDate": "2022-08-03T12:02:58-03:00",
+      "subject": "Fix: connect cases to loop end. Ignore cases in execution.",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "ui/src/components/diagram/WorkflowDAG.js"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "236830ea73002c7539e1eecff9b6eb5af0debe0b",
+      "authorDate": "2022-07-17T21:14:53-07:00",
+      "subject": "Fix typo: persistance → persistence (#3111)",
+      "body": "",
+      "issueRefs": [
+        "#3111"
+      ],
+      "touchedFiles": [
+        "docs/docs/gettingstarted/source.md",
+        "docs/docs/index.md",
+        "docs/docs/reference-docs/azureblob-storage.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "6c496a6ddee91bb61ea188f6fc5f1381fda3a384",
+      "authorDate": "2022-06-30T15:40:51-07:00",
+      "subject": "miscellaneous fixes for broken tests",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "client/src/test/groovy/com/netflix/conductor/client/http/MetadataClientSpec.groovy",
+        "client/src/test/java/com/netflix/conductor/client/automator/TaskRunnerConfigurerTest.java",
+        "core/src/test/java/com/netflix/conductor/core/dal/ExecutionDAOFacadeTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+        "core/src/test/java/com/netflix/conductor/core/metadata/MetadataMapperServiceTest.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "a99e939d36d116d58636a4f1c0537c2b60eb7805",
+      "authorDate": "2022-06-21T21:22:04-07:00",
+      "subject": "Bugfix/jointask output (#3055)",
+      "body": "* re-throw TerminateWorkflowException for task update\r\n\r\n* Add only non-empty task output for Join",
+      "issueRefs": [
+        "#3055"
+      ],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/dal/ExecutionDAOFacade.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/tasks/Join.java",
+        "core/src/test/java/com/netflix/conductor/core/dal/ExecutionDAOFacadeTest.java",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DynamicForkJoinSpec.groovy"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "46c2bafe5d65dc458526ad363b8bdc992fb43041",
+      "authorDate": "2022-06-08T09:36:06-07:00",
+      "subject": "[UI] Fix duration formatting",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "ui/src/utils/helpers.js"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "73284fc1b7662873f9a5976c7b42682c697d865c",
+      "authorDate": "2022-06-04T21:44:14-07:00",
+      "subject": "Typo fix (#3029)",
+      "body": "",
+      "issueRefs": [
+        "#3029"
+      ],
+      "touchedFiles": [
+        "docs/docs/faq.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "7b90c64d369ba524cb3da141f93e166c7531cf57",
+      "authorDate": "2022-06-01T18:26:54+01:00",
+      "subject": "Fix: Enable extra task fields in Java-SDK (#3009)",
+      "body": "* Fix: Enable extra task fields in Java-SDK\r\n\r\n* Enables `Start Delay` field for a Task.\r\n* Enables `Optional` field for a Task.",
+      "issueRefs": [
+        "#3009"
+      ],
+      "touchedFiles": [
+        "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/Task.java",
+        "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/def/WorkflowDefTaskTests.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "3b5aed12db5af905a48fbd5aa11ee08d156a300c",
+      "authorDate": "2022-05-31T15:11:28-07:00",
+      "subject": "Enhance WAIT task to support time-based wait scenarios (#2986)",
+      "body": "* Update Wait.java\r\n\r\n* Add support for waiting for time duration or until a specific date/time\r\n\r\n* add unit tests and SDK methods\r\n\r\n* formatting\r\n\r\n* Remove Guava dependency\r\n\r\n* Fix formatting\r\n\r\n* Wait task updates\r\n\r\n1.  Added validations at the time of workflow creation\r\n2. Using commons lang StringUtils\r\n3. Using TaskModel to store timeout\r\n4. Update documentation\r\n\r\n* remove callbackafter\r\n\r\n* add the break\r\n\r\n* Fix readme\r\n\r\n* Move the date parsing to a util class\r\n\r\n* move DateTimeUtils to the common utils package",
+      "issueRefs": [
+        "#2986"
+      ],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/execution/tasks/Wait.java",
+        "core/src/main/java/com/netflix/conductor/core/utils/DateTimeUtils.java",
+        "core/src/main/java/com/netflix/conductor/model/TaskModel.java",
+        "core/src/main/java/com/netflix/conductor/validations/WorkflowTaskTypeConstraint.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestWait.java",
+        "docs/docs/reference-docs/wait-task.md",
+        "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/Wait.java",
+        "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/def/TaskConversionsTests.java",
+        "polyglot-clients/README.md"
+      ],
+      "fixCategory": "timeout"
+    },
+    {
+      "commitHash": "cb7ad0704679ee8b66ec46317f51a0b6214cb9a4",
+      "authorDate": "2022-05-17T13:36:16-07:00",
+      "subject": "Fix docsite description (for SEO)",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "docs/mkdocs.yml",
+        "docs/theme/main.html"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "9190e1180e8760c966fecced8ec5e0780f25ec05",
+      "authorDate": "2022-05-04T20:49:06-07:00",
+      "subject": "Fix for #1677, inspired from #2881. Loop-over tasks are created in the DoWhile.execute method. The DO_WHILE TaskModel is persisted before the loop-over tasks are created. Therefore, the loop-over tasks will have access the iteration field in DO_WHILE TaskModel.",
+      "body": "",
+      "issueRefs": [
+        "#1677",
+        "#2881"
+      ],
+      "touchedFiles": [
+        "core/src/main/java/com/netflix/conductor/core/execution/DeciderService.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/mapper/DoWhileTaskMapper.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/tasks/DoWhile.java",
+        "core/src/main/java/com/netflix/conductor/core/utils/ParametersUtils.java",
+        "core/src/test/groovy/com/netflix/conductor/core/execution/tasks/DoWhileSpec.groovy",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/DoWhileTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestDoWhile.java",
+        "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DoWhileSpec.groovy",
+        "test-harness/src/test/resources/do_while_iteration_fix_test.json"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "2dc6d6a81edd6a4f07ef61b059b5c53efc4e7650",
+      "authorDate": "2022-05-12T14:33:03-07:00",
+      "subject": "[UI] Control react-query key array explication in useFetch. Fixes #2977.",
+      "body": "",
+      "issueRefs": [
+        "Fixes #2977"
+      ],
+      "touchedFiles": [
+        "ui/src/data/common.js",
+        "ui/src/data/misc.js",
+        "ui/src/data/task.js",
+        "ui/src/data/workflow.js"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "8b1c50fe3d06ed3a92e8530f5aa6ed99419d0128",
+      "authorDate": "2022-05-10T15:12:42-07:00",
+      "subject": "Fix update with large payload task result (#2982)",
+      "body": "* fix update with large payload task result\r\n\r\n* retryOperation method refactored\r\n\r\nCo-authored-by: Aravindan Ramkumar <1028385+aravindanr@users.noreply.github.com>",
+      "issueRefs": [
+        "#2982"
+      ],
+      "touchedFiles": [
+        "client/src/main/java/com/netflix/conductor/client/automator/TaskPollExecutor.java",
+        "client/src/main/java/com/netflix/conductor/client/http/TaskClient.java",
+        "client/src/test/java/com/netflix/conductor/client/automator/TaskPollExecutorTest.java",
+        "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskResult.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "9c26ed689a1710ce13e8d2fc9d4f1df49da3337b",
+      "authorDate": "2022-05-09T22:47:55+01:00",
+      "subject": "fixed links and spelling in java SDK docs (#2915)",
+      "body": "",
+      "issueRefs": [
+        "#2915"
+      ],
+      "touchedFiles": [
+        "Untitled",
+        "java-sdk/testing_framework.md",
+        "java-sdk/worker_sdk.md",
+        "java-sdk/workflow_sdk.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "4e1f08abcc16d63ca2652f4bc489f8a1a1f10aa9",
+      "authorDate": "2022-05-04T19:24:19+02:00",
+      "subject": "Fix for NPE when header values are null (#2964)",
+      "body": "* Fix for NPE when header values are null\r\n\r\n* fixed formatting\r\n\r\nCo-authored-by: mhubli <Muralidhar.Hubli@wolterskluwer.com>",
+      "issueRefs": [
+        "#2964"
+      ],
+      "touchedFiles": [
+        "http-task/src/main/java/com/netflix/conductor/tasks/http/HttpTask.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "544ed1444fc0b30f972383799a6bc28802ffba6e",
+      "authorDate": "2022-05-03T10:13:19-07:00",
+      "subject": "Merge pull request #2962 from amolkatdare/patch-1",
+      "body": "fixed typos",
+      "issueRefs": [
+        "#2962"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "009ffedb76310269a35645db4b54fb819ed91b01",
+      "authorDate": "2022-05-03T10:58:08-05:00",
+      "subject": "fixed typos",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "docs/docs/configuration/workflowdef.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "3a038159bd0940b3f110c68e351db045328e5712",
+      "authorDate": "2022-04-25T14:11:42-07:00",
+      "subject": "Allow Overrding of IDGenerator  (#2910)",
+      "body": "* changes to make id generator injectable\r\n\r\n* fix tests\r\n\r\n* Update CassandraExecutionDAOSpec.groovy\r\n\r\n* Update build.gradle\r\n\r\n* formatting\r\n\r\n* Update IDGenerator.java\r\n\r\n* Update IDGenerator.java\r\n\r\n* Add note on overriding the id generator\r\n\r\n* formatting.",
+      "issueRefs": [
+        "#2910"
+      ],
+      "touchedFiles": [
+        "azureblob-storage/src/main/java/com/netflix/conductor/azureblob/config/AzureBlobConfiguration.java",
+        "azureblob-storage/src/main/java/com/netflix/conductor/azureblob/storage/AzureBlobPayloadStorage.java",
+        "azureblob-storage/src/test/java/com/netflix/conductor/azureblob/storage/AzureBlobPayloadStorageTest.java",
+        "cassandra-persistence/src/test/groovy/com/netflix/conductor/cassandra/dao/CassandraExecutionDAOSpec.groovy",
+        "contribs/src/main/java/com/netflix/conductor/contribs/storage/S3PayloadStorage.java",
+        "contribs/src/main/java/com/netflix/conductor/contribs/storage/config/S3Configuration.java",
+        "contribs/src/test/java/com/netflix/conductor/contribs/tasks/http/HttpTaskTest.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/DeciderService.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+        "core/src/main/java/com/netflix/conductor/core/execution/mapper/ForkJoinDynamicTaskMapper.java",
+        "core/src/main/java/com/netflix/conductor/core/utils/IDGenerator.java",
+        "core/src/test/groovy/com/netflix/conductor/core/execution/AsyncSystemTaskExecutorTest.groovy",
+        "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderOutcomes.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderService.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/DecisionTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/DoWhileTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/DynamicTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/EventTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/ForkJoinDynamicTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/ForkJoinTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/HTTPTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/InlineTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/JoinTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/JsonJQTransformTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/KafkaPublishTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/LambdaTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/SetVariableTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/SimpleTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/SubWorkflowTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/TerminateTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/UserDefinedTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/mapper/WaitTaskMapperTest.java",
+        "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestDoWhile.java",
+        "es6-persistence/src/test/java/com/netflix/conductor/es6/utils/TestUtils.java",
+        "es7-persistence/src/test/java/com/netflix/conductor/es7/utils/TestUtils.java",
+        "grpc/src/main/java/com/netflix/conductor/grpc/AbstractProtoMapper.java",
+        "grpc/src/main/proto/model/taskdef.proto",
+        "postgres-external-storage/src/main/java/com/netflix/conductor/postgres/config/PostgresPayloadConfiguration.java",
+        "postgres-external-storage/src/main/java/com/netflix/conductor/postgres/storage/PostgresPayloadStorage.java",
+        "postgres-external-storage/src/test/java/com/netflix/conductor/postgres/storage/PostgresPayloadStorageTest.java"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "5b54ba6742b0f2796dc86407cf484350bcd0eb89",
+      "authorDate": "2022-04-21T10:36:58-07:00",
+      "subject": "fix update gradle wrapper workflow",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        ".github/workflows/update-gradle-wrapper.yml"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "ffc1454524db750754acff53ffdcf77cd7bc6a6f",
+      "authorDate": "2022-04-18T10:37:40-07:00",
+      "subject": "#2913 fixed dead links",
+      "body": "",
+      "issueRefs": [
+        "#2913"
+      ],
+      "touchedFiles": [
+        "docs/docs/architecture.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "48a8e9df76bbf84931dccd63fc5dcbb33d3bbfbd",
+      "authorDate": "2022-04-13T14:02:04-07:00",
+      "subject": "[UI] Fix bulk retry button",
+      "body": "* Upgrade react-vis-timeline. \r\n* Fix dependency warnings.",
+      "issueRefs": [],
+      "touchedFiles": [
+        "ui/package.json",
+        "ui/src/pages/execution/Timeline.jsx",
+        "ui/src/pages/executions/BulkActionModule.jsx",
+        "ui/src/pages/kitchensink/Gantt.jsx",
+        "ui/yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "a5034eb4b1df49afc29b3216acceea5a7766c767",
+      "authorDate": "2022-04-11T15:02:11-07:00",
+      "subject": "Fix validation error handling in workflow editor - Rev version. Keep moment upgrade.",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "ui/package.json",
+        "ui/src/App.jsx",
+        "ui/src/components/Dropdown.jsx",
+        "ui/src/components/KeyValueTable.jsx",
+        "ui/src/components/ReactJson.jsx",
+        "ui/src/data/workflow.js",
+        "ui/src/pages/definition/SaveTaskDialog.jsx",
+        "ui/src/pages/definition/SaveWorkflowDialog.jsx",
+        "ui/src/pages/execution/Execution.jsx",
+        "ui/src/pages/executions/TaskSearch.jsx",
+        "ui/src/pages/kitchensink/KitchenSink.jsx",
+        "ui/src/pages/workbench/RunHistory.tsx",
+        "ui/src/pages/workbench/WorkbenchForm.jsx",
+        "ui/src/plugins/fetch.js",
+        "ui/src/theme/theme.js",
+        "ui/yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "e38d917ae969e9a0d458eb24548ec86fa61fdfa6",
+      "authorDate": "2022-04-11T14:59:31-07:00",
+      "subject": "Cleanup styles. Fix scrolling in task sidebar. Issue #2877",
+      "body": "",
+      "issueRefs": [
+        "#2877"
+      ],
+      "touchedFiles": [
+        "ui/package.json",
+        "ui/src/components/ReactJson.jsx",
+        "ui/src/pages/execution/Execution.jsx",
+        "ui/src/pages/execution/ExecutionInputOutput.jsx",
+        "ui/src/pages/execution/ExecutionJson.jsx",
+        "ui/src/pages/execution/ExecutionSummary.jsx",
+        "ui/src/pages/execution/RightPanel.jsx",
+        "ui/src/pages/execution/TaskDetails.jsx",
+        "ui/src/theme/theme.js",
+        "ui/yarn.lock"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "b65fc5074d37aaf5fcf1d2e7fb2fdb8c0db8efee",
+      "authorDate": "2022-04-07T14:43:21-07:00",
+      "subject": "Merge pull request #2905 from Netflix/spotbugs_fix",
+      "body": "ignore codes raised by new spotbugs",
+      "issueRefs": [
+        "#2905"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "175ca6df0cc03caad868c225a63e6d4fd9962081",
+      "authorDate": "2022-04-07T14:17:12-07:00",
+      "subject": "ignore codes raised by new spotbugs",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "client/build.gradle",
+        "client/spotbugsExclude.xml"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "ee4c7e4946a46032ad0681b24f2550b81f3818fa",
+      "authorDate": "2022-04-06T19:48:40+02:00",
+      "subject": "Fix credentials for es6 (#2900)",
+      "body": "",
+      "issueRefs": [
+        "#2900"
+      ],
+      "touchedFiles": [
+        "es6-persistence/src/main/java/com/netflix/conductor/es6/config/ElasticSearchProperties.java",
+        "es6-persistence/src/main/java/com/netflix/conductor/es6/config/ElasticSearchV6Configuration.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "38a9fc7486129c8476b0c2eade1f434f48b79f95",
+      "authorDate": "2022-03-30T13:58:38-07:00",
+      "subject": "Miscellaneous documentation fixes",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "docs/docs/apispec.md",
+        "docs/docs/architecture.md",
+        "docs/docs/configuration/isolationgroups.md",
+        "docs/docs/configuration/sysoperator.md",
+        "docs/docs/configuration/systask.md",
+        "docs/docs/configuration/taskdef.md",
+        "docs/docs/configuration/workflowdef.md",
+        "docs/docs/gettingstarted/client.md",
+        "docs/docs/gettingstarted/startworkflow.md",
+        "docs/docs/how-tos/Tasks/task-timeouts.md",
+        "docs/docs/how-tos/Tasks/updating-tasks.md",
+        "docs/docs/how-tos/Workflows/debugging-workflows.md",
+        "docs/docs/how-tos/Workflows/searching-workflows.md",
+        "docs/docs/how-tos/Workflows/view-workflow-executions.md",
+        "docs/docs/labs/beginner.md",
+        "docs/docs/labs/eventhandlers.md",
+        "docs/docs/labs/running-first-worker.md",
+        "docs/docs/labs/running-first-workflow.md",
+        "docs/docs/reference-docs/do-while-task.md",
+        "docs/docs/reference-docs/dynamic-fork-task.md",
+        "docs/docs/reference-docs/dynamic-task.md",
+        "docs/docs/reference-docs/dynamic.md",
+        "docs/docs/reference-docs/event-task.md",
+        "docs/docs/reference-docs/fork-task.md",
+        "docs/docs/reference-docs/http-task.md",
+        "docs/docs/reference-docs/inline-task.md",
+        "docs/docs/reference-docs/join-task.md",
+        "docs/docs/reference-docs/json-jq-transform-task.md",
+        "docs/docs/reference-docs/kafka-publish-task.md",
+        "docs/docs/reference-docs/start-workflow-task.md",
+        "docs/docs/reference-docs/switch-task.md",
+        "docs/docs/reference-docs/terminate-task.md",
+        "docs/docs/technicaldetails.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "c9d7f503e5fba778d1d11d5d5d06456c3e412375",
+      "authorDate": "2022-03-30T13:35:57-07:00",
+      "subject": "fixed broken links",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "docs/docs/gettingstarted/startworkflow.md",
+        "docs/docs/reference-docs/start-workflow-task.md",
+        "docs/docs/reference-docs/sub-workflow-task.md"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "9c8341eec8b14f5c80f7c0c98b69ebdc44b27ccb",
+      "authorDate": "2022-03-24T00:41:09-07:00",
+      "subject": "[UI] Ensure rewrite rule in setupProxy.js remains commented out. OSS server endpoints are prefixed with /api",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "ui/src/setupProxy.js"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "0aa6af7115e21b8bba9da83b9e834582687f51f0",
+      "authorDate": "2022-03-23T23:54:09-07:00",
+      "subject": "[UI] Fix event handler json display",
+      "body": "",
+      "issueRefs": [],
+      "touchedFiles": [
+        "ui/src/components/ReactJson.jsx",
+        "ui/src/pages/definition/EventHandler.jsx"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "e2564118c4295ffa21d0e8dc277dea19ef02bdf5",
+      "authorDate": "2022-03-21T14:02:34-07:00",
+      "subject": "Merge netflix internal UI changes",
+      "body": "- Add CRA proxy rewrite /api => / as backend no longer supports the former\n- Replace react-json-view with Monaco editor\n- Do not shift graph on side panel appearance\n- Persisted selected task\n- Fix wrong icon in retry dropdown\n- Show elapsed time for currently running tasks\n- Fix workflow search sort order not restored from URL",
+      "issueRefs": [],
+      "touchedFiles": [
+        "ui/package.json",
+        "ui/src/components/ReactJson.jsx",
+        "ui/src/components/diagram/WorkflowDAG.js",
+        "ui/src/components/diagram/WorkflowGraph.jsx",
+        "ui/src/hooks/useTime.js",
+        "ui/src/pages/execution/Execution.jsx",
+        "ui/src/pages/execution/ExecutionInputOutput.jsx",
+        "ui/src/pages/execution/ExecutionJson.jsx",
+        "ui/src/pages/execution/RightPanel.jsx",
+        "ui/src/pages/execution/TaskLogs.jsx",
+        "ui/src/pages/execution/TaskSummary.jsx",
+        "ui/src/pages/executions/ResultsTable.jsx",
+        "ui/src/pages/executions/WorkflowSearch.jsx",
+        "ui/src/setupProxy.js"
+      ],
+      "fixCategory": "deadlock"
+    },
+    {
+      "commitHash": "192e4b13303e0c23d796373e3f1398a9245b0a00",
+      "authorDate": "2022-03-21T13:42:09-07:00",
+      "subject": "Merge pull request #2857 from v1r3n/golang_sdk_fixes",
+      "body": "Golang client updates",
+      "issueRefs": [
+        "#2857"
+      ],
+      "touchedFiles": [],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "8be051f6a76cd70d2e510b8ed10437b31e588525",
+      "authorDate": "2022-03-21T13:13:02-07:00",
+      "subject": "Fix NullPointerException for string compare (#2860)",
+      "body": "",
+      "issueRefs": [
+        "#2860"
+      ],
+      "touchedFiles": [
+        "common/src/main/java/com/netflix/conductor/common/run/WorkflowSummary.java"
+      ],
+      "fixCategory": "other"
+    },
+    {
+      "commitHash": "94a31245a8d84877f856838c828eb31a02134eb5",
+      "authorDate": "2022-03-16T01:04:15-07:00",
+      "subject": "golang client updates",
+      "body": "1. Use logrus for logging and add example on how to configure logging\n2. Update logging to use logrus\n3. Minor fixes",
+      "issueRefs": [],
+      "touchedFiles": [
+        "polyglot-clients/go/conductorhttpclient.go",
+        "polyglot-clients/go/conductorworker.go",
+        "polyglot-clients/go/go.mod",
+        "polyglot-clients/go/go.sum",
+        "polyglot-clients/go/httpclient/httpclient.go",
+        "polyglot-clients/go/startclient/startclient.go",
+        "polyglot-clients/go/task/sample/task_1_exec.go",
+        "polyglot-clients/go/task/taskresult.go"
+      ],
+      "fixCategory": "other"
+    }
+  ]
+}

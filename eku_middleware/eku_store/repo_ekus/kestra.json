@@ -1,0 +1,856 @@
+[
+  {
+    "id": "REKU-KESTRA-001",
+    "repository": "kestra",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Kestra represents workflows as declarative YAML Flow definitions composed of standard and Flowable tasks (DAG, Parallel, Sequential, Loop), dynamically evaluated by Executor handlers.",
+    "mechanism": "Flow model contains task definitions. DefaultExecutor listens to execution events, evaluates flowable dependencies, and emits new WorkerTask instances as upstream tasks finish.",
+    "applicabilityConditions": [
+      "All Kestra Flow definitions and execution runs"
+    ],
+    "evidenceIds": [
+      "OBS-KESTRA-001",
+      "OBS-KESTRA-003",
+      "OBS-KESTRA-006",
+      "HIST-KESTRA-004"
+    ],
+    "commonKeywords": [
+      "declarative",
+      "yaml",
+      "flow",
+      "graph",
+      "flowable",
+      "task",
+      "evaluation",
+      "kestra"
+    ],
+    "uniqueKeywords": [
+      "reku_kestra_001",
+      "kestra",
+      "declarative",
+      "yaml",
+      "flow",
+      "graph",
+      "flowable"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "kestra",
+        "represents",
+        "workflows"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "flow",
+        "model",
+        "contains",
+        "task",
+        "definitions"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Flow model contains task definitions. DefaultExecutor listens to execution events, evaluates flowable dependencies, and emits new WorkerTask instances as upstream tasks finish. Known limits: Flow graph syntax and task property validation occurs prior to queue dispatch.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001"
+    ],
+    "linkedClaims": [
+      "CLM-001"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/io/kestra/core/models/flows/Flow.java",
+      "lineRange": [
+        49,
+        95
+      ],
+      "queryOrCodeSnippet": "Flow models declarative orchestration graphs, containing top-level metadata, tasks list, error handlers, concurrency limits, and trigger definitions.",
+      "symbol": "Flow"
+    },
+    "testProvenance": {
+      "filePath": "executor/src/test/java/io/kestra/executor/handler/LoopExecutionEventMessageHandlerTest.java",
+      "testName": "shouldFailOnlyThisExecutionWhenLoopValuesShrinkBetweenIterations",
+      "assertionSnippet": "Asserts that shrinking loop values between iterations fails only the execution cleanly without crashing the executor."
+    },
+    "historyProvenance": {
+      "commitHash": "54654764d2347812eacdc15be4439dab9d03509a",
+      "failureId": "HIST-KESTRA-004",
+      "prOrIssue": "https://github.com/kestra-io/kestra/commit/54654764d2347812eacdc15be4439dab9d03509a",
+      "fixDescription": "Added boundary check in LoopExecutionEventMessageHandler to catch iteration shrinkage and fail only the affected execution instance."
+    },
+    "historyChainIds": [
+      "CHAIN-KESTRA-004"
+    ]
+  },
+  {
+    "id": "REKU-KESTRA-002",
+    "repository": "kestra",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Executors, Workers, and Schedulers communicate strictly through asynchronous typed message queues (QueueInterface), decoupling execution decisions from compute tasks.",
+    "mechanism": "Executors publish WorkerTask messages to QueueInterface. Workers poll tasks, execute logic, and publish WorkerTaskResult back to the queue, triggering subsequent Executor iterations.",
+    "applicabilityConditions": [
+      "All Kestra deployments across queue implementations (JDBC Queue, Kafka Queue)"
+    ],
+    "evidenceIds": [
+      "OBS-KESTRA-004",
+      "OBS-KESTRA-006",
+      "OBS-KESTRA-007",
+      "HIST-KESTRA-003"
+    ],
+    "commonKeywords": [
+      "asynchronous",
+      "queue-backed",
+      "microservice",
+      "communication",
+      "executors",
+      "workers",
+      "schedulers",
+      "communicate"
+    ],
+    "uniqueKeywords": [
+      "reku_kestra_002",
+      "kestra",
+      "asynchronous",
+      "queue-backed",
+      "microservice",
+      "communication"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "executors",
+        "workers",
+        "schedulers"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "executors",
+        "publish",
+        "workertask",
+        "messages",
+        "queueinterface"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Executors publish WorkerTask messages to QueueInterface. Workers poll tasks, execute logic, and publish WorkerTaskResult back to the queue, triggering subsequent Executor iterations. Known limits: Requires reliable message delivery guarantees and at-least-once processing semantics.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-003",
+      "EKU-WDE-006",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-003",
+      "CLM-006",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/io/kestra/core/queues/QueueInterface.java",
+      "lineRange": [
+        11,
+        55
+      ],
+      "queryOrCodeSnippet": "QueueInterface defines emit, receive, and poll methods for event-driven message distribution across Executor, Worker, and Scheduler components.",
+      "symbol": "QueueInterface"
+    },
+    "testProvenance": {
+      "filePath": "core/src/test/java/io/kestra/core/services/ExecutionStreamingServiceTest.java",
+      "testName": "shouldCompleteFluxWhenTerminatedEventArrivesAndExecutionIsPersistedInReposi",
+      "assertionSnippet": "Asserts that streaming execution flux completes only after the terminated execution is persisted in the repository."
+    },
+    "historyProvenance": {
+      "commitHash": "806563c160794986fefaaa8cf32cdbdc77613a4c",
+      "failureId": "HIST-KESTRA-003",
+      "prOrIssue": "https://github.com/kestra-io/kestra/commit/806563c160794986fefaaa8cf32cdbdc77613a4c",
+      "fixDescription": "Moved FollowExecutionEvent emission to execute strictly post-commit in the executor failure path."
+    },
+    "historyChainIds": [
+      "CHAIN-KESTRA-003"
+    ]
+  },
+  {
+    "id": "REKU-KESTRA-003",
+    "repository": "kestra",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Inter-task intermediate files and large payloads are written directly to StorageInterface via internal kestra:// URIs, preventing message queue payload bloat and memory exhaustion.",
+    "mechanism": "StorageInterface stores files in local disk, MinIO, S3, or GCS. TaskRun outputs contain only URI references (kestra://...) passed across message queues.",
+    "applicabilityConditions": [
+      "All task executions generating file outputs or consuming large inputs"
+    ],
+    "evidenceIds": [
+      "OBS-KESTRA-003",
+      "OBS-KESTRA-005",
+      "OBS-KESTRA-008"
+    ],
+    "commonKeywords": [
+      "decoupled",
+      "storageinterface",
+      "inter-task",
+      "large",
+      "payload",
+      "isolation",
+      "intermediate",
+      "files"
+    ],
+    "uniqueKeywords": [
+      "reku_kestra_003",
+      "kestra",
+      "decoupled",
+      "storageinterface",
+      "inter-task",
+      "large",
+      "payload"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "inter-task",
+        "intermediate",
+        "files"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "storageinterface",
+        "stores",
+        "files",
+        "local",
+        "disk"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "StorageInterface stores files in local disk, MinIO, S3, or GCS. TaskRun outputs contain only URI references (kestra://...) passed across message queues. Known limits: Requires shared storage backend accessible across all worker nodes in distributed deployments.",
+    "linkedDomainEkus": [
+      "EKU-WDE-004",
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-004",
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/io/kestra/core/models/executions/TaskRun.java",
+      "lineRange": [
+        30,
+        75
+      ],
+      "queryOrCodeSnippet": "TaskRun tracks individual task execution lifecycle, parent/child taskRun hierarchy, iteration indexes, retry counts, and input/output payload maps.",
+      "symbol": "TaskRun"
+    }
+  },
+  {
+    "id": "REKU-KESTRA-004",
+    "repository": "kestra",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Flow concurrency limits enforce bounded concurrent active runs per tenant/flow, with cancellation fences preventing duplicate concurrency slot releases on SLA timeouts.",
+    "mechanism": "Executor tracks active flow counts. ExecutionKilledExecutionMessageHandler handles timeout cancellation and fences slot release logic to ensure exactly-once slot decrements.",
+    "applicabilityConditions": [
+      "Flows configured with concurrency limits and MaxDurationSLA rules"
+    ],
+    "evidenceIds": [
+      "OBS-KESTRA-002",
+      "OBS-KESTRA-0010",
+      "HIST-KESTRA-002"
+    ],
+    "commonKeywords": [
+      "flow",
+      "concurrency",
+      "limiting",
+      "sla",
+      "timeout",
+      "fencing",
+      "limits",
+      "enforce"
+    ],
+    "uniqueKeywords": [
+      "reku_kestra_004",
+      "kestra",
+      "flow",
+      "concurrency",
+      "limiting",
+      "sla",
+      "timeout"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "flow",
+        "concurrency",
+        "limits"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "executor",
+        "tracks",
+        "active",
+        "flow",
+        "counts"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Executor tracks active flow counts. ExecutionKilledExecutionMessageHandler handles timeout cancellation and fences slot release logic to ensure exactly-once slot decrements. Known limits: Queued executions exceeding concurrency limits remain in QUEUED state until active executions complete.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-005"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-005"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/io/kestra/core/models/executions/Execution.java",
+      "lineRange": [
+        265,
+        310
+      ],
+      "queryOrCodeSnippet": "Execution.withState validates state transitions against allowed lifecycles (CREATED, RUNNING, SUCCESS, FAILED, PAUSED, KILLED) and appends state history timestamps.",
+      "symbol": "Execution.withState"
+    },
+    "testProvenance": {
+      "filePath": "core/src/test/java/io/kestra/core/runners/FlowConcurrencyCaseTest.java",
+      "testName": "flowConcurrencySlaFailSubflow",
+      "assertionSnippet": "Asserts that killing a subflow via SLA returns the flow concurrency running counter back to exactly zero without double release."
+    },
+    "historyProvenance": {
+      "commitHash": "ef2a1367944f927db69add62edc2bebdb4688526",
+      "failureId": "HIST-KESTRA-002",
+      "prOrIssue": "https://github.com/kestra-io/kestra/commit/ef2a1367944f927db69add62edc2bebdb4688526",
+      "fixDescription": "Added concurrency slot release fencing to prevent duplicate decrement calls when a subflow execution is killed by SLA."
+    },
+    "historyChainIds": [
+      "CHAIN-KESTRA-002"
+    ]
+  },
+  {
+    "id": "REKU-KESTRA-005",
+    "repository": "kestra",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "FAILURE_RECOVERY_MECHANISM",
+    "claim": "High-concurrency database storage layers must recursively inspect nested cause chains and suppressed exceptions to reliably detect database deadlocks and trigger automated retries.",
+    "mechanism": "JooqDSLContextWrapper inspects exception cause hierarchies for SQLState deadlock codes (40P01, 40001, 1213), triggering transaction retry loops.",
+    "applicabilityConditions": [
+      "Kestra JDBC repository operations under high concurrent execution load"
+    ],
+    "evidenceIds": [
+      "OBS-KESTRA-009",
+      "HIST-KESTRA-001"
+    ],
+    "commonKeywords": [
+      "recursive",
+      "deadlock",
+      "exception",
+      "detection",
+      "automated",
+      "transaction",
+      "retry",
+      "high-concurrency"
+    ],
+    "uniqueKeywords": [
+      "reku_kestra_005",
+      "kestra",
+      "recursive",
+      "deadlock",
+      "exception",
+      "detection",
+      "automated"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "high-concurrency",
+        "database",
+        "storage"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "jooqdslcontextwrapper",
+        "inspects",
+        "exception",
+        "cause",
+        "hierarchies"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "JooqDSLContextWrapper inspects exception cause hierarchies for SQLState deadlock codes (40P01, 40001, 1213), triggering transaction retry loops. Known limits: Max retry attempts and exponential backoff prevent indefinite retry loops on permanent transaction conflicts.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-007"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-007"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "jdbc/src/main/java/io/kestra/jdbc/JooqDSLContextWrapper.java",
+      "lineRange": [
+        32,
+        80
+      ],
+      "queryOrCodeSnippet": "JooqDSLContextWrapper intercepts database exceptions, recursively inspects cause chains and suppressed exceptions for SQL deadlock error codes, and triggers retries.",
+      "symbol": "JooqDSLContextWrapper"
+    },
+    "testProvenance": {
+      "filePath": "jdbc/src/test/java/io/kestra/jdbc/JooqDSLContextWrapperDeadlockPredicateTest.java",
+      "testName": "shouldMatchDeadlockNestedTwoLevelsDeep",
+      "assertionSnippet": "Asserts that JooqDSLContextWrapper recognizes deadlock SQLState error codes nested two levels deep in exception cause chains."
+    },
+    "historyProvenance": {
+      "commitHash": "0d29bb6c77561e585834da18a37a841540b20a4b",
+      "failureId": "HIST-KESTRA-001",
+      "prOrIssue": "https://github.com/kestra-io/kestra/commit/0d29bb6c77561e585834da18a37a841540b20a4b",
+      "fixDescription": "Enhanced JooqDSLContextWrapper deadlock predicate to recursively traverse exception cause chains and suppressed exceptions."
+    },
+    "historyChainIds": [
+      "CHAIN-KESTRA-001"
+    ]
+  },
+  {
+    "id": "REKU-KESTRA-006",
+    "repository": "kestra",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Subflow task execution spawns independent child Execution instances linked to parent TaskRun IDs, propagating cancellation signals downwards while isolating failures.",
+    "mechanism": "Subflow task emits child Execution. Parent executor tracks subflow status. Canceling or killing parent flow propagates kill commands to all active child subflow executions.",
+    "applicabilityConditions": [
+      "Flows executing Subflow tasks"
+    ],
+    "evidenceIds": [
+      "OBS-KESTRA-002",
+      "OBS-KESTRA-006",
+      "OBS-KESTRA-0010",
+      "HIST-KESTRA-002"
+    ],
+    "commonKeywords": [
+      "hierarchical",
+      "subflow",
+      "execution",
+      "cancellation",
+      "propagation",
+      "task",
+      "spawns",
+      "independent"
+    ],
+    "uniqueKeywords": [
+      "reku_kestra_006",
+      "kestra",
+      "hierarchical",
+      "subflow",
+      "execution",
+      "cancellation",
+      "propagation"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "subflow",
+        "task",
+        "execution"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "subflow",
+        "task",
+        "emits",
+        "child",
+        "execution"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Subflow task emits child Execution. Parent executor tracks subflow status. Canceling or killing parent flow propagates kill commands to all active child subflow executions. Known limits: Subflows configured with transmitFailed=false allow parent flows to continue even if the child execution fails.",
+    "linkedDomainEkus": [
+      "EKU-WDE-004",
+      "EKU-WDE-006",
+      "EKU-WDE-008"
+    ],
+    "linkedClaims": [
+      "CLM-004",
+      "CLM-006",
+      "CLM-008"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/io/kestra/core/models/executions/Execution.java",
+      "lineRange": [
+        265,
+        310
+      ],
+      "queryOrCodeSnippet": "Execution.withState validates state transitions against allowed lifecycles (CREATED, RUNNING, SUCCESS, FAILED, PAUSED, KILLED) and appends state history timestamps.",
+      "symbol": "Execution.withState"
+    },
+    "testProvenance": {
+      "filePath": "core/src/test/java/io/kestra/core/runners/FlowConcurrencyCaseTest.java",
+      "testName": "flowConcurrencySlaFailSubflow",
+      "assertionSnippet": "Asserts that killing a subflow via SLA returns the flow concurrency running counter back to exactly zero without double release."
+    },
+    "historyProvenance": {
+      "commitHash": "ef2a1367944f927db69add62edc2bebdb4688526",
+      "failureId": "HIST-KESTRA-002",
+      "prOrIssue": "https://github.com/kestra-io/kestra/commit/ef2a1367944f927db69add62edc2bebdb4688526",
+      "fixDescription": "Added concurrency slot release fencing to prevent duplicate decrement calls when a subflow execution is killed by SLA."
+    },
+    "historyChainIds": [
+      "CHAIN-KESTRA-002"
+    ]
+  },
+  {
+    "id": "REKU-KESTRA-007",
+    "repository": "kestra",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Worker agents isolate task executions in dedicated temporary working directories, downloading input storage files and capturing generated output artifacts.",
+    "mechanism": "WorkerTaskProcessor creates a temp directory per taskRun, downloads kestra:// URI files from StorageInterface, executes the runner, uploads output files, and purges the directory.",
+    "applicabilityConditions": [
+      "Task executions across Process, Docker, and Script runners"
+    ],
+    "evidenceIds": [
+      "OBS-KESTRA-005",
+      "OBS-KESTRA-007",
+      "OBS-KESTRA-008"
+    ],
+    "commonKeywords": [
+      "worker",
+      "working",
+      "directory",
+      "isolation",
+      "process",
+      "sandboxing",
+      "agents",
+      "isolate"
+    ],
+    "uniqueKeywords": [
+      "reku_kestra_007",
+      "kestra",
+      "worker",
+      "working",
+      "directory",
+      "isolation",
+      "process"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "worker",
+        "agents",
+        "isolate"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "workertaskprocessor",
+        "creates",
+        "temp",
+        "directory",
+        "per"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "WorkerTaskProcessor creates a temp directory per taskRun, downloads kestra:// URI files from StorageInterface, executes the runner, uploads output files, and purges the directory. Known limits: Worker disk capacity must accommodate concurrent task working directory footprints.",
+    "linkedDomainEkus": [
+      "EKU-WDE-004"
+    ],
+    "linkedClaims": [
+      "CLM-004"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/io/kestra/core/storages/StorageInterface.java",
+      "lineRange": [
+        28,
+        75
+      ],
+      "queryOrCodeSnippet": "StorageInterface provides put, get, delete, and list operations for durable blob storage across local filesystem, S3, GCS, and Azure Blob.",
+      "symbol": "StorageInterface"
+    }
+  },
+  {
+    "id": "REKU-KESTRA-008",
+    "repository": "kestra",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Workflow definition parsers enforce upper bounds on user-supplied duration strings across retry, SLA, and time window configs to prevent arithmetic overflow in timer calculations.",
+    "mechanism": "DurationMax validator checks duration fields during flow parsing, rejecting values greater than 10 years and preventing runtime overflow.",
+    "applicabilityConditions": [
+      "All Flow task retry policies, SLA configurations, and trigger time windows"
+    ],
+    "evidenceIds": [
+      "OBS-KESTRA-011",
+      "HIST-KESTRA-005"
+    ],
+    "commonKeywords": [
+      "strict",
+      "parse-time",
+      "validation",
+      "duration",
+      "configuration",
+      "bounds",
+      "workflow",
+      "definition"
+    ],
+    "uniqueKeywords": [
+      "reku_kestra_008",
+      "kestra",
+      "strict",
+      "parse-time",
+      "validation",
+      "duration",
+      "configuration"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "workflow",
+        "definition",
+        "parsers"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "durationmax",
+        "validator",
+        "checks",
+        "duration",
+        "fields"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "DurationMax validator checks duration fields during flow parsing, rejecting values greater than 10 years and preventing runtime overflow. Known limits: Flows with invalid durations fail validation immediately upon upload or deployment.",
+    "linkedDomainEkus": [
+      "EKU-WDE-005",
+      "EKU-WDE-007"
+    ],
+    "linkedClaims": [
+      "CLM-005",
+      "CLM-007"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/io/kestra/core/models/tasks/retrys/AbstractRetry.java",
+      "lineRange": [
+        29,
+        69
+      ],
+      "queryOrCodeSnippet": "AbstractRetry encapsulates retry behavior (Constant, Exponential, Random), validating maximum duration bounds and calculating retry backoff intervals.",
+      "symbol": "AbstractRetry"
+    },
+    "testProvenance": {
+      "filePath": "core/src/test/java/io/kestra/core/validations/ConstantRetryValidationTest.java",
+      "testName": "shouldRejectIntervalAboveTenYears",
+      "assertionSnippet": "Asserts that DurationMax validator rejects retry intervals greater than the maximum supported duration boundary."
+    },
+    "historyProvenance": {
+      "commitHash": "66a3394051ae560874d3f65db842678318c81059",
+      "failureId": "HIST-KESTRA-005",
+      "prOrIssue": "https://github.com/kestra-io/kestra/commit/66a3394051ae560874d3f65db842678318c81059",
+      "fixDescription": "Added DurationMax annotation and validation to enforce bounds on user-supplied durations across retry, SLA, and time window configs."
+    },
+    "historyChainIds": [
+      "CHAIN-KESTRA-005"
+    ]
+  },
+  {
+    "id": "REKU-KESTRA-009",
+    "repository": "kestra",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Remote worker pools connect to controller nodes via bidirectional gRPC streams, dispatching tasks based on real-time worker capacity metrics.",
+    "mechanism": "WorkerJobDispatcher manages streaming gRPC connections, tracks worker thread availability and capacity metrics, and pushes tasks directly to available worker nodes.",
+    "applicabilityConditions": [
+      "Distributed Kestra worker deployments with worker-controller"
+    ],
+    "evidenceIds": [
+      "OBS-KESTRA-007",
+      "OBS-KESTRA-012"
+    ],
+    "commonKeywords": [
+      "grpc",
+      "streaming",
+      "worker",
+      "job",
+      "dispatching",
+      "capacity",
+      "tracking",
+      "remote"
+    ],
+    "uniqueKeywords": [
+      "reku_kestra_009",
+      "kestra",
+      "grpc",
+      "streaming",
+      "worker",
+      "job",
+      "dispatching"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "remote",
+        "worker",
+        "pools"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "workerjobdispatcher",
+        "manages",
+        "streaming",
+        "grpc",
+        "connections"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "WorkerJobDispatcher manages streaming gRPC connections, tracks worker thread availability and capacity metrics, and pushes tasks directly to available worker nodes. Known limits: Worker network disconnections trigger task re-queueing by the worker controller after heartbeat timeout.",
+    "linkedDomainEkus": [
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "worker/src/main/java/io/kestra/worker/WorkerAgent.java",
+      "lineRange": [
+        27,
+        75
+      ],
+      "queryOrCodeSnippet": "WorkerAgent registers worker health heartbeats, polls WorkerTask messages, spawns task processor callables, and handles worker shutdown fences.",
+      "symbol": "WorkerAgent"
+    }
+  }
+]

@@ -1,0 +1,58 @@
+{
+  "repo": "hatchet",
+  "targetRepo": "hatchet-dev/hatchet",
+  "remote": "https://github.com/hatchet-dev/hatchet.git",
+  "commit": "4dde179317ffda9985cb2d23ea51b47384304b57",
+  "analyzedAt": "2026-08-26T19:53:01.680116+00:00",
+  "domain": "workflow_durable_execution",
+  "systemSummary": {
+    "name": "Hatchet Distributed Workflow Orchestrator",
+    "description": "High-throughput, event-driven task queue and workflow engine orchestrating DAG steps over bidirectional gRPC streams with in-memory slot pool scheduling.",
+    "coreLanguages": [
+      "Go",
+      "TypeScript",
+      "Python"
+    ],
+    "architecture": {
+      "dispatcherService": {
+        "description": "Bi-directional gRPC streaming dispatcher connecting server to distributed worker pools.",
+        "entrypoint": "internal/services/dispatcher/dispatcher.go"
+      },
+      "schedulingEngine": {
+        "description": "In-memory slot pool scheduler and batch assigner with label affinity.",
+        "entrypoint": "pkg/scheduling/v1/scheduler.go"
+      },
+      "concurrencyEngine": {
+        "description": "Pluggable workflow and tenant concurrency controller with CancelInProgress / RoundRobin strategies.",
+        "entrypoint": "pkg/scheduling/v1/concurrency.go"
+      },
+      "tickerDaemon": {
+        "description": "Background ticker managing cron evaluation, worker heartbeats, and step timeouts.",
+        "entrypoint": "internal/services/ticker/ticker.go"
+      },
+      "storageLayer": {
+        "description": "PostgreSQL database storing workflow runs, task checkpoints, and durable event logs.",
+        "entrypoint": "pkg/repository/sqlcv1/db.go"
+      }
+    }
+  },
+  "durableExecutionModel": {
+    "grpcWorkerStreaming": "Workers connect to the dispatcher over persistent gRPC streams. Tasks are pushed directly into worker memory buffers.",
+    "inMemorySlotPools": "Worker capacity is represented as slot pools in memory, enabling sub-millisecond dispatching without database polling bottlenecks.",
+    "durableUserEvents": "Workflows suspend awaiting external events (ctx.wait_for_event), matched in PostgreSQL with strict workflow and step run scope isolation.",
+    "concurrencyFencing": "Concurrency limits are enforced across workflow runs, automatically cancelling or queuing tasks according to configured strategies.",
+    "orchestratorAuthority": "In operator DAGs, the orchestrator task holds sole authority over final workflow status updates, preventing racing child task overwrites."
+  },
+  "dimensionsAnalyzed": [
+    "workflow_definition_model",
+    "execution_state_machine",
+    "task_activity_scheduling",
+    "persistence_and_checkpointing",
+    "timers_and_durable_sleeps",
+    "retries_and_backoff",
+    "worker_leasing_heartbeats_liveness",
+    "idempotency_duplicate_suppression",
+    "concurrency_limits_backpressure",
+    "event_matching_and_cancellation"
+  ]
+}

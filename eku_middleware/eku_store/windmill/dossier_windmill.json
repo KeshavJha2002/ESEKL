@@ -1,0 +1,54 @@
+{
+  "repo": "windmill",
+  "targetRepo": "windmill-labs/windmill",
+  "remote": "https://github.com/windmill-labs/windmill.git",
+  "commit": "b8bf539c3fe2b4db9c74dd73f04b3029287acdc6",
+  "analyzedAt": "2026-08-26T19:50:34.054634+00:00",
+  "domain": "workflow_durable_execution",
+  "systemSummary": {
+    "name": "Windmill Developer Workflow & Script Platform",
+    "description": "High-performance workflow engine executing OpenFlow DAGs and multi-language scripts backed by PostgreSQL transactional queues and advisory locking.",
+    "coreLanguages": [
+      "Rust",
+      "TypeScript",
+      "Python"
+    ],
+    "architecture": {
+      "executionEngine": {
+        "description": "Flow evaluation engine orchestrating step DAGs, loops, branches, and approvals.",
+        "entrypoint": "backend/windmill-api-flows/src/flows.rs"
+      },
+      "queueLayer": {
+        "description": "PostgreSQL SKIP LOCKED queue poller with workspace fairness weighting.",
+        "entrypoint": "backend/windmill-queue/src/jobs.rs"
+      },
+      "workerLayer": {
+        "description": "Multi-language worker processes executing Deno, Python, Go, and Bash scripts.",
+        "entrypoint": "backend/windmill-worker/src/deno_executor.rs"
+      },
+      "storageLayer": {
+        "description": "Relational PostgreSQL storage for job records, execution payloads, and state.",
+        "entrypoint": "backend/windmill-api/src/jobs.rs"
+      }
+    }
+  },
+  "durableExecutionModel": {
+    "openFlowDAGs": "Workflows are structured as declarative OpenFlow DAGs. Flow state is persisted in PostgreSQL after each step completes.",
+    "databaseQueuePolling": "Workers poll jobs from PostgreSQL tables using SELECT FOR UPDATE SKIP LOCKED, guaranteeing exactly-once lease assignment.",
+    "resumableSuspension": "Flows suspend on approvals or external webhooks, persisting execution state in PostgreSQL without holding worker processes.",
+    "tokenConfinement": "Ephemeral job tokens minted for script runs are strictly confined to workspace API scopes.",
+    "fairnessScheduling": "Queue scheduler applies Deficit Round Robin (DRR) weights across workspaces to prevent noisy neighbors."
+  },
+  "dimensionsAnalyzed": [
+    "workflow_definition_model",
+    "execution_state_machine",
+    "task_activity_scheduling",
+    "persistence_and_checkpointing",
+    "timers_and_durable_sleeps",
+    "retries_and_backoff",
+    "worker_leasing_heartbeats_liveness",
+    "idempotency_duplicate_suppression",
+    "concurrency_and_backpressure",
+    "security_multitenancy_boundaries"
+  ]
+}

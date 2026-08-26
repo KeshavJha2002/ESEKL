@@ -1,0 +1,827 @@
+[
+  {
+    "id": "REKU-WINDMILL-001",
+    "repository": "windmill",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Windmill executes workflows as declarative OpenFlow DAGs, checkpointing state to PostgreSQL tables after each discrete step execution to enable fault-tolerant resumption.",
+    "mechanism": "windmill_api_flows evaluates flow step dependencies, writes completed step results to PostgreSQL, and advances execution pointers to subsequent steps.",
+    "applicabilityConditions": [
+      "All Windmill Flow executions"
+    ],
+    "evidenceIds": [
+      "OBS-WINDMILL-001",
+      "OBS-WINDMILL-002",
+      "OBS-WINDMILL-008"
+    ],
+    "commonKeywords": [
+      "declarative",
+      "openflow",
+      "dag",
+      "execution",
+      "step-to-step",
+      "state",
+      "checkpointing",
+      "windmill"
+    ],
+    "uniqueKeywords": [
+      "reku_windmill_001",
+      "windmill",
+      "declarative",
+      "openflow",
+      "dag",
+      "execution",
+      "step-to-step"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "windmill",
+        "executes",
+        "workflows"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "windmill_api_flows",
+        "evaluates",
+        "flow",
+        "step",
+        "dependencies"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "windmill_api_flows evaluates flow step dependencies, writes completed step results to PostgreSQL, and advances execution pointers to subsequent steps. Known limits: Flow steps must produce JSON-serializable outputs.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-003",
+      "EKU-WDE-008",
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-003",
+      "CLM-008",
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "backend/windmill-api/src/jobs.rs",
+      "lineRange": [
+        40,
+        85
+      ],
+      "queryOrCodeSnippet": "Jobs module queries job status tables (v2_job_queued, v2_job_completed), managing lifecycle transitions (Queued, Running, Completed, Failed).",
+      "symbol": "Jobs"
+    }
+  },
+  {
+    "id": "REKU-WINDMILL-002",
+    "repository": "windmill",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Windmill workers poll queued job tasks using PostgreSQL SELECT FOR UPDATE SKIP LOCKED, guaranteeing exactly-once lease assignment and zero lock blocking across concurrent workers.",
+    "mechanism": "QueueJobs queries v2_job_queued using SKIP LOCKED, transitions job status to Running, and sets lease expiration timestamps.",
+    "applicabilityConditions": [
+      "All job and flow step scheduling in windmill-queue"
+    ],
+    "evidenceIds": [
+      "OBS-WINDMILL-001",
+      "OBS-WINDMILL-004",
+      "HIST-WINDMILL-001"
+    ],
+    "commonKeywords": [
+      "postgresql",
+      "queue",
+      "polling",
+      "skip",
+      "locked",
+      "lease",
+      "assignment",
+      "windmill"
+    ],
+    "uniqueKeywords": [
+      "reku_windmill_002",
+      "windmill",
+      "postgresql",
+      "queue",
+      "polling",
+      "skip",
+      "locked"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "windmill",
+        "workers",
+        "poll"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "queuejobs",
+        "queries",
+        "v2_job_queued",
+        "skip",
+        "locked"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "QueueJobs queries v2_job_queued using SKIP LOCKED, transitions job status to Running, and sets lease expiration timestamps. Known limits: Database connection pooling and index sizing govern maximum concurrent queue worker scale.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-003",
+      "EKU-WDE-007",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-003",
+      "CLM-007",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "backend/windmill-api/src/jobs.rs",
+      "lineRange": [
+        40,
+        85
+      ],
+      "queryOrCodeSnippet": "Jobs module queries job status tables (v2_job_queued, v2_job_completed), managing lifecycle transitions (Queued, Running, Completed, Failed).",
+      "symbol": "Jobs"
+    },
+    "testProvenance": {
+      "filePath": "backend/windmill-trigger-http/tests/refresh_routers.rs",
+      "testName": "rebuilds_a_change_the_cached_version_does_not_cover",
+      "assertionSnippet": "Asserts that forced refresh and cache invalidation rebuilds HTTP routes when sequence numbers advance ahead of cache."
+    },
+    "historyProvenance": {
+      "commitHash": "ffdf17ef8dc5575dd92d62d0d0ba887c1e378576",
+      "failureId": "HIST-WINDMILL-001",
+      "prOrIssue": "https://github.com/windmill-labs/windmill/commit/ffdf17ef8dc5575dd92d62d0d0ba887c1e378576",
+      "fixDescription": "Forced HTTP router cache rebuild on trigger change notifications and added explicit invalidation."
+    },
+    "historyChainIds": [
+      "CHAIN-WINDMILL-001"
+    ]
+  },
+  {
+    "id": "REKU-WINDMILL-003",
+    "repository": "windmill",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Workspaces isolate script code, secrets, resources, and custom worker pools, with ephemeral execution tokens cryptographically confined strictly to workspace-scoped API endpoints.",
+    "mechanism": "Workspaces and auth middleware validate JWT claims and enforce workspace boundaries on bearer tokens, rejecting cross-workspace or instance-level calls from worker scripts.",
+    "applicabilityConditions": [
+      "All multi-tenant API requests and script job runs"
+    ],
+    "evidenceIds": [
+      "OBS-WINDMILL-003",
+      "OBS-WINDMILL-011",
+      "HIST-WINDMILL-002"
+    ],
+    "commonKeywords": [
+      "multi-tenant",
+      "workspace",
+      "isolation",
+      "cryptographic",
+      "scope",
+      "confinement",
+      "workspaces",
+      "isolate"
+    ],
+    "uniqueKeywords": [
+      "reku_windmill_003",
+      "windmill",
+      "multi-tenant",
+      "workspace",
+      "isolation",
+      "cryptographic",
+      "scope"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "workspaces",
+        "isolate",
+        "script"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "workspaces",
+        "auth",
+        "middleware",
+        "validate",
+        "jwt"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Workspaces and auth middleware validate JWT claims and enforce workspace boundaries on bearer tokens, rejecting cross-workspace or instance-level calls from worker scripts. Known limits: Super-admin operations require explicit instance-level authentication.",
+    "linkedDomainEkus": [
+      "EKU-WDE-004"
+    ],
+    "linkedClaims": [
+      "CLM-004"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "backend/windmill-api/src/workspaces.rs",
+      "lineRange": [
+        35,
+        80
+      ],
+      "queryOrCodeSnippet": "Workspaces module enforces tenant boundaries, validates RBAC roles, and manages workspace-level encryption keys and secrets.",
+      "symbol": "Workspaces"
+    },
+    "testProvenance": {
+      "filePath": "backend/tests/wm_token_confinement.rs",
+      "testName": "test_wm_token_is_confined_to_its_workspace",
+      "assertionSnippet": "Asserts that job execution tokens are strictly confined to workspace-scoped API endpoints and rejected by instance gates."
+    },
+    "historyProvenance": {
+      "commitHash": "9022dc9d440b95a4c45d22675f009acaf78daab7",
+      "failureId": "HIST-WINDMILL-002",
+      "prOrIssue": "https://github.com/windmill-labs/windmill/commit/9022dc9d440b95a4c45d22675f009acaf78daab7",
+      "fixDescription": "Enforced strict workspace confinement gates on all bearer tokens minted for job executions."
+    },
+    "historyChainIds": [
+      "CHAIN-WINDMILL-002"
+    ]
+  },
+  {
+    "id": "REKU-WINDMILL-004",
+    "repository": "windmill",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Queue schedulers apply fair Deficit Round Robin (DRR) weighting across workspaces and hoist non-transactional reads to prevent database lock contention under heavy burst loads.",
+    "mechanism": "WorkspaceFairness tracks per-workspace in-flight execution counts, while schedule creators hoist non-RLS reads outside write transactions.",
+    "applicabilityConditions": [
+      "Queue job dispatching and schedule creation"
+    ],
+    "evidenceIds": [
+      "OBS-WINDMILL-004",
+      "OBS-WINDMILL-009",
+      "HIST-WINDMILL-005"
+    ],
+    "commonKeywords": [
+      "workspace",
+      "fairness",
+      "scheduling",
+      "resource",
+      "contention",
+      "mitigation",
+      "queue",
+      "schedulers"
+    ],
+    "uniqueKeywords": [
+      "reku_windmill_004",
+      "windmill",
+      "workspace",
+      "fairness",
+      "scheduling",
+      "resource",
+      "contention"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "queue",
+        "schedulers",
+        "apply"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "workspacefairness",
+        "tracks",
+        "per-workspace",
+        "in-flight",
+        "execution"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "WorkspaceFairness tracks per-workspace in-flight execution counts, while schedule creators hoist non-RLS reads outside write transactions. Known limits: Dedicated worker groups can bypass shared workspace queues.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "backend/windmill-queue/src/jobs.rs",
+      "lineRange": [
+        45,
+        90
+      ],
+      "queryOrCodeSnippet": "QueueJobs fetches runnable jobs from v2_job_queued using SELECT FOR UPDATE SKIP LOCKED, assigning worker leases atomically.",
+      "symbol": "QueueJobs"
+    },
+    "testProvenance": {
+      "filePath": "backend/tests/agent_workers.rs",
+      "testName": "test_agent_worker_simple_script",
+      "assertionSnippet": "Asserts that worker script execution operates cleanly without database lock contention."
+    },
+    "historyProvenance": {
+      "commitHash": "f4a935bd1c4f8ae336824b61e0648e8b0d91f8c9",
+      "failureId": "HIST-WINDMILL-005",
+      "prOrIssue": "https://github.com/windmill-labs/windmill/commit/f4a935bd1c4f8ae336824b61e0648e8b0d91f8c9",
+      "fixDescription": "Hoisted non-RLS read operations outside the schedule creation transaction block."
+    },
+    "historyChainIds": [
+      "CHAIN-WINDMILL-005"
+    ]
+  },
+  {
+    "id": "REKU-WINDMILL-005",
+    "repository": "windmill",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "FAILURE_RECOVERY_MECHANISM",
+    "claim": "Background monitor loops detect zombie jobs whose worker heartbeats have expired, attributing OOM failures to the exact executing worker role (queue vs transition) to prevent debugging misdirection.",
+    "mechanism": "Monitor queries identify un-heartbeated jobs, inspect executing worker IDs, record failure diagnostics, and requeue or fail jobs cleanly.",
+    "applicabilityConditions": [
+      "Flow monitor and worker crash recovery"
+    ],
+    "evidenceIds": [
+      "OBS-WINDMILL-001",
+      "OBS-WINDMILL-008",
+      "HIST-WINDMILL-004"
+    ],
+    "commonKeywords": [
+      "zombie",
+      "process",
+      "detection",
+      "accurate",
+      "subsystem",
+      "attribution",
+      "background",
+      "monitor"
+    ],
+    "uniqueKeywords": [
+      "reku_windmill_005",
+      "windmill",
+      "zombie",
+      "process",
+      "detection",
+      "accurate",
+      "subsystem"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "background",
+        "monitor",
+        "loops"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "monitor",
+        "queries",
+        "identify",
+        "un-heartbeated",
+        "jobs"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Monitor queries identify un-heartbeated jobs, inspect executing worker IDs, record failure diagnostics, and requeue or fail jobs cleanly. Known limits: Heartbeat timeout threshold (default 30s) defines zombie detection latency.",
+    "linkedDomainEkus": [
+      "EKU-WDE-005",
+      "EKU-WDE-007"
+    ],
+    "linkedClaims": [
+      "CLM-005",
+      "CLM-007"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "backend/windmill-api/src/jobs.rs",
+      "lineRange": [
+        40,
+        85
+      ],
+      "queryOrCodeSnippet": "Jobs module queries job status tables (v2_job_queued, v2_job_completed), managing lifecycle transitions (Queued, Running, Completed, Failed).",
+      "symbol": "Jobs"
+    },
+    "testProvenance": {
+      "filePath": "backend/tests/batch_rerun.rs",
+      "testName": "batch_rerun_script_default",
+      "assertionSnippet": "Asserts that batch rerun handles completed and rerun script jobs cleanly."
+    },
+    "historyProvenance": {
+      "commitHash": "fa3644281f30d90aa0c4ca86520a38db5d8b91f0",
+      "failureId": "HIST-WINDMILL-004",
+      "prOrIssue": "https://github.com/windmill-labs/windmill/commit/fa3644281f30d90aa0c4ca86520a38db5d8b91f0",
+      "fixDescription": "Updated SQL monitor query to attribute zombie flow OOMs directly to transition worker processes."
+    },
+    "historyChainIds": [
+      "CHAIN-WINDMILL-004"
+    ]
+  },
+  {
+    "id": "REKU-WINDMILL-006",
+    "repository": "windmill",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Flows encountering approval steps or external webhook waits transition to Suspended state in PostgreSQL without blocking worker processes, resuming when the resume event is posted.",
+    "mechanism": "FlowStatus records suspension state. When an approval or webhook arrives, the flow is requeued in v2_job_queued with saved intermediate step outputs.",
+    "applicabilityConditions": [
+      "Flows with approval gates, sleep steps, or external trigger resumes"
+    ],
+    "evidenceIds": [
+      "OBS-WINDMILL-002",
+      "OBS-WINDMILL-008"
+    ],
+    "commonKeywords": [
+      "resumable",
+      "flow",
+      "suspension",
+      "approvals",
+      "external",
+      "webhooks",
+      "flows",
+      "encountering"
+    ],
+    "uniqueKeywords": [
+      "reku_windmill_006",
+      "windmill",
+      "resumable",
+      "flow",
+      "suspension",
+      "approvals",
+      "external"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "flows",
+        "encountering",
+        "approval"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "flowstatus",
+        "records",
+        "suspension",
+        "state",
+        "approval"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "FlowStatus records suspension state. When an approval or webhook arrives, the flow is requeued in v2_job_queued with saved intermediate step outputs. Known limits: Suspended flows must specify expiration TTLs to prevent indefinite state storage.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-005",
+      "EKU-WDE-006"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-005",
+      "CLM-006"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "backend/windmill-api-flows/src/flows.rs",
+      "lineRange": [
+        50,
+        95
+      ],
+      "queryOrCodeSnippet": "Flows module parses OpenFlow specifications, resolves step dependency graphs, computes input transforms, and manages branch evaluations.",
+      "symbol": "Flows"
+    }
+  },
+  {
+    "id": "REKU-WINDMILL-007",
+    "repository": "windmill",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Worker agents execute Deno, Python, Go, and Bash scripts in sandboxed child processes with isolated temporary directories and environment variable isolation.",
+    "mechanism": "Worker executors spawn child processes with restricted filesystem permissions, stream logs in real-time, and enforce timeout limits.",
+    "applicabilityConditions": [
+      "All script executions across DenoExecutor, BashExecutor, and Python runners"
+    ],
+    "evidenceIds": [
+      "OBS-WINDMILL-006",
+      "OBS-WINDMILL-007"
+    ],
+    "commonKeywords": [
+      "multi-language",
+      "worker",
+      "sandbox",
+      "process",
+      "isolation",
+      "agents",
+      "execute",
+      "deno"
+    ],
+    "uniqueKeywords": [
+      "reku_windmill_007",
+      "windmill",
+      "multi-language",
+      "worker",
+      "sandbox",
+      "process",
+      "isolation"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "worker",
+        "agents",
+        "execute"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "worker",
+        "executors",
+        "spawn",
+        "child",
+        "processes"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Worker executors spawn child processes with restricted filesystem permissions, stream logs in real-time, and enforce timeout limits. Known limits: Container sandboxing requires rootless Docker / nsjail in hardened production environments.",
+    "linkedDomainEkus": [
+      "EKU-WDE-004"
+    ],
+    "linkedClaims": [
+      "CLM-004"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "backend/windmill-worker/src/deno_executor.rs",
+      "lineRange": [
+        40,
+        85
+      ],
+      "queryOrCodeSnippet": "DenoExecutor spawns isolated Deno subprocesses, passes arguments via IPC, captures stdout/stderr, and returns parsed JSON results.",
+      "symbol": "DenoExecutor"
+    }
+  },
+  {
+    "id": "REKU-WINDMILL-008",
+    "repository": "windmill",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Scripts are identified by immutable cryptographic content hashes (ScriptHash), allowing workers to cache parsed abstract syntax trees and pre-built dependencies.",
+    "mechanism": "Scripts module computes SHA-256 hashes of script source code. Workers check local lockfile caches by hash before compiling or downloading package dependencies.",
+    "applicabilityConditions": [
+      "Script deployments and worker execution caching"
+    ],
+    "evidenceIds": [
+      "OBS-WINDMILL-006",
+      "OBS-WINDMILL-010"
+    ],
+    "commonKeywords": [
+      "immutable",
+      "script",
+      "content",
+      "hashing",
+      "dependency",
+      "caching",
+      "scripts",
+      "identified"
+    ],
+    "uniqueKeywords": [
+      "reku_windmill_008",
+      "windmill",
+      "immutable",
+      "script",
+      "content",
+      "hashing",
+      "dependency"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "scripts",
+        "identified",
+        "immutable"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "scripts",
+        "module",
+        "computes",
+        "sha-256",
+        "hashes"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Scripts module computes SHA-256 hashes of script source code. Workers check local lockfile caches by hash before compiling or downloading package dependencies. Known limits: Dynamic imports outside declared dependencies require runtime network access.",
+    "linkedDomainEkus": [
+      "EKU-WDE-004",
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-004",
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "backend/windmill-worker/src/deno_executor.rs",
+      "lineRange": [
+        40,
+        85
+      ],
+      "queryOrCodeSnippet": "DenoExecutor spawns isolated Deno subprocesses, passes arguments via IPC, captures stdout/stderr, and returns parsed JSON results.",
+      "symbol": "DenoExecutor"
+    }
+  },
+  {
+    "id": "REKU-WINDMILL-009",
+    "repository": "windmill",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Data assets track upstream script and table dependencies, triggering automated backfill and downstream flow runs when upstream assets update.",
+    "mechanism": "Assets module maintains topological dependency graphs of pinned asset nodes, queuing downstream refresh jobs upon upstream asset materializations.",
+    "applicabilityConditions": [
+      "Asset pipelines managed by windmill-api-assets"
+    ],
+    "evidenceIds": [
+      "OBS-WINDMILL-002",
+      "OBS-WINDMILL-012"
+    ],
+    "commonKeywords": [
+      "asset",
+      "dependency",
+      "graph",
+      "evaluation",
+      "lineage",
+      "tracking",
+      "data",
+      "assets"
+    ],
+    "uniqueKeywords": [
+      "reku_windmill_009",
+      "windmill",
+      "asset",
+      "dependency",
+      "graph",
+      "evaluation",
+      "lineage"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "data",
+        "assets",
+        "track"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "assets",
+        "module",
+        "maintains",
+        "topological",
+        "dependency"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Assets module maintains topological dependency graphs of pinned asset nodes, queuing downstream refresh jobs upon upstream asset materializations. Known limits: Asset DAG cycles are rejected during graph creation.",
+    "linkedDomainEkus": [
+      "EKU-WDE-008"
+    ],
+    "linkedClaims": [
+      "CLM-008"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "backend/windmill-api-flows/src/flows.rs",
+      "lineRange": [
+        50,
+        95
+      ],
+      "queryOrCodeSnippet": "Flows module parses OpenFlow specifications, resolves step dependency graphs, computes input transforms, and manages branch evaluations.",
+      "symbol": "Flows"
+    }
+  }
+]

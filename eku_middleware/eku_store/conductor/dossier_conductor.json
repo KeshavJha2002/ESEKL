@@ -1,0 +1,61 @@
+{
+  "repo": "conductor",
+  "targetRepo": "Netflix/conductor",
+  "remote": "https://github.com/Netflix/conductor.git",
+  "commit": "548f386c2c6c1e4d467b8551edbb6182881004ae",
+  "analyzedAt": "2026-08-26T12:55:29.686677+00:00",
+  "domain": "workflow_durable_execution",
+  "systemSummary": {
+    "name": "Netflix Conductor Workflow Orchestration Engine",
+    "description": "Microservices and workflow orchestration engine executing JSON-defined DAG workflows with queue-based worker task dispatch, pluggable persistence, and delayed sweeper reconciliation.",
+    "coreLanguages": [
+      "Java"
+    ],
+    "architecture": {
+      "coreEngine": {
+        "description": "Central orchestration engine hosting WorkflowExecutor, DeciderService, TaskMappers, and EventProcessors.",
+        "entrypoint": "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java"
+      },
+      "reconciliationSubsystem": {
+        "description": "Background sweeping and repair daemons ensuring workflow progress across host crashes and dropped messages.",
+        "entrypoint": "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java"
+      },
+      "queueLayer": {
+        "description": "Pluggable distributed task queuing abstractions supporting Redis, DynoQueue, SQS, AMQP, and relational DBs.",
+        "entrypoint": "core/src/main/java/com/netflix/conductor/dao/QueueDAO.java"
+      },
+      "persistenceLayer": {
+        "description": "Data access objects for metadata, execution state, and indexing (Cassandra, Redis, MySQL, Postgres, Elasticsearch).",
+        "entrypoint": "core/src/main/java/com/netflix/conductor/core/dal/ExecutionDAOFacade.java"
+      },
+      "lockingSubsystem": {
+        "description": "Distributed locking mechanisms serializing concurrent workflow evaluations across cluster nodes.",
+        "entrypoint": "core/src/main/java/com/netflix/conductor/core/sync/local/LocalOnlyLock.java"
+      }
+    }
+  },
+  "durableExecutionModel": {
+    "dagEvaluation": "Workflows are defined as explicit JSON DAGs (WorkflowDef) containing task nodes (SIMPLE, FORK_JOIN, DECISION, DO_WHILE, SUB_WORKFLOW, DYNAMIC). DeciderService evaluates current task outcomes and schedules downstream tasks without code replay.",
+    "queueBasedDispatch": "Tasks are scheduled by pushing message IDs to queues. External workers poll queues, receive tasks with visibility timeout leases, execute application logic, and call updateTask to record output.",
+    "reconciliationSweeper": "Active workflows are enqueued in delayed sweep queues. WorkflowSweeper periodically inspects running executions to enforce task timeouts, retry expired unacknowledged tasks, and trigger evaluation.",
+    "distributedLocking": "Workflow executions are protected by distributed locks (RedisLock, ZookeeperLock, LocalOnlyLock) acquired during decide() to prevent concurrent state mutations.",
+    "statePersistence": "Concrete workflow and task execution models are persisted directly to storage DAOs. Audit and visibility search indexes are decoupled via ExecutionDAOFacade."
+  },
+  "dimensionsAnalyzed": [
+    "workflow_definition_model",
+    "execution_state_machine",
+    "task_activity_scheduling",
+    "event_history_and_replay",
+    "persistence_and_checkpointing",
+    "timers_and_durable_sleeps",
+    "retries_and_backoff",
+    "cancellation_signals_queries",
+    "child_workflows_subflows",
+    "worker_leasing_heartbeats_liveness",
+    "idempotency_duplicate_suppression",
+    "versioning_and_workflow_evolution",
+    "failure_recovery_crash_failover",
+    "concurrency_and_backpressure",
+    "data_retention_and_history_compaction"
+  ]
+}

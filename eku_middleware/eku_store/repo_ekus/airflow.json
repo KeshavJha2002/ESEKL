@@ -1,0 +1,866 @@
+[
+  {
+    "id": "REKU-AIRFLOW-001",
+    "repository": "airflow",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Airflow coordinates multiple active scheduler instances without distributed locking by acquiring database row-level locks with SKIP LOCKED during critical scheduling and zombie purge sections.",
+    "mechanism": "SchedulerJobRunner wraps task selection queries with with_row_locks(of=TI, skip_locked=True). Schedulers process only unlocked rows, preventing concurrent duplicate task enqueues or conflicting state transitions.",
+    "applicabilityConditions": [
+      "Multi-scheduler HA deployments",
+      "PostgreSQL, MySQL backends supporting SELECT FOR UPDATE SKIP LOCKED"
+    ],
+    "evidenceIds": [
+      "OBS-AIRFLOW-001",
+      "OBS-AIRFLOW-003",
+      "HIST-AIRFLOW-001"
+    ],
+    "commonKeywords": [
+      "relational",
+      "row-level",
+      "lock",
+      "fencing",
+      "multi-scheduler",
+      "clustering",
+      "airflow",
+      "coordinates"
+    ],
+    "uniqueKeywords": [
+      "reku_airflow_001",
+      "airflow",
+      "relational",
+      "row-level",
+      "lock",
+      "fencing",
+      "multi-scheduler"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "airflow",
+        "coordinates",
+        "multiple"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "schedulerjobrunner",
+        "wraps",
+        "task",
+        "selection",
+        "queries"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "SchedulerJobRunner wraps task selection queries with with_row_locks(of=TI, skip_locked=True). Schedulers process only unlocked rows, preventing concurrent duplicate task enqueues or conflicting state transitions. Known limits: SQLite does not support row-level locking or SKIP LOCKED; multi-scheduler mode cannot run safely against SQLite.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "airflow-core/src/airflow/jobs/scheduler_job_runner.py",
+      "lineRange": [
+        1202,
+        1250
+      ],
+      "queryOrCodeSnippet": "SchedulerJobRunner._critical_section_enqueue_task_instances queries schedulable task instances, checks pool slots and concurrency limits, transitions task states to QUEUED, and invokes executor.queue_command within the scheduler transaction.",
+      "symbol": "SchedulerJobRunner._critical_section_enqueue_task_instances"
+    },
+    "testProvenance": {
+      "filePath": "airflow-core/tests/unit/jobs/test_scheduler_job.py",
+      "testName": "test_heartbeat_timeout_scan_locks_rows",
+      "assertionSnippet": "Asserts that the heartbeat timeout purge query acquires row locks with skip_locked to prevent race conditions with concurrent worker status updates."
+    },
+    "historyProvenance": {
+      "commitHash": "d4a4d853e9d6f32b212d85d514666bd5848927cb",
+      "failureId": "HIST-AIRFLOW-001",
+      "prOrIssue": "https://github.com/apache/airflow/commit/d4a4d853e9d6f32b212d85d514666bd5848927cb",
+      "fixDescription": "Locked the heartbeat scan query with with_row_locks(of=TI, skip_locked=True) within the transaction, and added terminal state revalidation in the purge loop to skip tasks no longer in RUNNING/RESTARTING."
+    },
+    "historyChainIds": [
+      "CHAIN-AIRFLOW-001"
+    ]
+  },
+  {
+    "id": "REKU-AIRFLOW-002",
+    "repository": "airflow",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Task execution readiness is computed by evaluating upstream task instance states against declarative Trigger Rules within the relational DagRun state machine.",
+    "mechanism": "DagRun.update_state inspects upstream task instance states in the database. When upstream dependencies satisfy the operator's trigger_rule (e.g. ALL_SUCCESS, NONE_FAILED, ONE_SUCCESS), downstream tasks transition from NONE to SCHEDULED.",
+    "applicabilityConditions": [
+      "All Airflow DAG executions"
+    ],
+    "evidenceIds": [
+      "OBS-AIRFLOW-002",
+      "OBS-AIRFLOW-004",
+      "OBS-AIRFLOW-012"
+    ],
+    "commonKeywords": [
+      "topological",
+      "dag",
+      "scheduling",
+      "trigger",
+      "rule",
+      "evaluation",
+      "task",
+      "execution"
+    ],
+    "uniqueKeywords": [
+      "reku_airflow_002",
+      "airflow",
+      "topological",
+      "dag",
+      "scheduling",
+      "trigger",
+      "rule"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "task",
+        "execution",
+        "readiness"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "dagrun",
+        "update_state",
+        "inspects",
+        "upstream",
+        "task"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "DagRun.update_state inspects upstream task instance states in the database. When upstream dependencies satisfy the operator's trigger_rule (e.g. ALL_SUCCESS, NONE_FAILED, ONE_SUCCESS), downstream tasks transition from NONE to SCHEDULED. Known limits: Complex custom trigger rules must evaluate solely over upstream terminal state counts; cross-DAG dependencies require ExternalTaskSensor or Asset event triggers.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001"
+    ],
+    "linkedClaims": [
+      "CLM-001"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "airflow-core/src/airflow/jobs/scheduler_job_runner.py",
+      "lineRange": [
+        2935,
+        2980
+      ],
+      "queryOrCodeSnippet": "_schedule_dag_run calls dag_run.update_state to compute task readiness against TriggerRules, schedules newly ready task instances, and marks the DagRun as terminal if all tasks have completed.",
+      "symbol": "SchedulerJobRunner._schedule_dag_run"
+    }
+  },
+  {
+    "id": "REKU-AIRFLOW-003",
+    "repository": "airflow",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Distributed worker failures and dropped processes are detected by background scheduler zombie purge loops that evaluate expired worker heartbeats and transition stuck tasks to retry or failed states.",
+    "mechanism": "Running tasks periodically write heartbeat timestamps to task_instance.last_heartbeat_at. SchedulerJobRunner._find_and_purge_task_instances_without_heartbeats identifies tasks whose heartbeats have exceeded task_instance_heartbeat_timeout, acquires row locks, and calls handle_failure().",
+    "applicabilityConditions": [
+      "All task instances running on external executors (Celery, Kubernetes, Local)"
+    ],
+    "evidenceIds": [
+      "OBS-AIRFLOW-003",
+      "HIST-AIRFLOW-001"
+    ],
+    "commonKeywords": [
+      "worker",
+      "heartbeat",
+      "tracking",
+      "zombie",
+      "task",
+      "instance",
+      "purging",
+      "distributed"
+    ],
+    "uniqueKeywords": [
+      "reku_airflow_003",
+      "airflow",
+      "worker",
+      "heartbeat",
+      "tracking",
+      "zombie",
+      "task"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "distributed",
+        "worker",
+        "failures"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "running",
+        "tasks",
+        "periodically",
+        "write",
+        "heartbeat"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Running tasks periodically write heartbeat timestamps to task_instance.last_heartbeat_at. SchedulerJobRunner._find_and_purge_task_instances_without_heartbeats identifies tasks whose heartbeats have exceeded task_instance_heartbeat_timeout, acquires row locks, and calls handle_failure(). Known limits: Temporary network partitions between worker and metadata database can cause false-positive zombie kills if the worker continues executing code after losing heartbeat connectivity.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-005"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-005"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "airflow-core/src/airflow/jobs/scheduler_job_runner.py",
+      "lineRange": [
+        3625,
+        3670
+      ],
+      "queryOrCodeSnippet": "_find_and_purge_task_instances_without_heartbeats queries task instances in RUNNING/RESTARTING state with expired heartbeats using with_row_locks(of=TI, skip_locked=True) to prevent racing with concurrent worker completions.",
+      "symbol": "SchedulerJobRunner._find_and_purge_task_instances_without_heartbeats"
+    },
+    "testProvenance": {
+      "filePath": "airflow-core/tests/unit/jobs/test_scheduler_job.py",
+      "testName": "test_heartbeat_timeout_scan_locks_rows",
+      "assertionSnippet": "Asserts that the heartbeat timeout purge query acquires row locks with skip_locked to prevent race conditions with concurrent worker status updates."
+    },
+    "historyProvenance": {
+      "commitHash": "d4a4d853e9d6f32b212d85d514666bd5848927cb",
+      "failureId": "HIST-AIRFLOW-001",
+      "prOrIssue": "https://github.com/apache/airflow/commit/d4a4d853e9d6f32b212d85d514666bd5848927cb",
+      "fixDescription": "Locked the heartbeat scan query with with_row_locks(of=TI, skip_locked=True) within the transaction, and added terminal state revalidation in the purge loop to skip tasks no longer in RUNNING/RESTARTING."
+    },
+    "historyChainIds": [
+      "CHAIN-AIRFLOW-001"
+    ]
+  },
+  {
+    "id": "REKU-AIRFLOW-004",
+    "repository": "airflow",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Deferrable operators release worker execution slots during long-running IO waits by yielding execution to TriggererJobRunner, which resumes the task upon event completion.",
+    "mechanism": "When an operator calls self.defer(trigger=...), TaskInstance transitions to DEFERRED and records trigger_id in the database. TriggererJobRunner executes the trigger's async run() coroutine in an asyncio loop. Upon yielding a TriggerEvent, the triggerer writes the event to the database and re-queues the task instance.",
+    "applicabilityConditions": [
+      "All deferrable operators and sensors (BaseOperator with defer())"
+    ],
+    "evidenceIds": [
+      "OBS-AIRFLOW-007",
+      "OBS-AIRFLOW-008",
+      "OBS-AIRFLOW-009",
+      "HIST-AIRFLOW-002",
+      "HIST-AIRFLOW-003"
+    ],
+    "commonKeywords": [
+      "asynchronous",
+      "deferral",
+      "resource-decoupled",
+      "triggerer",
+      "engine",
+      "deferrable",
+      "operators",
+      "release"
+    ],
+    "uniqueKeywords": [
+      "reku_airflow_004",
+      "airflow",
+      "asynchronous",
+      "deferral",
+      "resource-decoupled",
+      "triggerer",
+      "engine"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "deferrable",
+        "operators",
+        "release"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "operator",
+        "calls",
+        "self",
+        "defer",
+        "trigger"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "When an operator calls self.defer(trigger=...), TaskInstance transitions to DEFERRED and records trigger_id in the database. TriggererJobRunner executes the trigger's async run() coroutine in an asyncio loop. Upon yielding a TriggerEvent, the triggerer writes the event to the database and re-queues the task instance. Known limits: Triggers must be written as strictly non-blocking asyncio coroutines; blocking synchronous calls inside triggers block the triggerer process.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-005",
+      "EKU-WDE-006"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-005",
+      "CLM-006"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "airflow-core/src/airflow/jobs/triggerer_job_runner.py",
+      "lineRange": [
+        747,
+        790
+      ],
+      "queryOrCodeSnippet": "load_triggers queries active Trigger rows assigned to this triggerer instance, instantiates the trigger coroutine, and attaches it to the asyncio event loop for concurrent asynchronous polling.",
+      "symbol": "TriggererJobRunner.load_triggers"
+    },
+    "testProvenance": {
+      "filePath": "airflow-core/tests/unit/models/test_trigger.py",
+      "testName": "test_submit_event_task_end_failed_respects_retries",
+      "assertionSnippet": "Asserts that TaskFailedEvent from triggers respects task retry eligibility and sets state to UP_FOR_RETRY when retries remain."
+    },
+    "historyProvenance": {
+      "commitHash": "dd1f84ab2034a14164e4d09310fba8fe1fa0395e",
+      "failureId": "HIST-AIRFLOW-002",
+      "prOrIssue": "https://github.com/apache/airflow/commit/dd1f84ab2034a14164e4d09310fba8fe1fa0395e",
+      "fixDescription": "Updated Trigger.submit_event to inspect is_eligible_to_retry() on TaskFailedEvent and transition the task instance to UP_FOR_RETRY rather than FAILED."
+    },
+    "historyChainIds": [
+      "CHAIN-AIRFLOW-002",
+      "CHAIN-AIRFLOW-003"
+    ]
+  },
+  {
+    "id": "REKU-AIRFLOW-005",
+    "repository": "airflow",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Cross-task data dependencies are decoupled via transactional XCom metadata entries, with automatic blob storage offloading for large payloads.",
+    "mechanism": "Operators push return values to XCom. BaseXCom serializes and stores small values directly in the xcom database table. Custom XCom backends intercept large payloads, upload them to object storage (S3, GCS), and persist only storage URIs in the database.",
+    "applicabilityConditions": [
+      "Tasks passing inputs/outputs across DAG task nodes"
+    ],
+    "evidenceIds": [
+      "OBS-AIRFLOW-004",
+      "OBS-AIRFLOW-010"
+    ],
+    "commonKeywords": [
+      "database-mediated",
+      "xcom",
+      "object",
+      "storage",
+      "state",
+      "exchange",
+      "cross-task",
+      "data"
+    ],
+    "uniqueKeywords": [
+      "reku_airflow_005",
+      "airflow",
+      "database-mediated",
+      "xcom",
+      "object",
+      "storage",
+      "state"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "cross-task",
+        "data",
+        "dependencies"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "operators",
+        "push",
+        "return",
+        "values",
+        "xcom"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Operators push return values to XCom. BaseXCom serializes and stores small values directly in the xcom database table. Custom XCom backends intercept large payloads, upload them to object storage (S3, GCS), and persist only storage URIs in the database. Known limits: Default database XCom backend is limited by relational database column sizes; large datasets must use custom blob storage XCom backends.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-004",
+      "EKU-WDE-008",
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-004",
+      "CLM-008",
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "airflow-core/src/airflow/models/dagrun.py",
+      "lineRange": [
+        1252,
+        1300
+      ],
+      "queryOrCodeSnippet": "DagRun.update_state evaluates task instances in the DAG run, computes whether unfinished tasks can still execute, expands dynamic mapped tasks, and transitions the DagRun state to SUCCESS or FAILED.",
+      "symbol": "DagRun.update_state"
+    }
+  },
+  {
+    "id": "REKU-AIRFLOW-006",
+    "repository": "airflow",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Runtime dynamic task fan-out generates N mapped task instances from upstream collections via batched database insertion with primed parent relationships.",
+    "mechanism": "TaskMap.expand_mapped_task resolves upstream XCom array lengths, creates mapped TaskInstance rows with map_index 0..N-1, primes the dag_run relationship in memory, and persists them via batched session add/flush in a constant number of database queries.",
+    "applicabilityConditions": [
+      "Mapped operators using .expand()"
+    ],
+    "evidenceIds": [
+      "OBS-AIRFLOW-010",
+      "HIST-AIRFLOW-004"
+    ],
+    "commonKeywords": [
+      "dynamic",
+      "task",
+      "mapping",
+      "fan-out",
+      "batched",
+      "expansion",
+      "runtime",
+      "generates"
+    ],
+    "uniqueKeywords": [
+      "reku_airflow_006",
+      "airflow",
+      "dynamic",
+      "task",
+      "mapping",
+      "fan-out",
+      "batched"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "runtime",
+        "dynamic",
+        "task"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "taskmap",
+        "expand_mapped_task",
+        "resolves",
+        "upstream",
+        "xcom"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "TaskMap.expand_mapped_task resolves upstream XCom array lengths, creates mapped TaskInstance rows with map_index 0..N-1, primes the dag_run relationship in memory, and persists them via batched session add/flush in a constant number of database queries. Known limits: Maximum map length is bounded by max_map_length configuration (default 1024) to prevent database resource exhaustion.",
+    "linkedDomainEkus": [
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "airflow-core/src/airflow/models/taskmap.py",
+      "lineRange": [
+        70,
+        115
+      ],
+      "queryOrCodeSnippet": "TaskMap.expand_mapped_task resolves upstream XCom return values, creates N mapped TaskInstance records with map_index 0..N-1, primes the dag_run relationship, and persists them via batched session add/flush.",
+      "symbol": "TaskMap.expand_mapped_task"
+    },
+    "testProvenance": {
+      "filePath": "airflow-core/tests/unit/models/test_taskinstance.py",
+      "testName": "test_map_xcom_wide_batched_expand",
+      "assertionSnippet": "Asserts that TaskMap.expand_mapped_task creates wide mapped task instances in a constant number of database queries with primed dag_run relationships."
+    },
+    "historyProvenance": {
+      "commitHash": "cad6220034e87c586eb87e14b5a75f4b82984fd0",
+      "failureId": "HIST-AIRFLOW-004",
+      "prOrIssue": "https://github.com/apache/airflow/commit/cad6220034e87c586eb87e14b5a75f4b82984fd0",
+      "fixDescription": "Replaced per-index session.merge() with batched session.add_all() / flush() and primed the dag_run relationship across all mapped instances in a single query."
+    },
+    "historyChainIds": [
+      "CHAIN-AIRFLOW-004"
+    ]
+  },
+  {
+    "id": "REKU-AIRFLOW-007",
+    "repository": "airflow",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Scheduling logic is decoupled from execution infrastructure via BaseExecutor abstractions, enabling dispatch to Celery queues, Kubernetes pods, or local processes.",
+    "mechanism": "SchedulerJobRunner queues command strings to BaseExecutor. The executor buffers tasks and invokes trigger_tasks() to submit commands to Celery workers, Kubernetes API pod spawners, or local workers, returning execution event status to the scheduler.",
+    "applicabilityConditions": [
+      "All task instance executions across Airflow clusters"
+    ],
+    "evidenceIds": [
+      "OBS-AIRFLOW-001",
+      "OBS-AIRFLOW-011"
+    ],
+    "commonKeywords": [
+      "pluggable",
+      "executor",
+      "architecture",
+      "heterogeneous",
+      "workload",
+      "dispatch",
+      "scheduling",
+      "logic"
+    ],
+    "uniqueKeywords": [
+      "reku_airflow_007",
+      "airflow",
+      "pluggable",
+      "executor",
+      "architecture",
+      "heterogeneous",
+      "workload"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "scheduling",
+        "logic",
+        "decoupled"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "schedulerjobrunner",
+        "queues",
+        "command",
+        "strings",
+        "baseexecutor"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "SchedulerJobRunner queues command strings to BaseExecutor. The executor buffers tasks and invokes trigger_tasks() to submit commands to Celery workers, Kubernetes API pod spawners, or local workers, returning execution event status to the scheduler. Known limits: Executors provide at-least-once delivery; tasks may be restarted or re-dispatched upon worker host crashes.",
+    "linkedDomainEkus": [
+      "EKU-WDE-003",
+      "EKU-WDE-004"
+    ],
+    "linkedClaims": [
+      "CLM-003",
+      "CLM-004"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "airflow-core/src/airflow/jobs/scheduler_job_runner.py",
+      "lineRange": [
+        1202,
+        1250
+      ],
+      "queryOrCodeSnippet": "SchedulerJobRunner._critical_section_enqueue_task_instances queries schedulable task instances, checks pool slots and concurrency limits, transitions task states to QUEUED, and invokes executor.queue_command within the scheduler transaction.",
+      "symbol": "SchedulerJobRunner._critical_section_enqueue_task_instances"
+    }
+  },
+  {
+    "id": "REKU-AIRFLOW-008",
+    "repository": "airflow",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Task failures evaluate retry eligibility against max_tries; eligible tasks transition to UP_FOR_RETRY with exponential backoff delay timestamps, preventing premature terminal failure states.",
+    "mechanism": "TaskInstance.handle_failure evaluates is_eligible_to_retry(). If true, state is transitioned to UP_FOR_RETRY and next_retry_dttm is calculated using retry_delay and exponential_backoff settings. Schedulers ignore UP_FOR_RETRY tasks until the delay timestamp elapses.",
+    "applicabilityConditions": [
+      "Failed task instances where try_number < max_tries"
+    ],
+    "evidenceIds": [
+      "OBS-AIRFLOW-006",
+      "HIST-AIRFLOW-002",
+      "HIST-AIRFLOW-005"
+    ],
+    "commonKeywords": [
+      "state",
+      "machine",
+      "retry",
+      "eligibility",
+      "backoff",
+      "scheduling",
+      "task",
+      "failures"
+    ],
+    "uniqueKeywords": [
+      "reku_airflow_008",
+      "airflow",
+      "state",
+      "machine",
+      "retry",
+      "eligibility",
+      "backoff"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "task",
+        "failures",
+        "evaluate"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "taskinstance",
+        "handle_failure",
+        "evaluates",
+        "is_eligible_to_retry",
+        "true"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "TaskInstance.handle_failure evaluates is_eligible_to_retry(). If true, state is transitioned to UP_FOR_RETRY and next_retry_dttm is calculated using retry_delay and exponential_backoff settings. Schedulers ignore UP_FOR_RETRY tasks until the delay timestamp elapses. Known limits: If retry_delay exceeds max_retry_delay, the delay is capped; tasks set with retries=0 fail immediately on first error.",
+    "linkedDomainEkus": [
+      "EKU-WDE-005",
+      "EKU-WDE-007",
+      "EKU-WDE-008"
+    ],
+    "linkedClaims": [
+      "CLM-005",
+      "CLM-007",
+      "CLM-008"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "airflow-core/src/airflow/models/taskinstance.py",
+      "lineRange": [
+        1962,
+        2010
+      ],
+      "queryOrCodeSnippet": "TaskInstance.handle_failure checks is_eligible_to_retry(). If retries remain, state is set to UP_FOR_RETRY with end_date and next retry timestamp; otherwise, state becomes FAILED and failure callbacks/emails are scheduled.",
+      "symbol": "TaskInstance.handle_failure"
+    },
+    "testProvenance": {
+      "filePath": "airflow-core/tests/unit/models/test_trigger.py",
+      "testName": "test_submit_event_task_end_failed_respects_retries",
+      "assertionSnippet": "Asserts that TaskFailedEvent from triggers respects task retry eligibility and sets state to UP_FOR_RETRY when retries remain."
+    },
+    "historyProvenance": {
+      "commitHash": "dd1f84ab2034a14164e4d09310fba8fe1fa0395e",
+      "failureId": "HIST-AIRFLOW-002",
+      "prOrIssue": "https://github.com/apache/airflow/commit/dd1f84ab2034a14164e4d09310fba8fe1fa0395e",
+      "fixDescription": "Updated Trigger.submit_event to inspect is_eligible_to_retry() on TaskFailedEvent and transition the task instance to UP_FOR_RETRY rather than FAILED."
+    },
+    "historyChainIds": [
+      "CHAIN-AIRFLOW-002",
+      "CHAIN-AIRFLOW-005"
+    ]
+  },
+  {
+    "id": "REKU-AIRFLOW-009",
+    "repository": "airflow",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "FAILURE_RECOVERY_MECHANISM",
+    "claim": "Scheduler zombie purge scans must acquire database row locks on active tasks and re-check committed state before applying failure transitions to prevent clobbering legitimate worker completions.",
+    "mechanism": "SchedulerJobRunner locks the candidate TI rows with with_row_locks(of=TI, skip_locked=True) during the heartbeat scan and revalidates row state in the purge loop, skipping tasks that have transitioned to SUCCESS or FAILED.",
+    "applicabilityConditions": [
+      "Heartbeat timeout zombie purges in SchedulerJobRunner"
+    ],
+    "evidenceIds": [
+      "OBS-AIRFLOW-003",
+      "OBS-AIRFLOW-006",
+      "HIST-AIRFLOW-001"
+    ],
+    "commonKeywords": [
+      "race",
+      "condition",
+      "fencing",
+      "between",
+      "worker",
+      "completion",
+      "scheduler",
+      "zombie"
+    ],
+    "uniqueKeywords": [
+      "reku_airflow_009",
+      "airflow",
+      "race",
+      "condition",
+      "fencing",
+      "between",
+      "worker"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "scheduler",
+        "zombie",
+        "purge"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "schedulerjobrunner",
+        "locks",
+        "candidate",
+        "rows",
+        "with_row_locks"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "SchedulerJobRunner locks the candidate TI rows with with_row_locks(of=TI, skip_locked=True) during the heartbeat scan and revalidates row state in the purge loop, skipping tasks that have transitioned to SUCCESS or FAILED. Known limits: Requires database transaction isolation and row locking support in the underlying database dialect.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-003",
+      "EKU-WDE-006",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-003",
+      "CLM-006",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "airflow-core/src/airflow/jobs/scheduler_job_runner.py",
+      "lineRange": [
+        3625,
+        3670
+      ],
+      "queryOrCodeSnippet": "_find_and_purge_task_instances_without_heartbeats queries task instances in RUNNING/RESTARTING state with expired heartbeats using with_row_locks(of=TI, skip_locked=True) to prevent racing with concurrent worker completions.",
+      "symbol": "SchedulerJobRunner._find_and_purge_task_instances_without_heartbeats"
+    },
+    "testProvenance": {
+      "filePath": "airflow-core/tests/unit/jobs/test_scheduler_job.py",
+      "testName": "test_heartbeat_timeout_scan_locks_rows",
+      "assertionSnippet": "Asserts that the heartbeat timeout purge query acquires row locks with skip_locked to prevent race conditions with concurrent worker status updates."
+    },
+    "historyProvenance": {
+      "commitHash": "d4a4d853e9d6f32b212d85d514666bd5848927cb",
+      "failureId": "HIST-AIRFLOW-001",
+      "prOrIssue": "https://github.com/apache/airflow/commit/d4a4d853e9d6f32b212d85d514666bd5848927cb",
+      "fixDescription": "Locked the heartbeat scan query with with_row_locks(of=TI, skip_locked=True) within the transaction, and added terminal state revalidation in the purge loop to skip tasks no longer in RUNNING/RESTARTING."
+    },
+    "historyChainIds": [
+      "CHAIN-AIRFLOW-001"
+    ]
+  }
+]

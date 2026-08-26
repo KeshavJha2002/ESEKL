@@ -1,0 +1,837 @@
+[
+  {
+    "id": "REKU-HATCHET-001",
+    "repository": "hatchet",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Hatchet executes multi-step workflows as directed acyclic graphs where step results are streamed over gRPC, and overall workflow status commits are strictly authored by the orchestrator task.",
+    "mechanism": "Dispatcher coordinates step runs across workers. In operator DAGs, child tasks report step-level completions, but only the orchestrator evaluates final status and triggers downstream steps.",
+    "applicabilityConditions": [
+      "All Hatchet workflow and operator DAG executions"
+    ],
+    "evidenceIds": [
+      "OBS-HATCHET-001",
+      "OBS-HATCHET-002",
+      "HIST-HATCHET-001"
+    ],
+    "commonKeywords": [
+      "distributed",
+      "workflow",
+      "dag",
+      "execution",
+      "orchestrator",
+      "status",
+      "authority",
+      "hatchet"
+    ],
+    "uniqueKeywords": [
+      "reku_hatchet_001",
+      "hatchet",
+      "distributed",
+      "workflow",
+      "dag",
+      "execution",
+      "orchestrator"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "hatchet",
+        "executes",
+        "multi-step"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "dispatcher",
+        "coordinates",
+        "step",
+        "runs",
+        "across"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Dispatcher coordinates step runs across workers. In operator DAGs, child tasks report step-level completions, but only the orchestrator evaluates final status and triggers downstream steps. Known limits: DAG steps must return JSON-serializable outputs for downstream data passing.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-003"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-003"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "internal/services/dispatcher/dispatcher.go",
+      "lineRange": [
+        35,
+        80
+      ],
+      "queryOrCodeSnippet": "Dispatcher coordinates gRPC connections to worker agents, registers active worker pools, and handles graceful worker disconnections.",
+      "symbol": "Dispatcher"
+    },
+    "testProvenance": {
+      "filePath": "pkg/repository/olap_operator_dag_test.go",
+      "testName": "TestOperatorDAG_StatusComesFromOrchestratorNotChildren",
+      "assertionSnippet": "Asserts that operator DAG status transitions originate solely from orchestrator events rather than child tasks."
+    },
+    "historyProvenance": {
+      "commitHash": "6affaadd8f33f108ffd8acdeb6caef53065ba0df",
+      "failureId": "HIST-HATCHET-001",
+      "prOrIssue": "https://github.com/hatchet-dev/hatchet/commit/6affaadd8f33f108ffd8acdeb6caef53065ba0df",
+      "fixDescription": "Restricted DAG status authority strictly to the orchestrator task and serialized updates via ordering constraints."
+    },
+    "historyChainIds": [
+      "CHAIN-HATCHET-001"
+    ]
+  },
+  {
+    "id": "REKU-HATCHET-002",
+    "repository": "hatchet",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Hatchet manages worker execution capacity in server memory as slot pools, matching task action constraints against worker labels and rotating among equal-affinity workers to prevent hotspot starvation.",
+    "mechanism": "Scheduler maintains in-memory slot pools by worker ID, ranks workers by label match scores, and rotates round-robin offsets on ties before pushing tasks over gRPC streams.",
+    "applicabilityConditions": [
+      "All task and step scheduling in pkg/scheduling/v1"
+    ],
+    "evidenceIds": [
+      "OBS-HATCHET-005",
+      "OBS-HATCHET-006",
+      "HIST-HATCHET-004"
+    ],
+    "commonKeywords": [
+      "in-memory",
+      "slot",
+      "pool",
+      "scheduling",
+      "label",
+      "affinity",
+      "fair",
+      "rotation"
+    ],
+    "uniqueKeywords": [
+      "reku_hatchet_002",
+      "hatchet",
+      "in-memory",
+      "slot",
+      "pool",
+      "scheduling",
+      "label"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "hatchet",
+        "manages",
+        "worker"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "scheduler",
+        "maintains",
+        "in-memory",
+        "slot",
+        "pools"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Scheduler maintains in-memory slot pools by worker ID, ranks workers by label match scores, and rotates round-robin offsets on ties before pushing tasks over gRPC streams. Known limits: Slot pool state is maintained in server memory and rebuilt upon dispatcher reconnect.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "pkg/scheduling/v1/scheduler.go",
+      "lineRange": [
+        50,
+        95
+      ],
+      "queryOrCodeSnippet": "Scheduler evaluates worker slot availability, matches task action requirements against worker labels, and assigns execution slots.",
+      "symbol": "Scheduler"
+    },
+    "testProvenance": {
+      "filePath": "pkg/scheduling/v1/scheduler_test.go",
+      "testName": "TestScheduler_AssignSingleton_EqualLabelsRoundRobin",
+      "assertionSnippet": "Asserts that scheduler round-robins task assignments across workers having equal label affinity scores."
+    },
+    "historyProvenance": {
+      "commitHash": "4253c86ca3a763a6065b4134a6017a630b610061",
+      "failureId": "HIST-HATCHET-004",
+      "prOrIssue": "https://github.com/hatchet-dev/hatchet/commit/4253c86ca3a763a6065b4134a6017a630b610061",
+      "fixDescription": "Rotated the highest-ranked tied worker group to distribute tasks fairly across equal-affinity workers."
+    },
+    "historyChainIds": [
+      "CHAIN-HATCHET-004"
+    ]
+  },
+  {
+    "id": "REKU-HATCHET-003",
+    "repository": "hatchet",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Workers maintain persistent bidirectional gRPC streams to the Hatchet server, receiving assigned actions directly into memory buffers without database polling overhead.",
+    "mechanism": "DispatcherServer handles worker registration streams, streams ActionEvents, accepts TaskAcks, and propagates cancellation signals immediately upon step timeouts.",
+    "applicabilityConditions": [
+      "All worker-to-server communications in Hatchet"
+    ],
+    "evidenceIds": [
+      "OBS-HATCHET-001",
+      "OBS-HATCHET-002",
+      "OBS-HATCHET-011"
+    ],
+    "commonKeywords": [
+      "bidirectional",
+      "grpc",
+      "worker",
+      "streaming",
+      "real-time",
+      "action",
+      "dispatch",
+      "workers"
+    ],
+    "uniqueKeywords": [
+      "reku_hatchet_003",
+      "hatchet",
+      "bidirectional",
+      "grpc",
+      "worker",
+      "streaming",
+      "real-time"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "workers",
+        "maintain",
+        "persistent"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "dispatcherserver",
+        "handles",
+        "worker",
+        "registration",
+        "streams"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "DispatcherServer handles worker registration streams, streams ActionEvents, accepts TaskAcks, and propagates cancellation signals immediately upon step timeouts. Known limits: Requires persistent TCP connectivity between worker agents and the Hatchet dispatcher.",
+    "linkedDomainEkus": [
+      "EKU-WDE-003",
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-003",
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "internal/services/dispatcher/dispatcher.go",
+      "lineRange": [
+        35,
+        80
+      ],
+      "queryOrCodeSnippet": "Dispatcher coordinates gRPC connections to worker agents, registers active worker pools, and handles graceful worker disconnections.",
+      "symbol": "Dispatcher"
+    }
+  },
+  {
+    "id": "REKU-HATCHET-004",
+    "repository": "hatchet",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Workflows can suspend and await external user events (ctx.wait_for_event), matched in PostgreSQL with strict workflow run and step run scope isolation to prevent cross-workflow event delivery.",
+    "mechanism": "DurableEvents logs events and evaluates matching queries filtered by tenant_id, workflow_run_id, and step_run_id, resuming suspended step runs upon match.",
+    "applicabilityConditions": [
+      "All durable user event listeners and webhook wakeups"
+    ],
+    "evidenceIds": [
+      "OBS-HATCHET-003",
+      "OBS-HATCHET-012",
+      "HIST-HATCHET-002"
+    ],
+    "commonKeywords": [
+      "durable",
+      "event",
+      "log",
+      "matching",
+      "hierarchical",
+      "scope",
+      "isolation",
+      "workflows"
+    ],
+    "uniqueKeywords": [
+      "reku_hatchet_004",
+      "hatchet",
+      "durable",
+      "event",
+      "log",
+      "matching",
+      "hierarchical"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "workflows",
+        "suspend",
+        "await"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "durableevents",
+        "logs",
+        "events",
+        "evaluates",
+        "matching"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "DurableEvents logs events and evaluates matching queries filtered by tenant_id, workflow_run_id, and step_run_id, resuming suspended step runs upon match. Known limits: Event listeners expire if no matching event is published within configured timeout window.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-004",
+      "EKU-WDE-005",
+      "EKU-WDE-006"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-004",
+      "CLM-005",
+      "CLM-006"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "internal/services/ticker/ticker.go",
+      "lineRange": [
+        30,
+        75
+      ],
+      "queryOrCodeSnippet": "Ticker runs periodic tick loops to evaluate cron triggers, check worker lease heartbeats, and evict timed-out step runs.",
+      "symbol": "Ticker"
+    },
+    "testProvenance": {
+      "filePath": "pkg/repository/match_scope_test.go",
+      "testName": "TestDurableUserEventScopesIsolateLiveMatches",
+      "assertionSnippet": "Asserts that durable user event matches are strictly isolated to their target workflow and step run scopes."
+    },
+    "historyProvenance": {
+      "commitHash": "9778b6cc18e941865638c066f2fc56efc1215271",
+      "failureId": "HIST-HATCHET-002",
+      "prOrIssue": "https://github.com/hatchet-dev/hatchet/commit/9778b6cc18e941865638c066f2fc56efc1215271",
+      "fixDescription": "Added explicit workflow run and step run scope identifiers to durable event matching queries."
+    },
+    "historyChainIds": [
+      "CHAIN-HATCHET-002"
+    ]
+  },
+  {
+    "id": "REKU-HATCHET-005",
+    "repository": "hatchet",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Hatchet enforces group-level and tenant-level concurrency limits with pluggable resolution strategies (CancelInProgress, GroupRoundRobin, CancelNewest), consolidating single-task gates to eliminate double locking.",
+    "mechanism": "ConcurrencyController tracks active runs per concurrency key; Strategy preempts lowest-priority running tasks or queues incoming tasks according to policy.",
+    "applicabilityConditions": [
+      "All concurrency-constrained workflows and tasks"
+    ],
+    "evidenceIds": [
+      "OBS-HATCHET-007",
+      "OBS-HATCHET-008",
+      "HIST-HATCHET-005"
+    ],
+    "commonKeywords": [
+      "pluggable",
+      "workflow",
+      "concurrency",
+      "strategies",
+      "slot",
+      "fencing",
+      "hatchet",
+      "enforces"
+    ],
+    "uniqueKeywords": [
+      "reku_hatchet_005",
+      "hatchet",
+      "pluggable",
+      "workflow",
+      "concurrency",
+      "strategies",
+      "slot"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "hatchet",
+        "enforces",
+        "group-level"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "concurrencycontroller",
+        "tracks",
+        "active",
+        "runs",
+        "per"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "ConcurrencyController tracks active runs per concurrency key; Strategy preempts lowest-priority running tasks or queues incoming tasks according to policy. Known limits: CancelInProgress requires tasks to handle graceful cancellation signals.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002"
+    ],
+    "linkedClaims": [
+      "CLM-002"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "pkg/scheduling/v1/concurrency.go",
+      "lineRange": [
+        35,
+        80
+      ],
+      "queryOrCodeSnippet": "Concurrency manages slot counts per concurrency group, evaluating whether new workflow runs can execute immediately or must queue.",
+      "symbol": "Concurrency"
+    },
+    "testProvenance": {
+      "filePath": "pkg/repository/workflow_checksum_test.go",
+      "testName": "TestMergeWorkflowConcurrencyOntoSingleTask",
+      "assertionSnippet": "Asserts that single-task workflow concurrency configuration merges directly onto the task definition."
+    },
+    "historyProvenance": {
+      "commitHash": "ca5bb59298eee9cddd928bf4f5b382fe7f3011d5",
+      "failureId": "HIST-HATCHET-005",
+      "prOrIssue": "https://github.com/hatchet-dev/hatchet/commit/ca5bb59298eee9cddd928bf4f5b382fe7f3011d5",
+      "fixDescription": "Merged workflow-level concurrency limits directly onto the task definition for single-task workflows."
+    },
+    "historyChainIds": [
+      "CHAIN-HATCHET-005"
+    ]
+  },
+  {
+    "id": "REKU-HATCHET-006",
+    "repository": "hatchet",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Child workflows and DAG steps use deterministic namespaced keys to guarantee idempotent re-execution while preventing collision between internal step runs and user-spawned workflows.",
+    "mechanism": "Ids module generates child spawn keys incorporating parent workflow ID, step index, and spawn namespace prefix, preventing duplicate suppression across distinct steps.",
+    "applicabilityConditions": [
+      "Child workflow spawns and DAG step re-runs"
+    ],
+    "evidenceIds": [
+      "OBS-HATCHET-010",
+      "HIST-HATCHET-003"
+    ],
+    "commonKeywords": [
+      "child",
+      "spawn",
+      "key",
+      "namespacing",
+      "deterministic",
+      "dag",
+      "idempotency",
+      "workflows"
+    ],
+    "uniqueKeywords": [
+      "reku_hatchet_006",
+      "hatchet",
+      "child",
+      "spawn",
+      "key",
+      "namespacing",
+      "deterministic"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "child",
+        "workflows",
+        "dag"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "ids",
+        "module",
+        "generates",
+        "child",
+        "spawn"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Ids module generates child spawn keys incorporating parent workflow ID, step index, and spawn namespace prefix, preventing duplicate suppression across distinct steps. Known limits: Spawn keys must remain deterministic across replay passes.",
+    "linkedDomainEkus": [
+      "EKU-WDE-004",
+      "EKU-WDE-008"
+    ],
+    "linkedClaims": [
+      "CLM-004",
+      "CLM-008"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "pkg/worker/workflow.go",
+      "lineRange": [
+        40,
+        85
+      ],
+      "queryOrCodeSnippet": "Workflow provides developer API for declaring workflow DAGs, registering step functions, defining retry policies, and specifying input schemas.",
+      "symbol": "Workflow"
+    },
+    "testProvenance": {
+      "filePath": "pkg/repository/ids_test.go",
+      "testName": "Test_childSpawnKeyNamespacesDagStepsFromUserSpawns",
+      "assertionSnippet": "Asserts that child spawn key generator namespaces DAG step child workflows distinctly from user child spawns."
+    },
+    "historyProvenance": {
+      "commitHash": "c3f6bca1640c0139e1e04583a2c94557083d2a37",
+      "failureId": "HIST-HATCHET-003",
+      "prOrIssue": "https://github.com/hatchet-dev/hatchet/commit/c3f6bca1640c0139e1e04583a2c94557083d2a37",
+      "fixDescription": "Namespaced child spawn keys using distinct prefixes for internal DAG steps versus user-spawned workflows."
+    },
+    "historyChainIds": [
+      "CHAIN-HATCHET-003"
+    ]
+  },
+  {
+    "id": "REKU-HATCHET-007",
+    "repository": "hatchet",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "The Ticker daemon evaluates cron triggers and monitors worker lease heartbeats, evicting dead workers and rescheduling orphaned step runs.",
+    "mechanism": "Ticker evaluates cron expressions via cron parser, inserts scheduled workflow triggers into PostgreSQL, and queries expired worker leases to initiate task reassignment.",
+    "applicabilityConditions": [
+      "Cron workflows and worker liveness tracking"
+    ],
+    "evidenceIds": [
+      "OBS-HATCHET-003",
+      "OBS-HATCHET-004",
+      "OBS-HATCHET-009"
+    ],
+    "commonKeywords": [
+      "ticker",
+      "daemon",
+      "cron",
+      "scheduling",
+      "distributed",
+      "lease",
+      "sweeping",
+      "evaluates"
+    ],
+    "uniqueKeywords": [
+      "reku_hatchet_007",
+      "hatchet",
+      "ticker",
+      "daemon",
+      "cron",
+      "scheduling",
+      "distributed"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "ticker",
+        "daemon",
+        "evaluates"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "ticker",
+        "evaluates",
+        "cron",
+        "expressions",
+        "via"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Ticker evaluates cron expressions via cron parser, inserts scheduled workflow triggers into PostgreSQL, and queries expired worker leases to initiate task reassignment. Known limits: Leader election via PostgreSQL advisory locks ensures only one active ticker evaluates crons at a time.",
+    "linkedDomainEkus": [
+      "EKU-WDE-005",
+      "EKU-WDE-007"
+    ],
+    "linkedClaims": [
+      "CLM-005",
+      "CLM-007"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "internal/services/ticker/ticker.go",
+      "lineRange": [
+        30,
+        75
+      ],
+      "queryOrCodeSnippet": "Ticker runs periodic tick loops to evaluate cron triggers, check worker lease heartbeats, and evict timed-out step runs.",
+      "symbol": "Ticker"
+    }
+  },
+  {
+    "id": "REKU-HATCHET-008",
+    "repository": "hatchet",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Worker SDKs execute step functions inside wrapped context objects that continuously send heartbeat pings to the dispatcher over the gRPC control stream.",
+    "mechanism": "Worker context launches a background goroutine sending Heartbeat messages every N seconds, extending task lease in LeaseManager until step completion.",
+    "applicabilityConditions": [
+      "All worker action executions in Go, Python, and TypeScript SDKs"
+    ],
+    "evidenceIds": [
+      "OBS-HATCHET-009",
+      "OBS-HATCHET-011"
+    ],
+    "commonKeywords": [
+      "worker",
+      "sdk",
+      "context",
+      "step",
+      "heartbeat",
+      "propagation",
+      "sdks",
+      "execute"
+    ],
+    "uniqueKeywords": [
+      "reku_hatchet_008",
+      "hatchet",
+      "worker",
+      "sdk",
+      "context",
+      "step",
+      "heartbeat"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "worker",
+        "sdks",
+        "execute"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "worker",
+        "context",
+        "launches",
+        "background",
+        "goroutine"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Worker context launches a background goroutine sending Heartbeat messages every N seconds, extending task lease in LeaseManager until step completion. Known limits: If worker process hangs completely without yielding to Go runtime, heartbeat ping stops and task times out.",
+    "linkedDomainEkus": [
+      "EKU-WDE-007"
+    ],
+    "linkedClaims": [
+      "CLM-007"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "pkg/scheduling/v1/lease_manager.go",
+      "lineRange": [
+        25,
+        70
+      ],
+      "queryOrCodeSnippet": "LeaseManager tracks active worker leases, validating incoming heartbeat pings and marking expired worker nodes as unhealthy.",
+      "symbol": "LeaseManager"
+    }
+  },
+  {
+    "id": "REKU-HATCHET-009",
+    "repository": "hatchet",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Tenants possess isolated rate limits and queue fences, preventing single-tenant execution bursts from consuming global worker fleet capacity.",
+    "mechanism": "Scheduler evaluates tenant rate limit buckets before assigning slots, deferring task dispatches when tenant token buckets are depleted.",
+    "applicabilityConditions": [
+      "Multi-tenant Hatchet clusters"
+    ],
+    "evidenceIds": [
+      "OBS-HATCHET-005",
+      "OBS-HATCHET-007"
+    ],
+    "commonKeywords": [
+      "multi-tenant",
+      "task",
+      "queues",
+      "rate",
+      "limiting",
+      "fences",
+      "tenants",
+      "possess"
+    ],
+    "uniqueKeywords": [
+      "reku_hatchet_009",
+      "hatchet",
+      "multi-tenant",
+      "task",
+      "queues",
+      "rate",
+      "limiting"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "tenants",
+        "possess",
+        "isolated"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "scheduler",
+        "evaluates",
+        "tenant",
+        "rate",
+        "limit"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Scheduler evaluates tenant rate limit buckets before assigning slots, deferring task dispatches when tenant token buckets are depleted. Known limits: Rate limits apply per tenant or per action type.",
+    "linkedDomainEkus": [
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "pkg/scheduling/v1/scheduler.go",
+      "lineRange": [
+        50,
+        95
+      ],
+      "queryOrCodeSnippet": "Scheduler evaluates worker slot availability, matches task action requirements against worker labels, and assigns execution slots.",
+      "symbol": "Scheduler"
+    }
+  }
+]

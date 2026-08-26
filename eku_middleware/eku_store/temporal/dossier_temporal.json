@@ -1,0 +1,42 @@
+{
+  "repo": "temporal",
+  "targetRepo": "temporalio/temporal",
+  "commit": "30e0884ac084ecb923b717c3f3f446f72d615e4d",
+  "domain": "workflow_durable_execution",
+  "architectureSummary": {
+    "systemRole": "Temporal is an open-source, highly scalable durable execution platform guaranteeing reliable workflow execution across distributed infrastructure.",
+    "coreSubsystems": [
+      {
+        "name": "Frontend Service",
+        "package": "service/frontend",
+        "role": "Stateless gRPC API gateway handling routing, authorization, and rate limiting."
+      },
+      {
+        "name": "History Service",
+        "package": "service/history",
+        "role": "Stateful core maintaining workflow state machines, mutable state caching, shard lease fencing, and outbox task generation."
+      },
+      {
+        "name": "Matching Service",
+        "package": "service/matching",
+        "role": "Task queue matching engine coordinating synchronous and asynchronous worker dispatch."
+      },
+      {
+        "name": "System Worker",
+        "package": "service/worker",
+        "role": "Background workers executing parent close policies, batch operations, and system maintenance."
+      },
+      {
+        "name": "Persistence Layer",
+        "package": "common/persistence",
+        "role": "Pluggable relational/NoSQL storage layer with optimistic concurrency control."
+      }
+    ]
+  },
+  "evidenceCounts": {
+    "observations": 10,
+    "historicalFailures": 8,
+    "historyChains": 3,
+    "repoEkus": 10
+  }
+}

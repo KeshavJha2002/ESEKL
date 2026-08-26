@@ -1,380 +1,94 @@
 {
-  "schemaVersion": 1,
-  "generatedAt": "2026-08-24T17:15:38.918741+00:00",
-  "purpose": "Locks raw factory repository states used to derive the static ESEKL queue EKUs before deleting local clones to free disk.",
-  "factoryPath": "factory/",
+  "generated_at": "2026-08-27T00:00:00.000Z",
   "corpusManifest": "eku_store/corpus_manifest.json",
-  "releaseModeValidator": "python3 analyzer/validate_evidence_ledger.py --allow-missing-factory",
-  "fullSourceValidatorRequiresFactory": true,
-  "notes": [
-    "Published MCP/runtime packages do not need factory/. They need eku_store/ plus eku_middleware/.",
-    "Full source-span, test-file, and git-commit validation requires rehydrating factory/ at the locked commits.",
-    "dirtyEntries are local agent metadata unless explicitly noted; they were not promoted into EKUs.",
-    "validatedSourceCommit is the exact local checkout commit used for source-span/hash validation before factory/ deletion; use it for source permalinks and full validator rehydration."
-  ],
   "repositories": [
     {
-      "repo": "artemis",
-      "targetRepo": "apache/activemq-artemis",
-      "remote": "https://github.com/apache/activemq-artemis.git",
-      "manifestCommit": "ded1b54c538de60b4df8f4953c5e1979ac64b5db",
-      "checkedOutCommit": "b3b1e8e3143824fb5229a88941598377af9b94a8",
-      "branch": "main",
-      "matchesManifestCommit": false,
-      "dirty": true,
-      "dirtyEntries": [
-        "?? .eku/"
-      ],
-      "rehydrate": [
-        "git clone https://github.com/apache/activemq-artemis.git factory/artemis",
-        "git -C factory/artemis checkout ded1b54c538de60b4df8f4953c5e1979ac64b5db"
-      ],
-      "validatedSourceCommit": "b3b1e8e3143824fb5229a88941598377af9b94a8",
-      "rehydrateForFullValidation": [
-        "git clone https://github.com/apache/activemq-artemis.git factory/artemis",
-        "git -C factory/artemis checkout b3b1e8e3143824fb5229a88941598377af9b94a8"
-      ],
-      "rehydrateManifestCommit": [
-        "git clone https://github.com/apache/activemq-artemis.git factory/artemis",
-        "git -C factory/artemis checkout ded1b54c538de60b4df8f4953c5e1979ac64b5db"
-      ]
+      "repo": "temporal",
+      "targetRepo": "temporalio/temporal",
+      "manifestCommit": "30e0884ac084ecb923b717c3f3f446f72d615e4d",
+      "validatedSourceCommit": "30e0884ac084ecb923b717c3f3f446f72d615e4d",
+      "checkedOutCommit": "30e0884ac084ecb923b717c3f3f446f72d615e4d",
+      "localPath": "factory/temporal"
     },
     {
-      "repo": "asynq",
-      "targetRepo": "hibiken/asynq",
-      "remote": "https://github.com/hibiken/asynq.git",
-      "manifestCommit": "d135f1439bee74e989b7f9b41ecd542cc87f024a",
-      "checkedOutCommit": "d135f1439bee74e989b7f9b41ecd542cc87f024a",
-      "branch": "master",
-      "matchesManifestCommit": true,
-      "dirty": true,
-      "dirtyEntries": [
-        "?? .claude/",
-        "?? .eku/",
-        "?? AGENTS.md",
-        "?? CLAUDE.md"
-      ],
-      "rehydrate": [
-        "git clone https://github.com/hibiken/asynq.git factory/asynq",
-        "git -C factory/asynq checkout d135f1439bee74e989b7f9b41ecd542cc87f024a"
-      ],
-      "validatedSourceCommit": "d135f1439bee74e989b7f9b41ecd542cc87f024a",
-      "rehydrateForFullValidation": [
-        "git clone https://github.com/hibiken/asynq.git factory/asynq",
-        "git -C factory/asynq checkout d135f1439bee74e989b7f9b41ecd542cc87f024a"
-      ],
-      "rehydrateManifestCommit": [
-        "git clone https://github.com/hibiken/asynq.git factory/asynq",
-        "git -C factory/asynq checkout d135f1439bee74e989b7f9b41ecd542cc87f024a"
-      ]
+      "repo": "cadence",
+      "targetRepo": "cadence-workflow/cadence",
+      "manifestCommit": "7b681a654a56d233bbf654ec465a0e1f5fc71a6e",
+      "validatedSourceCommit": "7b681a654a56d233bbf654ec465a0e1f5fc71a6e",
+      "checkedOutCommit": "7b681a654a56d233bbf654ec465a0e1f5fc71a6e",
+      "localPath": "factory/cadence"
     },
     {
-      "repo": "blazingmq",
-      "targetRepo": "bloomberg/blazingmq",
-      "remote": "https://github.com/bloomberg/blazingmq.git",
-      "manifestCommit": "a5b313cbb4c12a4b90790bc488710345a40a52e9",
-      "checkedOutCommit": "a5b313cbb4c12a4b90790bc488710345a40a52e9",
-      "branch": "main",
-      "matchesManifestCommit": true,
-      "dirty": true,
-      "dirtyEntries": [
-        "?? .eku/",
-        "?? .gitnexus/"
-      ],
-      "rehydrate": [
-        "git clone https://github.com/bloomberg/blazingmq.git factory/blazingmq",
-        "git -C factory/blazingmq checkout a5b313cbb4c12a4b90790bc488710345a40a52e9"
-      ],
-      "validatedSourceCommit": "a5b313cbb4c12a4b90790bc488710345a40a52e9",
-      "rehydrateForFullValidation": [
-        "git clone https://github.com/bloomberg/blazingmq.git factory/blazingmq",
-        "git -C factory/blazingmq checkout a5b313cbb4c12a4b90790bc488710345a40a52e9"
-      ],
-      "rehydrateManifestCommit": [
-        "git clone https://github.com/bloomberg/blazingmq.git factory/blazingmq",
-        "git -C factory/blazingmq checkout a5b313cbb4c12a4b90790bc488710345a40a52e9"
-      ]
+      "repo": "conductor",
+      "targetRepo": "Netflix/conductor",
+      "manifestCommit": "548f386c2c6c1e4d467b8551edbb6182881004ae",
+      "validatedSourceCommit": "548f386c2c6c1e4d467b8551edbb6182881004ae",
+      "checkedOutCommit": "548f386c2c6c1e4d467b8551edbb6182881004ae",
+      "localPath": "factory/conductor"
     },
     {
-      "repo": "bullmq",
-      "targetRepo": "taskforcesh/bullmq",
-      "remote": "https://github.com/taskforcesh/bullmq.git",
-      "manifestCommit": "c06b51cd3aacd0d9ee65e2544220c89f24d2479c",
-      "checkedOutCommit": "352d3c72bf2bc5ec851630a4cdcba7d44c313ed0",
-      "branch": "master",
-      "matchesManifestCommit": false,
-      "dirty": true,
-      "dirtyEntries": [
-        "?? .claude/",
-        "?? .eku/",
-        "?? AGENTS.md",
-        "?? CLAUDE.md"
-      ],
-      "rehydrate": [
-        "git clone https://github.com/taskforcesh/bullmq.git factory/bullmq",
-        "git -C factory/bullmq checkout c06b51cd3aacd0d9ee65e2544220c89f24d2479c"
-      ],
-      "validatedSourceCommit": "352d3c72bf2bc5ec851630a4cdcba7d44c313ed0",
-      "rehydrateForFullValidation": [
-        "git clone https://github.com/taskforcesh/bullmq.git factory/bullmq",
-        "git -C factory/bullmq checkout 352d3c72bf2bc5ec851630a4cdcba7d44c313ed0"
-      ],
-      "rehydrateManifestCommit": [
-        "git clone https://github.com/taskforcesh/bullmq.git factory/bullmq",
-        "git -C factory/bullmq checkout c06b51cd3aacd0d9ee65e2544220c89f24d2479c"
-      ]
+      "repo": "airflow",
+      "targetRepo": "apache/airflow",
+      "manifestCommit": "549ed6b7468aa76bf1fac493c15fb26521335489",
+      "validatedSourceCommit": "549ed6b7468aa76bf1fac493c15fb26521335489",
+      "checkedOutCommit": "549ed6b7468aa76bf1fac493c15fb26521335489",
+      "localPath": "factory/airflow"
     },
     {
-      "repo": "goqite",
-      "targetRepo": "maragudk/goqite",
-      "remote": "https://github.com/maragudk/goqite.git",
-      "manifestCommit": "471f9d49ce356737fc756a287007d7b4c54c61e1",
-      "checkedOutCommit": "23697cc78af6e99a980ebc7a7f8a07d626ff8962",
-      "branch": "main",
-      "matchesManifestCommit": false,
-      "dirty": true,
-      "dirtyEntries": [
-        "?? .claude/",
-        "?? .eku/",
-        "?? AGENTS.md",
-        "?? CLAUDE.md"
-      ],
-      "rehydrate": [
-        "git clone https://github.com/maragudk/goqite.git factory/goqite",
-        "git -C factory/goqite checkout 471f9d49ce356737fc756a287007d7b4c54c61e1"
-      ],
-      "validatedSourceCommit": "23697cc78af6e99a980ebc7a7f8a07d626ff8962",
-      "rehydrateForFullValidation": [
-        "git clone https://github.com/maragudk/goqite.git factory/goqite",
-        "git -C factory/goqite checkout 23697cc78af6e99a980ebc7a7f8a07d626ff8962"
-      ],
-      "rehydrateManifestCommit": [
-        "git clone https://github.com/maragudk/goqite.git factory/goqite",
-        "git -C factory/goqite checkout 471f9d49ce356737fc756a287007d7b4c54c61e1"
-      ]
+      "repo": "argo-workflows",
+      "targetRepo": "argoproj/argo-workflows",
+      "manifestCommit": "8f0d28008aaf288fe73bc380c174a8623d73a786",
+      "validatedSourceCommit": "8f0d28008aaf288fe73bc380c174a8623d73a786",
+      "checkedOutCommit": "8f0d28008aaf288fe73bc380c174a8623d73a786",
+      "localPath": "factory/argo-workflows"
     },
     {
-      "repo": "litequeue",
-      "targetRepo": "litements/litequeue",
-      "remote": "https://github.com/litements/litequeue.git",
-      "manifestCommit": "9e286af166f1c483057e28ab5fb45e1c38943f21",
-      "checkedOutCommit": "9e286af166f1c483057e28ab5fb45e1c38943f21",
-      "branch": "main",
-      "matchesManifestCommit": true,
-      "dirty": true,
-      "dirtyEntries": [
-        "?? .claude/",
-        "?? .eku/",
-        "?? AGENTS.md",
-        "?? CLAUDE.md"
-      ],
-      "rehydrate": [
-        "git clone https://github.com/litements/litequeue.git factory/litequeue",
-        "git -C factory/litequeue checkout 9e286af166f1c483057e28ab5fb45e1c38943f21"
-      ],
-      "validatedSourceCommit": "9e286af166f1c483057e28ab5fb45e1c38943f21",
-      "rehydrateForFullValidation": [
-        "git clone https://github.com/litements/litequeue.git factory/litequeue",
-        "git -C factory/litequeue checkout 9e286af166f1c483057e28ab5fb45e1c38943f21"
-      ],
-      "rehydrateManifestCommit": [
-        "git clone https://github.com/litements/litequeue.git factory/litequeue",
-        "git -C factory/litequeue checkout 9e286af166f1c483057e28ab5fb45e1c38943f21"
-      ]
+      "repo": "dagster",
+      "targetRepo": "dagster-io/dagster",
+      "manifestCommit": "560289892c1c9b2c882dfea2f442e5e7bbd7e0df",
+      "validatedSourceCommit": "560289892c1c9b2c882dfea2f442e5e7bbd7e0df",
+      "checkedOutCommit": "560289892c1c9b2c882dfea2f442e5e7bbd7e0df",
+      "localPath": "factory/dagster"
     },
     {
-      "repo": "nats-server",
-      "targetRepo": "nats-io/nats-server",
-      "remote": "https://github.com/nats-io/nats-server.git",
-      "manifestCommit": "1787eee035cf0253c201fa0f05afad92b6f296dc",
-      "checkedOutCommit": "1787eee035cf0253c201fa0f05afad92b6f296dc",
-      "branch": "main",
-      "matchesManifestCommit": true,
-      "dirty": true,
-      "dirtyEntries": [
-        "?? .claude/",
-        "?? .eku/",
-        "?? AGENTS.md",
-        "?? CLAUDE.md"
-      ],
-      "rehydrate": [
-        "git clone https://github.com/nats-io/nats-server.git factory/nats-server",
-        "git -C factory/nats-server checkout 1787eee035cf0253c201fa0f05afad92b6f296dc"
-      ],
-      "validatedSourceCommit": "1787eee035cf0253c201fa0f05afad92b6f296dc",
-      "rehydrateForFullValidation": [
-        "git clone https://github.com/nats-io/nats-server.git factory/nats-server",
-        "git -C factory/nats-server checkout 1787eee035cf0253c201fa0f05afad92b6f296dc"
-      ],
-      "rehydrateManifestCommit": [
-        "git clone https://github.com/nats-io/nats-server.git factory/nats-server",
-        "git -C factory/nats-server checkout 1787eee035cf0253c201fa0f05afad92b6f296dc"
-      ]
+      "repo": "prefect",
+      "targetRepo": "PrefectHQ/prefect",
+      "manifestCommit": "57ee2c2c10f662fee32807c126a117adce32dd28",
+      "validatedSourceCommit": "57ee2c2c10f662fee32807c126a117adce32dd28",
+      "checkedOutCommit": "57ee2c2c10f662fee32807c126a117adce32dd28",
+      "localPath": "factory/prefect"
     },
     {
-      "repo": "nsq",
-      "targetRepo": "nsqio/nsq",
-      "remote": "https://github.com/nsqio/nsq.git",
-      "manifestCommit": "85cf10c09c6c3c86160d6f0eb156f62d0efc1648",
-      "checkedOutCommit": "85cf10c09c6c3c86160d6f0eb156f62d0efc1648",
-      "branch": "master",
-      "matchesManifestCommit": true,
-      "dirty": true,
-      "dirtyEntries": [
-        "?? .claude/",
-        "?? .eku/",
-        "?? AGENTS.md",
-        "?? CLAUDE.md"
-      ],
-      "rehydrate": [
-        "git clone https://github.com/nsqio/nsq.git factory/nsq",
-        "git -C factory/nsq checkout 85cf10c09c6c3c86160d6f0eb156f62d0efc1648"
-      ],
-      "validatedSourceCommit": "85cf10c09c6c3c86160d6f0eb156f62d0efc1648",
-      "rehydrateForFullValidation": [
-        "git clone https://github.com/nsqio/nsq.git factory/nsq",
-        "git -C factory/nsq checkout 85cf10c09c6c3c86160d6f0eb156f62d0efc1648"
-      ],
-      "rehydrateManifestCommit": [
-        "git clone https://github.com/nsqio/nsq.git factory/nsq",
-        "git -C factory/nsq checkout 85cf10c09c6c3c86160d6f0eb156f62d0efc1648"
-      ]
+      "repo": "kestra",
+      "targetRepo": "kestra-io/kestra",
+      "manifestCommit": "c1cc21209a773586bc06a1336b219aaceb382bf6",
+      "validatedSourceCommit": "c1cc21209a773586bc06a1336b219aaceb382bf6",
+      "checkedOutCommit": "c1cc21209a773586bc06a1336b219aaceb382bf6",
+      "localPath": "factory/kestra"
     },
     {
-      "repo": "pgmq",
-      "targetRepo": "pgmq/pgmq",
-      "remote": "https://github.com/pgmq/pgmq.git",
-      "manifestCommit": "c41b93adc4a93914339bde0ec3792311191f9e73",
-      "checkedOutCommit": "c41b93adc4a93914339bde0ec3792311191f9e73",
-      "branch": "main",
-      "matchesManifestCommit": true,
-      "dirty": true,
-      "dirtyEntries": [
-        "?? .claude/skills/",
-        "?? .eku/",
-        "?? AGENTS.md",
-        "?? CLAUDE.md"
-      ],
-      "rehydrate": [
-        "git clone https://github.com/pgmq/pgmq.git factory/pgmq",
-        "git -C factory/pgmq checkout c41b93adc4a93914339bde0ec3792311191f9e73"
-      ],
-      "validatedSourceCommit": "c41b93adc4a93914339bde0ec3792311191f9e73",
-      "rehydrateForFullValidation": [
-        "git clone https://github.com/pgmq/pgmq.git factory/pgmq",
-        "git -C factory/pgmq checkout c41b93adc4a93914339bde0ec3792311191f9e73"
-      ],
-      "rehydrateManifestCommit": [
-        "git clone https://github.com/pgmq/pgmq.git factory/pgmq",
-        "git -C factory/pgmq checkout c41b93adc4a93914339bde0ec3792311191f9e73"
-      ]
+      "repo": "restate",
+      "targetRepo": "restatedev/restate",
+      "manifestCommit": "e812a2907f1001880f089376f071f2845b54f207",
+      "validatedSourceCommit": "e812a2907f1001880f089376f071f2845b54f207",
+      "checkedOutCommit": "e812a2907f1001880f089376f071f2845b54f207",
+      "localPath": "factory/restate"
     },
     {
-      "repo": "rabbitmq",
-      "targetRepo": "rabbitmq/rabbitmq-server",
-      "remote": "https://github.com/rabbitmq/rabbitmq-server.git",
-      "manifestCommit": "5b09e556da53b8473f26843a2493d8460ced8c8e",
-      "checkedOutCommit": "5b09e556da53b8473f26843a2493d8460ced8c8e",
-      "branch": "main",
-      "matchesManifestCommit": true,
-      "dirty": true,
-      "dirtyEntries": [
-        "?? .eku/"
-      ],
-      "rehydrate": [
-        "git clone https://github.com/rabbitmq/rabbitmq-server.git factory/rabbitmq",
-        "git -C factory/rabbitmq checkout 5b09e556da53b8473f26843a2493d8460ced8c8e"
-      ],
-      "validatedSourceCommit": "5b09e556da53b8473f26843a2493d8460ced8c8e",
-      "rehydrateForFullValidation": [
-        "git clone https://github.com/rabbitmq/rabbitmq-server.git factory/rabbitmq",
-        "git -C factory/rabbitmq checkout 5b09e556da53b8473f26843a2493d8460ced8c8e"
-      ],
-      "rehydrateManifestCommit": [
-        "git clone https://github.com/rabbitmq/rabbitmq-server.git factory/rabbitmq",
-        "git -C factory/rabbitmq checkout 5b09e556da53b8473f26843a2493d8460ced8c8e"
-      ]
+      "repo": "windmill",
+      "targetRepo": "windmill-labs/windmill",
+      "manifestCommit": "b8bf539c3fe2b4db9c74dd73f04b3029287acdc6",
+      "validatedSourceCommit": "b8bf539c3fe2b4db9c74dd73f04b3029287acdc6",
+      "checkedOutCommit": "b8bf539c3fe2b4db9c74dd73f04b3029287acdc6",
+      "localPath": "factory/windmill"
     },
     {
-      "repo": "redpanda",
-      "targetRepo": "redpanda-data/redpanda",
-      "remote": "https://github.com/redpanda-data/redpanda.git",
-      "manifestCommit": "7779192591a837a58fc9fc91f35a247f6bb0ed3e",
-      "checkedOutCommit": "3cfce474a872090e7c74d14181885f5838c54cf2",
-      "branch": "dev",
-      "matchesManifestCommit": false,
-      "dirty": true,
-      "dirtyEntries": [
-        "?? .eku/"
-      ],
-      "rehydrate": [
-        "git clone https://github.com/redpanda-data/redpanda.git factory/redpanda",
-        "git -C factory/redpanda checkout 7779192591a837a58fc9fc91f35a247f6bb0ed3e"
-      ],
-      "validatedSourceCommit": "3cfce474a872090e7c74d14181885f5838c54cf2",
-      "rehydrateForFullValidation": [
-        "git clone https://github.com/redpanda-data/redpanda.git factory/redpanda",
-        "git -C factory/redpanda checkout 3cfce474a872090e7c74d14181885f5838c54cf2"
-      ],
-      "rehydrateManifestCommit": [
-        "git clone https://github.com/redpanda-data/redpanda.git factory/redpanda",
-        "git -C factory/redpanda checkout 7779192591a837a58fc9fc91f35a247f6bb0ed3e"
-      ]
-    },
-    {
-      "repo": "river",
-      "targetRepo": "riverqueue/river",
-      "remote": "https://github.com/riverqueue/river.git",
-      "manifestCommit": "008a9fdfba4f47fabe5ef33bcd706eb9f1358801",
-      "checkedOutCommit": "f748a5cf793a8860308c14bff548143798915ff4",
-      "branch": "master",
-      "matchesManifestCommit": false,
-      "dirty": true,
-      "dirtyEntries": [
-        "M AGENTS.md",
-        "?? .claude/",
-        "?? .eku/",
-        "?? CLAUDE.md"
-      ],
-      "rehydrate": [
-        "git clone https://github.com/riverqueue/river.git factory/river",
-        "git -C factory/river checkout 008a9fdfba4f47fabe5ef33bcd706eb9f1358801"
-      ],
-      "validatedSourceCommit": "f748a5cf793a8860308c14bff548143798915ff4",
-      "rehydrateForFullValidation": [
-        "git clone https://github.com/riverqueue/river.git factory/river",
-        "git -C factory/river checkout f748a5cf793a8860308c14bff548143798915ff4"
-      ],
-      "rehydrateManifestCommit": [
-        "git clone https://github.com/riverqueue/river.git factory/river",
-        "git -C factory/river checkout 008a9fdfba4f47fabe5ef33bcd706eb9f1358801"
-      ]
-    },
-    {
-      "repo": "rocketmq",
-      "targetRepo": "apache/rocketmq",
-      "remote": "https://github.com/apache/rocketmq.git",
-      "manifestCommit": "efa1be59d6fc747ad220f036c86030f05f0419f9",
-      "checkedOutCommit": "efa1be59d6fc747ad220f036c86030f05f0419f9",
-      "branch": "develop",
-      "matchesManifestCommit": true,
-      "dirty": true,
-      "dirtyEntries": [
-        "?? .eku/"
-      ],
-      "rehydrate": [
-        "git clone https://github.com/apache/rocketmq.git factory/rocketmq",
-        "git -C factory/rocketmq checkout efa1be59d6fc747ad220f036c86030f05f0419f9"
-      ],
-      "validatedSourceCommit": "efa1be59d6fc747ad220f036c86030f05f0419f9",
-      "rehydrateForFullValidation": [
-        "git clone https://github.com/apache/rocketmq.git factory/rocketmq",
-        "git -C factory/rocketmq checkout efa1be59d6fc747ad220f036c86030f05f0419f9"
-      ],
-      "rehydrateManifestCommit": [
-        "git clone https://github.com/apache/rocketmq.git factory/rocketmq",
-        "git -C factory/rocketmq checkout efa1be59d6fc747ad220f036c86030f05f0419f9"
-      ]
+      "repo": "hatchet",
+      "targetRepo": "hatchet-dev/hatchet",
+      "manifestCommit": "4dde179317ffda9985cb2d23ea51b47384304b57",
+      "validatedSourceCommit": "4dde179317ffda9985cb2d23ea51b47384304b57",
+      "checkedOutCommit": "4dde179317ffda9985cb2d23ea51b47384304b57",
+      "localPath": "factory/hatchet"
     }
   ]
 }

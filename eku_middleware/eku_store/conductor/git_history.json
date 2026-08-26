@@ -1,0 +1,4040 @@
+[
+  {
+    "commitHash": "41d4334e38312d0361e1326754b6822150c7bf73",
+    "authorDate": "2023-12-01T03:37:33+07:00",
+    "subject": "[Hot-fix] fix: remove redundant slash that cause proxy fail (#3873)",
+    "body": "",
+    "issueRefs": [
+      "#3873"
+    ],
+    "touchedFiles": [
+      "ui/src/components/NavLink.jsx",
+      "ui/src/plugins/AppLogo.jsx",
+      "ui/src/plugins/fetch.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fb70f4944bc9fb2102020a1a7098d6238f775647",
+    "authorDate": "2023-11-26T11:04:42-08:00",
+    "subject": "fix formatting",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/executor/WorkflowExecutor.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "52dbb92e04c12a3bce2d58c0e98ddd15d61d8886",
+    "authorDate": "2023-11-25T01:58:27-05:00",
+    "subject": "Upgrading OSS libraries with known open CVEs (#3778)",
+    "body": "* Upgrading OSS libraries with known open CVEs\r\n\r\n* Updating the protobuf library.\r\n\r\n* Resolve the remaining build issues.\r\n\r\n---------\r\n\r\nCo-authored-by: Scott Carter <cartersc@vmware.com>",
+    "issueRefs": [
+      "#3778"
+    ],
+    "touchedFiles": [
+      "annotations-processor/dependencies.lock",
+      "annotations/dependencies.lock",
+      "awss3-storage/dependencies.lock",
+      "awssqs-event-queue/dependencies.lock",
+      "build.gradle",
+      "cassandra-persistence/dependencies.lock",
+      "client-spring/dependencies.lock",
+      "client/dependencies.lock",
+      "common/build.gradle",
+      "common/dependencies.lock",
+      "core/build.gradle",
+      "core/dependencies.lock",
+      "dependencies.gradle",
+      "dependencies.lock",
+      "es6-persistence/dependencies.lock",
+      "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/ElasticSearchTest.java",
+      "grpc-client/dependencies.lock",
+      "grpc-server/dependencies.lock",
+      "grpc/dependencies.lock",
+      "http-task/dependencies.lock",
+      "java-sdk/build.gradle",
+      "java-sdk/dependencies.lock",
+      "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/def/WorkflowCreationTests.java",
+      "json-jq-task/dependencies.lock",
+      "redis-concurrency-limit/dependencies.lock",
+      "redis-lock/dependencies.lock",
+      "redis-persistence/dependencies.lock",
+      "rest/dependencies.lock",
+      "server/dependencies.lock",
+      "test-harness/build.gradle",
+      "test-harness/dependencies.lock",
+      "test-harness/src/test/java/com/netflix/conductor/test/integration/AbstractEndToEndTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "43316a5eee513e7bfbb3a1cb6f070ba26619b39c",
+    "authorDate": "2023-11-25T11:04:32+05:30",
+    "subject": "ISICO-15108: javascript validation done on updating w/d (#3805)",
+    "body": "* ISICO-15108: javascript validation done on updating w/d\r\n\r\n* ISICO-14902: NPE while checking EvaluatorType is fixed\r\n\r\n* ISICO-14902: unused variables removed\r\n\r\n* ISICO-15108: javascript validation added in the constraint violation part\r\n\r\n* ISICO-15108: getExpression() is used for switch javascript code",
+    "issueRefs": [
+      "#3805"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/validations/WorkflowTaskTypeConstraint.java",
+      "core/src/test/java/com/netflix/conductor/service/MetadataServiceTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "aaa46b55e365f26a4f3adfdd38699db5bea63df8",
+    "authorDate": "2023-11-25T13:31:58+08:00",
+    "subject": "Fix taskToDomain field not being echoed (#3806)",
+    "body": "",
+    "issueRefs": [
+      "#3806"
+    ],
+    "touchedFiles": [
+      "ui/src/pages/workbench/WorkbenchForm.jsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "07fd73a3c645dd8e3617999e72e6924958358147",
+    "authorDate": "2023-11-23T20:53:02-08:00",
+    "subject": "Fix typo in build-a-golang-task-worker.md (#3860)",
+    "body": "`provies` -> `provides`",
+    "issueRefs": [
+      "#3860"
+    ],
+    "touchedFiles": [
+      "docs/docs/how-tos/Workers/build-a-golang-task-worker.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "03cf0c1f1f7783a9550df414baea04207a74ac3a",
+    "authorDate": "2023-11-21T06:39:31+05:30",
+    "subject": "Update and rename WHOSUSING.md to USERS.md (#3850)",
+    "body": "Fix Conductor users broken links",
+    "issueRefs": [
+      "#3850"
+    ],
+    "touchedFiles": [
+      "USERS.md",
+      "WHOSUSING.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b3a11965e08f4a10e52715e91ad2f3b37a7e408b",
+    "authorDate": "2023-11-12T16:53:11+08:00",
+    "subject": "Fix: include monaco sources into bundle (#3796)",
+    "body": "* Fix: include monaco sources into bundle",
+    "issueRefs": [
+      "#3796"
+    ],
+    "touchedFiles": [
+      ".gitignore",
+      "docker/README.md",
+      "docker/server/Dockerfile",
+      "docker/ui/Dockerfile",
+      "ui/package.json",
+      "ui/src/App.jsx",
+      "ui/yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "de2ca100f7aefa2a2d2c3041139fad089f56a734",
+    "authorDate": "2023-11-12T09:51:54+01:00",
+    "subject": "Fix WorkflowRepairService and AsyncSystemTaskExecutor race condition (#3836)",
+    "body": "Issue Summary:\r\nThere's a race condition in the system involving async system tasks and the WorkflowRepairService. For example, when a SUB_WORKFLOW task starts, the WorkflowRepairService sometimes erroneously reinserts the task into the processing queue because it perceives the task as out-of-sync between the ExecutorDAO and the queueDAO. This issue stems from the AsyncSystemTaskExecutor updating a task's status only after it removes it from the queue, creating a window where the WorkflowRepairService can wrongly assess the task state. This leads to duplicate subworkflows/http/… tasks being executed concurrently, which complicates maintaining idempotency of Tasks.\r\n\r\nProposed Solution:\r\nTo resolve the issue, it's suggested that the AsyncSystemTaskExecutor should update the status of tasks before removing them from the queue. This should close the window where the WorkflowRepairService can misidentify the task state and prevent unnecessary re-queuing of tasks. An edge case we’ve considered is if the process crashes after the task is updated but before it's removed from the queue. If that happens, the executor will simply remove the task from the queue the next time it runs, thereby not affecting system correctness.\r\n\r\nCo-authored-by: Jaim Silva <silvavelosa@gmail.com>",
+    "issueRefs": [
+      "#3836"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/AsyncSystemTaskExecutor.java"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "be790a45341495a319badc739d2c1beb07bb1a7d",
+    "authorDate": "2023-11-12T11:10:41+08:00",
+    "subject": "Bugfix/Data inconsistency caused by updateEventHandler (#3843)",
+    "body": "* remove previous index of event handlers by event if event handler's event gets updated\r\n\r\n* run ./gradlew spotlessApply",
+    "issueRefs": [
+      "#3843"
+    ],
+    "touchedFiles": [
+      "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisEventHandlerDAO.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "898187857aa3c059374a63686c2e8bfb533adda7",
+    "authorDate": "2023-11-03T12:08:48+08:00",
+    "subject": "Fix JSONPath replace failed with line terminator (#3810)",
+    "body": "",
+    "issueRefs": [
+      "#3810"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/utils/ParametersUtils.java",
+      "core/src/test/java/com/netflix/conductor/core/utils/ParametersUtilsTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5ed77fbbf8011cba13dd73bcce13ce52cfb435a8",
+    "authorDate": "2023-09-27T14:41:48-07:00",
+    "subject": "Merge pull request #3756 from saksham2105/http-task-stuck-fix",
+    "body": "issue-3719: Fix for http task stuck due to NPE",
+    "issueRefs": [
+      "#3756"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "22ad0500c36656c6f87ddbc0834e1248cf613b7a",
+    "authorDate": "2023-09-27T10:11:40-07:00",
+    "subject": "Merge pull request #3779 from Young-Zen/ui-fix-validation-error-handling",
+    "body": "Fix validation error handling in workflow/task editor",
+    "issueRefs": [
+      "#3779"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4c14bb7bda84376314a065d8df0847ad606f26ab",
+    "authorDate": "2023-09-27T09:53:45-07:00",
+    "subject": "Merge pull request #3786 from manan164/wait_task_test_fix",
+    "body": "Wait until calculation fix.",
+    "issueRefs": [
+      "#3786"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ee190d52ba127f6812ad65fc403e18eda3c08ba8",
+    "authorDate": "2023-09-27T13:43:26+05:30",
+    "subject": "Wait until calculation fix.",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/WaitTaskMapper.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a68016e09c050887e26917ee56a9af33e34f9234",
+    "authorDate": "2023-09-21T12:05:56+08:00",
+    "subject": "Fix validation error handling in workflow/task editor",
+    "body": "Signed-off-by: yanghaojia <2453883990@qq.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/src/pages/definition/SaveTaskDialog.jsx",
+      "ui/src/pages/definition/SaveWorkflowDialog.jsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1c899db50778179bce5a95b058db69562b5b02e1",
+    "authorDate": "2023-09-23T11:27:21-07:00",
+    "subject": "Merge pull request #3782 from v1r3n/update_test_runs",
+    "body": "Fix test runs",
+    "issueRefs": [
+      "#3782"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5f688d7ecdfed7f2fba75a8d2848ae156da6b6a8",
+    "authorDate": "2023-09-23T11:13:07-07:00",
+    "subject": "fix test runs",
+    "body": "1. Disable WorkflowCreationTest since it brings up a server and with JDK17, the test will not pass until a JDK17+ build is published.\n2. Clean up the ci.yaml",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".github/workflows/ci.yml",
+      "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/def/WorkflowCreationTests.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "50b6fd41213c2fbbf7cf97f09b2e82aff21e7e12",
+    "authorDate": "2023-09-16T16:15:39+01:00",
+    "subject": "Merge pull request #3775 from manan164/wait_tasks_fix",
+    "body": "Make wait task async.",
+    "issueRefs": [
+      "#3775"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4d0060b31d7bb225f7db178afea2a8564f7d269f",
+    "authorDate": "2023-09-15T20:27:07+05:30",
+    "subject": "fix test",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/WorkflowAndTaskConfigurationSpec.groovy"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0e153f6438bb9bfff33ac2b21755df64568235f2",
+    "authorDate": "2023-09-15T17:19:54+05:30",
+    "subject": "Test fix",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ac50271fede0fd7ae1cb379944c1915be02e4a3d",
+    "authorDate": "2023-09-14T13:22:49+01:00",
+    "subject": "Merge pull request #3772 from Young-Zen/fix-terminateReason-in-TERMINATE-task",
+    "body": "Fix: terminateReason in TERMINATE Task can use JSONPath expression to extract value",
+    "issueRefs": [
+      "#3772"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "19c3c70b4d9cdf7157df75d05a09d52aafa608c4",
+    "authorDate": "2023-09-14T15:51:17+08:00",
+    "subject": "Fix: terminateReason in TERMINATE Task can use JSONPath expression to extract value",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d0ae08483c920401c2bfd4851ccb34496068dd69",
+    "authorDate": "2023-09-13T10:52:11-06:00",
+    "subject": "fix github actions",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".github/workflows/ci.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1735708367db2c65db40130484a07ac4b8eac996",
+    "authorDate": "2023-09-08T01:00:19+05:30",
+    "subject": "issue-3719: removed any from location in test setup",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/test/java/com/netflix/conductor/core/storage/DummyPayloadStorageTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "13a689d133a414e223e19fc3a7ee75a094a12d56",
+    "authorDate": "2023-09-05T18:18:23+05:30",
+    "subject": "issue-3719: Added unit testcases to verify download functionality",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/test/java/com/netflix/conductor/core/storage/DummyPayloadStorageTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4e993d354c16a8e375a3150af038b8b73b84cbd6",
+    "authorDate": "2023-09-02T13:44:08+05:30",
+    "subject": "issue-3719: Added disk based approach to prevent oom",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/storage/DummyPayloadStorage.java"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "46dd3df90320912eddcae050738bc19a8ed9702e",
+    "authorDate": "2023-09-02T04:02:40+05:30",
+    "subject": "issue-3719: Fix format violations",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/storage/DummyPayloadStorage.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "878a5128c2c6606393f33bbb64947ff8192f9d1a",
+    "authorDate": "2023-09-02T03:30:27+05:30",
+    "subject": "issue-3719: Fix for http task stuck due to NPE",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/storage/DummyPayloadStorage.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4d99ff59c6390f76a9314a08364f27fdb20dd486",
+    "authorDate": "2023-08-29T00:52:53-07:00",
+    "subject": "Merge pull request #3692 from manan164/fix_docker_build",
+    "body": "Fix docker builds.",
+    "issueRefs": [
+      "#3692"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d0a5883849439028aec35dfaf761c988e7d18fc8",
+    "authorDate": "2023-07-24T23:57:10-07:00",
+    "subject": "Merge pull request #3680 from JCHacking/fixed-docker-issues-build",
+    "body": "Fixed Docker issues",
+    "issueRefs": [
+      "#3680"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f4c95a41bd6ae8406b842b84668e215d0d1891ca",
+    "authorDate": "2023-07-23T12:10:41-07:00",
+    "subject": "Merge pull request #3682 from ppolxda/merge",
+    "body": "Fix timeline not show when using the DO_WHILE loop.",
+    "issueRefs": [
+      "#3682"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0afdef11a4e7be32c2f35eabedacc12ecfeee92b",
+    "authorDate": "2023-07-11T19:46:33+05:30",
+    "subject": "Fix docker builds.",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docker/grpc/docker-compose.yaml",
+      "docker/server/config/config-local.properties",
+      "docker/server/config/config-mysql-grpc.properties",
+      "docker/server/config/config-mysql.properties",
+      "docker/server/config/config-postgres.properties"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c2903460ab8ca900a55d2a421c7a421bcb4228ef",
+    "authorDate": "2023-07-10T17:15:23+02:00",
+    "subject": "Merge branch 'main' into fixed-docker-issues-build",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7a36c210283231f9e0ea23403d5b1eec1a60b15a",
+    "authorDate": "2023-07-07T08:02:47+02:00",
+    "subject": "Merge branch 'main' into fixed-docker-issues-build",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cb39e12430de3ebfc90a6d198d48fa410dc3b0f9",
+    "authorDate": "2023-07-05T17:47:52+08:00",
+    "subject": "Fix timeline does not show when using the DO_WHILE loop.",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/src/components/diagram/WorkflowDAG.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8e4de4fa927bcaf5a3402e9efd67ef50a2cab871",
+    "authorDate": "2023-07-02T11:58:26-07:00",
+    "subject": "Merge pull request #3673 from supriyanta/switchTask_fix",
+    "body": "FIX: Switch Task remains in PENDING state when evaluator throws exception",
+    "issueRefs": [
+      "#3673"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cfa0f697c3e4826f572f0e78f6cce64dfcc188f1",
+    "authorDate": "2023-07-01T16:10:31+02:00",
+    "subject": "Fixed Docker issues",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docker/server/Dockerfile",
+      "docker/ui/Dockerfile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1d5b4cac1cb85394abcc396a31d146341abdfa87",
+    "authorDate": "2023-06-27T16:52:54+05:30",
+    "subject": "FIX: Switch Task remains in PENDING state when evalutor throws exception",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapper.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapperTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f07dc36f08dcaf91cb40ea6ee211c840de5ac8f3",
+    "authorDate": "2023-06-21T09:42:10-07:00",
+    "subject": "Merge pull request #3655 from manan164/join_task_fix2",
+    "body": "Lazy evaluate workflow only in case of task is successful.",
+    "issueRefs": [
+      "#3655"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3920aee17f6bc0ae26deaaea8fa9a38cc8eb8f72",
+    "authorDate": "2023-06-19T09:28:07-07:00",
+    "subject": "Merge pull request #3639 from yohanyflores/fix-task-not-working-properly",
+    "body": "Fix WAIT task is not working properly (after v3.13.0)",
+    "issueRefs": [
+      "#3639"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5d3228799f90e6b376f3d6464df638ba50d7ee0b",
+    "authorDate": "2023-06-14T20:11:19-05:00",
+    "subject": "Fix Wait one second more",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java",
+      "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowSweeper.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ca1830c553f2e4b48de4ce9ff3e07708410176f6",
+    "authorDate": "2023-06-10T09:32:33-05:00",
+    "subject": "Merge branch 'main' into fix-task-not-working-properly",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ca6717ef93a4440f4ed4b9320ec3d4f929a4e79f",
+    "authorDate": "2023-06-08T20:37:42-05:00",
+    "subject": "Support Wait with waittimeout = 0",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java",
+      "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowSweeper.java"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "878fcd933a7a9051eca770c22c9f71544ffe55da",
+    "authorDate": "2023-06-08T07:21:56-07:00",
+    "subject": "Merge pull request #3644 from astelmashenko/bugfix/message-queue-dead-tasks",
+    "body": "removing dead tasks from queue message",
+    "issueRefs": [
+      "#3644"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e11a3e786985706aca039e67e80e29cd57d100ee",
+    "authorDate": "2023-06-08T07:21:02-07:00",
+    "subject": "Merge pull request #3594 from manan164/join_task_fix",
+    "body": "Join task callBackDuration",
+    "issueRefs": [
+      "#3594"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a709ad26c4fa48408e9d8e851c0b678452710b5d",
+    "authorDate": "2023-06-08T15:52:56+03:00",
+    "subject": "fixed formatting",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/AsyncSystemTaskExecutor.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "04b87478158d5e106b7ed4f4f7ed44398f40c585",
+    "authorDate": "2023-06-07T23:21:19-07:00",
+    "subject": "Merge pull request #3633 from lsfe87/sweeper_timeout_config",
+    "body": "Add property for the timeout of sweeper polling for workflows",
+    "issueRefs": [
+      "#3633"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "dc798ddb2077b3f7c476d91d5e976a8f208d937d",
+    "authorDate": "2023-06-05T13:31:49-05:00",
+    "subject": "Fix Fix WAIT task is not working properly (after v3.13.0) #3402 Add a test case for the issue #3402",
+    "body": "",
+    "issueRefs": [
+      "#3402"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java",
+      "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowSweeper.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c5343ac82c6986001911d5886c91a13efcfeeb1d",
+    "authorDate": "2023-06-01T14:33:00+01:00",
+    "subject": "Add property for the timeout of sweeper polling",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "CHANGELOG.md",
+      "core/src/main/java/com/netflix/conductor/core/config/ConductorProperties.java",
+      "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowReconciler.java"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "53030362ee30843bbd5c17c34f78b927c46d48e2",
+    "authorDate": "2023-05-24T15:01:12+05:30",
+    "subject": "Fix spotlessJavaCheck.",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "java-sdk/src/main/java/com/netflix/conductor/sdk/testing/LocalServerRunner.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2b4cfa03907c0d19053f8d3ed03ea22c31a20467",
+    "authorDate": "2023-05-24T14:47:02+05:30",
+    "subject": "Fix spotlessJavaCheck.",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "18319c16bf4f75a9365a7bac8737bdf2b6eb7ab0",
+    "authorDate": "2023-05-24T13:17:04+05:30",
+    "subject": "Fix spotlessJavaCheck in conductor-client.",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "client/src/main/java/com/netflix/conductor/client/http/EventClient.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f9f14bffe70dc79f26bb1344e727687572552c45",
+    "authorDate": "2023-05-24T11:55:46+05:30",
+    "subject": "Fix unit test compilation.",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8c58cf11d54529543f9441eec4970400881116ec",
+    "authorDate": "2023-05-24T11:36:15+05:30",
+    "subject": "Fix unit test compilation.",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e49a8680ab0b0de07a9ed30765baaa3502031f64",
+    "authorDate": "2023-05-23T15:16:29+05:30",
+    "subject": "Added TaskStatusListener interface - for notifying when a task is scheduled. Addresses below issues: https://github.com/Netflix/conductor/discussions/3587 https://github.com/Netflix/conductor/issues/2020",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/config/ConductorCoreConfiguration.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/main/java/com/netflix/conductor/core/listener/TaskStatusListener.java",
+      "core/src/main/java/com/netflix/conductor/core/listener/TaskStatusListenerStub.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4e70d5935d7f4a91ddfa66859bf2c5104d41efbb",
+    "authorDate": "2023-05-16T09:10:08-07:00",
+    "subject": "Merge pull request #3605 from Q-Bug4/docs-http-to-https",
+    "body": "update the link of Main Documentation Site",
+    "issueRefs": [
+      "#3605"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b81a5cc73c51cce298c515b4b65a4e20a5808656",
+    "authorDate": "2023-05-16T09:09:44-07:00",
+    "subject": "Merge pull request #3612 from charybr/patch-1",
+    "body": "Issue-3611: TaskDef validation: Print actual value that is being validated",
+    "issueRefs": [
+      "#3612"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c698dc0388ab65b55e5691302d7daf4903506214",
+    "authorDate": "2023-05-11T14:51:04+05:30",
+    "subject": "Issue-3611: Print actual value that is being validated",
+    "body": "PR for https://github.com/Netflix/conductor/issues/3611",
+    "issueRefs": [],
+    "touchedFiles": [
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskDef.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5bcd22abfc9b8c1fc055d00721490dd04492cb00",
+    "authorDate": "2023-05-08T10:39:29-07:00",
+    "subject": "Merge pull request #3598 from james-deee/jtd/fix-npe-if-no-workflow-found-verify",
+    "body": "Fix NPE for verify and repair if workflow not found",
+    "issueRefs": [
+      "#3598"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "01c40fe9403b3a4b36c7edae876e44a81e945d97",
+    "authorDate": "2023-05-03T02:27:37-07:00",
+    "subject": "Merge pull request #3447 from sourabh30/taskOpenNotWorking",
+    "body": "fixed task card open in Chrome and Firefox",
+    "issueRefs": [
+      "#3447"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "34e37ef828b082e3c4df403c3f6c32dd15521482",
+    "authorDate": "2023-05-01T22:17:36-05:00",
+    "subject": "Fix NPE for verify and repair if workflow not found",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowRepairService.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f29657b982ce5562ab9193233308e7bea0b017a8",
+    "authorDate": "2023-04-26T22:55:20+05:30",
+    "subject": "fix.",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/test/groovy/com/netflix/conductor/core/execution/AsyncSystemTaskExecutorTest.groovy"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "351243eaeefa295223a33843829e517424cfa908",
+    "authorDate": "2023-04-19T15:24:00-07:00",
+    "subject": "Merge pull request #3577 from manan164/failure_workflow_input_fix",
+    "body": "Pass complete workflow as input to failure workflow.",
+    "issueRefs": [
+      "#3577"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f6d6e95aa8b18bb6fcdb06742ae91355eb3f6c15",
+    "authorDate": "2023-04-19T23:47:36+03:00",
+    "subject": "Fix queue publish mock called - shouldn't be called when no errors occur. Moved to the test with transient exception, that required republish",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/test/java/com/netflix/conductor/core/events/TestDefaultEventProcessor.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e8f1bbe3319baa8d86f03c3d0e1493365215911a",
+    "authorDate": "2023-04-19T09:30:23-07:00",
+    "subject": "Merge pull request #3583 from eltociear/patch-1",
+    "body": "fix typo in clojure-sdk.md",
+    "issueRefs": [
+      "#3583"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b1e2df671a5a31f61e999c700e05b78919ad94b4",
+    "authorDate": "2023-04-19T00:37:37-07:00",
+    "subject": "Merge pull request #3554 from davebarda/patch-1",
+    "body": "Fix a typo in error handling documentation",
+    "issueRefs": [
+      "#3554"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fe3593fb9c37406b7d8a5f446a212301a5da9b16",
+    "authorDate": "2023-04-18T11:04:25+09:00",
+    "subject": "fix typo in clojure-sdk.md",
+    "body": "programatically -> programmatically",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docs/docs/how-tos/clojure-sdk.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0a180ac4cf8c7eb06766084956e959499f880195",
+    "authorDate": "2023-04-12T18:49:08+05:30",
+    "subject": "test fix",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3d9b27f26e98f1b18d79dce281d3302e4b4bf3fd",
+    "authorDate": "2023-04-11T08:24:54-07:00",
+    "subject": "Merge pull request #3573 from marosmars/fixMissingOutputs",
+    "body": "Fix disappearing outputs from long running tasks",
+    "issueRefs": [
+      "#3573"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2285531925bd8666685e1bd3a52db050bcc0497d",
+    "authorDate": "2023-04-11T10:23:25+02:00",
+    "subject": "Fix disappearing outputs from long running tasks",
+    "body": "with external storage enabled\n\nIn case of a:\n1. Long running task\n2. With big output (externalized)\n3. With output growing over time\n4. Causing multiple externalize / internalize executions\n5. ... such as a join task collecting outputs of all forked tasks\n6. Lost some of its outputs when finally completed\n\nThis issue was caused by / because:\n1. On an Nth execution of a task (such as described above)\n2. The task internalized its intermediate output from external storage\n3. The task was executed and it updated its output to current value in memory\n4. The task tried to externalize the new version of its output\n5. ... but while doing so, the outputPayload (last externalized value)\n   was combined with outputData (current, in-memory value) in a way\n   where output payload over-wrote the latest values\n6. Thus, newly calculated outputs have been lost\n\nSigned-off-by: Maros Marsalek <mmarsalek@frinx.io>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/model/TaskModel.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "92ad5303e8b7283b260f66d059589662c66e9d3e",
+    "authorDate": "2023-04-05T09:26:29-07:00",
+    "subject": "Merge pull request #3543 from Netflix/fix_docker",
+    "body": "Fix docker builds",
+    "issueRefs": [
+      "#3543"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2a476205ba15950678eaaac5413a68d83018468b",
+    "authorDate": "2023-03-20T13:16:44-07:00",
+    "subject": "fix docker builds",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docker/docker-compose.yaml",
+      "docker/server/config/config-local.properties"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "960ed05ff79602f13acdad06d9589f0252cda030",
+    "authorDate": "2023-03-15T20:02:20-07:00",
+    "subject": "Merge pull request #3535 from dragorosson/fix_healthcheck",
+    "body": "Curl is not available in the rabbitmq image",
+    "issueRefs": [
+      "#3535"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ec81ad5212228439e28c65a63301f0a1dcd2a3c6",
+    "authorDate": "2023-03-15T15:24:37-05:00",
+    "subject": "Curl is not available in the rabbitmq image",
+    "body": "Fixes #3534",
+    "issueRefs": [
+      "Fixes #3534"
+    ],
+    "touchedFiles": [
+      "docker/docker-compose.yaml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ce5e0d0a59ec86731c1106fc1ba10a3310f4fc51",
+    "authorDate": "2023-03-13T15:35:02-07:00",
+    "subject": "Merge pull request #3466 from ropereraLK/ropereraLK-doc-fixes",
+    "body": "[docs] Minor issue fixes",
+    "issueRefs": [
+      "#3466"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ab7e05242a650da9bc001205ad86cf051bec4515",
+    "authorDate": "2023-02-21T16:13:48-08:00",
+    "subject": "Update switch-task.md",
+    "body": "Fix one word.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docs/docs/reference-docs/switch-task.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a72599fbd673408d62701fa376373f5154c7d948",
+    "authorDate": "2023-02-16T16:30:11+02:00",
+    "subject": "fixed formatting",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/events/queue/DefaultEventQueueProcessor.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "719677de34ff323fc30578ad13436865e18ccbac",
+    "authorDate": "2023-01-27T03:14:09+05:30",
+    "subject": "Documentation - minor issue fixes (#3462)",
+    "body": "Fixed spelling in documentation files.",
+    "issueRefs": [
+      "#3462"
+    ],
+    "touchedFiles": [
+      "docs/docs/reference-docs/event-task.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "eba3fc35cfcf70e7c86c8ad307d927a4e6e254c5",
+    "authorDate": "2023-01-23T10:11:52-05:00",
+    "subject": "Task details not showing in UI",
+    "body": "Event.path is deprecated in chrome as of the last update https://chromestatus.com/feature/5726124632965120. This is causing a bug when clicking on a task in the UI. This is also see in safari: https://github.com/Netflix/conductor/issues/3330. Updating to use composedPath() instead per guidance.\r\n\r\nThis is compatible with all browsers:\r\nhttps://developer.mozilla.org/en-US/docs/Web/API/Event/composedPath",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/src/components/diagram/WorkflowGraph.jsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "58707e2c86e4992f5df030d935bd5ecc62541eea",
+    "authorDate": "2023-01-23T18:38:55-06:00",
+    "subject": "Fix unused version in Running Workflows metric (#3386)",
+    "body": "* Fix unused version in Running Workflows metric\r\n\r\n* spotless\r\n\r\n* Fix for sorting by version and adding test\r\n\r\n* Running spotless with java 11\r\n\r\n* undo spotless",
+    "issueRefs": [
+      "#3386"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/metrics/Monitors.java",
+      "core/src/main/java/com/netflix/conductor/metrics/WorkflowMonitor.java",
+      "core/src/test/java/com/netflix/conductor/metrics/WorkflowMonitorTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5d94791294ede0480b4776429afc34185b92d81b",
+    "authorDate": "2023-01-23T23:34:18+01:00",
+    "subject": "Improve Java Worker documentation (#3418)",
+    "body": "* Heal the Java Worker doc page\r\n\r\n* Fixed MD formatting issues\r\n* Fixed broken stylig\r\n* Improved spelling/grammar\r\n\r\n* Add missing 'conductor-common' dependency\r\n\r\nThe `Task`-related classes are located in the 'conductor-common' lib.\r\n\r\n* Bumped the lib version",
+    "issueRefs": [
+      "#3418"
+    ],
+    "touchedFiles": [
+      "docs/docs/how-tos/Workers/build-a-java-task-worker.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bfb5430ce0a22c0a7adcf8b11fd32376b2dab629",
+    "authorDate": "2023-01-24T02:15:52+04:00",
+    "subject": "doc updates.md (#3364)",
+    "body": "* Update workflow_sdk.md\r\n\r\nFixed the 404 error for the existing task input link and some minor updates on the content.\r\n\r\n* fixed 404 link and some minor updates\r\n\r\nFixed 404 error link of WorkflowExecutor. Apart from that, few update on the content.\r\n\r\n* content update\r\n\r\nFew content updates",
+    "issueRefs": [
+      "#3364"
+    ],
+    "touchedFiles": [
+      "java-sdk/testing_framework.md",
+      "java-sdk/worker_sdk.md",
+      "java-sdk/workflow_sdk.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c0e152793ac7cf3c4cbf5133641c207c93bb241c",
+    "authorDate": "2023-01-23T14:13:52-08:00",
+    "subject": "Merge pull request #3363 from hanyf/main",
+    "body": "fix a spell mistake",
+    "issueRefs": [
+      "#3363"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7bb2792a9ce898d7235813b50852ba13673f9020",
+    "authorDate": "2023-01-23T14:13:30-08:00",
+    "subject": "Merge pull request #3336 from paescuj/patch-1",
+    "body": "Fix typo in docs: Desiging → Designing",
+    "issueRefs": [
+      "#3336"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0c30109d59d85f8ca3373f90ff5c2f66188b0724",
+    "authorDate": "2023-01-23T23:10:31+01:00",
+    "subject": "Remove tasks from Elasticsearch when workflow is removed (#3300)",
+    "body": "* Remove tasks from Elasticsearch when workflow is removed (#1505)\r\n\r\n* Add removeTask method for IndexDAO\r\n\r\nImplement removeTask and asyncRemoveTask methods to the IndexDAO\r\ninterface.\r\nImplemented in ElasticSearchDAOV6, ElasticSearchRestDAOV6, and\r\nNoopIndexDAO.\r\n\r\n* Implement removal of tasks for removeWorkflow\r\n\r\n- Update ExecutionDAOFacade#removeWorkflow with two new parameters:\r\nremoveTasks and archiveTasks\r\n- Added ExecutionDAOFacade#removeTaskIndex\r\n- Added methods updateTask and asyncUpdateWorkflow to IndexDAO\r\n- Added methods updateTask and asyncUpdateWorkflow to ElasticSearchDAOV6\r\n  and ElasticSearchRestDAOV6\r\n\r\n* Add tests for removing workflow through /workflow/remove\r\n\r\n- Introduced tests for WorkflowServiceTest\r\n- Introduced tests for WorkflowResourceTest\r\n- Introduced test for ExecutionDAOFacadeTest\r\n- Introduced test for QueueResilienceSpec.groovy\r\n\r\n* Update Javadoc to include task archival when workflow archived and removeTasks true\r\n\r\n* Implement fix for when tasks are not removed (#1505)\r\n\r\n- Now tasks are search and associated with workflows through a search\r\n  query directly embedded rather than constructed\r\n- If a task can not be removed it will error and return\r\n- Monitors are updated automatically\r\n- Updated TestElasticSearchRestDAOV6 and TestElasticSearchDAOV6\r\n\r\n* Removed rawJSON field from task archival from index DAO (#1505)\r\n\r\n* Removed removeTasks boolean parameter, now always removing tasks (#1505)\r\n\r\n* Update QueueResilienceSpec tests to include archive workflow\r\n\r\n* Update ExecutionDAOFacade to fix removeTask\r\n\r\nCurrently ExecutionDAOFacade would call removeTask double the amount of\r\ntimes, this has been fixed.\r\nNow the only bug still present is that tasks are not terminated once removed\r\nand with that the index may also not be removed.\r\n\r\n* Remove archival of workflow tasks from QueueResiliencySpec\r\n\r\n* Merged loops for removing task index and queue removal (#1505)",
+    "issueRefs": [
+      "#3300",
+      "#1505"
+    ],
+    "touchedFiles": [
+      "client/src/main/java/com/netflix/conductor/client/http/WorkflowClient.java",
+      "core/src/main/java/com/netflix/conductor/core/dal/ExecutionDAOFacade.java",
+      "core/src/main/java/com/netflix/conductor/core/index/NoopIndexDAO.java",
+      "core/src/main/java/com/netflix/conductor/dao/IndexDAO.java",
+      "core/src/main/java/com/netflix/conductor/service/WorkflowService.java",
+      "core/src/main/java/com/netflix/conductor/service/WorkflowServiceImpl.java",
+      "core/src/test/java/com/netflix/conductor/core/dal/ExecutionDAOFacadeTest.java",
+      "core/src/test/java/com/netflix/conductor/service/WorkflowServiceTest.java",
+      "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/index/ElasticSearchDAOV6.java",
+      "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/index/ElasticSearchRestDAOV6.java",
+      "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchDAOV6.java",
+      "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchRestDAOV6.java",
+      "es6-persistence/src/test/java/com/netflix/conductor/es6/utils/TestUtils.java",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/resiliency/QueueResiliencySpec.groovy"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0908c0061a8354af3b2fa11548080c4d8c8a15ec",
+    "authorDate": "2023-01-16T16:38:04+05:30",
+    "subject": "fixed task card open in chrome and firefox",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/src/components/diagram/WorkflowGraph.jsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c38ef47829f214fb9c07554fa210a2256d326799",
+    "authorDate": "2023-01-10T21:30:17+05:30",
+    "subject": "test fix",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/src/test/java/com/netflix/conductor/common/config/ConductorObjectMapperTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "18a34854d56a238c8dc007c15c1770c9bddfa4a8",
+    "authorDate": "2022-11-07T12:19:00+01:00",
+    "subject": "Fix typo in docs: Desiging → Designing",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docs/docs/index.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "21abd2f1447d012837d124919770d1c54e812d25",
+    "authorDate": "2022-12-07T08:42:42+05:30",
+    "subject": "Do_while task relevant loop over task calculation fix (#3351)",
+    "body": "* Simplifying the logic to check relevant task for do_while task\r\n\r\nThe cases where decision/ fork_join, dynamic_fork is part of loop over task then ideally do_while task must wait before all the task gets completed.\r\n\r\n* integration tests\r\n\r\n* spotless\r\n\r\n* proper fix\r\n\r\n* spotless\r\n\r\n* integration test for remaining scenario.\r\n\r\n* removed not necessary test case.\r\n\r\nThe test case was when decision task is part of loop over task and decision task contains two tasks and only one task is scheduled. But there will not be any case where we schedule only one task given the decision case has two tasks.\r\n\r\n* spotless\r\n\r\n* spotless 2\r\n\r\n* spotless 3",
+    "issueRefs": [
+      "#3351"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/DoWhile.java",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DoWhileSpec.groovy",
+      "test-harness/src/test/resources/do_while_with_decision_task.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "12663ca0b3205bc3f008fbef4d20e9fbe8dd5182",
+    "authorDate": "2022-12-05T14:25:06-08:00",
+    "subject": "Allow overriding the thread count for the annotated workers (#3320)",
+    "body": "* Allow overriding the thread count for the annotated workers\r\n\r\n* Added AnnotatedWorkerTests to cover how invocation parameters are created from annotations or inferred from their type and the input data\r\n\r\n* Refactoring + fix NPE when input parameter type is List and its value is null\r\n\r\nCo-authored-by: Miguel Prieto <miguelprieto@orkes.io>",
+    "issueRefs": [
+      "#3320"
+    ],
+    "touchedFiles": [
+      "java-sdk/build.gradle",
+      "java-sdk/dependencies.lock",
+      "java-sdk/example/java/com/netflix/conductor/sdk/example/shipment/ShipmentWorkers.java",
+      "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/executor/task/AnnotatedWorker.java",
+      "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/executor/task/AnnotatedWorkerExecutor.java",
+      "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/task/WorkerTask.java",
+      "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/executor/task/AnnotatedWorkerTests.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bd1a13e6f405f12bf0df7674f68dd526501f4f4a",
+    "authorDate": "2022-11-29T17:26:33+08:00",
+    "subject": "fix a spell mistake",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/src/components/formik/FormikInput.jsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9e80c4af02c504072dfc775fb97430907bc1097c",
+    "authorDate": "2022-10-20T13:38:00-05:00",
+    "subject": "Fix typo in website nav menu (#3308)",
+    "body": "",
+    "issueRefs": [
+      "#3308"
+    ],
+    "touchedFiles": [
+      "docs/mkdocs.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c650223d840b5878fd68c95bd5f8079dcf4d288b",
+    "authorDate": "2022-10-17T23:28:19+02:00",
+    "subject": "[Docs] Small docs fixes (#3291)",
+    "body": "* Fixed syntax highliting in starting-workflows.md\r\n\r\n* Fixed links in debugging-workflows.md\r\n\r\nCo-authored-by: Lukas Rampa <lukas.rampa@aimtecglobal.com>",
+    "issueRefs": [
+      "#3291"
+    ],
+    "touchedFiles": [
+      "docs/docs/how-tos/Workflows/debugging-workflows.md",
+      "docs/docs/how-tos/Workflows/starting-workflows.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "48cf9625846139cd0600dca58cc6d9d8f991a98a",
+    "authorDate": "2022-10-17T22:36:48+05:30",
+    "subject": "typo fix in docs (workerdef) (#3297)",
+    "body": "Co-authored-by: Biswarup Dass <dbiswarup@vmware.com>",
+    "issueRefs": [
+      "#3297"
+    ],
+    "touchedFiles": [
+      "docs/docs/configuration/workerdef.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7a328dd1ae56337c8379e1469b508a5ae180ecd9",
+    "authorDate": "2022-10-13T13:34:31-04:00",
+    "subject": "Add unit tests and revert change to set responseTimeout in TaskDef",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/dao/CassandraMetadataDAO.java",
+      "cassandra-persistence/src/test/groovy/com/netflix/conductor/cassandra/dao/CassandraMetadataDAOSpec.groovy",
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskDef.java",
+      "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java",
+      "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowSweeper.java",
+      "core/src/test/java/com/netflix/conductor/service/MetadataServiceTest.java",
+      "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisMetadataDAO.java",
+      "redis-persistence/src/test/java/com/netflix/conductor/redis/dao/RedisMetadataDAOTest.java"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "7c12003344c7b296c07822d741104dab749c9581",
+    "authorDate": "2022-10-12T10:20:38-04:00",
+    "subject": "Add a special handling for WAIT taskTypes. Set responseTimeout to 1hr by default",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskDef.java",
+      "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java",
+      "core/src/test/java/com/netflix/conductor/service/MetadataServiceTest.java"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "be4e4d1a93bfe7a53630f6d4abe329b79b81f720",
+    "authorDate": "2022-09-29T10:45:53-07:00",
+    "subject": "fixed WaitTaskSpec missing method error",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/WaitTaskSpec.groovy"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "de8606bf844cb71d06b8b185de5ccbbf58f441a1",
+    "authorDate": "2022-09-26T13:32:53-07:00",
+    "subject": "fixed tests",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/StartWorkflowInput.java",
+      "core/src/main/java/com/netflix/conductor/service/WorkflowServiceImpl.java",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/base/AbstractSpecification.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DecisionTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DoWhileSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DynamicForkJoinSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/EventTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/ExclusiveJoinSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/ExternalPayloadStorageSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/FailureWorkflowSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/ForkJoinSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/HierarchicalForkJoinSubworkflowRerunSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/HierarchicalForkJoinSubworkflowRestartSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/HierarchicalForkJoinSubworkflowRetrySpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/JsonJQTransformSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/LambdaAndTerminateTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/NestedForkJoinSubWorkflowSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SetVariableTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SimpleWorkflowSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/StartWorkflowSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SubWorkflowRerunSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SubWorkflowRestartSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SubWorkflowRetrySpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SubWorkflowSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SwitchTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SystemTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/TaskLimitsWorkflowSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/WaitTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/WorkflowAndTaskConfigurationSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/resiliency/TaskResiliencySpec.groovy"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7bde4b6d056965b20c134098e4207aff2aaf9ac1",
+    "authorDate": "2022-09-28T00:22:08+05:30",
+    "subject": "Update workflow in DAO in case of update of workflow related attribute. (#3221)",
+    "body": "* Update workflow incase of update of workflow related attribute.\r\n\r\n* move logic to update workflow in main decide method.\r\n\r\n* review comments.\r\n\r\n* review comments.\r\n\r\n* spotless\r\n\r\n* review comments.\r\n\r\n* Review comments\r\n\r\n* done\r\n\r\n* n\r\n\r\n* build fix\r\n\r\n* spotless\r\n\r\n* Not consulting task any more.\r\n\r\n* move logic to private method and use that for hash computation\r\n\r\n* review comments.\r\n\r\n* fix",
+    "issueRefs": [
+      "#3221"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/SetVariable.java",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/WaitTaskSpec.groovy",
+      "test-harness/src/test/resources/set_variable_workflow_integration_test.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "27b75831f53813415b2bc76e37e57a9142760528",
+    "authorDate": "2022-09-26T13:32:53-07:00",
+    "subject": "fixed tests",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/test/groovy/com/netflix/conductor/core/execution/AsyncSystemTaskExecutorTest.groovy",
+      "core/src/test/groovy/com/netflix/conductor/core/execution/tasks/StartWorkflowSpec.groovy",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1040eaf97ee510cb758aae4e0b1ee96ecd7df4f6",
+    "authorDate": "2022-09-21T18:04:51+01:00",
+    "subject": "Update docker.md (#3253)",
+    "body": "Fixed small yet important typo in documentation.",
+    "issueRefs": [
+      "#3253"
+    ],
+    "touchedFiles": [
+      "docs/docs/gettingstarted/docker.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "312160b6ccfed6d1142ab7a4bb0d58092480a1bf",
+    "authorDate": "2022-09-13T01:22:29+04:00",
+    "subject": "fix missing update time because of different field names in WorkflowModel and Workflow (#3231)",
+    "body": "",
+    "issueRefs": [
+      "#3231"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/model/WorkflowModel.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b843af4544fde85816b74c5337ef270607c41599",
+    "authorDate": "2022-09-10T00:44:28-07:00",
+    "subject": "fix subworkflow output during repair (#3232)",
+    "body": "",
+    "issueRefs": [
+      "#3232"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/SubWorkflow.java",
+      "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowRepairService.java",
+      "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowRepairService.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "db841aceec30a2448b9ee0b532518df688d23064",
+    "authorDate": "2022-08-25T22:20:25+05:30",
+    "subject": "[Docs] Fixed Language issues. (#3200)",
+    "body": "* Fixed Language issues.\r\n\r\n* Fixed Language issues.",
+    "issueRefs": [
+      "#3200"
+    ],
+    "touchedFiles": [
+      "docs/docs/configuration/workflowdef.md",
+      "docs/docs/resources/contributing.md",
+      "ui/README.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "630b870cb7a055df537f8a703d8b316482b4ecb0",
+    "authorDate": "2022-08-24T10:07:49-07:00",
+    "subject": "Fix next task not scheduled after switch completes (#3197)",
+    "body": "",
+    "issueRefs": [
+      "#3197"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/ForkJoinDynamicTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/ForkJoinTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapper.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderOutcomes.java",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SwitchTaskSpec.groovy",
+      "test-harness/src/test/resources/switch_with_no_default_case_integration_test.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6f8daab9fb91aa8860f9bcf8778a060974161839",
+    "authorDate": "2022-08-19T16:30:37-07:00",
+    "subject": "task lease extend (#3186)",
+    "body": "* Add method to extend lease for task\r\n\r\n* Client to do extend lease for long running tasks automatically\r\n\r\n* Fix format\r\n\r\n* Refactor",
+    "issueRefs": [
+      "#3186"
+    ],
+    "touchedFiles": [
+      "client/src/main/java/com/netflix/conductor/client/automator/TaskPollExecutor.java",
+      "client/src/main/java/com/netflix/conductor/client/automator/TaskRunnerConfigurer.java",
+      "client/src/main/java/com/netflix/conductor/client/telemetry/MetricsContainer.java",
+      "client/src/main/java/com/netflix/conductor/client/worker/Worker.java",
+      "client/src/test/java/com/netflix/conductor/client/automator/TaskPollExecutorTest.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskResult.java",
+      "core/src/main/java/com/netflix/conductor/core/dal/ExecutionDAOFacade.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/main/java/com/netflix/conductor/metrics/Monitors.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "33062f3ae506e49947bd11157dce279254f00347",
+    "authorDate": "2022-08-18T16:50:05-07:00",
+    "subject": "Failed task names (#3185)",
+    "body": "* Add support for tracking failed task names with workflow execution\r\n\r\n* Fix tests\r\n\r\n* Undo inadvertent variable name change",
+    "issueRefs": [
+      "#3185"
+    ],
+    "touchedFiles": [
+      "common/src/main/java/com/netflix/conductor/common/run/Workflow.java",
+      "common/src/main/java/com/netflix/conductor/common/run/WorkflowSummary.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/main/java/com/netflix/conductor/model/WorkflowModel.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+      "es6-persistence/src/main/resources/mappings_docType_workflow.json",
+      "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchDAOV6.java",
+      "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchRestDAOV6.java",
+      "grpc/src/main/java/com/netflix/conductor/grpc/AbstractProtoMapper.java",
+      "grpc/src/main/proto/model/workflow.proto",
+      "grpc/src/main/proto/model/workflowsummary.proto",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SimpleWorkflowSpec.groovy"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "2d514690eb7a52ec6140677a1bf083f6f940443d",
+    "authorDate": "2022-08-14T14:33:46-07:00",
+    "subject": "Performance improvements in Decider (#3070)",
+    "body": "* decider performance improvements\r\n\r\n* ignore tests - temp\r\n\r\n* Update WorkflowExecutor.java\r\n\r\n* formatting changes\r\n\r\n* fix merge conflicts\r\n\r\n* apply formatting\r\n\r\n* updates based on the PR comments\r\n\r\n* change the visibility of the method to package private\r\n\r\n* Update WorkflowExecutor.java\r\n\r\n* remove legacy code\r\n\r\n* enable tests",
+    "issueRefs": [
+      "#3070"
+    ],
+    "touchedFiles": [
+      "core/build.gradle",
+      "core/src/main/java/com/netflix/conductor/core/dal/ExecutionDAOFacade.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/DeciderService.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/ForkJoinDynamicTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/ForkJoinTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderOutcomes.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+      "test-harness/build.gradle",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DoWhileSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/ForkJoinSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/NestedForkJoinSubWorkflowSpec.groovy"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "edc57810e25ce54746166bae68a55fed8ad2de8d",
+    "authorDate": "2022-08-11T14:36:43-07:00",
+    "subject": "[UI] Fix edge case where tasks have refs that resemble those inside of a loop. Format code.",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/cypress/fixtures/doWhile/doWhileSwitch.json",
+      "ui/src/components/KeyValueTable.jsx",
+      "ui/src/components/ReactJson.jsx",
+      "ui/src/components/diagram/WorkflowDAG.js",
+      "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+      "ui/src/pages/execution/TaskSummary.jsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5661251ea45b2583159bdca324c529b69ed0a68a",
+    "authorDate": "2022-08-11T13:15:04-07:00",
+    "subject": "Merge pull request #3174 from Netflix/fix-switch-loop",
+    "body": "Fix DO_WHILE loops containing a SWITCH task",
+    "issueRefs": [
+      "#3174"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "14223372d74424b9d5b7a7cfffe8d0e254db3bce",
+    "authorDate": "2022-08-11T12:52:12-07:00",
+    "subject": "Merge branch 'main' of github.com:Netflix/conductor into fix-switch-loop",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6d514681df043a34b291d4d2e6ea1f1fd847c2db",
+    "authorDate": "2022-08-11T10:49:00-07:00",
+    "subject": "Merge branch 'main' into fix-switch-loop",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c526c65a73186fbdb89acef4988e5534d531e97f",
+    "authorDate": "2022-08-10T13:12:20-07:00",
+    "subject": "remove obsolete TODOs and refactor (#3161)",
+    "body": "* remove obsolete TODOs and refactor\r\n\r\n* spotless\r\n\r\n* using mockbean\r\n\r\n* Revert \"using mockbean\"\r\n\r\nThis reverts commit e1cb9867c78ae7c5884b7212339c9cea56485154.\r\n\r\n* revert changes to event processor\r\n\r\n* fix tests",
+    "issueRefs": [
+      "#3161"
+    ],
+    "touchedFiles": [
+      "annotations-processor/dependencies.lock",
+      "annotations/dependencies.lock",
+      "awss3-storage/dependencies.lock",
+      "awssqs-event-queue/dependencies.lock",
+      "cassandra-persistence/dependencies.lock",
+      "client-spring/dependencies.lock",
+      "client/dependencies.lock",
+      "common/dependencies.lock",
+      "core/dependencies.lock",
+      "core/src/main/java/com/netflix/conductor/core/events/DefaultEventProcessor.java",
+      "core/src/main/java/com/netflix/conductor/core/events/SimpleActionProcessor.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/main/java/com/netflix/conductor/service/ExecutionService.java",
+      "core/src/main/java/com/netflix/conductor/service/TaskServiceImpl.java",
+      "core/src/main/java/com/netflix/conductor/service/WorkflowServiceImpl.java",
+      "core/src/test/java/com/netflix/conductor/core/events/TestSimpleActionProcessor.java",
+      "dependencies.lock",
+      "es6-persistence/dependencies.lock",
+      "grpc-client/dependencies.lock",
+      "grpc-server/dependencies.lock",
+      "grpc/dependencies.lock",
+      "http-task/dependencies.lock",
+      "java-sdk/dependencies.lock",
+      "json-jq-task/dependencies.lock",
+      "redis-concurrency-limit/dependencies.lock",
+      "redis-lock/dependencies.lock",
+      "redis-persistence/dependencies.lock",
+      "redis-persistence/src/main/java/com/netflix/conductor/redis/dynoqueue/ConfigurationHostSupplier.java",
+      "rest/dependencies.lock",
+      "server/dependencies.lock",
+      "test-harness/dependencies.lock",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/resiliency/QueueResiliencySpec.groovy"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "e20a193e70d00c43b5e9af0f5df62b79150e28bf",
+    "authorDate": "2022-08-09T01:33:18-05:00",
+    "subject": "Fix a subworkflow performance issue without selecting tasks (#3152)",
+    "body": "* Try fixing subworkflow performance issue\r\n\r\n* Running spotless apply on conductor core\r\n\r\n* Revert \"Running spotless apply on conductor core\"\r\n\r\nThis reverts commit b5ebd4338b1827beacbfd2eceaf418454b25b3a2.\r\n\r\n* apply spotless java 11\r\n\r\n* fix unit tests\r\n\r\n* Try to log some info\r\n\r\n* Revert \"Try to log some info\"\r\n\r\nThis reverts commit 3411f5dde9c54f970fbe309b6d5e57761c7e1a9b.\r\n\r\n* See if this change fixes the broken test\r\n\r\n* Try again",
+    "issueRefs": [
+      "#3152"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/AsyncSystemTaskExecutor.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/SubWorkflow.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/WorkflowSystemTask.java",
+      "core/src/test/groovy/com/netflix/conductor/core/execution/AsyncSystemTaskExecutorTest.groovy"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "27fca2d9d0e75c3b5f11afa6297b217a82f6ea30",
+    "authorDate": "2022-08-08T10:57:35-07:00",
+    "subject": "Fix property name in ReadMe",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docs/docs/gettingstarted/docker.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b0b05da47f6f8d372f068b8489c37d3778dbcbec",
+    "authorDate": "2022-08-05T13:08:44-07:00",
+    "subject": "Jxu/springcache (#3143)",
+    "body": "* Switch to use spring cache for taskdef and event handler\r\n\r\n* Fix get and update taskdef cache\r\n\r\n* refactor",
+    "issueRefs": [
+      "#3143"
+    ],
+    "touchedFiles": [
+      "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/config/CassandraConfiguration.java",
+      "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/config/cache/CacheableEventHandlerDAO.java",
+      "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/config/cache/CacheableMetadataDAO.java",
+      "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/config/cache/CachingConfig.java",
+      "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/dao/CassandraMetadataDAO.java",
+      "core/src/main/java/com/netflix/conductor/dao/MetadataDAO.java",
+      "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisMetadataDAO.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a88f133a4613a93845f72303927fc535e45bf541",
+    "authorDate": "2022-08-03T12:02:58-03:00",
+    "subject": "Fix: connect cases to loop end. Ignore cases in execution.",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/src/components/diagram/WorkflowDAG.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "236830ea73002c7539e1eecff9b6eb5af0debe0b",
+    "authorDate": "2022-07-17T21:14:53-07:00",
+    "subject": "Fix typo: persistance → persistence (#3111)",
+    "body": "",
+    "issueRefs": [
+      "#3111"
+    ],
+    "touchedFiles": [
+      "docs/docs/gettingstarted/source.md",
+      "docs/docs/index.md",
+      "docs/docs/reference-docs/azureblob-storage.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6c496a6ddee91bb61ea188f6fc5f1381fda3a384",
+    "authorDate": "2022-06-30T15:40:51-07:00",
+    "subject": "miscellaneous fixes for broken tests",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "client/src/test/groovy/com/netflix/conductor/client/http/MetadataClientSpec.groovy",
+      "client/src/test/java/com/netflix/conductor/client/automator/TaskRunnerConfigurerTest.java",
+      "core/src/test/java/com/netflix/conductor/core/dal/ExecutionDAOFacadeTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+      "core/src/test/java/com/netflix/conductor/core/metadata/MetadataMapperServiceTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a99e939d36d116d58636a4f1c0537c2b60eb7805",
+    "authorDate": "2022-06-21T21:22:04-07:00",
+    "subject": "Bugfix/jointask output (#3055)",
+    "body": "* re-throw TerminateWorkflowException for task update\r\n\r\n* Add only non-empty task output for Join",
+    "issueRefs": [
+      "#3055"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/dal/ExecutionDAOFacade.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Join.java",
+      "core/src/test/java/com/netflix/conductor/core/dal/ExecutionDAOFacadeTest.java",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DynamicForkJoinSpec.groovy"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "46c2bafe5d65dc458526ad363b8bdc992fb43041",
+    "authorDate": "2022-06-08T09:36:06-07:00",
+    "subject": "[UI] Fix duration formatting",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/src/utils/helpers.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "73284fc1b7662873f9a5976c7b42682c697d865c",
+    "authorDate": "2022-06-04T21:44:14-07:00",
+    "subject": "Typo fix (#3029)",
+    "body": "",
+    "issueRefs": [
+      "#3029"
+    ],
+    "touchedFiles": [
+      "docs/docs/faq.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7b90c64d369ba524cb3da141f93e166c7531cf57",
+    "authorDate": "2022-06-01T18:26:54+01:00",
+    "subject": "Fix: Enable extra task fields in Java-SDK (#3009)",
+    "body": "* Fix: Enable extra task fields in Java-SDK\r\n\r\n* Enables `Start Delay` field for a Task.\r\n* Enables `Optional` field for a Task.",
+    "issueRefs": [
+      "#3009"
+    ],
+    "touchedFiles": [
+      "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/Task.java",
+      "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/def/WorkflowDefTaskTests.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3b5aed12db5af905a48fbd5aa11ee08d156a300c",
+    "authorDate": "2022-05-31T15:11:28-07:00",
+    "subject": "Enhance WAIT task to support time-based wait scenarios (#2986)",
+    "body": "* Update Wait.java\r\n\r\n* Add support for waiting for time duration or until a specific date/time\r\n\r\n* add unit tests and SDK methods\r\n\r\n* formatting\r\n\r\n* Remove Guava dependency\r\n\r\n* Fix formatting\r\n\r\n* Wait task updates\r\n\r\n1.  Added validations at the time of workflow creation\r\n2. Using commons lang StringUtils\r\n3. Using TaskModel to store timeout\r\n4. Update documentation\r\n\r\n* remove callbackafter\r\n\r\n* add the break\r\n\r\n* Fix readme\r\n\r\n* Move the date parsing to a util class\r\n\r\n* move DateTimeUtils to the common utils package",
+    "issueRefs": [
+      "#2986"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Wait.java",
+      "core/src/main/java/com/netflix/conductor/core/utils/DateTimeUtils.java",
+      "core/src/main/java/com/netflix/conductor/model/TaskModel.java",
+      "core/src/main/java/com/netflix/conductor/validations/WorkflowTaskTypeConstraint.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestWait.java",
+      "docs/docs/reference-docs/wait-task.md",
+      "java-sdk/src/main/java/com/netflix/conductor/sdk/workflow/def/tasks/Wait.java",
+      "java-sdk/src/test/java/com/netflix/conductor/sdk/workflow/def/TaskConversionsTests.java",
+      "polyglot-clients/README.md"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "cb7ad0704679ee8b66ec46317f51a0b6214cb9a4",
+    "authorDate": "2022-05-17T13:36:16-07:00",
+    "subject": "Fix docsite description (for SEO)",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docs/mkdocs.yml",
+      "docs/theme/main.html"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9190e1180e8760c966fecced8ec5e0780f25ec05",
+    "authorDate": "2022-05-04T20:49:06-07:00",
+    "subject": "Fix for #1677, inspired from #2881. Loop-over tasks are created in the DoWhile.execute method. The DO_WHILE TaskModel is persisted before the loop-over tasks are created. Therefore, the loop-over tasks will have access the iteration field in DO_WHILE TaskModel.",
+    "body": "",
+    "issueRefs": [
+      "#1677",
+      "#2881"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/DeciderService.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/DoWhileTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/DoWhile.java",
+      "core/src/main/java/com/netflix/conductor/core/utils/ParametersUtils.java",
+      "core/src/test/groovy/com/netflix/conductor/core/execution/tasks/DoWhileSpec.groovy",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/DoWhileTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestDoWhile.java",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DoWhileSpec.groovy",
+      "test-harness/src/test/resources/do_while_iteration_fix_test.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2dc6d6a81edd6a4f07ef61b059b5c53efc4e7650",
+    "authorDate": "2022-05-12T14:33:03-07:00",
+    "subject": "[UI] Control react-query key array explication in useFetch. Fixes #2977.",
+    "body": "",
+    "issueRefs": [
+      "Fixes #2977"
+    ],
+    "touchedFiles": [
+      "ui/src/data/common.js",
+      "ui/src/data/misc.js",
+      "ui/src/data/task.js",
+      "ui/src/data/workflow.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8b1c50fe3d06ed3a92e8530f5aa6ed99419d0128",
+    "authorDate": "2022-05-10T15:12:42-07:00",
+    "subject": "Fix update with large payload task result (#2982)",
+    "body": "* fix update with large payload task result\r\n\r\n* retryOperation method refactored\r\n\r\nCo-authored-by: Aravindan Ramkumar <1028385+aravindanr@users.noreply.github.com>",
+    "issueRefs": [
+      "#2982"
+    ],
+    "touchedFiles": [
+      "client/src/main/java/com/netflix/conductor/client/automator/TaskPollExecutor.java",
+      "client/src/main/java/com/netflix/conductor/client/http/TaskClient.java",
+      "client/src/test/java/com/netflix/conductor/client/automator/TaskPollExecutorTest.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskResult.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9c26ed689a1710ce13e8d2fc9d4f1df49da3337b",
+    "authorDate": "2022-05-09T22:47:55+01:00",
+    "subject": "fixed links and spelling in java SDK docs (#2915)",
+    "body": "",
+    "issueRefs": [
+      "#2915"
+    ],
+    "touchedFiles": [
+      "Untitled",
+      "java-sdk/testing_framework.md",
+      "java-sdk/worker_sdk.md",
+      "java-sdk/workflow_sdk.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4e1f08abcc16d63ca2652f4bc489f8a1a1f10aa9",
+    "authorDate": "2022-05-04T19:24:19+02:00",
+    "subject": "Fix for NPE when header values are null (#2964)",
+    "body": "* Fix for NPE when header values are null\r\n\r\n* fixed formatting\r\n\r\nCo-authored-by: mhubli <Muralidhar.Hubli@wolterskluwer.com>",
+    "issueRefs": [
+      "#2964"
+    ],
+    "touchedFiles": [
+      "http-task/src/main/java/com/netflix/conductor/tasks/http/HttpTask.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "544ed1444fc0b30f972383799a6bc28802ffba6e",
+    "authorDate": "2022-05-03T10:13:19-07:00",
+    "subject": "Merge pull request #2962 from amolkatdare/patch-1",
+    "body": "fixed typos",
+    "issueRefs": [
+      "#2962"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "009ffedb76310269a35645db4b54fb819ed91b01",
+    "authorDate": "2022-05-03T10:58:08-05:00",
+    "subject": "fixed typos",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docs/docs/configuration/workflowdef.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3a038159bd0940b3f110c68e351db045328e5712",
+    "authorDate": "2022-04-25T14:11:42-07:00",
+    "subject": "Allow Overrding of IDGenerator  (#2910)",
+    "body": "* changes to make id generator injectable\r\n\r\n* fix tests\r\n\r\n* Update CassandraExecutionDAOSpec.groovy\r\n\r\n* Update build.gradle\r\n\r\n* formatting\r\n\r\n* Update IDGenerator.java\r\n\r\n* Update IDGenerator.java\r\n\r\n* Add note on overriding the id generator\r\n\r\n* formatting.",
+    "issueRefs": [
+      "#2910"
+    ],
+    "touchedFiles": [
+      "azureblob-storage/src/main/java/com/netflix/conductor/azureblob/config/AzureBlobConfiguration.java",
+      "azureblob-storage/src/main/java/com/netflix/conductor/azureblob/storage/AzureBlobPayloadStorage.java",
+      "azureblob-storage/src/test/java/com/netflix/conductor/azureblob/storage/AzureBlobPayloadStorageTest.java",
+      "cassandra-persistence/src/test/groovy/com/netflix/conductor/cassandra/dao/CassandraExecutionDAOSpec.groovy",
+      "contribs/src/main/java/com/netflix/conductor/contribs/storage/S3PayloadStorage.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/storage/config/S3Configuration.java",
+      "contribs/src/test/java/com/netflix/conductor/contribs/tasks/http/HttpTaskTest.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/DeciderService.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/ForkJoinDynamicTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/utils/IDGenerator.java",
+      "core/src/test/groovy/com/netflix/conductor/core/execution/AsyncSystemTaskExecutorTest.groovy",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderOutcomes.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderService.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/DecisionTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/DoWhileTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/DynamicTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/EventTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/ForkJoinDynamicTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/ForkJoinTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/HTTPTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/InlineTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/JoinTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/JsonJQTransformTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/KafkaPublishTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/LambdaTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/SetVariableTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/SimpleTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/SubWorkflowTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/TerminateTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/UserDefinedTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/WaitTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestDoWhile.java",
+      "es6-persistence/src/test/java/com/netflix/conductor/es6/utils/TestUtils.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/utils/TestUtils.java",
+      "grpc/src/main/java/com/netflix/conductor/grpc/AbstractProtoMapper.java",
+      "grpc/src/main/proto/model/taskdef.proto",
+      "postgres-external-storage/src/main/java/com/netflix/conductor/postgres/config/PostgresPayloadConfiguration.java",
+      "postgres-external-storage/src/main/java/com/netflix/conductor/postgres/storage/PostgresPayloadStorage.java",
+      "postgres-external-storage/src/test/java/com/netflix/conductor/postgres/storage/PostgresPayloadStorageTest.java"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "5b54ba6742b0f2796dc86407cf484350bcd0eb89",
+    "authorDate": "2022-04-21T10:36:58-07:00",
+    "subject": "fix update gradle wrapper workflow",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".github/workflows/update-gradle-wrapper.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ffc1454524db750754acff53ffdcf77cd7bc6a6f",
+    "authorDate": "2022-04-18T10:37:40-07:00",
+    "subject": "#2913 fixed dead links",
+    "body": "",
+    "issueRefs": [
+      "#2913"
+    ],
+    "touchedFiles": [
+      "docs/docs/architecture.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "48a8e9df76bbf84931dccd63fc5dcbb33d3bbfbd",
+    "authorDate": "2022-04-13T14:02:04-07:00",
+    "subject": "[UI] Fix bulk retry button",
+    "body": "* Upgrade react-vis-timeline. \r\n* Fix dependency warnings.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/package.json",
+      "ui/src/pages/execution/Timeline.jsx",
+      "ui/src/pages/executions/BulkActionModule.jsx",
+      "ui/src/pages/kitchensink/Gantt.jsx",
+      "ui/yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a5034eb4b1df49afc29b3216acceea5a7766c767",
+    "authorDate": "2022-04-11T15:02:11-07:00",
+    "subject": "Fix validation error handling in workflow editor - Rev version. Keep moment upgrade.",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/package.json",
+      "ui/src/App.jsx",
+      "ui/src/components/Dropdown.jsx",
+      "ui/src/components/KeyValueTable.jsx",
+      "ui/src/components/ReactJson.jsx",
+      "ui/src/data/workflow.js",
+      "ui/src/pages/definition/SaveTaskDialog.jsx",
+      "ui/src/pages/definition/SaveWorkflowDialog.jsx",
+      "ui/src/pages/execution/Execution.jsx",
+      "ui/src/pages/executions/TaskSearch.jsx",
+      "ui/src/pages/kitchensink/KitchenSink.jsx",
+      "ui/src/pages/workbench/RunHistory.tsx",
+      "ui/src/pages/workbench/WorkbenchForm.jsx",
+      "ui/src/plugins/fetch.js",
+      "ui/src/theme/theme.js",
+      "ui/yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e38d917ae969e9a0d458eb24548ec86fa61fdfa6",
+    "authorDate": "2022-04-11T14:59:31-07:00",
+    "subject": "Cleanup styles. Fix scrolling in task sidebar. Issue #2877",
+    "body": "",
+    "issueRefs": [
+      "#2877"
+    ],
+    "touchedFiles": [
+      "ui/package.json",
+      "ui/src/components/ReactJson.jsx",
+      "ui/src/pages/execution/Execution.jsx",
+      "ui/src/pages/execution/ExecutionInputOutput.jsx",
+      "ui/src/pages/execution/ExecutionJson.jsx",
+      "ui/src/pages/execution/ExecutionSummary.jsx",
+      "ui/src/pages/execution/RightPanel.jsx",
+      "ui/src/pages/execution/TaskDetails.jsx",
+      "ui/src/theme/theme.js",
+      "ui/yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b65fc5074d37aaf5fcf1d2e7fb2fdb8c0db8efee",
+    "authorDate": "2022-04-07T14:43:21-07:00",
+    "subject": "Merge pull request #2905 from Netflix/spotbugs_fix",
+    "body": "ignore codes raised by new spotbugs",
+    "issueRefs": [
+      "#2905"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "175ca6df0cc03caad868c225a63e6d4fd9962081",
+    "authorDate": "2022-04-07T14:17:12-07:00",
+    "subject": "ignore codes raised by new spotbugs",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "client/build.gradle",
+      "client/spotbugsExclude.xml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ee4c7e4946a46032ad0681b24f2550b81f3818fa",
+    "authorDate": "2022-04-06T19:48:40+02:00",
+    "subject": "Fix credentials for es6 (#2900)",
+    "body": "",
+    "issueRefs": [
+      "#2900"
+    ],
+    "touchedFiles": [
+      "es6-persistence/src/main/java/com/netflix/conductor/es6/config/ElasticSearchProperties.java",
+      "es6-persistence/src/main/java/com/netflix/conductor/es6/config/ElasticSearchV6Configuration.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "38a9fc7486129c8476b0c2eade1f434f48b79f95",
+    "authorDate": "2022-03-30T13:58:38-07:00",
+    "subject": "Miscellaneous documentation fixes",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docs/docs/apispec.md",
+      "docs/docs/architecture.md",
+      "docs/docs/configuration/isolationgroups.md",
+      "docs/docs/configuration/sysoperator.md",
+      "docs/docs/configuration/systask.md",
+      "docs/docs/configuration/taskdef.md",
+      "docs/docs/configuration/workflowdef.md",
+      "docs/docs/gettingstarted/client.md",
+      "docs/docs/gettingstarted/startworkflow.md",
+      "docs/docs/how-tos/Tasks/task-timeouts.md",
+      "docs/docs/how-tos/Tasks/updating-tasks.md",
+      "docs/docs/how-tos/Workflows/debugging-workflows.md",
+      "docs/docs/how-tos/Workflows/searching-workflows.md",
+      "docs/docs/how-tos/Workflows/view-workflow-executions.md",
+      "docs/docs/labs/beginner.md",
+      "docs/docs/labs/eventhandlers.md",
+      "docs/docs/labs/running-first-worker.md",
+      "docs/docs/labs/running-first-workflow.md",
+      "docs/docs/reference-docs/do-while-task.md",
+      "docs/docs/reference-docs/dynamic-fork-task.md",
+      "docs/docs/reference-docs/dynamic-task.md",
+      "docs/docs/reference-docs/dynamic.md",
+      "docs/docs/reference-docs/event-task.md",
+      "docs/docs/reference-docs/fork-task.md",
+      "docs/docs/reference-docs/http-task.md",
+      "docs/docs/reference-docs/inline-task.md",
+      "docs/docs/reference-docs/join-task.md",
+      "docs/docs/reference-docs/json-jq-transform-task.md",
+      "docs/docs/reference-docs/kafka-publish-task.md",
+      "docs/docs/reference-docs/start-workflow-task.md",
+      "docs/docs/reference-docs/switch-task.md",
+      "docs/docs/reference-docs/terminate-task.md",
+      "docs/docs/technicaldetails.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c9d7f503e5fba778d1d11d5d5d06456c3e412375",
+    "authorDate": "2022-03-30T13:35:57-07:00",
+    "subject": "fixed broken links",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docs/docs/gettingstarted/startworkflow.md",
+      "docs/docs/reference-docs/start-workflow-task.md",
+      "docs/docs/reference-docs/sub-workflow-task.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9c8341eec8b14f5c80f7c0c98b69ebdc44b27ccb",
+    "authorDate": "2022-03-24T00:41:09-07:00",
+    "subject": "[UI] Ensure rewrite rule in setupProxy.js remains commented out. OSS server endpoints are prefixed with /api",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/src/setupProxy.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0aa6af7115e21b8bba9da83b9e834582687f51f0",
+    "authorDate": "2022-03-23T23:54:09-07:00",
+    "subject": "[UI] Fix event handler json display",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/src/components/ReactJson.jsx",
+      "ui/src/pages/definition/EventHandler.jsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e2564118c4295ffa21d0e8dc277dea19ef02bdf5",
+    "authorDate": "2022-03-21T14:02:34-07:00",
+    "subject": "Merge netflix internal UI changes",
+    "body": "- Add CRA proxy rewrite /api => / as backend no longer supports the former\n- Replace react-json-view with Monaco editor\n- Do not shift graph on side panel appearance\n- Persisted selected task\n- Fix wrong icon in retry dropdown\n- Show elapsed time for currently running tasks\n- Fix workflow search sort order not restored from URL",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/package.json",
+      "ui/src/components/ReactJson.jsx",
+      "ui/src/components/diagram/WorkflowDAG.js",
+      "ui/src/components/diagram/WorkflowGraph.jsx",
+      "ui/src/hooks/useTime.js",
+      "ui/src/pages/execution/Execution.jsx",
+      "ui/src/pages/execution/ExecutionInputOutput.jsx",
+      "ui/src/pages/execution/ExecutionJson.jsx",
+      "ui/src/pages/execution/RightPanel.jsx",
+      "ui/src/pages/execution/TaskLogs.jsx",
+      "ui/src/pages/execution/TaskSummary.jsx",
+      "ui/src/pages/executions/ResultsTable.jsx",
+      "ui/src/pages/executions/WorkflowSearch.jsx",
+      "ui/src/setupProxy.js"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "192e4b13303e0c23d796373e3f1398a9245b0a00",
+    "authorDate": "2022-03-21T13:42:09-07:00",
+    "subject": "Merge pull request #2857 from v1r3n/golang_sdk_fixes",
+    "body": "Golang client updates",
+    "issueRefs": [
+      "#2857"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8be051f6a76cd70d2e510b8ed10437b31e588525",
+    "authorDate": "2022-03-21T13:13:02-07:00",
+    "subject": "Fix NullPointerException for string compare (#2860)",
+    "body": "",
+    "issueRefs": [
+      "#2860"
+    ],
+    "touchedFiles": [
+      "common/src/main/java/com/netflix/conductor/common/run/WorkflowSummary.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "94a31245a8d84877f856838c828eb31a02134eb5",
+    "authorDate": "2022-03-16T01:04:15-07:00",
+    "subject": "golang client updates",
+    "body": "1. Use logrus for logging and add example on how to configure logging\n2. Update logging to use logrus\n3. Minor fixes",
+    "issueRefs": [],
+    "touchedFiles": [
+      "polyglot-clients/go/conductorhttpclient.go",
+      "polyglot-clients/go/conductorworker.go",
+      "polyglot-clients/go/go.mod",
+      "polyglot-clients/go/go.sum",
+      "polyglot-clients/go/httpclient/httpclient.go",
+      "polyglot-clients/go/startclient/startclient.go",
+      "polyglot-clients/go/task/sample/task_1_exec.go",
+      "polyglot-clients/go/task/taskresult.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "58125a2557e60dfa95e13669dea975c6a2e1dd57",
+    "authorDate": "2022-03-14T15:18:59-07:00",
+    "subject": "Fix isolated task queue polling (#2848)",
+    "body": "",
+    "issueRefs": [
+      "#2848"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/IsolatedTaskQueueProducer.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a377b5e1ffcf4c23c071308a0341beb73940a804",
+    "authorDate": "2022-03-14T22:18:05+00:00",
+    "subject": "Bump spotbugs-gradle-plugin from 4.6.2 to 4.7.5 (#2849)",
+    "body": "",
+    "issueRefs": [
+      "#2849"
+    ],
+    "touchedFiles": [
+      "client/build.gradle"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4ca48de07ed2c41f5ce5f9f9f3a4196670c97e38",
+    "authorDate": "2022-03-14T10:29:34-07:00",
+    "subject": "Sync OSS with internal branch - Allow custom AppBar buttons & Routes in /plugin - DataTable defaultColumns fix - Dropdown expose error state - Formik-compatible components - Loosen workflow name restrictions in schema",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/package.json",
+      "ui/src/App.jsx",
+      "ui/src/components/DataTable.jsx",
+      "ui/src/components/Dropdown.jsx",
+      "ui/src/components/formik/FormikCronEditor.jsx",
+      "ui/src/components/formik/FormikInput.jsx",
+      "ui/src/components/formik/FormikJsonInput.jsx",
+      "ui/src/components/formik/FormikSwitch.jsx",
+      "ui/src/components/formik/FromikDropdown.jsx",
+      "ui/src/components/formik/cron.css",
+      "ui/src/pages/kitchensink/KitchenSink.jsx",
+      "ui/src/pages/styles.js",
+      "ui/src/plugins/CustomAppBarButtons.jsx",
+      "ui/src/plugins/CustomRoutes.jsx",
+      "ui/src/schema/workflow.js",
+      "ui/src/theme/theme.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "201a269a8e5600bad3891f7bdd7adf0a4ce3e9cc",
+    "authorDate": "2022-03-14T14:25:19-07:00",
+    "subject": "Definition & Task Editor UI (#2845)",
+    "body": "Editor for workflows and tasks\r\n\r\nOther Changes:\r\n- Allow custom AppBar buttons & Routes in /plugin\r\n- DataTable defaultColumns fix\r\n- Dropdown expose error state\r\n- Formik-compatible components\r\n- Loosen workflow name restrictions in schema\r\n- Notify user if task output is externalized\r\nCo-authored-by: boney9 boneysekh@gmail.com",
+    "issueRefs": [
+      "#2845"
+    ],
+    "touchedFiles": [
+      "ui/.gitignore",
+      "ui/package.json",
+      "ui/src/App.jsx",
+      "ui/src/components/Button.jsx",
+      "ui/src/components/ConfirmChoiceDialog.jsx",
+      "ui/src/components/CustomButtons.jsx",
+      "ui/src/components/DataTable.jsx",
+      "ui/src/components/Dropdown.jsx",
+      "ui/src/components/Pill.jsx",
+      "ui/src/components/Select.jsx",
+      "ui/src/components/diagram/WorkflowGraph.jsx",
+      "ui/src/components/diagram/diagram.scss",
+      "ui/src/components/formik/FormikCronEditor.jsx",
+      "ui/src/components/formik/FormikInput.jsx",
+      "ui/src/components/formik/FormikJsonInput.jsx",
+      "ui/src/components/formik/FormikSwitch.jsx",
+      "ui/src/components/formik/FromikDropdown.jsx",
+      "ui/src/components/formik/cron.css",
+      "ui/src/components/index.js",
+      "ui/src/pages/definition/ResetConfirmationDialog.jsx",
+      "ui/src/pages/definition/SaveTaskDialog.jsx",
+      "ui/src/pages/definition/SaveWorkflowDialog.jsx",
+      "ui/src/pages/definition/Task.jsx",
+      "ui/src/pages/definition/TaskDefinition.jsx",
+      "ui/src/pages/definition/Workflow.jsx",
+      "ui/src/pages/definition/WorkflowDefinition.jsx",
+      "ui/src/pages/definitions/Header.jsx",
+      "ui/src/pages/definitions/Task.jsx",
+      "ui/src/pages/definitions/Workflow.jsx",
+      "ui/src/pages/execution/RightPanel.jsx",
+      "ui/src/pages/kitchensink/KitchenSink.jsx",
+      "ui/src/pages/styles.js",
+      "ui/src/plugins/CustomAppBarButtons.jsx",
+      "ui/src/plugins/CustomRoutes.jsx",
+      "ui/src/plugins/fetch.js",
+      "ui/src/schema/task.js",
+      "ui/src/schema/workflow.js",
+      "ui/src/theme/theme.js",
+      "ui/src/utils/query.js"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "59101679081a3643533b4d9d0a3e7112f81a595e",
+    "authorDate": "2022-03-15T02:50:19+05:30",
+    "subject": "Local only lock fix (#2814)",
+    "body": "* Local only lock fix\r\n\r\nCancel thread scheduled for stopping starvation in case of actually releasing a lock.\r\n\r\n* log level\r\n\r\n* naming\r\n\r\n* format\r\n\r\n* Unit tests\r\n\r\n* review comments.",
+    "issueRefs": [
+      "#2814"
+    ],
+    "touchedFiles": [
+      "contribs/src/main/java/com/netflix/conductor/contribs/lock/LocalOnlyLock.java",
+      "contribs/src/test/java/com/netflix/conductor/contribs/lock/LocalOnlyLockTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ca46f41067a8def51425f583ffcf8251f61b21d8",
+    "authorDate": "2022-03-09T11:24:44+08:00",
+    "subject": "Update workflowdef.md",
+    "body": "Fix missing a backquote in workflowdef.md",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docs/docs/configuration/workflowdef.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "609c942b76eeed6c3bb59ea541f46890a2ccc893",
+    "authorDate": "2022-02-28T23:55:17-08:00",
+    "subject": "Merge pull request #2798 from prafullkotecha/patch-1",
+    "body": "Fix the path to architecture diagram",
+    "issueRefs": [
+      "#2798"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9d8598612121a145993c53c17a164cad062ac7a2",
+    "authorDate": "2022-02-28T22:55:09-05:00",
+    "subject": "Fix the path to architecture diagram",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docs/docs/architecture.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a1f1fd95263171a7adb1c543a71e21b3ad62c1bc",
+    "authorDate": "2022-01-06T09:07:24-08:00",
+    "subject": "Fix for failure workflow - fix correlationId for failure workflow - add failure taskId to input",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/main/java/com/netflix/conductor/model/WorkflowModel.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/FailureWorkflowSpec.groovy",
+      "test-harness/src/test/resources/test_task_failed_parent_workflow.json",
+      "test-harness/src/test/resources/test_task_failed_sub_workflow.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cd528e126ed36abedf38ac0eab07e18e1d476dad",
+    "authorDate": "2022-01-31T15:46:34-08:00",
+    "subject": "Object model separation (#2702)",
+    "body": "* introduce a domain specific object model\r\n\r\n* service layer wip\r\n\r\n* core and contribs wip\r\n\r\n* remove repeated external storage access in state machine\r\n\r\n* cassandra module changes\r\n\r\n* redis persistence changes\r\n\r\n* mysql persistence changes\r\n\r\n* postgres persistence changes\r\n\r\n* redis concurrency limit module changes\r\n\r\n* updated IndexDAO APIs and corresponding ES implementations\r\n\r\n* more changes per indexDAO api\r\n\r\n* fix tests in es modules due to new contract\r\n\r\n* fix unit tests as per new models\r\n\r\n* rename objects and classes\r\n\r\n* fix integ tests",
+    "issueRefs": [
+      "#2702"
+    ],
+    "touchedFiles": [
+      "build.gradle",
+      "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/config/CassandraConfiguration.java",
+      "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/config/CassandraProperties.java",
+      "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/dao/CassandraBaseDAO.java",
+      "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/dao/CassandraEventHandlerDAO.java",
+      "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/dao/CassandraExecutionDAO.java",
+      "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/dao/CassandraMetadataDAO.java",
+      "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/util/Constants.java",
+      "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/util/Statements.java",
+      "cassandra-persistence/src/test/groovy/com/netflix/conductor/cassandra/dao/CassandraEventHandlerDAOSpec.groovy",
+      "cassandra-persistence/src/test/groovy/com/netflix/conductor/cassandra/dao/CassandraExecutionDAOSpec.groovy",
+      "cassandra-persistence/src/test/groovy/com/netflix/conductor/cassandra/dao/CassandraMetadataDAOSpec.groovy",
+      "cassandra-persistence/src/test/groovy/com/netflix/conductor/cassandra/dao/CassandraSpec.groovy",
+      "cassandra-persistence/src/test/groovy/com/netflix/conductor/cassandra/util/StatementsSpec.groovy",
+      "client/src/main/java/com/netflix/conductor/client/http/TaskClient.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/Task.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskResult.java",
+      "common/src/main/java/com/netflix/conductor/common/run/Workflow.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/dao/index/NoopIndexDAO.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/dao/index/NoopIndexDAOConfiguration.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/listener/archive/ArchivingWithTTLWorkflowStatusListener.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/listener/archive/ArchivingWorkflowListenerConfiguration.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/listener/archive/ArchivingWorkflowListenerProperties.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/listener/archive/ArchivingWorkflowStatusListener.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/listener/conductorqueue/ConductorQueueStatusPublisher.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/listener/conductorqueue/ConductorQueueStatusPublisherConfiguration.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/listener/conductorqueue/ConductorQueueStatusPublisherProperties.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/queue/sqs/SQSObservableQueue.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/queue/sqs/config/SQSEventQueueConfiguration.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/storage/S3PayloadStorage.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/storage/config/S3Configuration.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/tasks/http/DefaultRestTemplateProvider.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/tasks/http/HttpTask.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/tasks/http/RestTemplateProvider.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/tasks/json/JsonJqTransform.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/tasks/kafka/KafkaProducerManager.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/tasks/kafka/KafkaPublishTask.java",
+      "contribs/src/test/java/com/netflix/conductor/contribs/listener/ArchivingWorkflowStatusListenerTest.java",
+      "contribs/src/test/java/com/netflix/conductor/contribs/queue/sqs/DefaultEventQueueProcessorTest.java",
+      "contribs/src/test/java/com/netflix/conductor/contribs/tasks/http/DefaultRestTemplateProviderTest.java",
+      "contribs/src/test/java/com/netflix/conductor/contribs/tasks/http/HttpTaskTest.java",
+      "contribs/src/test/java/com/netflix/conductor/contribs/tasks/json/JsonJqTransformTest.java",
+      "contribs/src/test/java/com/netflix/conductor/contribs/tasks/kafka/KafkaPublishTaskTest.java",
+      "core/src/main/java/com/netflix/conductor/annotations/Audit.java",
+      "core/src/main/java/com/netflix/conductor/annotations/Trace.java",
+      "core/src/main/java/com/netflix/conductor/core/LifecycleAwareComponent.java",
+      "core/src/main/java/com/netflix/conductor/core/WorkflowContext.java",
+      "core/src/main/java/com/netflix/conductor/core/dal/ExecutionDAOFacade.java",
+      "core/src/main/java/com/netflix/conductor/core/dal/ModelMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/events/ActionProcessor.java",
+      "core/src/main/java/com/netflix/conductor/core/events/DefaultEventProcessor.java",
+      "core/src/main/java/com/netflix/conductor/core/events/DefaultEventQueueManager.java",
+      "core/src/main/java/com/netflix/conductor/core/events/EventQueueManager.java",
+      "core/src/main/java/com/netflix/conductor/core/events/EventQueueProvider.java",
+      "core/src/main/java/com/netflix/conductor/core/events/EventQueues.java",
+      "core/src/main/java/com/netflix/conductor/core/events/ScriptEvaluator.java",
+      "core/src/main/java/com/netflix/conductor/core/events/SimpleActionProcessor.java",
+      "core/src/main/java/com/netflix/conductor/core/events/queue/ConductorEventQueueProvider.java",
+      "core/src/main/java/com/netflix/conductor/core/events/queue/ConductorObservableQueue.java",
+      "core/src/main/java/com/netflix/conductor/core/events/queue/DefaultEventQueueProcessor.java",
+      "core/src/main/java/com/netflix/conductor/core/events/queue/Message.java",
+      "core/src/main/java/com/netflix/conductor/core/events/queue/ObservableQueue.java",
+      "core/src/main/java/com/netflix/conductor/core/exception/ApplicationException.java",
+      "core/src/main/java/com/netflix/conductor/core/exception/TerminateWorkflowException.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/AsyncSystemTaskExecutor.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/DeciderService.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/evaluators/Evaluator.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/evaluators/JavascriptEvaluator.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/evaluators/ValueParamEvaluator.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/DecisionTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/DoWhileTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/DynamicTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/EventTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/ExclusiveJoinTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/ForkJoinDynamicTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/ForkJoinTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/HTTPTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/InlineTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/JoinTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/JsonJQTransformTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/KafkaPublishTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/LambdaTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/SetVariableTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/SimpleTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/SubWorkflowTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/TaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/TaskMapperContext.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/TerminateTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/UserDefinedTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/WaitTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Decision.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/DoWhile.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Event.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/ExclusiveJoin.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/ExecutionConfig.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Fork.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Inline.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/IsolatedTaskQueueProducer.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Join.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Lambda.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/SetVariable.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/SubWorkflow.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Switch.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/SystemTaskRegistry.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/SystemTaskWorker.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/SystemTaskWorkerCoordinator.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Terminate.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Wait.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/WorkflowSystemTask.java",
+      "core/src/main/java/com/netflix/conductor/core/listener/WorkflowStatusListener.java",
+      "core/src/main/java/com/netflix/conductor/core/listener/WorkflowStatusListenerStub.java",
+      "core/src/main/java/com/netflix/conductor/core/metadata/MetadataMapperService.java",
+      "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowReconciler.java",
+      "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowRepairService.java",
+      "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java",
+      "core/src/main/java/com/netflix/conductor/core/storage/DummyPayloadStorage.java",
+      "core/src/main/java/com/netflix/conductor/core/sync/Lock.java",
+      "core/src/main/java/com/netflix/conductor/core/sync/NoopLock.java",
+      "core/src/main/java/com/netflix/conductor/core/utils/ExternalPayloadStorageUtils.java",
+      "core/src/main/java/com/netflix/conductor/core/utils/IDGenerator.java",
+      "core/src/main/java/com/netflix/conductor/core/utils/JsonUtils.java",
+      "core/src/main/java/com/netflix/conductor/core/utils/ParametersUtils.java",
+      "core/src/main/java/com/netflix/conductor/core/utils/QueueUtils.java",
+      "core/src/main/java/com/netflix/conductor/core/utils/SemaphoreUtil.java",
+      "core/src/main/java/com/netflix/conductor/core/utils/Utils.java",
+      "core/src/main/java/com/netflix/conductor/dao/ConcurrentExecutionLimitDAO.java",
+      "core/src/main/java/com/netflix/conductor/dao/EventHandlerDAO.java",
+      "core/src/main/java/com/netflix/conductor/dao/ExecutionDAO.java",
+      "core/src/main/java/com/netflix/conductor/dao/IndexDAO.java",
+      "core/src/main/java/com/netflix/conductor/dao/MetadataDAO.java",
+      "core/src/main/java/com/netflix/conductor/dao/PollDataDAO.java",
+      "core/src/main/java/com/netflix/conductor/dao/QueueDAO.java",
+      "core/src/main/java/com/netflix/conductor/dao/RateLimitingDAO.java",
+      "core/src/main/java/com/netflix/conductor/metrics/Monitors.java",
+      "core/src/main/java/com/netflix/conductor/metrics/WorkflowMonitor.java",
+      "core/src/main/java/com/netflix/conductor/model/TaskModel.java",
+      "core/src/main/java/com/netflix/conductor/model/WorkflowModel.java",
+      "core/src/main/java/com/netflix/conductor/service/AdminService.java",
+      "core/src/main/java/com/netflix/conductor/service/AdminServiceImpl.java",
+      "core/src/main/java/com/netflix/conductor/service/EventService.java",
+      "core/src/main/java/com/netflix/conductor/service/EventServiceImpl.java",
+      "core/src/main/java/com/netflix/conductor/service/ExecutionLockService.java",
+      "core/src/main/java/com/netflix/conductor/service/ExecutionService.java",
+      "core/src/main/java/com/netflix/conductor/service/MetadataService.java",
+      "core/src/main/java/com/netflix/conductor/service/MetadataServiceImpl.java",
+      "core/src/main/java/com/netflix/conductor/service/TaskService.java",
+      "core/src/main/java/com/netflix/conductor/service/TaskServiceImpl.java",
+      "core/src/main/java/com/netflix/conductor/service/WorkflowBulkService.java",
+      "core/src/main/java/com/netflix/conductor/service/WorkflowBulkServiceImpl.java",
+      "core/src/main/java/com/netflix/conductor/service/WorkflowService.java",
+      "core/src/main/java/com/netflix/conductor/service/WorkflowServiceImpl.java",
+      "core/src/main/java/com/netflix/conductor/validations/ValidationContext.java",
+      "core/src/main/java/com/netflix/conductor/validations/WorkflowTaskTypeConstraint.java",
+      "core/src/main/java/com/netflix/conductor/validations/WorkflowTaskValidConstraint.java",
+      "core/src/test/groovy/com/netflix/conductor/core/dal/ModelMapperSpec.groovy",
+      "core/src/test/groovy/com/netflix/conductor/core/execution/AsyncSystemTaskExecutorTest.groovy",
+      "core/src/test/groovy/com/netflix/conductor/core/execution/tasks/EventSpec.groovy",
+      "core/src/test/groovy/com/netflix/conductor/core/execution/tasks/IsolatedTaskQueueProducerSpec.groovy",
+      "core/src/test/java/com/netflix/conductor/core/dal/ExecutionDAOFacadeTest.java",
+      "core/src/test/java/com/netflix/conductor/core/events/TestDefaultEventProcessor.java",
+      "core/src/test/java/com/netflix/conductor/core/events/TestSimpleActionProcessor.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderOutcomes.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderService.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/WorkflowSystemTaskStub.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/DecisionTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/DoWhileTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/DynamicTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/EventTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/ForkJoinDynamicTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/ForkJoinTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/HTTPTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/InlineTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/JoinTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/JsonJQTransformTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/KafkaPublishTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/LambdaTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/SetVariableTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/SimpleTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/SubWorkflowTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/TerminateTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/UserDefinedTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/WaitTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/tasks/EventQueueResolutionTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/tasks/InlineTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestDoWhile.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestLambda.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestSubWorkflow.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestTerminate.java",
+      "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowRepairService.java",
+      "core/src/test/java/com/netflix/conductor/core/utils/ExternalPayloadStorageUtilsTest.java",
+      "core/src/test/java/com/netflix/conductor/dao/ExecutionDAOTest.java",
+      "core/src/test/java/com/netflix/conductor/service/ExecutionServiceTest.java",
+      "es6-persistence/src/main/java/com/netflix/conductor/es6/config/ElasticSearchConditions.java",
+      "es6-persistence/src/main/java/com/netflix/conductor/es6/config/ElasticSearchProperties.java",
+      "es6-persistence/src/main/java/com/netflix/conductor/es6/config/ElasticSearchV6Configuration.java",
+      "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/index/ElasticSearchDAOV6.java",
+      "es6-persistence/src/main/java/com/netflix/conductor/es6/dao/index/ElasticSearchRestDAOV6.java",
+      "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchDAOV6.java",
+      "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchDAOV6Batch.java",
+      "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchRestDAOV6.java",
+      "es6-persistence/src/test/java/com/netflix/conductor/es6/dao/index/TestElasticSearchRestDAOV6Batch.java",
+      "es6-persistence/src/test/java/com/netflix/conductor/es6/utils/TestUtils.java",
+      "es6-persistence/src/test/resources/task_summary.json",
+      "es6-persistence/src/test/resources/workflow.json",
+      "es6-persistence/src/test/resources/workflow_summary.json",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/index/ElasticSearchRestDAOV7.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/dao/index/TestElasticSearchRestDAOV7.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/dao/index/TestElasticSearchRestDAOV7Batch.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/utils/TestUtils.java",
+      "es7-persistence/src/test/resources/task_summary.json",
+      "es7-persistence/src/test/resources/workflow.json",
+      "es7-persistence/src/test/resources/workflow_summary.json",
+      "grpc-client/src/main/java/com/netflix/conductor/client/grpc/TaskClient.java",
+      "mysql-persistence/src/main/java/com/netflix/conductor/mysql/config/MySQLConfiguration.java",
+      "mysql-persistence/src/main/java/com/netflix/conductor/mysql/dao/MySQLExecutionDAO.java",
+      "mysql-persistence/src/main/java/com/netflix/conductor/mysql/dao/MySQLMetadataDAO.java",
+      "mysql-persistence/src/main/java/com/netflix/conductor/mysql/dao/MySQLQueueDAO.java",
+      "mysql-persistence/src/test/java/com/netflix/conductor/mysql/dao/MySQLExecutionDAOTest.java",
+      "postgres-persistence/src/main/java/com/netflix/conductor/postgres/config/PostgresConfiguration.java",
+      "postgres-persistence/src/main/java/com/netflix/conductor/postgres/config/PostgresProperties.java",
+      "postgres-persistence/src/main/java/com/netflix/conductor/postgres/dao/PostgresBaseDAO.java",
+      "postgres-persistence/src/main/java/com/netflix/conductor/postgres/dao/PostgresExecutionDAO.java",
+      "postgres-persistence/src/main/java/com/netflix/conductor/postgres/dao/PostgresMetadataDAO.java",
+      "postgres-persistence/src/main/java/com/netflix/conductor/postgres/dao/PostgresQueueDAO.java",
+      "postgres-persistence/src/test/java/com/netflix/conductor/postgres/dao/PostgresExecutionDAOTest.java",
+      "postgres-persistence/src/test/java/com/netflix/conductor/postgres/dao/PostgresMetadataDAOTest.java",
+      "postgres-persistence/src/test/java/com/netflix/conductor/postgres/dao/PostgresQueueDAOTest.java",
+      "redis-concurrency-limit/src/main/java/com/netflix/conductor/redis/limit/RedisConcurrentExecutionLimitDAO.java",
+      "redis-concurrency-limit/src/test/groovy/com/netflix/conductor/redis/limit/RedisConcurrentExecutionLimitDAOSpec.groovy",
+      "redis-lock/build.gradle",
+      "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/BaseDynoDAO.java",
+      "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/DynoQueueDAO.java",
+      "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisEventHandlerDAO.java",
+      "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisExecutionDAO.java",
+      "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisMetadataDAO.java",
+      "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisPollDataDAO.java",
+      "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisRateLimitingDAO.java",
+      "redis-persistence/src/main/java/com/netflix/conductor/redis/dynoqueue/ConfigurationHostSupplier.java",
+      "redis-persistence/src/main/java/com/netflix/conductor/redis/dynoqueue/LocalhostHostSupplier.java",
+      "redis-persistence/src/main/java/com/netflix/conductor/redis/dynoqueue/RedisQueuesShardingStrategyProvider.java",
+      "redis-persistence/src/test/java/com/netflix/conductor/redis/dao/RedisExecutionDAOTest.java",
+      "redis-persistence/src/test/java/com/netflix/conductor/redis/dao/RedisRateLimitDAOTest.java",
+      "test-harness/build.gradle",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/base/AbstractResiliencySpecification.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DecisionTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DoWhileSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DynamicForkJoinSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/EventTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/ExclusiveJoinSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/ExternalPayloadStorageSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/ForkJoinSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/HierarchicalForkJoinSubworkflowRerunSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/HierarchicalForkJoinSubworkflowRestartSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/HierarchicalForkJoinSubworkflowRetrySpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/JsonJQTransformSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/KafkaPublishTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/LambdaAndTerminateTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/NestedForkJoinSubWorkflowSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SetVariableTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SimpleWorkflowSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SubWorkflowRerunSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SubWorkflowRestartSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SubWorkflowRetrySpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SubWorkflowSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SwitchTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SystemTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/TaskLimitsWorkflowSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/WaitTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/WorkflowAndTaskConfigurationSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/resiliency/QueueResiliencySpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/resiliency/TaskResiliencySpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/util/WorkflowTestUtil.groovy",
+      "test-harness/src/test/java/com/netflix/conductor/test/listener/WorkflowStatusPublisherIntegrationTest.java",
+      "test-harness/src/test/java/com/netflix/conductor/test/utils/UserTask.java",
+      "zookeeper-lock/build.gradle"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "6574cb41a2287ddb36a4507eee5db79a61b97f95",
+    "authorDate": "2022-01-21T04:02:06+05:30",
+    "subject": "Bug 2678- tcp protocol support for es6 (#2688)",
+    "body": "* Bug 2679- tcp protocol support for es6\r\n\r\n* Improvements\r\n\r\n* Formatting\r\n\r\n* fix Formatting\r\n\r\n* 1. Moved getURIs() from ElasticSearchProperties.java to ElasticSearchV6Configuration.java\r\n2. Removed newly introduced getURL() and used existing getUrl() of ElasticSearchProperties.java class\r\n3. Used spotlessApply to fix formatting errors\r\n\r\nCo-authored-by: manas.deora <manas.deora@telekom-digital.com>",
+    "issueRefs": [
+      "#2688"
+    ],
+    "touchedFiles": [
+      "es6-persistence/src/main/java/com/netflix/conductor/es6/config/ElasticSearchV6Configuration.java",
+      "es6-persistence/src/main/java/com/netflix/conductor/es6/config/IsHttpProtocol.java",
+      "es6-persistence/src/main/java/com/netflix/conductor/es6/config/IsTcpProtocol.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9c932adda81c7214f2ecee6422d5fc44800efbf7",
+    "authorDate": "2022-01-19T01:03:08+01:00",
+    "subject": "Implement PSQL based object storage for Conductor (#2683)",
+    "body": "* [FEATURE] Implement PSQL based object storage for Conductor\r\n\r\n- Add PostgreSQl implementation for External Payload Storage and tests for its.\r\n\r\nSigned-off-by: Vasyl Klevlanyk <vklevlanyk@frinx.io>\r\n\r\n* Add formatting plugin\r\n\r\n* UI Cleanup\r\n- Fix #2679 restart dropdown blocked\r\n- Refactor Execution/side panel state management\r\n- Remove media-query driven indent\r\n- Remove examples not applicable to OSS\r\n\r\n* - Display Reason for Incompletion prominently on Execution page\r\n- Add Reason for Incompletion to Summary\r\n- Add External payload storage path to Task summary\r\n- Relabel free text search fields\r\n\r\n* Fix sidebar header transparency\r\n\r\n* [FEATURE] Implement PSQL based object storage for Conductor\r\n\r\n- Add PostgreSQl implementation for External Payload Storage and tests for its.\r\n\r\nSigned-off-by: Vasyl Klevlanyk <vklevlanyk@frinx.io>\r\n\r\nCo-authored-by: Jiaofen Xu <jxu@netflix.com>\r\nCo-authored-by: peterlau <peterl@netflix.com>",
+    "issueRefs": [
+      "#2683",
+      "#2679"
+    ],
+    "touchedFiles": [
+      "core/src/main/resources/META-INF/additional-spring-configuration-metadata.json",
+      "docs/docs/externalpayloadstorage.md",
+      "postgres-external-storage/README.md",
+      "postgres-external-storage/build.gradle",
+      "postgres-external-storage/dependencies.lock",
+      "postgres-external-storage/src/main/java/com/netflix/conductor/postgres/config/PostgresPayloadConfiguration.java",
+      "postgres-external-storage/src/main/java/com/netflix/conductor/postgres/config/PostgresPayloadProperties.java",
+      "postgres-external-storage/src/main/java/com/netflix/conductor/postgres/controller/ExternalPostgresPayloadResource.java",
+      "postgres-external-storage/src/main/java/com/netflix/conductor/postgres/storage/PostgresPayloadStorage.java",
+      "postgres-external-storage/src/main/resources/db/migration_external_postgres/R__initial_schema.sql",
+      "postgres-external-storage/src/test/java/com/netflix/conductor/postgres/controller/ExternalPostgresPayloadResourceTest.java",
+      "postgres-external-storage/src/test/java/com/netflix/conductor/postgres/storage/PostgresPayloadStorageTest.java",
+      "postgres-external-storage/src/test/java/com/netflix/conductor/postgres/storage/PostgresPayloadTestUtil.java",
+      "postgres-persistence/src/main/java/com/netflix/conductor/postgres/config/PostgresConfiguration.java",
+      "server/build.gradle",
+      "settings.gradle"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7597796b926eaff391679c1dd938c4d7d93ac866",
+    "authorDate": "2022-01-18T14:35:03-08:00",
+    "subject": "- UI: Add JSON expand/collapse button - Fix Workflow Graph selection handling",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/src/components/ReactJson.jsx",
+      "ui/src/components/diagram/WorkflowGraph.jsx",
+      "ui/src/pages/execution/Execution.jsx",
+      "ui/src/pages/execution/ExecutionJson.jsx",
+      "ui/src/pages/kitchensink/Examples.jsx",
+      "ui/src/theme/theme.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "16297cbebad0cae93395a4cd2a4a9c28e51ab8e1",
+    "authorDate": "2022-01-14T15:44:50-08:00",
+    "subject": "Fix sidebar header transparency",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/src/pages/execution/Execution.jsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "46e4889bb8f65ba8b74cfa34c82ac9d9b77eae64",
+    "authorDate": "2022-01-14T13:14:22-08:00",
+    "subject": "UI Cleanup - Fix #2679 restart dropdown blocked - Refactor Execution/side panel state management - Remove media-query driven indent - Remove examples not applicable to OSS",
+    "body": "",
+    "issueRefs": [
+      "#2679"
+    ],
+    "touchedFiles": [
+      "ui/package.json",
+      "ui/src/App.jsx",
+      "ui/src/components/Wrapper.jsx",
+      "ui/src/pages/definition/EventHandler.jsx",
+      "ui/src/pages/definition/Task.jsx",
+      "ui/src/pages/definitions/Header.jsx",
+      "ui/src/pages/execution/Execution.jsx",
+      "ui/src/pages/executions/ResultsTable.jsx",
+      "ui/src/pages/executions/TaskSearch.jsx",
+      "ui/src/pages/executions/WorkflowSearch.jsx",
+      "ui/src/pages/kitchensink/EnhancedTable.jsx",
+      "ui/src/pages/kitchensink/Examples.jsx",
+      "ui/src/pages/kitchensink/KitchenSink.jsx",
+      "ui/src/pages/misc/TaskQueue.jsx",
+      "ui/src/pages/styles.js",
+      "ui/src/theme/theme.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2aad5de8742c8cbd3fbf7f006f8d6f2b4015f1d6",
+    "authorDate": "2021-12-27T17:36:44-05:00",
+    "subject": "Rework Metrics API to reduce possibility of empty values in tags (#2675)",
+    "body": "* Fix #2437.  Supply a \"NO_DOMAIN\" value when using the system task.\r\n\r\nShould also fix #2534.\r\n\r\n* Rework API to reduce potential empty strings in tag values",
+    "issueRefs": [
+      "#2675",
+      "#2437",
+      "#2534"
+    ],
+    "touchedFiles": [
+      "cassandra-persistence/src/main/java/com/netflix/conductor/cassandra/dao/CassandraBaseDAO.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/SystemTaskWorker.java",
+      "core/src/main/java/com/netflix/conductor/metrics/Monitors.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a3001eeb1d40dac686cf168fc9e9f257fe087e54",
+    "authorDate": "2021-12-21T07:11:34+08:00",
+    "subject": "[Feature] Support to specify shutdown grace period time for worker (#2631)",
+    "body": "* [Feature] Support to specify shutdown grace period time for worker\r\n\r\n* Update client doc and spring client for shutdownGracePeriodSeconds",
+    "issueRefs": [
+      "#2631"
+    ],
+    "touchedFiles": [
+      "client-spring/src/main/java/com/netflix/conductor/client/spring/ClientProperties.java",
+      "client-spring/src/main/java/com/netflix/conductor/client/spring/ConductorClientAutoConfiguration.java",
+      "client/src/main/java/com/netflix/conductor/client/automator/TaskPollExecutor.java",
+      "client/src/main/java/com/netflix/conductor/client/automator/TaskRunnerConfigurer.java",
+      "client/src/test/java/com/netflix/conductor/client/automator/TaskRunnerConfigurerTest.java",
+      "docs/docs/gettingstarted/client.md"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "c6dcad4d3af19fd701962aa6b4f5de47a4ae567b",
+    "authorDate": "2021-12-15T15:22:55-08:00",
+    "subject": "Merge pull request #2646 from FlorianKuckelkorn/fix-deprecated-python-client",
+    "body": "removed deprecated task acking",
+    "issueRefs": [
+      "#2646"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "76d3b730bd63289cc6da420760daba5eb0477155",
+    "authorDate": "2021-12-16T07:08:24+08:00",
+    "subject": "[UI] Fix fetching task logs uri (#2630)",
+    "body": "",
+    "issueRefs": [
+      "#2630"
+    ],
+    "touchedFiles": [
+      "ui/src/pages/execution/TaskLogs.jsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "22a28431137d1fca57b93bf19007e2bf2a6ad2a1",
+    "authorDate": "2021-12-15T14:54:40-08:00",
+    "subject": "Merge pull request #2621 from OpenPj/main",
+    "body": "fix for restart using Docker Compose: added local Docker volumes for …",
+    "issueRefs": [
+      "#2621"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e2316720a226cdfb174ad000fba2f44f0b5a8488",
+    "authorDate": "2021-11-29T15:32:00-08:00",
+    "subject": "Fix startdelay for subworkflow task",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/SubWorkflowTaskMapper.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/SubWorkflowTaskMapperTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "eab6a07ffafdaa06e9cd1c29da6c455ff80020ce",
+    "authorDate": "2021-12-03T16:08:16+01:00",
+    "subject": "fix for restart using Docker Compose: added local Docker volumes for Elasticsearch and PostgreSQL",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docker/docker-compose-postgres.yaml",
+      "docker/docker-compose.yaml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d13dd37208bcfc57f3e0f5b4ecc42ea8313194e8",
+    "authorDate": "2021-11-29T19:33:02-03:00",
+    "subject": "[DOC] Minor documentation changes (#2598)",
+    "body": "* Added two blank spaces at the end of the line to force a line break\r\n\r\n* Opening http://localhost:8080/swagger-ui/index.html loads Swagger UI with the sample PetStore API specification. It seems better to use localhost:8080 (index.html) which has a link to the User Guide and Swagger UI.\r\n\r\n* Fixed command to start server and URL of Swagger UI.\r\n\r\n* Changed commands to start Conductor UI\r\n\r\n* - Added and updated JSON fields to sample payloads to avoid validation errors when using them (ownerEmail, responseTimeoutSeconds)\r\n- Added a description (not mandatory) to the task definition.\r\n\r\n* Line break for better readability",
+    "issueRefs": [
+      "#2598"
+    ],
+    "touchedFiles": [
+      "README.md",
+      "docs/docs/architecture.md",
+      "docs/docs/configuration/taskdef.md",
+      "docs/docs/configuration/workflowdef.md",
+      "docs/docs/gettingstarted/basicconcepts.md"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "85fc591958ebd8e34c60e098df09f15803540672",
+    "authorDate": "2021-11-29T14:21:54-08:00",
+    "subject": "Merge pull request #2590 from javiercanillas/javiercanillas/issue-2589",
+    "body": "Fixing indexReplicaCount configuration for docker",
+    "issueRefs": [
+      "#2590"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c5ef066ba3829b86b055354cc16c60e624671d76",
+    "authorDate": "2021-11-30T05:21:58+08:00",
+    "subject": "Fix null point exception ResultsTable.jsx (#2605)",
+    "body": "",
+    "issueRefs": [
+      "#2605"
+    ],
+    "touchedFiles": [
+      "ui/src/pages/executions/ResultsTable.jsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9658a2270e8ee054546ae44dfd56868a7b46eb25",
+    "authorDate": "2021-11-23T12:42:02-08:00",
+    "subject": "Adjust dockerfile and associated scripts (#2593)",
+    "body": "- pipe output to console in addition to logfile via tee\r\n- Accept ES color yellow\r\n- show stacktrace in build\r\n\r\nCo-authored-by: Peter Lau <peterl@netflix.com>",
+    "issueRefs": [
+      "#2593"
+    ],
+    "touchedFiles": [
+      "docker/server/Dockerfile",
+      "docker/server/bin/startup.sh",
+      "docker/server/config/config-local.properties"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "0dd73e414e2cecf7e7de2778e0543f76278df00d",
+    "authorDate": "2021-11-23T12:20:50-03:00",
+    "subject": "Fixing indexReplicaCount configuration for docker",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docker/server/config/config-local.properties"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6f131ddd5bcbeddceaf2ed73108719e9ca4bf911",
+    "authorDate": "2021-11-17T18:28:17+00:00",
+    "subject": "Fix unintended mutation of tasks array (#2583)",
+    "body": "",
+    "issueRefs": [
+      "#2583"
+    ],
+    "touchedFiles": [
+      "ui/src/components/diagram/WorkflowDAG.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "080edb6ad31bb9c9745daf101d3c4ec8ff48b1f4",
+    "authorDate": "2021-11-15T16:33:01-08:00",
+    "subject": "Fixes #2446 - Move the protogen annotations to local code and make it… (#2575)",
+    "body": "* Fixes #2446 - Move the protogen annotations to local code and make it more like a monorepo. `protogen` dependencies are not published in maven central and clients using it will run into jar lookup issues\r\n\r\n* Attempt to fix CI issue that seems to because annotations module is published as 11",
+    "issueRefs": [
+      "Fixes #2446",
+      "#2575"
+    ],
+    "touchedFiles": [
+      "annotations-processor/README.md",
+      "annotations-processor/build.gradle",
+      "annotations-processor/src/example/java/com/example/Example.java",
+      "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/AbstractMessage.java",
+      "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/Enum.java",
+      "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/Message.java",
+      "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/ProtoFile.java",
+      "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/ProtoGen.java",
+      "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/ProtoGenTask.java",
+      "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/AbstractType.java",
+      "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/ExternMessageType.java",
+      "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/GenericType.java",
+      "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/ListType.java",
+      "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/MapType.java",
+      "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/MessageType.java",
+      "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/ScalarType.java",
+      "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/TypeMapper.java",
+      "annotations-processor/src/main/java/com/netflix/conductor/annotationsprocessor/protogen/types/WrappedType.java",
+      "annotations-processor/src/main/resources/templates/file.proto",
+      "annotations-processor/src/main/resources/templates/message.proto",
+      "annotations-processor/src/test/java/com/netflix/conductor/annotationsprocessor/protogen/ProtoGenTest.java",
+      "annotations-processor/src/test/resources/example.proto.txt",
+      "annotations/README.md",
+      "annotations/build.gradle",
+      "annotations/src/main/java/com/netflix/conductor/annotations/protogen/ProtoEnum.java",
+      "annotations/src/main/java/com/netflix/conductor/annotations/protogen/ProtoField.java",
+      "annotations/src/main/java/com/netflix/conductor/annotations/protogen/ProtoMessage.java",
+      "build.gradle",
+      "common/build.gradle",
+      "common/src/main/java/com/netflix/conductor/common/metadata/events/EventExecution.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/events/EventHandler.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/PollData.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/Task.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskDef.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskExecLog.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskResult.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskType.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/workflow/DynamicForkJoinTask.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/workflow/DynamicForkJoinTaskList.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/workflow/RerunWorkflowRequest.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/workflow/SkipTaskRequest.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/workflow/StartWorkflowRequest.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/workflow/SubWorkflowParams.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/workflow/WorkflowDef.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/workflow/WorkflowTask.java",
+      "common/src/main/java/com/netflix/conductor/common/run/TaskSummary.java",
+      "common/src/main/java/com/netflix/conductor/common/run/Workflow.java",
+      "common/src/main/java/com/netflix/conductor/common/run/WorkflowSummary.java",
+      "grpc/src/main/java/com/netflix/conductor/grpc/AbstractProtoMapper.java",
+      "grpc/src/main/proto/model/taskdef.proto",
+      "settings.gradle"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a6098f39da39e6158f1b401c582988c552d6fec5",
+    "authorDate": "2021-11-15T14:52:46-08:00",
+    "subject": "Update ui/Dockerfile to address build issue. (#2577)",
+    "body": "See https://github.com/Netflix/conductor/discussions/2490#discussioncomment-1646442\r\n\r\nCo-authored-by: Peter Lau <peterl@netflix.com>",
+    "issueRefs": [
+      "#2577"
+    ],
+    "touchedFiles": [
+      "docker/ui/Dockerfile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f72b8dd66f9ab5464e40405add17bab6851539c5",
+    "authorDate": "2021-11-15T14:50:50-08:00",
+    "subject": "[UI] Fix preserving stack on workflow definitions page",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/src/pages/definition/Workflow.jsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "461a58463644cb78a010ed4d8f1f3317a875eb98",
+    "authorDate": "2021-11-08T20:07:36-08:00",
+    "subject": "Fixes #2565 - Fix the broken inline task implementation. Added unit tests to validate for both value param and javascript evaluators",
+    "body": "",
+    "issueRefs": [
+      "Fixes #2565"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Inline.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/tasks/InlineTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0e1649898bcc3eee12fa9f144a46f439bf0b1dba",
+    "authorDate": "2021-11-08T23:11:34+01:00",
+    "subject": "Remove ack from Go client + pass auth to go http client (#2470)",
+    "body": "* added ability to pass bearer auth to the httpclient\r\n\r\n* removed acking from Go client to align with v3\r\n\r\n* prefixed token with Bearer\r\n\r\n* fixed bad cond",
+    "issueRefs": [
+      "#2470"
+    ],
+    "touchedFiles": [
+      "polyglot-clients/go/conductorhttpclient.go",
+      "polyglot-clients/go/conductorworker.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f50d2046988a25f37cca68975256e68ac4216152",
+    "authorDate": "2021-10-29T13:28:42-07:00",
+    "subject": "Fix for #2550 - UI build on main branch is broken due to an undefined variable (#2551)",
+    "body": "* Fixes #2550 - value is undefined and it should be displayValue instead based on changes from #2536",
+    "issueRefs": [
+      "#2550",
+      "#2551",
+      "Fixes #2550",
+      "#2536"
+    ],
+    "touchedFiles": [
+      "ui/src/components/KeyValueTable.jsx"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "62e8b1c7d6aa4cbafb121055c5edc2a28b5b9964",
+    "authorDate": "2021-10-29T10:03:13-07:00",
+    "subject": "Fixes #2528 - The UI was not supporting SWITCH task definitions or the execution.",
+    "body": "With this change it will support both SWITCH and DECISION. Tested UI rendering manually screenshots attached to the issue. (#2547)",
+    "issueRefs": [
+      "Fixes #2528",
+      "#2547"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/evaluators/ValueParamEvaluator.java",
+      "docs/docs/configuration/systask.md",
+      "ui/src/components/diagram/WorkflowDAG.js",
+      "ui/src/components/diagram/WorkflowGraph.jsx"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "85db363ad4eb1ce066cc2353447f31bdba15d01b",
+    "authorDate": "2021-10-25T10:55:05-07:00",
+    "subject": "Fix auto refresh after workflow action (terminate/restart etc)",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "ui/src/pages/execution/ActionModule.jsx",
+      "ui/src/plugins/fetch.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "de1365026193dfd739d14811d4f3eb8454d6e95e",
+    "authorDate": "2021-10-25T14:29:11-07:00",
+    "subject": "3.3.3 UI fixes (#2536)",
+    "body": "* Fix Task Queue linking losing stack (stack not used on OSS).\r\n* Add restart with latest definitions to bulk Action\r\n* Fix useLatestDefinition_s_ param typo\r\n* Add Domain to Task Details\r\n* URL persisted lookback in search\r\n\r\nCo-authored-by: Peter Lau <peterl@netflix.com>",
+    "issueRefs": [
+      "#2536"
+    ],
+    "touchedFiles": [
+      "ui/src/components/DateRangePicker.jsx",
+      "ui/src/components/Input.jsx",
+      "ui/src/components/KeyValueTable.jsx",
+      "ui/src/components/NavLink.jsx",
+      "ui/src/pages/execution/ActionModule.jsx",
+      "ui/src/pages/execution/Execution.jsx",
+      "ui/src/pages/execution/RightPanel.jsx",
+      "ui/src/pages/execution/TaskSummary.jsx",
+      "ui/src/pages/execution/Timeline.jsx",
+      "ui/src/pages/executions/BulkActionModule.jsx",
+      "ui/src/pages/executions/ResultsTable.jsx",
+      "ui/src/pages/executions/TaskSearch.jsx",
+      "ui/src/pages/executions/WorkflowSearch.jsx",
+      "ui/src/pages/kitchensink/Examples.jsx",
+      "ui/src/pages/misc/TaskQueue.jsx",
+      "ui/src/theme/theme.js",
+      "ui/src/utils/query.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "578c11651d703c1b6b1eab3a848898abde1cafb8",
+    "authorDate": "2021-10-26T05:04:03+08:00",
+    "subject": "fix issue that workflow not refetched when search with same query condition (#2520)",
+    "body": "* fix issue that workflow not refetched when search with same query conditions\r\n\r\n* trigger the tests again",
+    "issueRefs": [
+      "#2520"
+    ],
+    "touchedFiles": [
+      "ui/src/pages/executions/WorkflowSearch.jsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fea0c142b24a43780ed73e089f4af27922698e54",
+    "authorDate": "2021-10-14T19:52:33-05:00",
+    "subject": "Fix Security Vulnerability on xstream component",
+    "body": "Control transives depedency version by upgrading.\n\nSigned-off-by: Tao Jiang <taoj@vmware.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "redis-persistence/build.gradle"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "026b07f4cd6755ab702191d79fc6c3e0dc22c59f",
+    "authorDate": "2021-10-13T09:52:41-07:00",
+    "subject": "updated bug_report.md",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".github/ISSUE_TEMPLATE/bug_report.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ab746d1cab78ac513b2a3ada01ed84903ab53ec8",
+    "authorDate": "2021-10-07T09:58:38-07:00",
+    "subject": "Fix inconsistent workflow status caused by upload payload exception during workflow termination (#2491)",
+    "body": "* Fix inconsistent workflow status caused by upload payload exception during workflow termination\r\n\r\n* Code refactor\r\n\r\n* Default input and output data of task and workflow to empty map to avoid NullPointerException\r\n\r\n* Refactor to reset to new map",
+    "issueRefs": [
+      "#2491"
+    ],
+    "touchedFiles": [
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/Task.java",
+      "common/src/main/java/com/netflix/conductor/common/run/Workflow.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/main/java/com/netflix/conductor/core/utils/ExternalPayloadStorageUtils.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+      "core/src/test/java/com/netflix/conductor/core/utils/ExternalPayloadStorageUtilsTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ef6b65de74354bcc6a27b6a7e25965b44ba3d651",
+    "authorDate": "2021-10-05T18:10:05-07:00",
+    "subject": "Fix rerunWorkflow places synchronous system tasks in the queue (#2494)",
+    "body": "* Fix rerunWorkflow places synchronous system tasks in the queue\r\n* Refactor test spec\r\n* Code refactor\r\n- clear task output on rerun instead of set it to null\r\n- refactor outputData checks for JsonJQTransformSpec",
+    "issueRefs": [
+      "#2494"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/JsonJQTransformSpec.groovy"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6e74001ec61c6f96ef4a254c8395e7971556116d",
+    "authorDate": "2021-09-23T17:10:49-07:00",
+    "subject": "Bug fix: re-running a sub workflow should update the parent state",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".gitignore",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/HierarchicalForkJoinSubworkflowRerunSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SubWorkflowRerunSpec.groovy"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3164339912969b2c10a2302dc56e96bb5e14721c",
+    "authorDate": "2021-09-14T02:01:29+03:00",
+    "subject": "fix client delete method (#2439)",
+    "body": "",
+    "issueRefs": [
+      "#2439"
+    ],
+    "touchedFiles": [
+      "client/src/main/java/com/netflix/conductor/client/http/ClientBase.java",
+      "client/src/test/java/com/netflix/conductor/client/http/MetadataClientTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ff4df0ea266f612a2de15d9d8bc7d3f4871bba32",
+    "authorDate": "2021-09-14T03:09:57+05:30",
+    "subject": "Fix Conductor Artifacts Link (#2458)",
+    "body": "",
+    "issueRefs": [
+      "#2458"
+    ],
+    "touchedFiles": [
+      "README.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6eb047818df9f87e3b4082c127f205245db432ba",
+    "authorDate": "2021-08-31T06:35:34+09:00",
+    "subject": "Corrected the branch name in the document (#2432)",
+    "body": "* Corrected the branch name in the document\r\n\r\nChanged the branch name from `dev` to `main` for links to files in the documentation.\r\n\r\n* Fix the python client path",
+    "issueRefs": [
+      "#2432"
+    ],
+    "touchedFiles": [
+      "docs/docs/gettingstarted/basicconcepts.md",
+      "docs/docs/gettingstarted/client.md",
+      "docs/mkdocs.yml"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "6e37e0c8bf4f02932f71c747bec11dd772020cfd",
+    "authorDate": "2021-08-26T03:07:09-04:00",
+    "subject": "Amqp too many connections (#2421)",
+    "body": "* Fix multiple connection creations and channel closure issues\r\n\r\n* Fix unit tests\r\n\r\n* add more logging\r\n\r\n* Revert changes to spport azure blob compilation and sanity testing",
+    "issueRefs": [
+      "#2421"
+    ],
+    "touchedFiles": [
+      "contribs/src/main/java/com/netflix/conductor/contribs/queue/amqp/AMQPConnection.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/queue/amqp/AMQPObservableQueue.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/queue/amqp/util/ConnectionType.java",
+      "contribs/src/test/java/com/netflix/conductor/contribs/queue/amqp/AMQPObservableQueueTest.java"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "32d4bb2f80579c7411cac32c168f4003efc983f0",
+    "authorDate": "2021-08-26T03:04:15-04:00",
+    "subject": "Extensible evaluator framework. (#2403)",
+    "body": "* Extensible evaluator framework.\r\n\r\n* Introduce new system tasks viz. `SWITCH`, `INLINE` tasks.\r\n* `SWITCH` is similar to `DECISION` task but uses the evaluator framework.\r\n* `INLINE` is similar to `LAMDA` task but uses the evaluator framework.\r\n* Evaluator framework depends on two parameters. One defines the evaluator type and another the expression that the evaluator uses to evaluate and returns a result.\r\n* UI is updated to detect `SWITCH` task.\r\n* Documentation is updated with information about `SWITCH` and `INLINE` tasks.\r\n\r\n* Extensible evaluator framework.\r\n\r\n* Fix build failures related to `PostgresGrpcEndToEndTest`\r\n* Change the way evaluators' map is created.\r\n* Fixes in some tests causing failures.\r\n\r\n* Extensible evaluator framework.\r\n\r\n* Fix minor issues.\r\n\r\n* Extensible evaluator framework.\r\n\r\n* Taking care of the review comments.\r\n\r\n* Extensible evaluator framework.\r\n\r\n* Taking care of the review comments.\r\n\r\nCo-authored-by: Venka Gade <vgade@vmware.com>",
+    "issueRefs": [
+      "#2403"
+    ],
+    "touchedFiles": [
+      "common/src/main/java/com/netflix/conductor/common/metadata/events/EventHandler.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskType.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/workflow/WorkflowTask.java",
+      "common/src/test/java/com/netflix/conductor/common/workflow/WorkflowTaskTest.java",
+      "core/src/main/java/com/netflix/conductor/core/config/ConductorCoreConfiguration.java",
+      "core/src/main/java/com/netflix/conductor/core/events/DefaultEventProcessor.java",
+      "core/src/main/java/com/netflix/conductor/core/events/ScriptEvaluator.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/DeciderService.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/evaluators/Evaluator.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/evaluators/JavascriptEvaluator.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/evaluators/ValueParamEvaluator.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/DecisionTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/InlineTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/LambdaTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapper.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Decision.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Inline.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Lambda.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Switch.java",
+      "core/src/main/java/com/netflix/conductor/validations/WorkflowTaskTypeConstraint.java",
+      "core/src/test/java/com/netflix/conductor/core/events/TestDefaultEventProcessor.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderOutcomes.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/InlineTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/mapper/SwitchTaskMapperTest.java",
+      "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowRepairService.java",
+      "core/src/test/resources/conditional_flow_with_switch.json",
+      "docs/docs/configuration/systask.md",
+      "grpc/src/main/java/com/netflix/conductor/grpc/AbstractProtoMapper.java",
+      "grpc/src/main/proto/model/eventhandler.proto",
+      "grpc/src/main/proto/model/workflowtask.proto",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/SwitchTaskSpec.groovy",
+      "test-harness/src/test/java/com/netflix/conductor/test/integration/AbstractEndToEndTest.java",
+      "test-harness/src/test/resources/conditional_switch_task_workflow_integration_test.json",
+      "test-harness/src/test/resources/simple_switch_task_integration_test.json",
+      "test-harness/src/test/resources/switch_and_fork_join_integration_test.json",
+      "test-harness/src/test/resources/switch_and_terminate_integration_test.json",
+      "ui/src/api/wfegraph.js"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "22789b58b89cc774a7a7be20bb34d9e6df2b2da9",
+    "authorDate": "2021-08-23T16:36:52-07:00",
+    "subject": "Merge pull request #2423 from uakihir0/main",
+    "body": "fix serverAndUI docker setup script.",
+    "issueRefs": [
+      "#2423"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1c4997d4a95ff7cb90c15d1de77cb3d625da4dd9",
+    "authorDate": "2021-08-21T16:25:56+09:00",
+    "subject": "fix docker serverAndUI setup script.",
+    "body": "fix jar file name.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docker/serverAndUI/bin/startup.sh"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4a87a4b0b0871cc1ea84bef0ee8e915c98e247bf",
+    "authorDate": "2021-08-19T15:02:10-07:00",
+    "subject": "Upgraded azure-storage-blob to 12.7.0 to fix build issue #2407 (#2408)",
+    "body": "* upgraded azure-storage-blob to 12.7.0 to fix build issue #2407",
+    "issueRefs": [
+      "#2407",
+      "#2408"
+    ],
+    "touchedFiles": [
+      "azureblob-storage/dependencies.lock",
+      "cassandra-persistence/dependencies.lock",
+      "client-spring/dependencies.lock",
+      "client/dependencies.lock",
+      "common/dependencies.lock",
+      "contribs/dependencies.lock",
+      "core/dependencies.lock",
+      "dependencies.gradle",
+      "dependencies.lock",
+      "es6-persistence/dependencies.lock",
+      "grpc-client/dependencies.lock",
+      "grpc-server/dependencies.lock",
+      "grpc/dependencies.lock",
+      "mysql-persistence/dependencies.lock",
+      "postgres-persistence/dependencies.lock",
+      "redis-lock/dependencies.lock",
+      "redis-persistence/dependencies.lock",
+      "rest/dependencies.lock",
+      "server/dependencies.lock",
+      "test-harness/dependencies.lock",
+      "zookeeper-lock/dependencies.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "716ff4ecb691e8d1ec969179db66ecea4a555a2a",
+    "authorDate": "2021-08-09T14:00:55-07:00",
+    "subject": "fixed tests for SystemTaskWorker",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/SystemTaskWorker.java",
+      "core/src/main/java/com/netflix/conductor/core/utils/QueueUtils.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestSystemTaskWorker.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestSystemTaskWorkerCoordinator.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "59d9282f375b570a34000bc05bc0116a6fd2a122",
+    "authorDate": "2021-08-16T11:35:05-07:00",
+    "subject": "Merge pull request #2399 from heinrichcohn/bug/fix_workflow_to_tasks_mapping_deletion",
+    "body": "[redis-persistence] Prevent workflow to tasks mapping from being deleted  immediately during archiving",
+    "issueRefs": [
+      "#2399"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b4673608bec51c3880ce69fc854a01c38fa0f13e",
+    "authorDate": "2021-08-10T20:52:53+03:00",
+    "subject": "es7-persistence module migration from 2.31.4 to 3.0.6 (#2324)",
+    "body": "* es7-persistence module migration from 2.31.4 to 3.0.6\r\n\r\n* revert conductor dependencies.lock\r\n\r\n* finalize es7 migration\r\n\r\n* update es-7 README.md\r\n\r\n* update es-7 README\r\n\r\n* rollback conductor es-7 properties migration\r\n\r\n* fix:Create indexes on start-up including task_log one\r\n\r\n* include es7-persistence to project\r\n\r\n* shade es7-persistence\r\n\r\n* fix es7 README.md\r\n\r\n* replace deprecated method\r\n\r\n* set ext['elasticsearch.version'] explicitly to avoid conflicts\r\n\r\n* update es7-persistence README\r\n\r\n* fix revElasticSearch7 version, shaded jar, add reminding note\r\n\r\n* fix elasticsearch container version\r\n\r\n* remove revElasticSearch7 from build.gradle\r\n\r\n* remove not necessary ext['elasticsearch.version'], replace _index_template to _index\r\n\r\nCo-authored-by: Marco Patricio Crasso <marco.crasso@invitae.com>",
+    "issueRefs": [
+      "#2324"
+    ],
+    "touchedFiles": [
+      "CHANGELOG.md",
+      "build.gradle",
+      "dependencies.gradle",
+      "es7-persistence/README.md",
+      "es7-persistence/build.gradle",
+      "es7-persistence/dependencies.lock",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/config/ElasticSearchConditions.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/config/ElasticSearchProperties.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/config/ElasticSearchV7Configuration.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/index/BulkRequestBuilderWrapper.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/index/BulkRequestWrapper.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/index/ElasticSearchBaseDAO.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/index/ElasticSearchRestDAOV7.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/query/parser/Expression.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/query/parser/FilterProvider.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/query/parser/GroupedExpression.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/query/parser/NameValue.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/query/parser/internal/AbstractNode.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/query/parser/internal/BooleanOp.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/query/parser/internal/ComparisonOp.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/query/parser/internal/ConstValue.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/query/parser/internal/FunctionThrowingException.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/query/parser/internal/ListConst.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/query/parser/internal/Name.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/query/parser/internal/ParserException.java",
+      "es7-persistence/src/main/java/com/netflix/conductor/es7/dao/query/parser/internal/Range.java",
+      "es7-persistence/src/main/resources/mappings_docType_task.json",
+      "es7-persistence/src/main/resources/mappings_docType_workflow.json",
+      "es7-persistence/src/main/resources/template_event.json",
+      "es7-persistence/src/main/resources/template_message.json",
+      "es7-persistence/src/main/resources/template_task_log.json",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/dao/index/ElasticSearchRestDaoBaseTest.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/dao/index/ElasticSearchTest.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/dao/index/TestBulkRequestBuilderWrapper.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/dao/index/TestElasticSearchRestDAOV7.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/dao/index/TestElasticSearchRestDAOV7Batch.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/dao/query/parser/TestExpression.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/dao/query/parser/TestGroupedExpression.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/dao/query/parser/internal/AbstractParserTest.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/dao/query/parser/internal/TestBooleanOp.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/dao/query/parser/internal/TestComparisonOp.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/dao/query/parser/internal/TestConstValue.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/dao/query/parser/internal/TestName.java",
+      "es7-persistence/src/test/java/com/netflix/conductor/es7/utils/TestUtils.java",
+      "es7-persistence/src/test/resources/expected_template_task_log.json",
+      "es7-persistence/src/test/resources/workflow.json",
+      "server/build.gradle",
+      "server/src/main/resources/application.properties",
+      "settings.gradle",
+      "test-harness/src/test/java/com/netflix/conductor/test/integration/AbstractEndToEndTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3e2975f9d3c547be45c27fc93710e146099093a7",
+    "authorDate": "2021-08-02T22:57:43+03:00",
+    "subject": "Fix queue and exchange creation in order to avoid channel level exception",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "contribs/src/main/java/com/netflix/conductor/contribs/queue/amqp/AMQPObservableQueue.java"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "251b39c14de97e1fe77fbb3774cf5ba5f7ab278a",
+    "authorDate": "2021-08-01T10:16:14+03:00",
+    "subject": "Fix amqp channel and connection management",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "contribs/dependencies.lock",
+      "contribs/src/main/java/com/netflix/conductor/contribs/queue/amqp/AMQPObservableQueue.java",
+      "dependencies.gradle",
+      "server/dependencies.lock",
+      "test-harness/dependencies.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3748e28113eaa05ced7054b40b5d1161aafc6d0c",
+    "authorDate": "2021-08-02T10:54:25-07:00",
+    "subject": "Merge pull request #2376 from heinrichcohn/bug/rename_monitor_meter_name_for_daoeventrequests",
+    "body": "Rename dao event requests meter name to prevent duplicates",
+    "issueRefs": [
+      "#2376"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "518995dbfb522d8cb266b0d0861c5a21d186384f",
+    "authorDate": "2021-07-16T13:58:53-07:00",
+    "subject": "Merge pull request #2357 from Netflix/temp_build_fix",
+    "body": "disabled httptasktest; cleaned up WorkflowMonitor",
+    "issueRefs": [
+      "#2357"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9ba4793a1e693bfdaa2d7bae378fac6fbe990d2f",
+    "authorDate": "2021-07-13T16:33:08-07:00",
+    "subject": "Merge pull request #2351 from rickfish/bugfix/queuemessage-performance-fix-3.x",
+    "body": "add descending priority index to combo_queue_message index to make queue queries faster - 3.x",
+    "issueRefs": [
+      "#2351"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "56c1ddf83decfc6ae6a6f2bbdf209fbb96a86876",
+    "authorDate": "2021-07-12T11:28:37-07:00",
+    "subject": "Merge pull request #2344 from Netflix/dynamic_fork_join_swf_retry",
+    "body": "fix for retrying subworkflows within dynamic fork join",
+    "issueRefs": [
+      "#2344"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b02c3450a5b69e1652264265afa7d2b185d0c47b",
+    "authorDate": "2021-07-06T18:38:12-07:00",
+    "subject": "fix for retrying subworkflows within dynamic fork join",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "azureblob-storage/dependencies.lock",
+      "build.gradle",
+      "cassandra-persistence/dependencies.lock",
+      "client-spring/dependencies.lock",
+      "client/dependencies.lock",
+      "common/dependencies.lock",
+      "contribs/dependencies.lock",
+      "contribs/src/test/java/com/netflix/conductor/contribs/tasks/http/HttpTaskTest.java",
+      "core/dependencies.lock",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/main/java/com/netflix/conductor/metrics/Monitors.java",
+      "dependencies.gradle",
+      "dependencies.lock",
+      "es6-persistence/dependencies.lock",
+      "grpc-client/dependencies.lock",
+      "grpc-server/dependencies.lock",
+      "grpc/dependencies.lock",
+      "mysql-persistence/dependencies.lock",
+      "postgres-persistence/dependencies.lock",
+      "redis-lock/dependencies.lock",
+      "redis-persistence/dependencies.lock",
+      "rest/dependencies.lock",
+      "server/dependencies.lock",
+      "test-harness/dependencies.lock",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DynamicForkJoinSpec.groovy",
+      "zookeeper-lock/dependencies.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3ec828840193025fd0ae92f7aeecd65cfc1d5d89",
+    "authorDate": "2021-06-21T16:51:12-07:00",
+    "subject": "Merge pull request #2317 from michaelpaliy/fix/grpcDockerCompose#2303",
+    "body": "fix grpc docker compose",
+    "issueRefs": [
+      "#2317",
+      "#2303"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b78b0b38b7e568f474bcc8c080b4c23c149dde92",
+    "authorDate": "2021-06-15T19:13:58+03:00",
+    "subject": "fix grpc docker compose",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "docker/grpc/docker-compose.yaml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c09ba129c2e57061902831efa06f0abac1903fc7",
+    "authorDate": "2021-06-15T08:14:39+08:00",
+    "subject": "Added troubleshooting guide for docker (#2290)",
+    "body": "* Added potential trouble using docker\r\n\r\nSome helpful tips for people using docker, which may encounter some issue that i faced. This is to provide a little helpful suggestion for them.\r\n\r\n* Update README.md\r\n\r\n* Update README.md",
+    "issueRefs": [
+      "#2290"
+    ],
+    "touchedFiles": [
+      "docker/README.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3039768e100c95e942bcf1cbb67a2dce367cd3b2",
+    "authorDate": "2021-05-25T02:46:16+03:00",
+    "subject": "New Search APIs that return Workflow/Task instead of WorkflowSummary/TaskSummary (#2260)",
+    "body": "* Issue #1992 add search api that returns Workflow instead of WorkflowSummary\r\n\r\n* Add task search api that returns Task instead of TaskSummary",
+    "issueRefs": [
+      "#2260",
+      "#1992"
+    ],
+    "touchedFiles": [
+      "client/src/main/java/com/netflix/conductor/client/http/TaskClient.java",
+      "client/src/main/java/com/netflix/conductor/client/http/WorkflowClient.java",
+      "client/src/test/java/com/netflix/conductor/client/http/TaskClientTest.java",
+      "client/src/test/java/com/netflix/conductor/client/http/WorkflowClientTest.java",
+      "common/src/main/java/com/netflix/conductor/common/run/TaskSummary.java",
+      "core/src/main/java/com/netflix/conductor/service/ExecutionService.java",
+      "core/src/main/java/com/netflix/conductor/service/TaskService.java",
+      "core/src/main/java/com/netflix/conductor/service/TaskServiceImpl.java",
+      "core/src/main/java/com/netflix/conductor/service/WorkflowService.java",
+      "core/src/main/java/com/netflix/conductor/service/WorkflowServiceImpl.java",
+      "core/src/test/java/com/netflix/conductor/service/ExecutionServiceTest.java",
+      "core/src/test/java/com/netflix/conductor/service/TaskServiceTest.java",
+      "core/src/test/java/com/netflix/conductor/service/WorkflowServiceTest.java",
+      "grpc-client/src/main/java/com/netflix/conductor/client/grpc/ClientBase.java",
+      "grpc-client/src/main/java/com/netflix/conductor/client/grpc/TaskClient.java",
+      "grpc-client/src/main/java/com/netflix/conductor/client/grpc/WorkflowClient.java",
+      "grpc-client/src/test/java/com/netflix/conductor/client/grpc/TaskClientTest.java",
+      "grpc-client/src/test/java/com/netflix/conductor/client/grpc/WorkflowClientTest.java",
+      "grpc-client/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker",
+      "grpc-server/src/main/java/com/netflix/conductor/grpc/server/service/TaskServiceImpl.java",
+      "grpc-server/src/main/java/com/netflix/conductor/grpc/server/service/WorkflowServiceImpl.java",
+      "grpc-server/src/test/java/com/netflix/conductor/grpc/server/service/TaskServiceImplTest.java",
+      "grpc-server/src/test/java/com/netflix/conductor/grpc/server/service/WorkflowServiceImplTest.java",
+      "grpc/src/main/java/com/netflix/conductor/grpc/AbstractProtoMapper.java",
+      "grpc/src/main/proto/grpc/task_service.proto",
+      "grpc/src/main/proto/grpc/workflow_service.proto",
+      "rest/src/main/java/com/netflix/conductor/rest/controllers/TaskResource.java",
+      "rest/src/main/java/com/netflix/conductor/rest/controllers/WorkflowResource.java",
+      "rest/src/test/java/com/netflix/conductor/rest/controllers/TaskResourceTest.java",
+      "rest/src/test/java/com/netflix/conductor/rest/controllers/WorkflowResourceTest.java",
+      "test-harness/src/test/java/com/netflix/conductor/test/integration/grpc/AbstractGrpcEndToEndTest.java",
+      "test-harness/src/test/java/com/netflix/conductor/test/integration/http/AbstractHttpEndToEndTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8fc2aa14cf115c4b783b14a83aebbc4806687eb1",
+    "authorDate": "2021-05-18T10:41:04-07:00",
+    "subject": "Merge pull request #2264 from michaelpaliy/bugFix/missingBuildProperiesInConfigApi",
+    "body": "Add build properties to /admin/config API which is consumed by the UI",
+    "issueRefs": [
+      "#2264"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8c6c36c01e9d5feb5dc442c4fc82db25cb45f905",
+    "authorDate": "2021-05-15T20:52:42+03:00",
+    "subject": "bugFix embrace spring flyway (#2246)",
+    "body": "* embrace spring flyway\r\n* embrace spring flyway - add comments",
+    "issueRefs": [
+      "#2246"
+    ],
+    "touchedFiles": [
+      "docker/server/config/config-mysql-grpc.properties",
+      "docker/server/config/config-mysql.properties",
+      "mysql-persistence/build.gradle",
+      "mysql-persistence/src/main/java/com/netflix/conductor/mysql/config/MySQLConfiguration.java",
+      "mysql-persistence/src/main/java/com/netflix/conductor/mysql/config/MySQLDataSourceProvider.java",
+      "mysql-persistence/src/main/java/com/netflix/conductor/mysql/config/MySQLProperties.java",
+      "mysql-persistence/src/test/java/com/netflix/conductor/mysql/dao/MySQLExecutionDAOTest.java",
+      "mysql-persistence/src/test/java/com/netflix/conductor/mysql/dao/MySQLMetadataDAOTest.java",
+      "mysql-persistence/src/test/java/com/netflix/conductor/mysql/dao/MySQLQueueDAOTest.java",
+      "mysql-persistence/src/test/java/com/netflix/conductor/mysql/util/MySQLDAOTestUtil.java",
+      "postgres-persistence/build.gradle",
+      "postgres-persistence/src/main/java/com/netflix/conductor/postgres/config/PostgresConfiguration.java",
+      "postgres-persistence/src/main/java/com/netflix/conductor/postgres/config/PostgresDataSourceProvider.java",
+      "postgres-persistence/src/main/java/com/netflix/conductor/postgres/config/PostgresProperties.java",
+      "postgres-persistence/src/test/java/com/netflix/conductor/postgres/dao/PostgresExecutionDAOTest.java",
+      "postgres-persistence/src/test/java/com/netflix/conductor/postgres/dao/PostgresMetadataDAOTest.java",
+      "postgres-persistence/src/test/java/com/netflix/conductor/postgres/dao/PostgresQueueDAOTest.java",
+      "postgres-persistence/src/test/java/com/netflix/conductor/postgres/util/PostgresDAOTestUtil.java",
+      "server/src/main/java/com/netflix/conductor/Conductor.java",
+      "server/src/main/resources/application.properties",
+      "test-harness/src/test/java/com/netflix/conductor/test/integration/grpc/mysql/MySQLGrpcEndToEndTest.java",
+      "test-harness/src/test/java/com/netflix/conductor/test/integration/grpc/postgres/PostgresGrpcEndToEndTest.java"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "d0d8bde08e400eac8ee3a6ebe3107dd6c4fbd49a",
+    "authorDate": "2021-05-05T09:01:52+05:30",
+    "subject": "Java upgrade and startup script fixes (#2206)",
+    "body": "",
+    "issueRefs": [
+      "#2206"
+    ],
+    "touchedFiles": [
+      ".dockerignore",
+      "docker/docker-compose.yaml",
+      "docker/server/Dockerfile",
+      "docker/server/bin/startup.sh",
+      "docker/server/config/config-mysql-grpc.properties",
+      "docker/server/config/config-mysql.properties",
+      "docker/server/config/config.properties",
+      "server/src/main/java/com/netflix/conductor/Conductor.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "410a25d2448fad8baa9adf6443a4564c91132841",
+    "authorDate": "2021-04-27T23:49:12+05:30",
+    "subject": "fixed the issue some endpoints not working in swagger-ui (#2210)",
+    "body": "* fixed the issue some endpoints not working in swagger-ui",
+    "issueRefs": [
+      "#2210"
+    ],
+    "touchedFiles": [
+      "common/build.gradle",
+      "common/src/main/java/com/netflix/conductor/common/metadata/events/EventHandler.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/tasks/Task.java",
+      "server/build.gradle"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e5ad9193ca33f3ccf95ab8e22fa8bd6a4a91fcd3",
+    "authorDate": "2021-04-08T21:17:03-07:00",
+    "subject": "Update issue templates",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".github/ISSUE_TEMPLATE/bug_report.md",
+      ".github/ISSUE_TEMPLATE/feature_request.md",
+      ".github/ISSUE_TEMPLATE/support_question.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2a63a80fdfc37ebfbfaa18ad04947ffffb041ca9",
+    "authorDate": "2021-04-08T21:10:53-07:00",
+    "subject": "rename bug template",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".github/ISSUE_TEMPLATE/bug.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "58e19b82d2523dd179e51a2d0f487d032007a08c",
+    "authorDate": "2021-04-08T21:07:14-07:00",
+    "subject": "Merge pull request #2166 from Netflix/issue_templates",
+    "body": "added issue templates",
+    "issueRefs": [
+      "#2166"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "53dcbc4d58092c58ecf2689db6134b10241f1c9d",
+    "authorDate": "2021-04-08T15:04:03-07:00",
+    "subject": "added issue templates",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".github/ISSUE_TEMPLATE/bug_report.md",
+      ".github/ISSUE_TEMPLATE/config.yml",
+      ".github/ISSUE_TEMPLATE/feature_request.md",
+      ".github/ISSUE_TEMPLATE/support_question.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7d473621dbdf27afa4d1f5a8a7b2c6e8901befcc",
+    "authorDate": "2021-04-06T21:38:45-07:00",
+    "subject": "fix ci status badge",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "README.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c282dd2063a462188e1c3c1f0fa53a8634465b4f",
+    "authorDate": "2021-04-06T21:35:52-07:00",
+    "subject": "fix label in github action",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".github/workflows/stale.yml",
+      "README.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5cf30463e24022d3a8ac9c196324fbc5a86c030e",
+    "authorDate": "2021-04-01T12:14:28-07:00",
+    "subject": "sweepFrequency to workflowOffsetTimeout",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/config/ConductorProperties.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowRepairService.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowSweeper.java",
+      "core/src/main/java/com/netflix/conductor/core/orchestration/ExecutionDAOFacade.java",
+      "core/src/main/java/com/netflix/conductor/service/AdminServiceImpl.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestDoWhile.java"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "b0a65f29f4916471893a5b9a40153581caa313bd",
+    "authorDate": "2021-03-16T10:42:28-07:00",
+    "subject": "fix flag in system task worker coordinator",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/SystemTaskWorkerCoordinator.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a42ef554856cc274c99d59848aaf76f09934c01d",
+    "authorDate": "2021-03-03T10:30:24-08:00",
+    "subject": "Merge pull request #2112 from Netflix/terminate_task_external_payload",
+    "body": "Fix conditional sync system task with large payload",
+    "issueRefs": [
+      "#2112"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5789707afaf68304cae8e51e4f7672db2cbc968f",
+    "authorDate": "2021-03-02T17:36:00-08:00",
+    "subject": "fix conditional sync system task with large payload",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/DeciderService.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderService.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/ExternalPayloadStorageSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/LambdaAndTerminateTaskSpec.groovy",
+      "test-harness/src/test/java/com/netflix/conductor/test/utils/MockExternalPayloadStorage.java",
+      "test-harness/src/test/resources/decision_and_terminate_integration_test.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5805e935e6da0a57d4249e78a6f9a846f8bb7572",
+    "authorDate": "2021-01-29T14:20:24-08:00",
+    "subject": "Merge pull request #2056 from Netflix/terminate_within_decisino",
+    "body": "Fix case where decision task is followed by a terminate task",
+    "issueRefs": [
+      "#2056"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6784379ade310433a5745ca752bdc3855de260fc",
+    "authorDate": "2021-01-15T16:17:18-08:00",
+    "subject": "fix for terminate tasks within a decision branch",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "common/src/main/java/com/netflix/conductor/common/metadata/workflow/WorkflowDef.java",
+      "common/src/main/java/com/netflix/conductor/common/metadata/workflow/WorkflowTask.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/DeciderService.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowRepairService.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/SubWorkflow.java",
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/Terminate.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderService.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/tasks/TestTerminate.java",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/DecisionTaskSpec.groovy",
+      "test-harness/src/test/groovy/com/netflix/conductor/test/integration/LambdaAndTerminateTaskSpec.groovy",
+      "test-harness/src/test/resources/decision_and_terminate_integration_test.json",
+      "test-harness/src/test/resources/terminate_task_sub_workflow.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5b3a69117f16e845eccfe064956d168eefa61fbc",
+    "authorDate": "2020-12-08T22:59:47-08:00",
+    "subject": "Merge pull request #2000 from Netflix/fix_configurations",
+    "body": "optimize when components are instantiated",
+    "issueRefs": [
+      "#2000"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ec479e7b97f2cc25a4d885a20b4cfc124304bcbe",
+    "authorDate": "2020-12-07T15:13:31-08:00",
+    "subject": "fix build",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "buildViaTravis.sh"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "65b23ce704da1dfdb04249ab308864a95b67da39",
+    "authorDate": "2020-12-07T14:09:07-08:00",
+    "subject": "fix build script",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "buildViaTravis.sh"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3dedf66cbe261a5cc28d78ccdf4e101c4fcc32d8",
+    "authorDate": "2020-12-03T11:39:13-08:00",
+    "subject": "Added 204 \"No Content\" responses to fix tests and for backwards compatibility with 2.x clients",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "rest/src/main/java/com/netflix/conductor/rest/controllers/TaskResource.java",
+      "rest/src/main/java/com/netflix/conductor/rest/controllers/WorkflowResource.java",
+      "rest/src/test/java/com/netflix/conductor/rest/controllers/TaskResourceTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c09fc91188359f2f639944cd1222693f739794e9",
+    "authorDate": "2020-12-01T15:51:34-08:00",
+    "subject": "fix flaky tests",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "common/src/test/java/com/netflix/conductor/common/workflow/SubWorkflowParamsTest.java",
+      "contribs/src/main/java/com/netflix/conductor/contribs/metrics/LoggingMetricsConfiguration.java",
+      "contribs/src/test/java/com/netflix/conductor/contribs/metrics/LoggingMetricsConfigurationTest.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "90ab0ba34a678755d6de8b253da4a808b34d545d",
+    "authorDate": "2020-11-16T16:56:37-08:00",
+    "subject": "Merge pull request #1973 from Netflix/isolated_task_queue_producer_fix",
+    "body": "fix ordering of params in isolated task queue producer",
+    "issueRefs": [
+      "#1973"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7a19487a7a0f778e116f29fe5a93170d26ba9a0c",
+    "authorDate": "2020-11-16T16:14:50-08:00",
+    "subject": "fix ordering of params in isolated task queue producer",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/tasks/IsolatedTaskQueueProducer.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c1251e8b9b7e4dfa9261a13df8eeca5b2f284767",
+    "authorDate": "2020-11-04T14:23:37-08:00",
+    "subject": "Merge pull request #1942 from djcass44/fix-goclient-ack",
+    "body": "Added missing params to Go client Ack",
+    "issueRefs": [
+      "#1942"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a08b8da4de5da7b847932a7b198f79c0d0fbc6d0",
+    "authorDate": "2020-11-04T13:47:59-08:00",
+    "subject": "Merge pull request #1947 from Netflix/jun-he-patch-1",
+    "body": "Fix ExclusiveJoinTaskMapper to set task startTime",
+    "issueRefs": [
+      "#1947"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a9697db648556947051626ee371fe8a8668661d6",
+    "authorDate": "2020-10-31T13:43:02-07:00",
+    "subject": "Fix ExclusiveJoinTaskMapper to set task startTime",
+    "body": "ExclusiveJoinTaskMapper should set joinTask startTime instead of endTime",
+    "issueRefs": [],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/mapper/ExclusiveJoinTaskMapper.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6bce3912d3ce7a39ca4010b0537a7c37d0f27091",
+    "authorDate": "2020-10-29T10:06:55-07:00",
+    "subject": "Fix WorkflowRepairService to evaluate the possible task states for Simple and system tasks. (#1941)",
+    "body": "",
+    "issueRefs": [
+      "#1941"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowRepairService.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowRepairService.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b51ce0a539b913c3a5f406dd01c0d81d454c01e8",
+    "authorDate": "2020-10-27T05:25:45+05:30",
+    "subject": "minor bug on response format - missing mandatory logs attribute (#1930)",
+    "body": "Co-authored-by: shiva-moorthy <shiva-moorthy@users.noreply.github.com>",
+    "issueRefs": [
+      "#1930"
+    ],
+    "touchedFiles": [
+      "client/python/conductor/ConductorWorker.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f924d0ee96a145bdcf350c52821143833e5471d3",
+    "authorDate": "2020-10-23T14:10:40-07:00",
+    "subject": "Merge pull request #1933 from james-deee/master",
+    "body": "Fix bug in unique task reference name validation",
+    "issueRefs": [
+      "#1933"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9ff2f1911f6ff0fff16ae44b04abe6fc4b54d6e5",
+    "authorDate": "2020-10-21T20:13:35-05:00",
+    "subject": "Fix bug in unique task reference name validation",
+    "body": "",
+    "issueRefs": [],
+    "touchedFiles": [
+      "common/src/main/java/com/netflix/conductor/common/constraints/TaskReferenceNameUniqueConstraint.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e8128f0abce30681b72b841a47041bb6ad3d237c",
+    "authorDate": "2020-10-13T19:53:05-04:00",
+    "subject": "In processAllUnacks, change it so only the unacks from the past get reset (#1875)",
+    "body": "* only reset unacks from the past\r\n\r\n* fix the test cases so that it matches the change to the code\r\n\r\n* fix the test cases so that it matches the change to the code\r\n\r\n* fix the test cases so that it matches the change to the code\r\n\r\n* fix the test cases so that it matches the change to the code\r\n\r\n* fix the test cases so that it matches the change to the code\r\n\r\n* fix the test cases so that it matches the change to the code\r\n\r\n* fix the test cases so that it matches the change to the code\r\n\r\n* fix the test cases so that it matches the change to the code\r\n\r\n* fix the test cases so that it matches the change to the code\r\n\r\n* fix the test cases so that it matches the change to the code\r\n\r\n* fix the test cases so that it matches the change to the code\r\n\r\n* fix the test cases so that it matches the change to the code\r\n\r\n* fix the test cases so that it matches the change to the code\r\n\r\n* fix the test cases so that it matches the change to the code\r\n\r\nCo-authored-by: u447 <rick.fishman@bcbsfl.com>",
+    "issueRefs": [
+      "#1875"
+    ],
+    "touchedFiles": [
+      "mysql-persistence/src/main/java/com/netflix/conductor/dao/mysql/MySQLQueueDAO.java",
+      "mysql-persistence/src/test/java/com/netflix/conductor/dao/mysql/MySQLQueueDAOTest.java",
+      "postgres-persistence/src/main/java/com/netflix/conductor/dao/postgres/PostgresQueueDAO.java",
+      "postgres-persistence/src/test/java/com/netflix/conductor/dao/postgres/PostgresQueueDAOTest.java"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "75db6af4ea0eab9126d941cd8195339c775b5a1d",
+    "authorDate": "2020-10-08T16:42:35-05:00",
+    "subject": "Fix the binding for ServerModule to the root SystemProps Configuration (#1895)",
+    "body": "* Fixing the root configuration issue\r\n\r\n* Add Override annotation and make singleton\r\n\r\n* Making repairservice default in properties files\r\n\r\nCo-authored-by: James DeMichele <james.demichele@redfin.com>",
+    "issueRefs": [
+      "#1895"
+    ],
+    "touchedFiles": [
+      "docker/server/config/config-local.properties",
+      "docker/server/config/config.properties",
+      "docker/serverAndUI/config/config-local.properties",
+      "docker/serverAndUI/config/config.properties",
+      "redis-persistence/src/main/java/com/netflix/conductor/dyno/DynomiteConfiguration.java",
+      "server/src/main/java/com/netflix/conductor/bootstrap/BootstrapModule.java",
+      "server/src/main/java/com/netflix/conductor/server/ServerModule.java",
+      "server/src/main/resources/server.properties"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "155a66e283fbb714838807b19ece4231f19a6d11",
+    "authorDate": "2020-09-23T17:58:46-07:00",
+    "subject": "Fixing errors in start workflow due to npe on priority Integer autoboxing introduced in v2.29.1; (#1886)",
+    "body": "",
+    "issueRefs": [
+      "#1886"
+    ],
+    "touchedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "core/src/test/java/com/netflix/conductor/core/execution/TestWorkflowExecutor.java"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4786c3e323e1ac31aec153a699e1edeca7be46a5",
+    "authorDate": "2020-09-22T16:18:21-07:00",
+    "subject": "Merge pull request #1878 from Yingsheng-eroad/master",
+    "body": "fix https://github.com/Netflix/conductor/issues/1877",
+    "issueRefs": [
+      "#1878"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5ce67a5b6d8964bd46a4b9e25591e91920afa4a4",
+    "authorDate": "2020-09-22T16:09:06-07:00",
+    "subject": "Merge pull request #1872 from jinwik/bug-fix",
+    "body": "fix workerNamePrefix problem",
+    "issueRefs": [
+      "#1872"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  }
+]

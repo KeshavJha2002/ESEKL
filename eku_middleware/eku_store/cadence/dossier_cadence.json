@@ -1,0 +1,64 @@
+{
+  "repo": "cadence",
+  "targetRepo": "cadence-workflow/cadence",
+  "remote": "https://github.com/cadence-workflow/cadence.git",
+  "commit": "7b681a654a56d233bbf654ec465a0e1f5fc71a6e",
+  "analyzedAt": "2026-08-26T12:25:55.434747+00:00",
+  "domain": "workflow_durable_execution",
+  "systemSummary": {
+    "name": "Cadence Workflow Orchestration Engine",
+    "description": "Distributed, scalable, durable, and highly available orchestration engine executing stateful workflows and activities with deterministic replay, event-sourcing persistence, and multi-cluster replication.",
+    "coreLanguages": [
+      "Go"
+    ],
+    "architecture": {
+      "frontendService": {
+        "description": "Stateless API gateway providing gRPC/TChannel/Thrift interfaces, request authentication/authorization, rate limiting, and domain cache routing.",
+        "entrypoint": "service/frontend/service.go"
+      },
+      "historyService": {
+        "description": "Core stateful orchestration engine partitioned by ShardID. Manages workflow state machines, mutable state caching, event history append, timer/transfer/replication queue execution, and conflict resolution.",
+        "entrypoint": "service/history/service.go"
+      },
+      "matchingService": {
+        "description": "Task dispatching and queue subsystem. Pairs decision/activity task producers with polling workers using synchronous in-memory channels or persistent task queues.",
+        "entrypoint": "service/matching/service.go"
+      },
+      "workerService": {
+        "description": "Internal background worker service hosting system workflows and daemons (ParentClosePolicy, Archival Pump, History Scanner/Reconciler).",
+        "entrypoint": "service/worker/service.go"
+      },
+      "storageLayer": {
+        "description": "Pluggable persistence engine supporting Cassandra, MySQL, PostgreSQL, DynamoDB, MongoDB for workflow execution/history, and Elasticsearch/Pinot for search/visibility.",
+        "entrypoint": "common/persistence/"
+      }
+    }
+  },
+  "durableExecutionModel": {
+    "eventSourcing": "Workflows are persisted as append-only immutable history event streams (history_node / history_tree). State transitions are deterministic projections of event history.",
+    "mutableState": "In-memory snapshot of execution status, pending activities, user timers, child workflows, and in-flight decisions, protected by shard-level and workflow-level mutexes and synchronized to storage via atomic CAS.",
+    "workerExecutionModel": "External application workers execute workflow definitions and activities. Decision tasks replay history events to reconstruct local coroutine state. Workflow logic must be deterministic; non-deterministic side-effects must be encapsulated in activities.",
+    "optimisticConcurrency": "Persistence writes enforce CAS on NextEventID and Shard RangeID. Stale writes fail immediately with conflict errors or shard ownership lost errors.",
+    "transactionalOutbox": "Side-effects (matching task dispatch, timer triggers, cross-cluster replication, child workflow execution) are staged as transfer/timer tasks within the same DB transaction as history events, then processed asynchronously with at-least-once semantics.",
+    "multiClusterReplication": "Active-passive domain failover via VersionHistories branch trees. Conflicting histories fork branches in the history tree, and StateRebuilder reconstructs mutable state from the common ancestor."
+  },
+  "dimensionsAnalyzed": [
+    "workflow_definition_model",
+    "execution_state_machine",
+    "task_activity_scheduling",
+    "event_history_and_replay",
+    "deterministic_replay_constraints",
+    "persistence_and_checkpointing",
+    "timers_and_durable_sleeps",
+    "retries_and_backoff",
+    "cancellation_signals_queries",
+    "child_workflows_subflows",
+    "worker_leasing_heartbeats_liveness",
+    "idempotency_duplicate_suppression",
+    "versioning_and_workflow_evolution",
+    "failure_recovery_crash_failover",
+    "multicluster_replication_conflict_resolution",
+    "concurrency_and_backpressure",
+    "data_retention_and_history_compaction"
+  ]
+}

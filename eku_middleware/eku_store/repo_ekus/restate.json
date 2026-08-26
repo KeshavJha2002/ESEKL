@@ -1,0 +1,855 @@
+[
+  {
+    "id": "REKU-RESTATE-001",
+    "repository": "restate",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "raft",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Restate executes stateful services and workflows as virtual actors whose execution progress is recorded in an append-only event journal, replayed deterministically to reconstruct in-memory execution state.",
+    "mechanism": "InvocationStateMachine matches service execution steps against existing journal records, advancing the execution pointer and appending new entries to PartitionDb on new operations.",
+    "applicabilityConditions": [
+      "All Restate virtual object and workflow service invocations"
+    ],
+    "evidenceIds": [
+      "OBS-RESTATE-001",
+      "OBS-RESTATE-006",
+      "HIST-RESTATE-004"
+    ],
+    "commonKeywords": [
+      "virtual",
+      "actor",
+      "event-sourced",
+      "journaling",
+      "deterministic",
+      "replay",
+      "restate",
+      "executes"
+    ],
+    "uniqueKeywords": [
+      "reku_restate_001",
+      "restate",
+      "virtual",
+      "actor",
+      "event-sourced",
+      "journaling",
+      "deterministic"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "restate",
+        "executes",
+        "stateful"
+      ],
+      "stateStorage": [
+        "raft"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "invocationstatemachine",
+        "matches",
+        "service",
+        "execution",
+        "steps"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "raft"
+      ]
+    },
+    "localContext": "InvocationStateMachine matches service execution steps against existing journal records, advancing the execution pointer and appending new entries to PartitionDb on new operations. Known limits: Side effects must be wrapped in restate.run() or calls to be captured in the journal.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-008"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-008"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "crates/core/src/task_center.rs",
+      "lineRange": [
+        30,
+        75
+      ],
+      "queryOrCodeSnippet": "TaskCenter maintains registry of active tasks, coordinating cancellation tokens, task completion futures, and worker thread pool dispatching.",
+      "symbol": "TaskCenter"
+    },
+    "testProvenance": {
+      "filePath": "crates/partition-store/src/durable_lsn_tracking.rs",
+      "testName": "extract_partition_applied_lsn",
+      "assertionSnippet": "Asserts that journal entry writes track durable LSNs without redundant memory clones."
+    },
+    "historyProvenance": {
+      "commitHash": "7703d7a56b4f55340ffe1a656430054288f9591f",
+      "failureId": "HIST-RESTATE-004",
+      "prOrIssue": "https://github.com/restatedev/restate/commit/7703d7a56b4f55340ffe1a656430054288f9591f",
+      "fixDescription": "Refactored journal entry writing to take ownership of byte buffers, eliminating redundant cloning operations."
+    },
+    "historyChainIds": [
+      "CHAIN-RESTATE-004"
+    ]
+  },
+  {
+    "id": "REKU-RESTATE-002",
+    "repository": "restate",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "raft",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "The Restate engine communicates with user services over bidirectional HTTP/2 streaming protocol (service-protocol), cleanly suspending execution when awaiting external events without holding worker threads.",
+    "mechanism": "ServiceProtocolCodec parses stream messages. When a call encounters an uncompleted promise/awakeable, a SuspensionMessage is yielded and the connection closes gracefully.",
+    "applicabilityConditions": [
+      "All service invocations communicating via restate-service-protocol"
+    ],
+    "evidenceIds": [
+      "OBS-RESTATE-002",
+      "OBS-RESTATE-010",
+      "HIST-RESTATE-001"
+    ],
+    "commonKeywords": [
+      "non-blocking",
+      "service",
+      "protocol",
+      "streaming",
+      "invocation",
+      "suspension",
+      "restate",
+      "engine"
+    ],
+    "uniqueKeywords": [
+      "reku_restate_002",
+      "restate",
+      "non-blocking",
+      "service",
+      "protocol",
+      "streaming",
+      "invocation"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "restate",
+        "engine",
+        "communicates"
+      ],
+      "stateStorage": [
+        "raft"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "serviceprotocolcodec",
+        "parses",
+        "stream",
+        "messages",
+        "call"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "raft"
+      ]
+    },
+    "localContext": "ServiceProtocolCodec parses stream messages. When a call encounters an uncompleted promise/awakeable, a SuspensionMessage is yielded and the connection closes gracefully. Known limits: Outbound buffer budgets must be released independently of lock ownership to avoid protocol deadlocks.",
+    "linkedDomainEkus": [
+      "EKU-WDE-006"
+    ],
+    "linkedClaims": [
+      "CLM-006"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "crates/service-protocol/src/codec.rs",
+      "lineRange": [
+        30,
+        75
+      ],
+      "queryOrCodeSnippet": "ServiceProtocolCodec decodes streaming frame headers and payloads into strongly-typed messages (Start, Call, GetState, SetState, CompleteAwakeable).",
+      "symbol": "ServiceProtocolCodec"
+    },
+    "testProvenance": {
+      "filePath": "crates/invoker-impl/src/invocation_task/mod.rs",
+      "testName": "collect_eager_state_complete_within_limit",
+      "assertionSnippet": "Asserts that outbound stream message dispatching operates without deadlocking budget allocations."
+    },
+    "historyProvenance": {
+      "commitHash": "4229aa5aa6b0d164302eb5ee8eb99529b1a940a6",
+      "failureId": "HIST-RESTATE-001",
+      "prOrIssue": "https://github.com/restatedev/restate/commit/4229aa5aa6b0d164302eb5ee8eb99529b1a940a6",
+      "fixDescription": "Replaced InvokerBody with Bytes::from_owner to decouple buffer lifetime from lock ownership and prevent budget deadlocks."
+    },
+    "historyChainIds": [
+      "CHAIN-RESTATE-001"
+    ]
+  },
+  {
+    "id": "REKU-RESTATE-003",
+    "repository": "restate",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "raft",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Execution journals, actor KV state, inboxes, outboxes, and idempotency deduplication tables are persisted in localized RocksDB partition databases with monotonic LSN tracking.",
+    "mechanism": "PartitionDb organizes column families for journals and deduplication. DurableLsnTracking guarantees journal writes are flushed to disk before outbox messages are dispatched.",
+    "applicabilityConditions": [
+      "All partition storage operations in PartitionDb"
+    ],
+    "evidenceIds": [
+      "OBS-RESTATE-003",
+      "OBS-RESTATE-009",
+      "HIST-RESTATE-003"
+    ],
+    "commonKeywords": [
+      "partitioned",
+      "rocksdb",
+      "state",
+      "storage",
+      "durable",
+      "lsn",
+      "tracking",
+      "execution"
+    ],
+    "uniqueKeywords": [
+      "reku_restate_003",
+      "restate",
+      "partitioned",
+      "rocksdb",
+      "state",
+      "storage",
+      "durable"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "execution",
+        "journals",
+        "actor"
+      ],
+      "stateStorage": [
+        "raft"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "partitiondb",
+        "organizes",
+        "column",
+        "families",
+        "journals"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "raft"
+      ]
+    },
+    "localContext": "PartitionDb organizes column families for journals and deduplication. DurableLsnTracking guarantees journal writes are flushed to disk before outbox messages are dispatched. Known limits: Sealed partition stores must park processor tasks rather than spinning on retries.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-003",
+      "EKU-WDE-009",
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-003",
+      "CLM-009",
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "crates/partition-store/src/partition_db.rs",
+      "lineRange": [
+        50,
+        95
+      ],
+      "queryOrCodeSnippet": "PartitionDb wraps column families for journals, inboxes, outboxes, deduplication keys, and durable LSN watermarks.",
+      "symbol": "PartitionDb"
+    },
+    "testProvenance": {
+      "filePath": "crates/vqueues/src/cache.rs",
+      "testName": "compact_evicts_inactive_and_keeps_active",
+      "assertionSnippet": "Asserts that partition processor caches handle sealed states cleanly without spinning on retries."
+    },
+    "historyProvenance": {
+      "commitHash": "317ade5a8a0e2d56b2b68186a719b57da472bf6c",
+      "failureId": "HIST-RESTATE-003",
+      "prOrIssue": "https://github.com/restatedev/restate/commit/317ade5a8a0e2d56b2b68186a719b57da472bf6c",
+      "fixDescription": "Parked partition processors encountering sealed stores instead of retrying, reporting clean status to cluster state manager."
+    },
+    "historyChainIds": [
+      "CHAIN-RESTATE-003"
+    ]
+  },
+  {
+    "id": "REKU-RESTATE-004",
+    "repository": "restate",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "raft",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Restate replicates partition journal logs across cluster nodes using the Bifrost consensus protocol, ensuring high availability and quorum-validated tail recovery.",
+    "mechanism": "Bifrost manages replica quorum voting, loglet sealing, and background batch appenders, ensuring zero data loss during partition failovers.",
+    "applicabilityConditions": [
+      "Clustered Restate deployments with replicated loglets"
+    ],
+    "evidenceIds": [
+      "OBS-RESTATE-005",
+      "OBS-RESTATE-012",
+      "HIST-RESTATE-002"
+    ],
+    "commonKeywords": [
+      "bifrost",
+      "replicated",
+      "loglet",
+      "consensus",
+      "protocol",
+      "restate",
+      "replicates",
+      "partition"
+    ],
+    "uniqueKeywords": [
+      "reku_restate_004",
+      "restate",
+      "bifrost",
+      "replicated",
+      "loglet",
+      "consensus",
+      "protocol"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "restate",
+        "replicates",
+        "partition"
+      ],
+      "stateStorage": [
+        "raft"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "bifrost",
+        "manages",
+        "replica",
+        "quorum",
+        "voting"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "raft"
+      ]
+    },
+    "localContext": "Bifrost manages replica quorum voting, loglet sealing, and background batch appenders, ensuring zero data loss during partition failovers. Known limits: Requires a quorum majority of replicas to be reachable to commit new journal entries.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "crates/bifrost/src/bifrost.rs",
+      "lineRange": [
+        35,
+        80
+      ],
+      "queryOrCodeSnippet": "Bifrost coordinates consensus state machines, replica quorum matching, and loglet sealing across storage cluster nodes.",
+      "symbol": "Bifrost"
+    },
+    "testProvenance": {
+      "filePath": "crates/bifrost/src/background_appender.rs",
+      "testName": "append_operation_cost_in_bytes",
+      "assertionSnippet": "Asserts that background appender flushes loglet entries cleanly without corrupted tail offset records."
+    },
+    "historyProvenance": {
+      "commitHash": "2561670c586823fe9ef10010cbd6a00011d9330f",
+      "failureId": "HIST-RESTATE-002",
+      "prOrIssue": "https://github.com/restatedev/restate/commit/2561670c586823fe9ef10010cbd6a00011d9330f",
+      "fixDescription": "Made find-tail logic resilient to concurrent repair races by validating quorum committed offsets before establishing tail positions."
+    },
+    "historyChainIds": [
+      "CHAIN-RESTATE-002"
+    ]
+  },
+  {
+    "id": "REKU-RESTATE-005",
+    "repository": "restate",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "raft",
+    "objectType": "FAILURE_RECOVERY_MECHANISM",
+    "claim": "Asynchronous service invoker streams must decouple buffer memory ownership from lock acquisition to prevent deadlocks between stream writes and outbound socket budget allocations.",
+    "mechanism": "InvocationTask uses Bytes::from_owner to pass buffer slices directly to Tokio socket writers without holding internal state locks.",
+    "applicabilityConditions": [
+      "Invoker message streaming in restate-invoker"
+    ],
+    "evidenceIds": [
+      "OBS-RESTATE-010",
+      "HIST-RESTATE-001"
+    ],
+    "commonKeywords": [
+      "outbound",
+      "stream",
+      "buffer",
+      "decoupling",
+      "prevent",
+      "budget",
+      "deadlocks",
+      "asynchronous"
+    ],
+    "uniqueKeywords": [
+      "reku_restate_005",
+      "restate",
+      "outbound",
+      "stream",
+      "buffer",
+      "decoupling",
+      "prevent"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "asynchronous",
+        "service",
+        "invoker"
+      ],
+      "stateStorage": [
+        "raft"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "invocationtask",
+        "uses",
+        "bytes",
+        "from_owner",
+        "pass"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "raft"
+      ]
+    },
+    "localContext": "InvocationTask uses Bytes::from_owner to pass buffer slices directly to Tokio socket writers without holding internal state locks. Known limits: Applies specifically to high-concurrency async streaming transports.",
+    "linkedDomainEkus": [
+      "EKU-WDE-007",
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-007",
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "crates/invoker-impl/src/invocation_task/mod.rs",
+      "lineRange": [
+        40,
+        85
+      ],
+      "queryOrCodeSnippet": "InvocationTask manages async byte buffers for outbound service requests, using Bytes::from_owner to decouple stream writes from buffer locks.",
+      "symbol": "InvocationTask"
+    },
+    "testProvenance": {
+      "filePath": "crates/invoker-impl/src/invocation_task/mod.rs",
+      "testName": "collect_eager_state_complete_within_limit",
+      "assertionSnippet": "Asserts that outbound stream message dispatching operates without deadlocking budget allocations."
+    },
+    "historyProvenance": {
+      "commitHash": "4229aa5aa6b0d164302eb5ee8eb99529b1a940a6",
+      "failureId": "HIST-RESTATE-001",
+      "prOrIssue": "https://github.com/restatedev/restate/commit/4229aa5aa6b0d164302eb5ee8eb99529b1a940a6",
+      "fixDescription": "Replaced InvokerBody with Bytes::from_owner to decouple buffer lifetime from lock ownership and prevent budget deadlocks."
+    },
+    "historyChainIds": [
+      "CHAIN-RESTATE-001"
+    ]
+  },
+  {
+    "id": "REKU-RESTATE-006",
+    "repository": "restate",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "raft",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Virtual objects enforce strict single-invocation serialization per object key via VQueues, using Deficit Round Robin (DRR) scheduling for fair slice distribution across queues.",
+    "mechanism": "VQueueScheduler maintains per-object queues, ensuring only one invocation runs per object key at any time while balancing CPU bandwidth across objects via DRR quantum credits.",
+    "applicabilityConditions": [
+      "All virtual object message routing in VQueueScheduler"
+    ],
+    "evidenceIds": [
+      "OBS-RESTATE-004",
+      "OBS-RESTATE-011"
+    ],
+    "commonKeywords": [
+      "virtual",
+      "queue",
+      "single-actor",
+      "concurrency",
+      "drr",
+      "fair",
+      "scheduling",
+      "objects"
+    ],
+    "uniqueKeywords": [
+      "reku_restate_006",
+      "restate",
+      "virtual",
+      "queue",
+      "single-actor",
+      "concurrency",
+      "drr"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "virtual",
+        "objects",
+        "enforce"
+      ],
+      "stateStorage": [
+        "raft"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "vqueuescheduler",
+        "maintains",
+        "per-object",
+        "queues",
+        "ensuring"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "raft"
+      ]
+    },
+    "localContext": "VQueueScheduler maintains per-object queues, ensuring only one invocation runs per object key at any time while balancing CPU bandwidth across objects via DRR quantum credits. Known limits: Workflows allow concurrent signal/query processing, whereas Virtual Objects strictly serialize invocations.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002"
+    ],
+    "linkedClaims": [
+      "CLM-002"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "crates/vqueues/src/scheduler.rs",
+      "lineRange": [
+        45,
+        90
+      ],
+      "queryOrCodeSnippet": "VQueueScheduler implements Deficit Round Robin (DRR) queue scheduling, ensuring fair slice allocation across virtual object message queues.",
+      "symbol": "VQueueScheduler"
+    }
+  },
+  {
+    "id": "REKU-RESTATE-007",
+    "repository": "restate",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "raft",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "External HTTP invocations carrying Idempotency-Key headers are deduplicated in partition deduplication tables, returning cached results on duplicate submissions.",
+    "mechanism": "IngressHttp checks deduplication_table in PartitionDb. If key exists and is completed, cached response is returned immediately; if in-flight, caller attaches to the existing invocation.",
+    "applicabilityConditions": [
+      "HTTP and gRPC ingress requests with idempotency keys"
+    ],
+    "evidenceIds": [
+      "OBS-RESTATE-003",
+      "OBS-RESTATE-007",
+      "HIST-RESTATE-005"
+    ],
+    "commonKeywords": [
+      "ingress",
+      "idempotency",
+      "key",
+      "deduplication",
+      "automatic",
+      "retention",
+      "external",
+      "http"
+    ],
+    "uniqueKeywords": [
+      "reku_restate_007",
+      "restate",
+      "ingress",
+      "idempotency",
+      "key",
+      "deduplication",
+      "automatic"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "external",
+        "http",
+        "invocations"
+      ],
+      "stateStorage": [
+        "raft"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "ingresshttp",
+        "checks",
+        "deduplication_table",
+        "partitiondb",
+        "key"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "raft"
+      ]
+    },
+    "localContext": "IngressHttp checks deduplication_table in PartitionDb. If key exists and is completed, cached response is returned immediately; if in-flight, caller attaches to the existing invocation. Known limits: Idempotency keys expire after configured TTL in deduplication table.",
+    "linkedDomainEkus": [
+      "EKU-WDE-004"
+    ],
+    "linkedClaims": [
+      "CLM-004"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "crates/partition-store/src/partition_db.rs",
+      "lineRange": [
+        50,
+        95
+      ],
+      "queryOrCodeSnippet": "PartitionDb wraps column families for journals, inboxes, outboxes, deduplication keys, and durable LSN watermarks.",
+      "symbol": "PartitionDb"
+    },
+    "testProvenance": {
+      "filePath": "crates/ingress-http/src/handler/service_handler.rs",
+      "testName": "delay",
+      "assertionSnippet": "Asserts that service handler applies configured delay and retry bounds before timing out RPC calls."
+    },
+    "historyProvenance": {
+      "commitHash": "e9af02e5966e9a95e359ea5c18bce0056474f4c4",
+      "failureId": "HIST-RESTATE-005",
+      "prOrIssue": "https://github.com/restatedev/restate/commit/e9af02e5966e9a95e359ea5c18bce0056474f4c4",
+      "fixDescription": "Relaxed invocation client retry policy with exponential backoff and added granular RPC latency metrics."
+    },
+    "historyChainIds": [
+      "CHAIN-RESTATE-005"
+    ]
+  },
+  {
+    "id": "REKU-RESTATE-008",
+    "repository": "restate",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "raft",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Durable sleeps and external awakeables (callbacks) are scheduled in TimerQueue and PromiseTable, waking up suspended invocations upon timer expiration or external completion.",
+    "mechanism": "TimerQueue schedules timed wakeup events; CompleteAwakeableMessage writes completion payloads to promise_table, notifying VQueueScheduler to resume the suspended virtual object.",
+    "applicabilityConditions": [
+      "Durable sleep steps (ctx.sleep) and awakeables (ctx.awakeable)"
+    ],
+    "evidenceIds": [
+      "OBS-RESTATE-002",
+      "OBS-RESTATE-003",
+      "OBS-RESTATE-008"
+    ],
+    "commonKeywords": [
+      "durable",
+      "timer",
+      "queue",
+      "asynchronous",
+      "awakeable",
+      "resolution",
+      "sleeps",
+      "external"
+    ],
+    "uniqueKeywords": [
+      "reku_restate_008",
+      "restate",
+      "durable",
+      "timer",
+      "queue",
+      "asynchronous",
+      "awakeable"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "durable",
+        "sleeps",
+        "external"
+      ],
+      "stateStorage": [
+        "raft"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "timerqueue",
+        "schedules",
+        "timed",
+        "wakeup",
+        "events"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "raft"
+      ]
+    },
+    "localContext": "TimerQueue schedules timed wakeup events; CompleteAwakeableMessage writes completion payloads to promise_table, notifying VQueueScheduler to resume the suspended virtual object. Known limits: Awakeables must be completed within their configured timeout window or they yield a TimeoutError.",
+    "linkedDomainEkus": [
+      "EKU-WDE-005",
+      "EKU-WDE-006",
+      "EKU-WDE-007"
+    ],
+    "linkedClaims": [
+      "CLM-005",
+      "CLM-006",
+      "CLM-007"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "crates/service-protocol/src/codec.rs",
+      "lineRange": [
+        30,
+        75
+      ],
+      "queryOrCodeSnippet": "ServiceProtocolCodec decodes streaming frame headers and payloads into strongly-typed messages (Start, Call, GetState, SetState, CompleteAwakeable).",
+      "symbol": "ServiceProtocolCodec"
+    }
+  },
+  {
+    "id": "REKU-RESTATE-009",
+    "repository": "restate",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "raft",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Cross-service invocations and outbound messages are committed transactionally to partition outbox tables alongside journal updates, dispatched asynchronously with at-least-once delivery and recipient deduplication.",
+    "mechanism": "InvocationStateMachine writes outbound call descriptors to outbox_table in the same RocksDB WriteBatch as the journal entry. Background outbox dispatchers send messages to recipient partition inboxes.",
+    "applicabilityConditions": [
+      "All service-to-service calls (ctx.service_call, ctx.send)"
+    ],
+    "evidenceIds": [
+      "OBS-RESTATE-003",
+      "OBS-RESTATE-006",
+      "OBS-RESTATE-009"
+    ],
+    "commonKeywords": [
+      "transactional",
+      "outbox",
+      "pattern",
+      "exactly-once",
+      "side",
+      "effects",
+      "cross-service",
+      "invocations"
+    ],
+    "uniqueKeywords": [
+      "reku_restate_009",
+      "restate",
+      "transactional",
+      "outbox",
+      "pattern",
+      "exactly-once",
+      "side"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "cross-service",
+        "invocations",
+        "outbound"
+      ],
+      "stateStorage": [
+        "raft"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "invocationstatemachine",
+        "writes",
+        "outbound",
+        "call",
+        "descriptors"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "raft"
+      ]
+    },
+    "localContext": "InvocationStateMachine writes outbound call descriptors to outbox_table in the same RocksDB WriteBatch as the journal entry. Background outbox dispatchers send messages to recipient partition inboxes. Known limits: Outbound messages require recipient services to implement idempotency deduplication.",
+    "linkedDomainEkus": [
+      "EKU-WDE-003",
+      "EKU-WDE-004"
+    ],
+    "linkedClaims": [
+      "CLM-003",
+      "CLM-004"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "crates/partition-store/src/partition_db.rs",
+      "lineRange": [
+        50,
+        95
+      ],
+      "queryOrCodeSnippet": "PartitionDb wraps column families for journals, inboxes, outboxes, deduplication keys, and durable LSN watermarks.",
+      "symbol": "PartitionDb"
+    }
+  }
+]

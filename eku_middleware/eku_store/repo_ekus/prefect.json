@@ -1,0 +1,930 @@
+[
+  {
+    "id": "REKU-PREFECT-001",
+    "repository": "prefect",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "All state transitions for flow runs and task runs are proposed as candidate states by client engines and validated against server-side orchestration policies before being committed to persistent storage.",
+    "mechanism": "Client engines (FlowRunEngine, BaseTaskRunEngine) invoke set_flow_run_state / set_task_run_state. The server executes CoreFlowPolicy or CoreTaskPolicy rules, returning an OrchestrationResult (ACCEPT, REJECT, or MUTATE).",
+    "applicabilityConditions": [
+      "All flow and task execution lifecycles in local, distributed, and remote task worker environments",
+      "Ephemeral local SQLite and production PostgreSQL orchestration backends"
+    ],
+    "evidenceIds": [
+      "OBS-PREFECT-001",
+      "OBS-PREFECT-003",
+      "OBS-PREFECT-010",
+      "HIST-PREFECT-001"
+    ],
+    "commonKeywords": [
+      "client-server",
+      "orchestration",
+      "boundary",
+      "state",
+      "validation",
+      "protocol",
+      "transitions",
+      "flow"
+    ],
+    "uniqueKeywords": [
+      "reku_prefect_001",
+      "prefect",
+      "client-server",
+      "orchestration",
+      "boundary",
+      "state",
+      "validation"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "state",
+        "transitions",
+        "flow"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "client",
+        "engines",
+        "flowrunengine",
+        "basetaskrunengine",
+        "invoke"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Client engines (FlowRunEngine, BaseTaskRunEngine) invoke set_flow_run_state / set_task_run_state. The server executes CoreFlowPolicy or CoreTaskPolicy rules, returning an OrchestrationResult (ACCEPT, REJECT, or MUTATE). Known limits: Client-side un-orchestrated runner execution can bypass server policies if run with disabled orchestration flags. Network partitions during state proposal cause client retries or fallback to client-side crash states.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-002",
+      "EKU-WDE-003",
+      "EKU-WDE-006"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-002",
+      "CLM-003",
+      "CLM-006"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "src/prefect/flow_engine.py",
+      "lineRange": [
+        638,
+        687
+      ],
+      "queryOrCodeSnippet": "Initializes flow run parameters, intercepts cancellation and suspension intents, manages state transitions with the orchestration server, and maintains task run dependencies.",
+      "symbol": "FlowRunEngine"
+    },
+    "testProvenance": {
+      "filePath": "tests/server/orchestration/test_core_policy.py",
+      "testName": "test_reject_marking_already_late_flow_as_late",
+      "assertionSnippet": "Asserts orchestrator rejects state transition when flow run is already marked Late."
+    },
+    "historyProvenance": {
+      "commitHash": "00b6dc3c94f6fc939e61fa01958c94fb4bfa669e",
+      "failureId": "HIST-PREFECT-001",
+      "prOrIssue": "https://github.com/PrefectHQ/prefect/commit/00b6dc3c94f6fc939e61fa01958c94fb4bfa669e",
+      "fixDescription": "Added PreventDuplicateTransitions orchestration rule in CoreFlowPolicy rejecting duplicate Late transitions."
+    },
+    "historyChainIds": [
+      "CHAIN-PREFECT-001"
+    ]
+  },
+  {
+    "id": "REKU-PREFECT-002",
+    "repository": "prefect",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Tasks with valid cache keys and unexpired result records bypass code execution entirely, loading cached ResultRecords from persistent storage blocks (filesystem, S3, GCS) and returning Completed state.",
+    "mechanism": "CacheRetrieval rule queries the server cache index for active cache_key entries. If found, returns a Completed state with the stored ResultRecord. ResultRecord deserializes the data out-of-band directly from the configured storage block.",
+    "applicabilityConditions": [
+      "Idempotent task runs configured with cache_key_fn, cache_policy (Inputs, TaskSource, Parameters), and cache_expiration"
+    ],
+    "evidenceIds": [
+      "OBS-PREFECT-005",
+      "OBS-PREFECT-006",
+      "OBS-PREFECT-007"
+    ],
+    "commonKeywords": [
+      "deterministic",
+      "result",
+      "persistence",
+      "compound",
+      "cache",
+      "policy",
+      "bypassing",
+      "tasks"
+    ],
+    "uniqueKeywords": [
+      "reku_prefect_002",
+      "prefect",
+      "deterministic",
+      "result",
+      "persistence",
+      "compound",
+      "cache"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "tasks",
+        "valid",
+        "cache"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "cacheretrieval",
+        "rule",
+        "queries",
+        "server",
+        "cache"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "CacheRetrieval rule queries the server cache index for active cache_key entries. If found, returns a Completed state with the stored ResultRecord. ResultRecord deserializes the data out-of-band directly from the configured storage block. Known limits: Cache keys depend on parameter serialization; unhashable or non-deterministic Python objects require custom cache_key_fn. Storage block deletion or network failure causes result retrieval errors during task execution.",
+    "linkedDomainEkus": [
+      "EKU-WDE-004",
+      "EKU-WDE-008",
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-004",
+      "CLM-008",
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "src/prefect/server/orchestration/core_policy.py",
+      "lineRange": [
+        953,
+        999
+      ],
+      "queryOrCodeSnippet": "When a task run reaches Completed state with a valid cache_key and cache_expiration, records the state ID and result record pointer in the server cache index.",
+      "symbol": "CacheInsertion"
+    }
+  },
+  {
+    "id": "REKU-PREFECT-003",
+    "repository": "prefect",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Task failure recovery is governed by server-side RetryFailedTasks orchestration rules that intercept Failed transitions, evaluate remaining retry attempts, and mutate the state into AwaitingRetry with calculated backoff delays.",
+    "mechanism": "RetryFailedTasks intercepts proposed Failed states. If run_count <= max_retries, it rejects the Failed state and mutates to AwaitingRetry, computing a delayed scheduled_time with exponential backoff and randomized jitter.",
+    "applicabilityConditions": [
+      "Tasks with retry configurations (retries > 0, retry_delay_seconds, retry_jitter_factor)"
+    ],
+    "evidenceIds": [
+      "OBS-PREFECT-004",
+      "HIST-PREFECT-002"
+    ],
+    "commonKeywords": [
+      "server-side",
+      "orchestration",
+      "rules",
+      "task",
+      "retry",
+      "backoff",
+      "jitter",
+      "failure"
+    ],
+    "uniqueKeywords": [
+      "reku_prefect_003",
+      "prefect",
+      "server-side",
+      "orchestration",
+      "rules",
+      "task",
+      "retry"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "task",
+        "failure",
+        "recovery"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "retryfailedtasks",
+        "intercepts",
+        "proposed",
+        "failed",
+        "states"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "RetryFailedTasks intercepts proposed Failed states. If run_count <= max_retries, it rejects the Failed state and mutates to AwaitingRetry, computing a delayed scheduled_time with exponential backoff and randomized jitter. Known limits: Non-retryable exceptions (Crash, FlowRunTimeoutError) bypass retry rules and transition directly to terminal states. Retry delays without jitter under synchronized worker clusters can cause thundering herd retries.",
+    "linkedDomainEkus": [
+      "EKU-WDE-005",
+      "EKU-WDE-007"
+    ],
+    "linkedClaims": [
+      "CLM-005",
+      "CLM-007"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "src/prefect/server/orchestration/core_policy.py",
+      "lineRange": [
+        1131,
+        1180
+      ],
+      "queryOrCodeSnippet": "Inspects task run retry count and max_retries. If retries remain, mutates proposed Failed state into AwaitingRetry, computing a delayed scheduled_time using retry_delay and retry_jitter_factor.",
+      "symbol": "RetryFailedTasks"
+    },
+    "testProvenance": {
+      "filePath": "tests/server/orchestration/test_core_policy.py",
+      "testName": "test_jitter_with_zero_delay_does_not_raise",
+      "assertionSnippet": "Asserts task retry orchestration does not raise ZeroDivisionError when retry delay is zero."
+    },
+    "historyProvenance": {
+      "commitHash": "891582edf50a965a7b08d6df9cfef715d60ad0cf",
+      "failureId": "HIST-PREFECT-002",
+      "prOrIssue": "https://github.com/PrefectHQ/prefect/commit/891582edf50a965a7b08d6df9cfef715d60ad0cf",
+      "fixDescription": "Guarded jitter calculation against zero delay, defaulting jitter to 0.0 when delay is zero."
+    }
+  },
+  {
+    "id": "REKU-PREFECT-004",
+    "repository": "prefect",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Flow runs can enter Paused or Suspended states to wait for timeouts or human input, safely unloading worker execution processes and resuming execution from the suspension boundary upon approval.",
+    "mechanism": "FlowRunSuspensionRequest intercepts suspension calls in FlowRunEngine, raises a suspension exception to unwind the process, and transitions the flow run state to Suspended in the server. Resumption triggers a new runner process that reloads context and skips completed cached tasks.",
+    "applicabilityConditions": [
+      "Long-running flows, human-in-the-loop approval gates, and resource-efficient scheduled pauses"
+    ],
+    "evidenceIds": [
+      "OBS-PREFECT-009",
+      "OBS-PREFECT-001"
+    ],
+    "commonKeywords": [
+      "flow",
+      "run",
+      "suspension",
+      "out-of-process",
+      "resumption",
+      "lifecycle",
+      "runs",
+      "enter"
+    ],
+    "uniqueKeywords": [
+      "reku_prefect_004",
+      "prefect",
+      "flow",
+      "run",
+      "suspension",
+      "out-of-process",
+      "resumption"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "flow",
+        "runs",
+        "enter"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "flowrunsuspensionrequest",
+        "intercepts",
+        "suspension",
+        "calls",
+        "flowrunengine"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "FlowRunSuspensionRequest intercepts suspension calls in FlowRunEngine, raises a suspension exception to unwind the process, and transitions the flow run state to Suspended in the server. Resumption triggers a new runner process that reloads context and skips completed cached tasks. Known limits: In-memory Python generator or socket state cannot be serialized; resumption re-runs un-cached flow body code up to the next task boundary. Flow runs suspended beyond timeout deadlines transition to Failed.",
+    "linkedDomainEkus": [
+      "EKU-WDE-005",
+      "EKU-WDE-008"
+    ],
+    "linkedClaims": [
+      "CLM-005",
+      "CLM-008"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "src/prefect/_flow_run_suspension.py",
+      "lineRange": [
+        15,
+        64
+      ],
+      "queryOrCodeSnippet": "Captures requested suspended states, raises suspension exceptions to safely unwind flow call stacks, and records resumption hooks for out-of-process continuation.",
+      "symbol": "FlowRunSuspensionRequest"
+    }
+  },
+  {
+    "id": "REKU-PREFECT-005",
+    "repository": "prefect",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Global task and flow concurrency limits use atomic lease allocations with heartbeat renewal, ensuring slot capacity is strictly bounded across distributed workers and preventing leaked slots upon worker crash.",
+    "mechanism": "Workers acquire lease slots via acquire_concurrency_slots. Leases have a finite TTL and are renewed periodically. If a worker crashes or fails to renew, server repossessor services reclaim expired lease slots.",
+    "applicabilityConditions": [
+      "Tag-based concurrency limits and named GlobalConcurrencyLimits across multi-worker deployments"
+    ],
+    "evidenceIds": [
+      "OBS-PREFECT-003",
+      "HIST-PREFECT-005"
+    ],
+    "commonKeywords": [
+      "atomic",
+      "distributed",
+      "concurrency",
+      "lease",
+      "slot",
+      "management",
+      "global",
+      "task"
+    ],
+    "uniqueKeywords": [
+      "reku_prefect_005",
+      "prefect",
+      "atomic",
+      "distributed",
+      "concurrency",
+      "lease",
+      "slot"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "global",
+        "task",
+        "flow"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "workers",
+        "acquire",
+        "lease",
+        "slots",
+        "via"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Workers acquire lease slots via acquire_concurrency_slots. Leases have a finite TTL and are renewed periodically. If a worker crashes or fails to renew, server repossessor services reclaim expired lease slots. Known limits: Redis cluster backends require hashtag-aligned keys to support multi-key atomic transactions. Network delays exceeding lease TTL can cause temporary slot oversubscription if a slow worker resumes after lease repossession.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "src/prefect/server/orchestration/core_policy.py",
+      "lineRange": [
+        111,
+        160
+      ],
+      "queryOrCodeSnippet": "Assembles ordered orchestration rules (PreventDuplicateTransitions, ValidateDeploymentConcurrency, CacheRetrieval, HandlePausingFlows) that intercept and validate proposed state transitions.",
+      "symbol": "CoreFlowPolicy"
+    },
+    "testProvenance": {
+      "filePath": "src/integrations/prefect-redis/tests/test_lease_storage.py",
+      "testName": "test_keys_share_cluster_hash_slot",
+      "assertionSnippet": "Asserts all Redis lease keys share identical hash tag slots for cluster execution."
+    },
+    "historyProvenance": {
+      "commitHash": "0da3800b4ce3d278830c62537fe1fc441127fbf7",
+      "failureId": "HIST-PREFECT-005",
+      "prOrIssue": "https://github.com/PrefectHQ/prefect/commit/0da3800b4ce3d278830c62537fe1fc441127fbf7",
+      "fixDescription": "Added hashtag grouping ensuring all related keys hash to the same cluster slot."
+    }
+  },
+  {
+    "id": "REKU-PREFECT-006",
+    "repository": "prefect",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Transaction contexts define atomic multi-task operation boundaries with explicit commit, rollback, and lifecycle hooks, isolating side effects until transaction completion.",
+    "mechanism": "Transaction class wraps code blocks with configurable isolation levels. Registered on_commit and on_rollback hooks execute conditionally based on whether the transaction completes successfully or raises an exception.",
+    "applicabilityConditions": [
+      "Transactional data pipelines, saga workflows, and idempotent external service orchestrations"
+    ],
+    "evidenceIds": [
+      "OBS-PREFECT-008",
+      "OBS-PREFECT-002"
+    ],
+    "commonKeywords": [
+      "durable",
+      "transaction",
+      "contexts",
+      "commit",
+      "rollback",
+      "isolation",
+      "define",
+      "atomic"
+    ],
+    "uniqueKeywords": [
+      "reku_prefect_006",
+      "prefect",
+      "durable",
+      "transaction",
+      "contexts",
+      "commit",
+      "rollback"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "transaction",
+        "contexts",
+        "define"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "transaction",
+        "class",
+        "wraps",
+        "code",
+        "blocks"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Transaction class wraps code blocks with configurable isolation levels. Registered on_commit and on_rollback hooks execute conditionally based on whether the transaction completes successfully or raises an exception. Known limits: External third-party API mutations require user-defined compensation rollback hooks. Nested transactions inherit parent isolation boundaries unless explicitly configured.",
+    "linkedDomainEkus": [
+      "EKU-WDE-004"
+    ],
+    "linkedClaims": [
+      "CLM-004"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "src/prefect/transactions.py",
+      "lineRange": [
+        59,
+        108
+      ],
+      "queryOrCodeSnippet": "Manages transactional isolation levels, tracks staged mutations, invokes user rollback handlers upon execution failure, and stores transaction records in persistence.",
+      "symbol": "Transaction"
+    }
+  },
+  {
+    "id": "REKU-PREFECT-007",
+    "repository": "prefect",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Server-minted state transition timestamps are guaranteed to be strictly monotonically increasing, preventing duplicate timestamps and ensuring deterministic state transition chronology.",
+    "mechanism": "global_policy.py detects when consecutive state transitions for an entity land on identical database clock timestamps and increments the timestamp by one microsecond, preserving strict query ordering.",
+    "applicabilityConditions": [
+      "All state history insertions for flow runs and task runs in the Prefect database schema"
+    ],
+    "evidenceIds": [
+      "OBS-PREFECT-010",
+      "HIST-PREFECT-006"
+    ],
+    "commonKeywords": [
+      "monotonic",
+      "timestamp",
+      "ordering",
+      "invariant",
+      "state",
+      "history",
+      "records",
+      "server-minted"
+    ],
+    "uniqueKeywords": [
+      "reku_prefect_007",
+      "prefect",
+      "monotonic",
+      "timestamp",
+      "ordering",
+      "invariant",
+      "state"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "server-minted",
+        "state",
+        "transition"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "global_policy",
+        "detects",
+        "consecutive",
+        "state",
+        "transitions"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "global_policy.py detects when consecutive state transitions for an entity land on identical database clock timestamps and increments the timestamp by one microsecond, preserving strict query ordering. Known limits: Client-provided explicit timestamps are validated but not altered unless a timestamp collision is detected. Database clock drift between distributed API instances is mitigated by central DB clock generation.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001"
+    ],
+    "linkedClaims": [
+      "CLM-001"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "src/prefect/server/models/flow_runs.py",
+      "lineRange": [
+        589,
+        638
+      ],
+      "queryOrCodeSnippet": "Evaluates orchestration rules against current database state, inserts new flow run state history rows, updates the current state pointer, and emits state change lifecycle events.",
+      "symbol": "set_flow_run_state"
+    },
+    "testProvenance": {
+      "filePath": "tests/server/models/test_flow_run_states.py",
+      "testName": "test_repeated_duplicate_server_timestamps_are_made_unique",
+      "assertionSnippet": "Asserts sequential state transitions minted within the same microsecond receive monotonically strictly increasing timestamps."
+    },
+    "historyProvenance": {
+      "commitHash": "c8c65be1187b219f05f0b9da4745c09fdf7230f6",
+      "failureId": "HIST-PREFECT-006",
+      "prOrIssue": "https://github.com/PrefectHQ/prefect/commit/c8c65be1187b219f05f0b9da4745c09fdf7230f6",
+      "fixDescription": "Added unique timestamp collision resolution in global_policy.py adjusting colliding timestamps to nearest microsecond."
+    },
+    "historyChainIds": [
+      "CHAIN-PREFECT-003"
+    ]
+  },
+  {
+    "id": "REKU-PREFECT-008",
+    "repository": "prefect",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "FAILURE_RECOVERY_MECHANISM",
+    "claim": "Invoking subflows inside concurrent or retried task executions requires unique dynamic run keys to prevent context collisions and result cross-talk in parent flow engines.",
+    "mechanism": "FlowRunEngine creates UUID-augmented dynamic keys for subflows spawned within task contexts, isolating state machines and result channels across sibling retry attempts.",
+    "applicabilityConditions": [
+      "Nested subflows, concurrent map operations over subflows, and retrying task wrappers calling subflows"
+    ],
+    "evidenceIds": [
+      "OBS-PREFECT-001",
+      "HIST-PREFECT-003"
+    ],
+    "commonKeywords": [
+      "subflow",
+      "dynamic",
+      "tracking",
+      "key",
+      "isolation",
+      "concurrent",
+      "execution",
+      "invoking"
+    ],
+    "uniqueKeywords": [
+      "reku_prefect_008",
+      "prefect",
+      "subflow",
+      "dynamic",
+      "tracking",
+      "key",
+      "isolation"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "invoking",
+        "subflows",
+        "inside"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "flowrunengine",
+        "creates",
+        "uuid-augmented",
+        "dynamic",
+        "keys"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "FlowRunEngine creates UUID-augmented dynamic keys for subflows spawned within task contexts, isolating state machines and result channels across sibling retry attempts. Known limits: Direct synchronous subflow calls use deterministic call-stack indices for retry optimization unless dynamically spawned. High concurrency subflows increase server state tracking metadata overhead.",
+    "linkedDomainEkus": [
+      "EKU-WDE-006",
+      "EKU-WDE-008"
+    ],
+    "linkedClaims": [
+      "CLM-006",
+      "CLM-008"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "src/prefect/flow_engine.py",
+      "lineRange": [
+        638,
+        687
+      ],
+      "queryOrCodeSnippet": "Initializes flow run parameters, intercepts cancellation and suspension intents, manages state transitions with the orchestration server, and maintains task run dependencies.",
+      "symbol": "FlowRunEngine"
+    },
+    "testProvenance": {
+      "filePath": "tests/test_flow_engine.py",
+      "testName": "test_concurrent_subflow_retry_returns_correct_result",
+      "assertionSnippet": "Asserts concurrent subflow retries maintain isolated state tracking and return distinct results."
+    },
+    "historyProvenance": {
+      "commitHash": "0a4a29a5390e043630e09a4273f282e0b8ea17f3",
+      "failureId": "HIST-PREFECT-003",
+      "prOrIssue": "https://github.com/PrefectHQ/prefect/commit/0a4a29a5390e043630e09a4273f282e0b8ea17f3",
+      "fixDescription": "Generated unique UUID-based dynamic keys for async subflow invocations within task execution contexts."
+    },
+    "historyChainIds": [
+      "CHAIN-PREFECT-002"
+    ]
+  },
+  {
+    "id": "REKU-PREFECT-009",
+    "repository": "prefect",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "FAILURE_RECOVERY_MECHANISM",
+    "claim": "Thread-based timeout cancellation scopes must enforce deterministic watcher-thread termination on scope exit to prevent thread leaks in long-lived worker environments.",
+    "mechanism": "_internal/concurrency/cancellation.py manages cancel scopes with explicit enforcer teardown hooks that cleanly join and terminate watcher threads when task execution completes or aborts.",
+    "applicabilityConditions": [
+      "Asyncio and synchronous task timeouts executed within worker threads"
+    ],
+    "evidenceIds": [
+      "HIST-PREFECT-007"
+    ],
+    "commonKeywords": [
+      "watcher-thread",
+      "cancellation",
+      "scope",
+      "resource",
+      "cleanup",
+      "thread-based",
+      "timeout",
+      "scopes"
+    ],
+    "uniqueKeywords": [
+      "reku_prefect_009",
+      "prefect",
+      "watcher-thread",
+      "cancellation",
+      "scope",
+      "resource",
+      "cleanup"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "thread-based",
+        "timeout",
+        "cancellation"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "_internal",
+        "concurrency",
+        "cancellation",
+        "manages",
+        "cancel"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "_internal/concurrency/cancellation.py manages cancel scopes with explicit enforcer teardown hooks that cleanly join and terminate watcher threads when task execution completes or aborts. Known limits: C-extension blocking operations that do not yield GIL cannot be interrupted by Python thread cancellation without process termination. Signal-based alarm cancellation is limited to main thread execution on POSIX systems.",
+    "linkedDomainEkus": [
+      "EKU-WDE-006"
+    ],
+    "linkedClaims": [
+      "CLM-006"
+    ],
+    "epistemicLabels": [
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "testProvenance": {
+      "filePath": "tests/_internal/concurrency/test_cancellation.py",
+      "testName": "test_watcher_thread_cancel_scope_enforcer_exits_when_teardown_interrupted",
+      "assertionSnippet": "Asserts watcher thread terminates properly upon scope teardown without leaking threads."
+    },
+    "historyProvenance": {
+      "commitHash": "d4bce246c8784f186785b65cbcb277d78411d622",
+      "failureId": "HIST-PREFECT-007",
+      "prOrIssue": "https://github.com/PrefectHQ/prefect/commit/d4bce246c8784f186785b65cbcb277d78411d622",
+      "fixDescription": "Added explicit enforcer teardown and thread cleanup in cancellation scope context managers."
+    }
+  },
+  {
+    "id": "REKU-PREFECT-010",
+    "repository": "prefect",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Production database sessions enforce READ COMMITTED isolation level on PostgreSQL, preventing concurrency slot serialization errors while guaranteeing atomic state row commits.",
+    "mechanism": "Database configuration interface explicitly sets isolation_level='READ COMMITTED' on SQLAlchemy async engine creation, ensuring row locks serialize state updates without repeatable-read aborts.",
+    "applicabilityConditions": [
+      "Prefect server database transactions on PostgreSQL backends"
+    ],
+    "evidenceIds": [
+      "HIST-PREFECT-004",
+      "OBS-PREFECT-010"
+    ],
+    "commonKeywords": [
+      "atomic",
+      "postgresql",
+      "read-committed",
+      "transaction",
+      "isolation",
+      "state",
+      "transitions",
+      "production"
+    ],
+    "uniqueKeywords": [
+      "reku_prefect_010",
+      "prefect",
+      "atomic",
+      "postgresql",
+      "read-committed",
+      "transaction",
+      "isolation"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "production",
+        "database",
+        "sessions"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "database",
+        "configuration",
+        "interface",
+        "explicitly",
+        "sets"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "Database configuration interface explicitly sets isolation_level='READ COMMITTED' on SQLAlchemy async engine creation, ensuring row locks serialize state updates without repeatable-read aborts. Known limits: SQLite in-memory test databases use default locking semantics with database-level write locks. High write contention on a single flow run row still incurs database lock wait times.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-003",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-003",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "src/prefect/server/models/flow_runs.py",
+      "lineRange": [
+        589,
+        638
+      ],
+      "queryOrCodeSnippet": "Evaluates orchestration rules against current database state, inserts new flow run state history rows, updates the current state pointer, and emits state change lifecycle events.",
+      "symbol": "set_flow_run_state"
+    },
+    "testProvenance": {
+      "filePath": "tests/server/database/test_configurations.py",
+      "testName": "test_postgres_engine_enforces_read_committed",
+      "assertionSnippet": "Asserts database engine session enforces READ COMMITTED isolation level on PostgreSQL."
+    },
+    "historyProvenance": {
+      "commitHash": "e36bd6e9bbcf79a77c87b10f138b09dd70183886",
+      "failureId": "HIST-PREFECT-004",
+      "prOrIssue": "https://github.com/PrefectHQ/prefect/commit/e36bd6e9bbcf79a77c87b10f138b09dd70183886",
+      "fixDescription": "Explicitly enforced READ COMMITTED isolation level in PostgreSQL engine configuration."
+    }
+  }
+]

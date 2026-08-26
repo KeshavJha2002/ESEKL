@@ -1,0 +1,72 @@
+[
+  {
+    "filePath": "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+    "testFunction": "<WorkflowGraph>",
+    "subScenarioName": "Dynamic Fork - success",
+    "line": 6,
+    "assertionTypes": [
+      "vitest/jest/mocha"
+    ],
+    "inferredInvariant": "Guarantees: <WorkflowGraph> -> Dynamic Fork - success"
+  },
+  {
+    "filePath": "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+    "testFunction": "<WorkflowGraph>",
+    "subScenarioName": "Dynamic Fork - one task failed",
+    "line": 21,
+    "assertionTypes": [
+      "vitest/jest/mocha"
+    ],
+    "inferredInvariant": "Guarantees: <WorkflowGraph> -> Dynamic Fork - one task failed"
+  },
+  {
+    "filePath": "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+    "testFunction": "<WorkflowGraph>",
+    "subScenarioName": "Dynamic Fork - externalized input",
+    "line": 38,
+    "assertionTypes": [
+      "vitest/jest/mocha"
+    ],
+    "inferredInvariant": "Guarantees: <WorkflowGraph> -> Dynamic Fork - externalized input"
+  },
+  {
+    "filePath": "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+    "testFunction": "<WorkflowGraph>",
+    "subScenarioName": "Dynamic Fork - not executed",
+    "line": 54,
+    "assertionTypes": [
+      "vitest/jest/mocha"
+    ],
+    "inferredInvariant": "Guarantees: <WorkflowGraph> -> Dynamic Fork - not executed"
+  },
+  {
+    "filePath": "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+    "testFunction": "<WorkflowGraph>",
+    "subScenarioName": "Dynamic Fork - none spawned",
+    "line": 64,
+    "assertionTypes": [
+      "vitest/jest/mocha"
+    ],
+    "inferredInvariant": "Guarantees: <WorkflowGraph> -> Dynamic Fork - none spawned"
+  },
+  {
+    "filePath": "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+    "testFunction": "<WorkflowGraph>",
+    "subScenarioName": "Do_while containing switch (definition)",
+    "line": 80,
+    "assertionTypes": [
+      "vitest/jest/mocha"
+    ],
+    "inferredInvariant": "Guarantees: <WorkflowGraph> -> Do_while containing switch (definition)"
+  },
+  {
+    "filePath": "ui/src/components/diagram/WorkflowGraph.test.cy.js",
+    "testFunction": "<WorkflowGraph>",
+    "subScenarioName": "Do_while containing switch (execution)",
+    "line": 97,
+    "assertionTypes": [
+      "vitest/jest/mocha"
+    ],
+    "inferredInvariant": "Guarantees: <WorkflowGraph> -> Do_while containing switch (execution)"
+  }
+]

@@ -1,0 +1,55 @@
+{
+  "repo": "airflow",
+  "targetRepo": "apache/airflow",
+  "remote": "https://github.com/apache/airflow.git",
+  "commit": "549ed6b7468aa76bf1fac493c15fb26521335489",
+  "analyzedAt": "2026-08-26T13:24:10.071880+00:00",
+  "domain": "workflow_durable_execution",
+  "systemSummary": {
+    "name": "Apache Airflow Workflow Orchestration Platform",
+    "description": "Distributed batch workflow orchestration platform expressing workflows as Python DAGs, scheduling tasks via relational database state machines, and dispatching execution to pluggable workers and triggerers.",
+    "coreLanguages": [
+      "Python"
+    ],
+    "architecture": {
+      "schedulerService": {
+        "description": "Core scheduling daemon evaluating DAG schedules, checking upstream dependencies, and enqueuing tasks to executors.",
+        "entrypoint": "airflow-core/src/airflow/jobs/scheduler_job_runner.py"
+      },
+      "triggererService": {
+        "description": "Asynchronous daemon executing deferrable operator triggers as non-blocking coroutines.",
+        "entrypoint": "airflow-core/src/airflow/jobs/triggerer_job_runner.py"
+      },
+      "executorLayer": {
+        "description": "Pluggable task execution infrastructure (CeleryExecutor, KubernetesExecutor, LocalExecutor).",
+        "entrypoint": "airflow-core/src/airflow/executors/base_executor.py"
+      },
+      "databaseLayer": {
+        "description": "Relational metadata database storing DAG, DagRun, TaskInstance, Trigger, and XCom models using SQLAlchemy.",
+        "entrypoint": "airflow-core/src/airflow/models/"
+      }
+    }
+  },
+  "durableExecutionModel": {
+    "dagEvaluation": "Workflows are authored as Python code defining DAG objects composed of Operator tasks. Schedulers parse DAGs, evaluate schedules via Timetables, and manage DagRun/TaskInstance state transitions in the database.",
+    "relationalState": "Durable state is stored in relational tables (dag_run, task_instance, xcom). Scheduling decisions use row-level locking (SELECT FOR UPDATE SKIP LOCKED) to enable multi-scheduler HA.",
+    "deferrableTriggers": "Long-running waiting tasks yield execution to TriggererJobRunner, freeing worker slots. Triggers poll asynchronously and wake up task instances upon completion.",
+    "workerHeartbeats": "Running task instances heartbeat to the database. Schedulers detect dropped or killed workers via zombie purge routines and re-enqueue eligible tasks.",
+    "taskMapping": "Dynamic task mapping expands mapped tasks into N indexed TaskInstance rows based on upstream XCom returns."
+  },
+  "dimensionsAnalyzed": [
+    "workflow_definition_model",
+    "execution_state_machine",
+    "task_activity_scheduling",
+    "persistence_and_checkpointing",
+    "timers_and_durable_sleeps",
+    "retries_and_backoff",
+    "child_workflows_subflows",
+    "worker_leasing_heartbeats_liveness",
+    "idempotency_duplicate_suppression",
+    "versioning_and_workflow_evolution",
+    "failure_recovery_crash_failover",
+    "concurrency_and_backpressure",
+    "dynamic_task_mapping"
+  ]
+}

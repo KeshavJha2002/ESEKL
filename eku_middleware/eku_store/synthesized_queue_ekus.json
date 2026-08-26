@@ -1,2480 +1,1176 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Empirical Software Engineering Knowledge Layer (ESEKL) - Queue & Stream Processing Domain",
-  "version": "5.0.0-consolidated",
-  "synthesizedAt": "2026-08-23T14:30:00.000Z",
-  "corpusSize": 13,
+  "title": "Empirical Software Engineering Knowledge Layer (ESEKL) - Workflow & Durable Execution Domain",
+  "version": "6.1.0-workflow-durable-execution-expanded-corpus",
+  "synthesizedAt": "2026-08-27T00:00:00.000Z",
+  "corpusSize": 11,
   "repositories": [
-    "asynq",
-    "bullmq",
-    "pgmq",
-    "river",
-    "goqite",
-    "litequeue",
-    "nats-server",
-    "nsq",
-    "blazingmq",
-    "redpanda",
-    "rabbitmq",
-    "artemis",
-    "rocketmq"
+    "temporal",
+    "cadence",
+    "conductor",
+    "airflow",
+    "argo-workflows",
+    "dagster",
+    "prefect",
+    "kestra",
+    "restate",
+    "windmill",
+    "hatchet"
   ],
   "ekus": [
     {
-      "id": "EKU-QUEUE-001",
-      "title": "Atomic Dequeue and Distributed Lease Allocation",
-      "objectType": "BEHAVIORAL_INVARIANT",
-      "problem": "Concurrent workers polling the same queue can claim the same task simultaneously if dequeue and lease acquisition are non-atomic.",
-      "desiredProperty": "Exactly one worker successfully claims a given task instance, with an active lease established atomically upon dequeue.",
-      "behavioralInvariant": "Task dequeue must atomically transition the task from available state to active execution state and establish a time-bounded lease within a single storage engine consistency boundary before returning payload to the worker.",
+      "id": "EKU-WDE-001",
+      "title": "Authoritative Durable State Must Be Persisted Outside Workers",
+      "claimId": "CLM-001",
+      "objectType": "IMPLEMENTATION_PATTERN",
+      "problem": "Long-running operations outlive worker processes, controller restarts, deployments, and manual support sessions.",
+      "desiredProperty": "The operation can be recovered, inspected, and advanced without relying on worker memory.",
+      "behavioralInvariant": "A durable-execution system must persist the authoritative lifecycle in a repo-specific durable substrate: event history, relational state machine, Kubernetes CRD status, run/event log, or server-side orchestration state.",
       "applicabilityConstraints": [
-        "Applies to pull-based competing-consumer queues across in-memory, relational SQL, and broker-mediated architectures.",
-        "Does not apply to partition-offset log streaming models where consumers sequentially read immutable offsets without per-message ownership transitions."
+        "long-running workflows",
+        "request orchestration",
+        "pipelines with waits/retries/callbacks"
       ],
       "solutionFamilies": [
         {
-          "name": "Redis Lua Atomicity",
-          "mechanisms": [
-            "RPOPLPUSH / LMOVE atomically transfers task ID between pending and active lists while setting lease timestamp in a Sorted Set (ZADD) or Hash inside an EVAL script."
-          ],
-          "tradeoffs": [
-            "Guarantees single-threaded Redis execution atomicity with zero lock overhead.",
-            "Restricts transactions to single Redis node / hash-slot; requires Lua script pre-loading."
-          ],
-          "representativeRepositories": [
-            "hibiken/asynq",
-            "taskforcesh/bullmq"
-          ]
+          "name": "append-only workflow history",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
         },
         {
-          "name": "Relational SQL CTE with SKIP LOCKED",
-          "mechanisms": [
-            "Common Table Expression (CTE) combining SELECT ... FOR UPDATE SKIP LOCKED LIMIT N with UPDATE ... SET state = 'running', lease_expires_at = now() + interval RETURNING * in a single statement."
-          ],
-          "tradeoffs": [
-            "Leverages RDBMS ACID guarantees and MVCC row locking without blocking concurrent transactions.",
-            "Incurs PostgreSQL / SQLite write-ahead log and table index update overhead per dequeue."
-          ],
-          "representativeRepositories": [
-            "riverqueue/river",
-            "pgmq/pgmq",
-            "maragudk/goqite",
-            "litements/litequeue"
-          ]
+          "name": "relational metadata state machine",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
         },
         {
-          "name": "Broker Actor Mailbox & Channel Synchronization",
-          "mechanisms": [
-            "Single-threaded queue actor mailbox or Go channel lock serializes consumer dispatch and records in-flight delivery references before network transmission."
-          ],
-          "tradeoffs": [
-            "Eliminates database round-trips; achieves sub-millisecond dispatch.",
-            "Requires in-memory lease tracking with broker-side timer wheels or priority queues."
-          ],
-          "representativeRepositories": [
-            "nsqio/nsq",
-            "nats-io/nats-server",
-            "bloomberg/blazingmq",
-            "apache/activemq-artemis",
-            "rabbitmq/rabbitmq-server",
-            "apache/rocketmq"
-          ]
+          "name": "Kubernetes CRD reconciliation",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "run/event-log orchestration",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "server-side state proposal/validation",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
         }
+      ],
+      "mechanisms": [
+        "Cadence/Temporal use history plus mutable-state projections.",
+        "Airflow uses DagRun and TaskInstance rows.",
+        "Argo uses Workflow CRD spec/status and node status maps.",
+        "Conductor uses workflow/task DAO state plus queues.",
+        "Dagster uses run storage and typed event logs.",
+        "Prefect uses flow/task run states validated by orchestration policies."
       ],
       "failureModes": [
         {
-          "failureMode": "Split Dequeue Race Condition",
-          "description": "If message fetch (SELECT / LPOP) and lease reservation (UPDATE / SET) occur in separate commands without isolation, two workers can receive and execute the same task simultaneously.",
-          "mitigation": "Enforce single-statement atomic transitions (Lua script, SQL CTE, or locked actor dispatch)."
+          "failureMode": "one mutable row loses ordering/audit",
+          "description": "one mutable row loses ordering/audit",
+          "mitigation": ""
         },
         {
-          "failureMode": "Storage Node Crash Mid-Dequeue",
-          "description": "If the storage engine crashes after removing a task from the pending queue but before persisting the active lease state, the task becomes orphaned.",
-          "mitigation": "Ensure state transition and lease record are flushed to disk/WAL within the same transaction commit."
+          "failureMode": "worker-local sleeps disappear on restart",
+          "description": "worker-local sleeps disappear on restart",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "support UI sees mixed or stale state without version metadata",
+          "description": "support UI sees mixed or stale state without version metadata",
+          "mitigation": ""
         }
       ],
-      "historicalEvidence": [
-        {
-          "repo": "hibiken/asynq",
-          "originalImplementation": "Initial batch dequeue used separate RPOPLPUSH and ZADD Redis commands without atomic script wrapper.",
-          "assumption": "Assumed client connection between dequeue and lease registration would not fail.",
-          "failureCondition": "Client process network disconnect immediately after RPOPLPUSH caused task to exist in active list without a lease entry in the ZSet, preventing automatic recovery.",
-          "observedBug": "Orphaned active tasks remaining stuck permanently in active list.",
-          "fix": "Encapsulated dequeue, lease registration, and task metadata update into a single atomic Lua script (dequeueCmd).",
-          "testAdded": "TestBatchEnqueue in internal/rdb/rdb_test.go",
-          "resultingArchitecturalChange": "All queue state transitions converted to atomic Lua scripts executed via EVALSHA.",
-          "commitHash": "dabcb120d587ff249969822ae87b866d2a430852",
-          "issueOrPr": "asynq#215"
-        },
-        {
-          "repo": "riverqueue/river",
-          "originalImplementation": "Early job fetchers used separate SELECT ... FOR UPDATE and subsequent UPDATE queries.",
-          "assumption": "Assumed transaction isolation would prevent worker lock contention.",
-          "failureCondition": "High concurrency produced serialization failures and deadlocks under heavy worker contention.",
-          "fix": "Replaced two-phase fetch with single CTE: WITH candidates AS (SELECT ... FOR UPDATE SKIP LOCKED) UPDATE river_job SET state = 'running' ... RETURNING *.",
-          "testAdded": "Example_uniqueJob in example_unique_job_test.go",
-          "resultingArchitecturalChange": "Standardized all job claiming across River on single-statement PostgreSQL CTEs.",
-          "commitHash": "fdf6cdf12567a5b70c003f5ff850273f09e7efcf",
-          "issueOrPr": "river#142"
-        }
+      "verificationContract": [
+        "kill workers/controllers during execution",
+        "rebuild support-visible state from persisted substrate",
+        "restart scheduler/daemon/server and verify no hidden in-memory progress is required"
       ],
-      "counterexamples": [],
-      "epistemicTypes": [
-        "SOURCE_OBSERVED",
-        "TEST_OBSERVED",
-        "HISTORY_SUPPORTED",
-        "DOCUMENTED",
-        "MODEL_INFERRED"
+      "supportingEvidence": [],
+      "counterEvidence": [],
+      "supportedByRepoEkus": [
+        "REKU-TEMPORAL-001",
+        "REKU-CADENCE-003",
+        "REKU-CADENCE-004",
+        "REKU-CONDUCTOR-001",
+        "REKU-AIRFLOW-002",
+        "REKU-AIRFLOW-004",
+        "REKU-ARGO-001",
+        "REKU-DAGSTER-002",
+        "REKU-PREFECT-001",
+        "REKU-KESTRA-001",
+        "REKU-KESTRA-002",
+        "REKU-RESTATE-001",
+        "REKU-RESTATE-003",
+        "REKU-WINDMILL-001",
+        "REKU-WINDMILL-006",
+        "REKU-HATCHET-001",
+        "REKU-HATCHET-004"
       ],
-      "evidenceGrounds": [
-        {
-          "repo": "bullmq",
-          "commitHash": "352d3c72bf2bc5ec851630a4cdcba7d44c313ed0",
-          "filePath": "src/commands/moveToActive-11.lua",
-          "lineRange": [
-            1,
-            45
-          ],
-          "symbol": "moveToActive",
-          "observation": "Atomically pops job from wait list, pushes to active list, and creates lock key with worker token and PX TTL in Redis.",
-          "testFile": "python/tests/job_scheduler_test.py",
-          "testName": "test_invalid_cron_pattern_raises"
-        },
-        {
-          "repo": "river",
-          "commitHash": "f748a5cf793a8860308c14bff548143798915ff4",
-          "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
-          "lineRange": [
-            200,
-            230
-          ],
-          "symbol": "JobGetAvailable",
-          "observation": "Executes single CTE with SELECT ... FOR UPDATE SKIP LOCKED chained into UPDATE river_job SET state = 'running'.",
-          "testFile": "example_unique_job_test.go",
-          "testName": "Example_uniqueJob"
-        },
-        {
-          "repo": "pgmq",
-          "commitHash": "c41b93adc4a93914339bde0ec3792311191f9e73",
-          "filePath": "pgmq-rs/src/queue/sql.rs",
-          "lineRange": [
-            15,
-            35
-          ],
-          "symbol": "READ",
-          "observation": "Executes CTE selecting available msg_id with FOR UPDATE SKIP LOCKED and updating vt = clock_timestamp() + interval.",
-          "testFile": "pgmq-rs/tests/queue.rs",
-          "testName": "test_read"
-        },
-        {
-          "repo": "rocketmq",
-          "commitHash": "efa1be59d6fc747ad220f036c86030f05f0419f9",
-          "filePath": "store/src/main/java/org/apache/rocketmq/store/CommitLog.java",
-          "lineRange": [
-            1087,
-            1144
-          ],
-          "symbol": "putMessagePositionInfo",
-          "observation": "Assigns invisibleTime to PopCheckPoint and appends to REVIVE_TOPIC before returning messages to pop consumer.",
-          "testFile": "srvutil/src/test/java/org/apache/rocketmq/srvutil/ServerUtilTest.java",
-          "testName": "ServerUtilTest"
-        }
-      ],
+      "alternativeMechanismRepoEkus": [],
+      "counterexampleRepoEkus": [],
+      "notApplicableRepoEkus": [],
+      "counterexampleAuditNote": "Audited across 11 workflow/durable-execution repositories (temporal, cadence, conductor, airflow, argo-workflows, dagster, prefect, kestra, restate, windmill, hatchet); matrix classes record supports, alternatives, counterexamples, not-applicable rows, and insufficient evidence per repository.",
       "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 13,
-        "supports": 12,
+        "corpusSize": 11,
+        "applicable": 11,
+        "supports": 11,
+        "alternativeMechanism": 0,
+        "counterexamples": 0,
+        "insufficientEvidence": 0,
+        "notApplicable": 0
+      },
+      "epistemicTypes": [
+        "HISTORY_SUPPORTED",
+        "SOURCE_OBSERVED",
+        "TEST_OBSERVED"
+      ],
+      "status": "PROMOTED"
+    },
+    {
+      "id": "EKU-WDE-002",
+      "title": "Single-Writer Progress Requires Fencing, Leases, Locks, or Reconciliation Tokens",
+      "claimId": "CLM-002",
+      "objectType": "BEHAVIORAL_INVARIANT",
+      "problem": "Schedulers, controllers, workers, and regions can race to advance the same logical operation.",
+      "desiredProperty": "Stale owners cannot clobber current progress.",
+      "behavioralInvariant": "Every system in the corpus has a mechanism that narrows or fences concurrent writers, but the mechanism is substrate-specific and not interchangeable.",
+      "applicabilityConstraints": [],
+      "solutionFamilies": [
+        {
+          "name": "RangeID shard lease",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "database row locks",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "Kubernetes ResourceVersion/reconcile retries",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "distributed execution locks",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "daemon queue ownership",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "server-side concurrency leases",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        }
+      ],
+      "mechanisms": [],
+      "failureModes": [
+        {
+          "failureMode": "split-brain execution",
+          "description": "split-brain execution",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "scheduler zombie purge clobbers completion",
+          "description": "scheduler zombie purge clobbers completion",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "old cluster commits stale timer/result",
+          "description": "old cluster commits stale timer/result",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "queue repair duplicates work",
+          "description": "queue repair duplicates work",
+          "mitigation": ""
+        }
+      ],
+      "verificationContract": [
+        "two owners claim same work",
+        "old owner writes after lease loss",
+        "stale scan tries to mark completed work failed",
+        "controller retries on optimistic conflict"
+      ],
+      "supportingEvidence": [],
+      "counterEvidence": [],
+      "supportedByRepoEkus": [
+        "REKU-TEMPORAL-002",
+        "REKU-TEMPORAL-009",
+        "REKU-CADENCE-001",
+        "REKU-CONDUCTOR-004",
+        "REKU-AIRFLOW-001",
+        "REKU-AIRFLOW-009",
+        "REKU-DAGSTER-004",
+        "REKU-PREFECT-005",
+        "REKU-PREFECT-010",
+        "REKU-KESTRA-004",
+        "REKU-KESTRA-005",
+        "REKU-RESTATE-006",
+        "REKU-RESTATE-004",
+        "REKU-WINDMILL-002",
+        "REKU-WINDMILL-004",
+        "REKU-HATCHET-002",
+        "REKU-HATCHET-005"
+      ],
+      "alternativeMechanismRepoEkus": [
+        "REKU-ARGO-001",
+        "REKU-ARGO-005"
+      ],
+      "counterexampleRepoEkus": [],
+      "notApplicableRepoEkus": [],
+      "counterexampleAuditNote": "Audited across 11 workflow/durable-execution repositories (temporal, cadence, conductor, airflow, argo-workflows, dagster, prefect, kestra, restate, windmill, hatchet); matrix classes record supports, alternatives, counterexamples, not-applicable rows, and insufficient evidence per repository.",
+      "corpusStats": {
+        "corpusSize": 11,
+        "applicable": 11,
+        "supports": 10,
         "alternativeMechanism": 1,
         "counterexamples": 0,
         "insufficientEvidence": 0,
         "notApplicable": 0
       },
-      "confidence": "HIGH",
-      "status": "PROMOTED",
+      "epistemicTypes": [
+        "HISTORY_SUPPORTED",
+        "SOURCE_OBSERVED"
+      ],
+      "status": "PROMOTED"
+    },
+    {
+      "id": "EKU-WDE-003",
+      "title": "State Mutation and Async Work Dispatch Must Be Ordered Together",
+      "claimId": "CLM-003",
+      "objectType": "IMPLEMENTATION_PATTERN",
+      "problem": "A system can commit state without scheduling follow-up work, or schedule work before state is durably visible.",
+      "desiredProperty": "Recovery sees either both the state transition and its follow-up task, or neither, with repair paths for divergence.",
+      "behavioralInvariant": "The corpus repeatedly encodes state-before-dispatch or transactionally coupled state/task generation; when coupling is weaker, repair/reconciliation is an explicit correctness mechanism.",
+      "applicabilityConstraints": [],
+      "solutionFamilies": [
+        {
+          "name": "transactional outbox",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "queue ack after task state update",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "controller reconciliation from CRD state",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "daemon retry idempotency",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "server policy mutation",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        }
+      ],
+      "mechanisms": [],
+      "failureModes": [
+        {
+          "failureMode": "lost follow-up task",
+          "description": "lost follow-up task",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "duplicate repair loop",
+          "description": "duplicate repair loop",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "system task re-pushed after queue removal",
+          "description": "system task re-pushed after queue removal",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "retry run duplicated after daemon restart",
+          "description": "retry run duplicated after daemon restart",
+          "mitigation": ""
+        }
+      ],
+      "verificationContract": [
+        "crash after state commit before dispatch",
+        "crash after queue lease before state update",
+        "daemon creates retry then crashes before launch",
+        "controller down while pod completes"
+      ],
+      "supportingEvidence": [],
+      "counterEvidence": [],
       "supportedByRepoEkus": [
-        "REKU-BULLMQ-001"
+        "REKU-TEMPORAL-001",
+        "REKU-CADENCE-004",
+        "REKU-CONDUCTOR-009",
+        "REKU-DAGSTER-008",
+        "REKU-PREFECT-001",
+        "REKU-KESTRA-002",
+        "REKU-RESTATE-003",
+        "REKU-RESTATE-009",
+        "REKU-WINDMILL-001",
+        "REKU-WINDMILL-002",
+        "REKU-HATCHET-001",
+        "REKU-HATCHET-003"
       ],
       "alternativeMechanismRepoEkus": [
-        "REKU-RIVER-002",
-        "REKU-RIVER-001"
-      ],
-      "commonKeywordGroups": [
-        "token_fencing",
-        "atomic_lock_release",
-        "ownership_verification"
-      ],
-      "uniqueKeywordGroups": [
-        "redis_removeLock_lua",
-        "call_get_del_script"
-      ],
-      "mechanismFamilies": [
-        "redis_lua_cas",
-        "sql_conditional_update"
-      ],
-      "substrateFamilies": [
-        "redis",
-        "postgres"
+        "REKU-AIRFLOW-007",
+        "REKU-AIRFLOW-009",
+        "REKU-ARGO-001",
+        "REKU-ARGO-009"
       ],
       "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-NATS-001"
-      ],
-      "counterexampleAuditNote": "Audited across BullMQ, River, and NATS. BullMQ atomically locks across queues via Lua; River relies on SQL row-level SKIP LOCKED; pure pubsub NATS lacks explicit persistent task leasing."
-    },
-    {
-      "id": "EKU-QUEUE-002",
-      "title": "Token-Fenced Ownership Validation on State Finalization",
-      "objectType": "BEHAVIORAL_INVARIANT",
-      "problem": "A stalled or zombie worker resuming execution after its lease has expired can overwrite or corrupt the state of a newer worker executing the reassigned task.",
-      "desiredProperty": "State finalization (completion, failure, retry) must be rejected if the calling worker no longer holds valid ownership of the task lease.",
-      "behavioralInvariant": "State finalization operations must validate that the caller's lease token or generation matches the active storage lease token inside the storage engine before committing state transitions.",
-      "applicabilityConstraints": [
-        "Applies to all systems where task execution ownership is leased with time-bounded expiration and reassigned upon timeout."
-      ],
-      "solutionFamilies": [
-        {
-          "name": "Token / Nonce Verification in Storage Script",
-          "mechanisms": [
-            "Worker supplies a UUID token or integer generation (claim_id) on finalization. The storage engine validates that the stored lease token matches the caller's token in the same atomic transaction before deleting or transitioning the record."
-          ],
-          "tradeoffs": [
-            "Completely eliminates phantom completions and state overwrites by zombie workers.",
-            "Requires passing lease tokens across all worker-storage interactions and maintaining token state."
-          ],
-          "representativeRepositories": [
-            "taskforcesh/bullmq",
-            "litements/litequeue",
-            "redpanda-data/redpanda",
-            "apache/rocketmq"
-          ]
-        },
-        {
-          "name": "Broker In-Flight Actor State Fencing",
-          "mechanisms": [
-            "The central broker maintains delivery sequence numbers or in-flight maps per client connection. When a lease expires, the broker removes the in-flight reference, rejecting or ignoring subsequent acks from disconnected/timed-out channels."
-          ],
-          "tradeoffs": [
-            "Eliminates the need for explicit client token management in storage.",
-            "Fencing is lost if the broker crashes and reloads un-fenced message states."
-          ],
-          "representativeRepositories": [
-            "nsqio/nsq",
-            "nats-io/nats-server",
-            "bloomberg/blazingmq",
-            "apache/activemq-artemis",
-            "rabbitmq/rabbitmq-server"
-          ]
-        }
-      ],
-      "failureModes": [
-        {
-          "failureMode": "Phantom Finalization / Split-Brain Overwrite",
-          "description": "Worker 1 stalls for 35s on a 30s lease. Recoverer re-assigns task to Worker 2. Worker 1 wakes up and issues an un-fenced finalization (e.g. DELETE msg_id), deleting Worker 2's active job and causing unmonitored loss of state.",
-          "mitigation": "Enforce strict token or generation comparison in all finalization commands (e.g. WHERE claim_token = ? or GET lockKey == token)."
-        }
-      ],
-      "historicalEvidence": [
-        {
-          "repo": "taskforcesh/bullmq",
-          "originalImplementation": "Early BullMQ versions released locks using simple DEL lockKey without checking if the lock value had changed.",
-          "assumption": "Assumed lock TTL expiration meant the key was deleted.",
-          "failureCondition": "Worker A stalled, lock expired, Worker B acquired lock, Worker A finished and issued DEL lockKey, destroying Worker B's lock prematurely.",
-          "fix": "Replaced DEL with removeLock.lua script that performs GET and verifies token == ARGV[1] before DEL, returning code -6 on mismatch.",
-          "testAdded": "python/tests/job_scheduler_test.py",
-          "resultingArchitecturalChange": "All finalization scripts (moveToFinished, moveToFailed) require lock token validation.",
-          "commitHash": "c4a0a4a90d48303b1b6b7c45f67898573a73c424",
-          "issueOrPr": "bullmq#4294"
-        }
-      ],
-      "counterexamples": [
-        {
-          "counterexample": "Un-Fenced Cooperative Finalization in hibiken/asynq, pgmq/pgmq, and maragudk/goqite",
-          "whyItDiffers": "In Asynq (doneCmd in internal/rdb/rdb.go), PGMQ (DELETE in sql.rs), and Goqite (Delete in goqite.go), finalization deletes or moves the task purely by message ID (msg_id) without validating worker token or lease validity.",
-          "isIntentional": true,
-          "validUnderDifferentGuarantees": "Valid only under the cooperative assumption that workers will self-terminate upon exceeding their lease deadline, and applications tolerate at-least-once duplicate completions.",
-          "historicalBugs": "Documented bug in Asynq where a stalled worker resuming after recovery deletes a re-assigned task that Worker 2 is currently executing.",
-          "actionTaken": "RECLASSIFY_AS_PATTERN"
-        }
-      ],
-      "epistemicTypes": [
-        "SOURCE_OBSERVED",
-        "TEST_OBSERVED",
-        "HISTORY_SUPPORTED",
-        "DOCUMENTED",
-        "MODEL_INFERRED"
-      ],
-      "evidenceGrounds": [
-        {
-          "repo": "bullmq",
-          "commitHash": "352d3c72bf2bc5ec851630a4cdcba7d44c313ed0",
-          "filePath": "src/commands/includes/removeLock.lua",
-          "lineRange": [
-            1,
-            19
-          ],
-          "symbol": "removeLock",
-          "observation": "Compares redis.call('GET', KEYS[1]) with ARGV[1]; returns -6 if token mismatch, aborting finalization.",
-          "testFile": "python/tests/job_scheduler_test.py",
-          "testName": "test_invalid_cron_pattern_raises"
-        },
-        {
-          "repo": "litequeue",
-          "commitHash": "9e286af166f1c483057e28ab5fb45e1c38943f21",
-          "filePath": "src/litequeue/__init__.py",
-          "lineRange": [
-            668,
-            690
-          ],
-          "symbol": "done",
-          "observation": "Executes UPDATE Queue SET status=2, done_time=:now WHERE message_id=:message_id AND claim_id=:claim_id; returns False if claim_id was superseded.",
-          "testFile": "tests/test_litequeue.py",
-          "testName": "test_done"
-        },
-        {
-          "repo": "redpanda",
-          "commitHash": "3cfce474a872090e7c74d14181885f5838c54cf2",
-          "filePath": "src/v/raft/consensus.cc",
-          "lineRange": [
-            310,
-            380
-          ],
-          "symbol": "handle_append_entries",
-          "observation": "Validates producer_epoch against registered transaction epoch; rejects stale producer fence.",
-          "testFile": "src/go/rpk/pkg/cli/cloud/auth/list_test.go",
-          "testName": "TestPrintCloudAuthList"
-        },
-        {
-          "repo": "asynq",
-          "commitHash": "d135f1439bee74e989b7f9b41ecd542cc87f024a",
-          "filePath": "internal/rdb/rdb.go",
-          "lineRange": [
-            397,
-            418
-          ],
-          "symbol": "doneCmd",
-          "observation": "COUNTEREXAMPLE: Executes LREM activeKey and HDEL taskKey unconditionally by msg_id without token validation.",
-          "testFile": "internal/rdb/rdb_test.go",
-          "testName": "TestBatchEnqueue"
-        }
-      ],
+      "notApplicableRepoEkus": [],
+      "counterexampleAuditNote": "Audited across 11 workflow/durable-execution repositories (temporal, cadence, conductor, airflow, argo-workflows, dagster, prefect, kestra, restate, windmill, hatchet); matrix classes record supports, alternatives, counterexamples, not-applicable rows, and insufficient evidence per repository.",
       "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 13,
-        "supports": 4,
-        "alternativeMechanism": 6,
-        "counterexamples": 3,
-        "insufficientEvidence": 0,
-        "notApplicable": 0
-      },
-      "confidence": "HIGH",
-      "status": "PROMOTED",
-      "supportedByRepoEkus": [
-        "REKU-RIVER-004",
-        "REKU-BULLMQ-001"
-      ],
-      "alternativeMechanismRepoEkus": [
-        "REKU-PGMQ-002"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-NATS-001"
-      ],
-      "counterexampleAuditNote": "Audited across River, BullMQ, PGMQ, and NATS. River and BullMQ require explicit worker tokens or Lua lock keys during finalization. PGMQ uses message deletion as an alternative atomic finalization. Ephemeral NATS core has no finalization state machine."
-    },
-    {
-      "id": "EKU-QUEUE-003",
-      "title": "Clock-Skew Defended Sweep and Multi-Phase Crash Recovery",
-      "objectType": "BEHAVIORAL_INVARIANT",
-      "problem": "Host clock drift, NTP step corrections, or transient network delays can cause crash recovery sweepers to prematurely re-enqueue active tasks still being processed by healthy workers.",
-      "desiredProperty": "Crash recovery sweepers must not re-enqueue tasks whose leases are actively held, tolerating bounded clock skew and execution jitter.",
-      "behavioralInvariant": "Crash recovery sweepers must enforce a safety margin buffer or multi-phase mark-and-sweep delay exceeding the lease interval before re-enqueuing expired tasks.",
-      "applicabilityConstraints": [
-        "Applies to systems using background sweepers or janitors to recover tasks from dead/stalled workers."
-      ],
-      "solutionFamilies": [
-        {
-          "name": "Safety Margin Buffer on Lease Expiration",
-          "mechanisms": [
-            "Sweeper queries for tasks where lease_timestamp < now - safety_margin (typically 15-30s), ensuring transient clock steps or network delays do not trigger premature reclaim."
-          ],
-          "tradeoffs": [
-            "Simple to implement; protects against modest NTP clock jumps.",
-            "Increases minimum recovery latency for genuinely crashed workers by the buffer duration."
-          ],
-          "representativeRepositories": [
-            "hibiken/asynq",
-            "riverqueue/river"
-          ]
-        },
-        {
-          "name": "Two-Phase Mark and Sweep",
-          "mechanisms": [
-            "Pass 1 marks expired tasks with a candidate flag (e.g. stalled-check timestamp). If the worker does not renew or finalize before Pass 2 (one lease cycle later), Pass 2 reclaims the task."
-          ],
-          "tradeoffs": [
-            "Provides two full lease cycles of grace period; tolerates transient event loop freezes.",
-            "Requires storing intermediate mark state on task records."
-          ],
-          "representativeRepositories": [
-            "taskforcesh/bullmq"
-          ]
-        },
-        {
-          "name": "Database-Engine Timestamp Comparison",
-          "mechanisms": [
-            "Lease expiration evaluated entirely inside the database engine using clock_timestamp() / datetime('now') during query execution, eliminating application-host clock skew."
-          ],
-          "tradeoffs": [
-            "Guarantees single clock source across all distributed worker hosts.",
-            "Subject to database server clock adjustments if NTP is poorly configured on DB host."
-          ],
-          "representativeRepositories": [
-            "pgmq/pgmq",
-            "maragudk/goqite",
-            "litements/litequeue"
-          ]
-        }
-      ],
-      "failureModes": [
-        {
-          "failureMode": "Premature Task Duplication via Clock Jump",
-          "description": "If worker host clock moves forward by 10 seconds, a zero-margin sweeper reclaims an active job while the worker is actively writing results.",
-          "mitigation": "Enforce >= 30-second safety margin or two-phase mark-and-sweep protocol."
-        }
-      ],
-      "historicalEvidence": [
-        {
-          "repo": "hibiken/asynq",
-          "originalImplementation": "Early recoverer checked ZRANGEBYSCORE asynq:{q}:lease -inf (now).",
-          "assumption": "Assumed Redis and Worker clocks were synchronized with zero drift.",
-          "failureCondition": "Microsecond clock drift between Redis and worker servers caused workers to observe active tasks being re-queued while running.",
-          "fix": "Introduced a hardcoded 30-second safety margin: recoverLeaseExpiredTasks checks score < (now - 30s).",
-          "testAdded": "TestBatchEnqueue in internal/rdb/rdb_test.go",
-          "resultingArchitecturalChange": "All lease expiration sweeps in Asynq enforce a 30s skew buffer.",
-          "commitHash": "ff6768f9bb44c92ad8f7c523fb80a98d24f0571e",
-          "issueOrPr": "asynq#165"
-        }
-      ],
-      "counterexamples": [],
-      "epistemicTypes": [
-        "SOURCE_OBSERVED",
-        "TEST_OBSERVED",
-        "HISTORY_SUPPORTED",
-        "DOCUMENTED",
-        "MODEL_INFERRED"
-      ],
-      "evidenceGrounds": [
-        {
-          "repo": "asynq",
-          "commitHash": "d135f1439bee74e989b7f9b41ecd542cc87f024a",
-          "filePath": "internal/rdb/rdb.go",
-          "lineRange": [
-            280,
-            330
-          ],
-          "symbol": "recoverLeaseExpiredTasks",
-          "observation": "Queries lease ZSet with score < (now - 30 seconds), explicitly buffering 30 seconds for clock skew.",
-          "testFile": "internal/rdb/rdb_test.go",
-          "testName": "TestBatchEnqueue"
-        },
-        {
-          "repo": "bullmq",
-          "commitHash": "352d3c72bf2bc5ec851630a4cdcba7d44c313ed0",
-          "filePath": "src/commands/moveStalledJobsToWait-9.lua",
-          "lineRange": [
-            1,
-            50
-          ],
-          "symbol": "moveStalledJobsToWait",
-          "observation": "Pass 1 marks task with stalled-check timestamp; Pass 2 re-enqueues only if timestamp remains unrenewed.",
-          "testFile": "python/tests/job_scheduler_test.py",
-          "testName": "test_invalid_cron_pattern_raises"
-        },
-        {
-          "repo": "river",
-          "commitHash": "f748a5cf793a8860308c14bff548143798915ff4",
-          "filePath": "internal/maintenance/job_rescuer.go",
-          "lineRange": [
-            80,
-            140
-          ],
-          "symbol": "JobRescuer",
-          "observation": "Evaluates updated_at < now() - worker_timeout, with default 1-hour rescue buffer for unconfigured timeouts.",
-          "testFile": "internal/maintenance/job_rescuer_test.go",
-          "testName": "TestJobRescuer"
-        }
-      ],
-      "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 13,
-        "supports": 3,
-        "alternativeMechanism": 10,
-        "counterexamples": 0,
-        "insufficientEvidence": 0,
-        "notApplicable": 0
-      },
-      "confidence": "HIGH",
-      "status": "PROMOTED",
-      "supportedByRepoEkus": [
-        "REKU-RIVER-001",
-        "REKU-PGMQ-001",
-        "REKU-BULLMQ-002"
-      ],
-      "alternativeMechanismRepoEkus": [
-        "REKU-ASYNQ-001"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-NATS-001"
-      ],
-      "counterexampleAuditNote": "Audited across River, PGMQ, BullMQ, and Asynq. Relational and Redis stores mandate server-authoritative timestamps to prevent client host clock drift."
-    },
-    {
-      "id": "EKU-QUEUE-004",
-      "title": "Atomic Delivery Thresholding and Poison-Pill Dead-Letter Quarantine",
-      "objectType": "BEHAVIORAL_INVARIANT",
-      "problem": "A task that crashes worker processes or fails repeatedly (poison pill) will loop indefinitely in retry cycles, consuming worker capacity and starving valid tasks.",
-      "desiredProperty": "Repeatedly failing tasks must be deterministically identified and isolated to a quarantine destination without crashing workers or looping endlessly.",
-      "behavioralInvariant": "Tasks failing repeatedly must have their delivery count atomically incremented upon each claim and be routed to a dead-letter quarantine (DLQ/DLA) upon exceeding a maximum attempt threshold.",
-      "applicabilityConstraints": [
-        "Applies to all messaging and task queue engines with retry support."
-      ],
-      "solutionFamilies": [
-        {
-          "name": "Storage-Enforced Delivery Limit and DLQ Routing",
-          "mechanisms": [
-            "Delivery counter is stored in task metadata or table column, incremented on every claim or failure. When attempt >= max_attempts, the storage engine transitions the record to 'discarded', 'failed', or moves it to a DLQ table/topic."
-          ],
-          "tradeoffs": [
-            "Guarantees poison pills cannot loop infinitely even if workers crash repeatedly during execution.",
-            "Requires additional storage structures for dead-letter records."
-          ],
-          "representativeRepositories": [
-            "riverqueue/river",
-            "taskforcesh/bullmq",
-            "apache/activemq-artemis",
-            "apache/rocketmq",
-            "rabbitmq/rabbitmq-server"
-          ]
-        },
-        {
-          "name": "Client-Assisted Archival",
-          "mechanisms": [
-            "Storage increments delivery count on read, but dead-letter archival requires explicit client call or archive command."
-          ],
-          "tradeoffs": [
-            "Gives client fine-grained control over when to archive.",
-            "If worker crashes hard on memory fault (SIGSEGV/OOM) before calling archive, task continues to be redelivered until manual intervention."
-          ],
-          "representativeRepositories": [
-            "pgmq/pgmq",
-            "hibiken/asynq",
-            "maragudk/goqite",
-            "nsqio/nsq"
-          ]
-        }
-      ],
-      "failureModes": [
-        {
-          "failureMode": "Infinite Retry Crash Loop (Poison Pill)",
-          "description": "A malformed payload causes worker process panic or segmentation fault on every run. If delivery count is only incremented on graceful failure handling, the task is redelivered forever.",
-          "mitigation": "Increment delivery count atomically during dequeue/lease allocation, not during post-execution error handling."
-        }
-      ],
-      "historicalEvidence": [
-        {
-          "repo": "riverqueue/river",
-          "originalImplementation": "Initial schema incremented attempt count in error handler after execution failure.",
-          "assumption": "Assumed worker panics would be caught by Go defer/recover.",
-          "failureCondition": "Fatal process exit (SIGKILL / OOM) bypassed error handler, leaving attempt count unchanged and causing endless redelivery.",
-          "fix": "Moved attempt increment into dequeue CTE: UPDATE river_job SET attempt = river_job.attempt + 1.",
-          "testAdded": "TestJobExecutor in internal/jobexecutor/job_executor_test.go",
-          "resultingArchitecturalChange": "Attempt count is strictly monotonically incremented at claim time across River.",
-          "commitHash": "fdf6cdf12567a5b70c003f5ff850273f09e7efcf",
-          "issueOrPr": "river#88"
-        }
-      ],
-      "counterexamples": [
-        {
-          "counterexample": "Unbounded Re-enqueue in litements/litequeue",
-          "whyItDiffers": "LiteQueue does not store an attempt count column in its SQLite table schema; retry_expired re-enqueues expired tasks indefinitely unless client explicitly calls mark_failed.",
-          "isIntentional": true,
-          "validUnderDifferentGuarantees": "LiteQueue prioritizes minimal SQLite schema (5 columns) and delegates retry policies entirely to application layer.",
-          "historicalBugs": "Users report stuck poison pills consuming CPU in infinite retry loops.",
-          "actionTaken": "RECLASSIFY_AS_PATTERN"
-        }
-      ],
-      "epistemicTypes": [
-        "SOURCE_OBSERVED",
-        "TEST_OBSERVED",
-        "HISTORY_SUPPORTED",
-        "DOCUMENTED",
-        "MODEL_INFERRED"
-      ],
-      "evidenceGrounds": [
-        {
-          "repo": "river",
-          "commitHash": "f748a5cf793a8860308c14bff548143798915ff4",
-          "filePath": "riverdriver/riverpgxv5/internal/dbsqlc/river_job.sql",
-          "lineRange": [
-            218,
-            230
-          ],
-          "symbol": "JobGetAvailable",
-          "observation": "Increments attempt = attempt + 1 during dequeue; transitions to discarded when attempt >= max_attempts.",
-          "testFile": "example_unique_job_test.go",
-          "testName": "Example_uniqueJob"
-        },
-        {
-          "repo": "artemis",
-          "commitHash": "b3b1e8e3143824fb5229a88941598377af9b94a8",
-          "filePath": "artemis-journal/src/main/java/org/apache/activemq/artemis/core/journal/impl/JournalImpl.java",
-          "lineRange": [
-            850,
-            920
-          ],
-          "symbol": "appendRecord",
-          "observation": "Increments deliveryCount; routes to Dead Letter Address (DLA) when deliveryCount > max-delivery-attempts.",
-          "testFile": "artemis-junit/artemis-junit-5/src/test/java/org/apache/activemq/artemis/junit/ActiveMQDynamicProducerResourceTest.java",
-          "testName": "ActiveMQDynamicProducerResourceTest"
-        },
-        {
-          "repo": "rocketmq",
-          "commitHash": "efa1be59d6fc747ad220f036c86030f05f0419f9",
-          "filePath": "store/src/main/java/org/apache/rocketmq/store/CommitLog.java",
-          "lineRange": [
-            1087,
-            1144
-          ],
-          "symbol": "putMessagePositionInfo",
-          "observation": "Tracks reconsumeTimes; escalates to %DLQ%<ConsumerGroup> when retry count exceeds maxReconsumeTimes (16).",
-          "testFile": "srvutil/src/test/java/org/apache/rocketmq/srvutil/ServerUtilTest.java",
-          "testName": "ServerUtilTest"
-        },
-        {
-          "repo": "rabbitmq",
-          "commitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
-          "filePath": "deps/rabbit_common/src/credit_flow.erl",
-          "lineRange": [
-            80,
-            145
-          ],
-          "symbol": "ack",
-          "observation": "Quorum queue delivery-limit policy terminates poison pills and routes to Dead Letter Exchange with x-death header.",
-          "testFile": "deps/amqp_client/test/amqp_uri_prop_SUITE.erl",
-          "testName": "amqp_uri_prop_SUITE"
-        }
-      ],
-      "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 13,
-        "supports": 2,
-        "alternativeMechanism": 8,
-        "counterexamples": 3,
-        "insufficientEvidence": 0,
-        "notApplicable": 0
-      },
-      "confidence": "HIGH",
-      "status": "PROMOTED",
-      "supportedByRepoEkus": [
-        "REKU-BULLMQ-004"
-      ],
-      "alternativeMechanismRepoEkus": [
-        "REKU-RIVER-004"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-LITEQUEUE-001"
-      ],
-      "counterexampleAuditNote": "Audited across BullMQ and River. BullMQ dead-letters to a failed zset; River increments max_attempts and cancels state. Litequeue lacks an automatic poison dead-letter destination."
-    },
-    {
-      "id": "EKU-QUEUE-005",
-      "title": "Credit-Based Flow Control and Producer Ingestion Backpressure",
-      "problem": "Unbounded producer publication or slow consumer draining can exhaust broker/worker heap memory and cause catastrophic out-of-memory crashes.",
-      "desiredProperty": "The message broker/engine must regulate inbound and outbound message flow via explicit credit tokens or socket read suspension to prevent internal buffer overflow.",
-      "behavioralInvariant": "Systems must regulate message flow across process and network boundaries using explicit credit tokens, client-driven demand signaling, or TCP read suspension rather than unbounded internal memory buffers.",
-      "applicabilityConstraints": [
-        "Applies to broker-mediated and streaming architectures where message dispatch is pushed over network connections."
-      ],
-      "solutionFamilies": [
-        {
-          "name": "Process-Level Credit Flow",
-          "mechanisms": [
-            "Asynchronous token bucket between Erlang actor processes or network handlers; socket reader stops reading from TCP socket when downstream credits hit zero, triggering zero-window TCP backpressure."
-          ],
-          "tradeoffs": [
-            "Provides fine-grained end-to-end backpressure without global locks.",
-            "Requires careful credit grant tuning to avoid process deadlock under circular dependencies."
-          ],
-          "representativeRepositories": [
-            "rabbitmq/rabbitmq-server"
-          ]
-        },
-        {
-          "name": "Client-Driven RDY / Demand Flow",
-          "mechanisms": [
-            "Server only pushes messages when client has sent explicit RDY <N> credits. Server decrements RDY per push and halts when RDY == 0."
-          ],
-          "tradeoffs": [
-            "Client completely controls its own ingestion rate; zero buffer bloat on consumer.",
-            "Adds round-trip latency when client RDY replenishment is delayed."
-          ],
-          "representativeRepositories": [
-            "nsqio/nsq",
-            "nats-io/nats-server",
-            "bloomberg/blazingmq"
-          ]
-        }
-      ],
-      "failureModes": [
-        {
-          "failureMode": "Unbounded Memory Bloat / OOM Crash",
-          "description": "Producer sends 100k msgs/sec while consumer processes 1k msgs/sec. Without credit flow, broker buffers messages in RAM until kernel terminates broker with OOM killer.",
-          "mitigation": "Enforce credit flow or socket read suspension on publisher connections."
-        }
-      ],
-      "historicalEvidence": [
-        {
-          "repo": "rabbitmq/rabbitmq-server",
-          "originalImplementation": "Early RabbitMQ relied solely on OS TCP socket buffer backpressure.",
-          "assumption": "Assumed Erlang process message queues would remain bounded by TCP flow.",
-          "failureCondition": "Channel process mailbox grew to millions of messages during fast publish spikes, exhausting Erlang VM heap.",
-          "fix": "Introduced credit_flow.erl implementing cross-process credit tokens that suspend socket reads.",
-          "testAdded": "credit_flow_SUITE in deps/rabbit/test/credit_flow_SUITE.erl",
-          "resultingArchitecturalChange": "Standardized all internal RabbitMQ message pipelines on credit_flow.",
-          "commitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
-          "issueOrPr": "rabbitmq#342"
-        }
-      ],
-      "counterexamples": [],
-      "epistemicTypes": [
-        "SOURCE_OBSERVED",
-        "TEST_OBSERVED",
-        "HISTORY_SUPPORTED",
-        "DOCUMENTED"
-      ],
-      "evidenceGrounds": [
-        {
-          "repo": "rabbitmq/rabbitmq-server",
-          "commitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
-          "filePath": "src/credit_flow.erl",
-          "lineRange": [
-            80,
-            145
-          ],
-          "symbol": "ack",
-          "observation": "Tracks credits between process pairs; blocks reader process and stops TCP socket reads when credits == 0.",
-          "testFile": "deps/rabbit/test/credit_flow_SUITE.erl",
-          "testName": "test_credit_flow_suspension"
-        },
-        {
-          "repo": "nsqio/nsq",
-          "commitHash": "85cf10c09c6c3c86160d6f0eb156f62d0efc1648",
-          "filePath": "nsqd/protocol_v2.go",
-          "lineRange": [
-            190,
-            240
-          ],
-          "symbol": "Exec",
-          "observation": "Server pushes messages only when client.RDY > 0, decrementing RDY per message and halting when RDY == 0.",
-          "testFile": "nsqd/channel_test.go",
-          "testName": "TestChannelRDYFlow"
-        },
-        {
-          "repo": "bloomberg/blazingmq",
-          "commitHash": "a5b313cbb4c12a4b90790bc488710345a40a52e9",
-          "filePath": "src/groups/mqb/mqbblp/mqbblp_relayqueueengine.cpp",
-          "lineRange": [
-            310,
-            380
-          ],
-          "symbol": "onConfirmMessage",
-          "observation": "Manages maxUnconfirmed message window and updates consumer credit watermarks.",
-          "testFile": "src/applications/bmqstoragetool/integration-tests/test_breathing.py",
-          "testName": "test_flow_control_watermark"
-        }
-      ],
-      "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 12,
-        "supports": 9,
-        "alternativeMechanism": 3,
-        "counterexamples": 0,
-        "insufficientEvidence": 0,
-        "notApplicable": 1
-      },
-      "confidence": "HIGH",
-      "status": "PROMOTED",
-      "supportedByRepoEkus": [
-        "REKU-REDPANDA-001"
-      ],
-      "alternativeMechanismRepoEkus": [
-        "REKU-NATS-001"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-PGMQ-001",
-        "REKU-LITEQUEUE-001"
-      ],
-      "counterexampleAuditNote": "Audited across Redpanda, NATS, PGMQ, and Litequeue. High-throughput event logs enforce credit semaphores; relational and embedded queues rely on connection pool saturation."
-    },
-    {
-      "id": "EKU-QUEUE-006",
-      "title": "Fast-Shedding Latency Gating and Storage Saturation Protection",
-      "problem": "Under extreme storage saturation (e.g. disk I/O stalls or PageCache write lock contention), incoming request queues grow unbounded, compounding system latency.",
-      "desiredProperty": "Storage engines under severe congestion must fail fast with explicit backpressure errors rather than buffering requests until system collapse.",
-      "behavioralInvariant": "Storage engines experiencing I/O stalls or lock wait times exceeding a critical threshold must immediately reject incoming writes with explicit transient errors.",
-      "applicabilityConstraints": [
-        "Applies to broker-native storage engines managing direct disk or OS page cache writes."
-      ],
-      "solutionFamilies": [
-        {
-          "name": "Lock-Duration Gated Fast-Failure",
-          "mechanisms": [
-            "Broker measures lock acquisition duration and queue wait times on storage write locks. If wait time exceeds a threshold (e.g. 200ms or 1000ms), incoming publish requests are rejected with SYSTEM_BUSY."
-          ],
-          "tradeoffs": [
-            "Prevents catastrophic cascading queue pileups during disk stalls.",
-            "Requires client SDKs to implement intelligent retry backoff on SYSTEM_BUSY."
-          ],
-          "representativeRepositories": [
-            "apache/rocketmq"
-          ]
-        },
-        {
-          "name": "Watermark Resource Alarms and Disconnects",
-          "mechanisms": [
-            "Broker monitors free disk space and RAM usage. When high watermark is breached, broker blocks publisher sockets or disconnects slow consumers exceeding buffer limits."
-          ],
-          "tradeoffs": [
-            "Protects entire cluster from crashing due to disk exhaustion.",
-            "Can disrupt active client connections if watermarks are calibrated too aggressively."
-          ],
-          "representativeRepositories": [
-            "rabbitmq/rabbitmq-server",
-            "nats-io/nats-server",
-            "apache/activemq-artemis",
-            "redpanda-data/redpanda"
-          ]
-        }
-      ],
-      "failureModes": [
-        {
-          "failureMode": "Cascading JVM / Event Loop Freeze",
-          "description": "A disk flush stall causes write lock queue to back up. Thousands of threads block on the lock, exhausting thread pools and causing heartbeat timeouts that trigger false cluster failovers.",
-          "mitigation": "Enforce fast-shedding latency gates before requests enter storage lock queues."
-        }
-      ],
-      "historicalEvidence": [
-        {
-          "repo": "apache/rocketmq",
-          "originalImplementation": "Broker accepted incoming publish requests into Netty worker pool regardless of CommitLog lock queue depth.",
-          "assumption": "Assumed OS PageCache dirty page flush would complete within tens of milliseconds.",
-          "failureCondition": "OS PageCache flush write stalls of 2-5 seconds caused 50,000+ client requests to queue in JVM memory, crashing the broker with OOM.",
-          "fix": "Implemented BrokerFastFailure.java which monitors lock hold time and sheds expired requests with SYSTEM_BUSY.",
-          "testAdded": "testCleanExpiredRequestInQueue in BrokerFastFailureTest.java",
-          "resultingArchitecturalChange": "BrokerFastFailure is enabled by default in all RocketMQ production brokers.",
-          "commitHash": "efa1be59d6fc747ad220f036c86030f05f0419f9",
-          "issueOrPr": "rocketmq#1204"
-        }
-      ],
-      "counterexamples": [],
-      "epistemicTypes": [
-        "SOURCE_OBSERVED",
-        "TEST_OBSERVED",
-        "HISTORY_SUPPORTED",
-        "DOCUMENTED"
-      ],
-      "evidenceGrounds": [
-        {
-          "repo": "apache/rocketmq",
-          "commitHash": "efa1be59d6fc747ad220f036c86030f05f0419f9",
-          "filePath": "broker/src/main/java/org/apache/rocketmq/broker/latency/BrokerFastFailure.java",
-          "lineRange": [
-            92,
-            115
-          ],
-          "symbol": "cleanExpiredRequestInQueue",
-          "observation": "Monitors CommitLog lock duration > 1000ms and send queue wait > 200ms; rejects with ResponseCode.SYSTEM_BUSY.",
-          "testFile": "broker/src/test/java/org/apache/rocketmq/broker/latency/BrokerFastFailureTest.java",
-          "testName": "testCleanExpiredRequestInQueue"
-        },
-        {
-          "repo": "nats-io/nats-server",
-          "commitHash": "1787eee035cf0253c201fa0f05afad92b6f296dc",
-          "filePath": "server/client.go",
-          "lineRange": [
-            850,
-            910
-          ],
-          "symbol": "writeLoop",
-          "observation": "Monitors client outbound buffer; forcibly terminates client connection if buffer exceeds MaxPending (64MB).",
-          "testFile": "server/client_test.go",
-          "testName": "TestSlowConsumerDisconnect"
-        },
-        {
-          "repo": "rabbitmq/rabbitmq-server",
-          "commitHash": "5b09e556da53b8473f26843a2493d8460ced8c8e",
-          "filePath": "src/rabbit_alarm.erl",
-          "lineRange": [
-            110,
-            160
-          ],
-          "symbol": "set_alarm",
-          "observation": "Broadcasts memory/disk high watermark alarms to block incoming publisher channels across cluster.",
-          "testFile": "deps/rabbit/test/alarm_SUITE.erl",
-          "testName": "test_memory_alarm_blocks_publishers"
-        }
-      ],
-      "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 12,
-        "supports": 9,
-        "alternativeMechanism": 3,
-        "counterexamples": 0,
-        "insufficientEvidence": 0,
-        "notApplicable": 1
-      },
-      "confidence": "HIGH",
-      "status": "PROMOTED",
-      "supportedByRepoEkus": [
-        "REKU-REDPANDA-001"
-      ],
-      "alternativeMechanismRepoEkus": [],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-LITEQUEUE-001",
-        "REKU-PGMQ-001"
-      ],
-      "counterexampleAuditNote": "Audited across Redpanda, Litequeue, and PGMQ. Redpanda enforces active memory and credit admission shedding; embedded and relational queues rely on database connection pool errors rather than upstream proactive queue shedding."
-    },
-    {
-      "id": "EKU-QUEUE-007",
-      "title": "Relational Lock-Free Task Dequeue via MVCC Row-Level Skipping",
-      "problem": "Relational database queues using traditional table-level or row-level locking suffer severe lock contention and deadlocks when concurrent workers poll the queue table.",
-      "desiredProperty": "Multiple concurrent workers can poll and claim distinct tasks from a relational table without blocking each other or causing transaction serialization deadlocks.",
-      "behavioralInvariant": "Relational SQL queues must select candidate task rows using SELECT ... FOR UPDATE SKIP LOCKED or single-statement CTEs to allow concurrent lock-free dequeue across worker connections.",
-      "applicabilityConstraints": [
-        "Applies to all relational SQL-backed queue implementations (PostgreSQL, MySQL, SQLite)."
-      ],
-      "solutionFamilies": [
-        {
-          "name": "PostgreSQL FOR UPDATE SKIP LOCKED CTE",
-          "mechanisms": [
-            "WITH candidates AS (SELECT id FROM queue WHERE state = 'available' ORDER BY priority, id LIMIT N FOR UPDATE SKIP LOCKED) UPDATE queue SET state = 'running' ... FROM candidates RETURNING *"
-          ],
-          "tradeoffs": [
-            "Completely eliminates lock waiting; concurrent workers skip locked rows seamlessly.",
-            "Requires composite indexing on (queue_name, priority, scheduled_at, id) for index scan."
-          ],
-          "representativeRepositories": [
-            "riverqueue/river",
-            "pgmq/pgmq"
-          ]
-        },
-        {
-          "name": "SQLite Subquery Update with WAL",
-          "mechanisms": [
-            "UPDATE queue SET status=1, claim_id=claim_id+1 WHERE rowid = (SELECT rowid FROM queue WHERE status=0 LIMIT 1) RETURNING *"
-          ],
-          "tradeoffs": [
-            "Enables atomic single-statement dequeue under SQLite WAL single-writer concurrency.",
-            "Limited to single-writer throughput per SQLite database file."
-          ],
-          "representativeRepositories": [
-            "maragudk/goqite",
-            "litements/litequeue"
-          ]
-        }
-      ],
-      "failureModes": [
-        {
-          "failureMode": "Table-Lock Serialization Deadlocks",
-          "description": "Without SKIP LOCKED, concurrent SELECT ... FOR UPDATE queries lock candidate rows in overlapping order, causing transaction deadlocks and 100% CPU lock contention.",
-          "mitigation": "Enforce FOR UPDATE SKIP LOCKED in candidate subquery."
-        }
-      ],
-      "historicalEvidence": [
-        {
-          "repo": "pgmq/pgmq",
-          "originalImplementation": "Initial SQL function used standard SELECT ... FOR UPDATE without SKIP LOCKED.",
-          "assumption": "Assumed low worker concurrency would not contend on top-of-queue rows.",
-          "failureCondition": "Under 10+ concurrent worker threads, throughput collapsed due to transaction lock wait timeouts.",
-          "fix": "Rewrote pgmq.read to use SELECT ... FOR UPDATE SKIP LOCKED.",
-          "testAdded": "test_pgmq_concurrent_read in pgmq-extension/client-tests",
-          "resultingArchitecturalChange": "All read functions in PGMQ mandate SKIP LOCKED.",
-          "commitHash": "c41b93adc4a93914339bde0ec3792311191f9e73",
-          "issueOrPr": "pgmq#45"
-        }
-      ],
-      "counterexamples": [],
-      "epistemicTypes": [
-        "SOURCE_OBSERVED",
-        "TEST_OBSERVED",
-        "HISTORY_SUPPORTED",
-        "DOCUMENTED"
-      ],
-      "evidenceGrounds": [
-        {
-          "repo": "riverqueue/river",
-          "commitHash": "008a9fdfba4f47fabe5ef33bcd706eb9f1358801",
-          "filePath": "internal/jobdeq/job_deq.go",
-          "lineRange": [
-            55,
-            110
-          ],
-          "symbol": "JobDeq",
-          "observation": "Uses CTE with SELECT id FROM river_job ... FOR UPDATE SKIP LOCKED LIMIT $1.",
-          "testFile": "internal/jobdeq/job_deq_test.go",
-          "testName": "Test_JobDeq_Concurrent_SkipLocked"
-        },
-        {
-          "repo": "pgmq/pgmq",
-          "commitHash": "c41b93adc4a93914339bde0ec3792311191f9e73",
-          "filePath": "pgmq-extension/sql/pgmq--0.14.0.sql",
-          "lineRange": [
-            35,
-            55
-          ],
-          "symbol": "read",
-          "observation": "Uses CTE with SELECT msg_id FROM pgmq.q_<name> WHERE vt <= clock_timestamp() FOR UPDATE SKIP LOCKED.",
-          "testFile": "pgmq-extension/client-tests/basic_read_test.py",
-          "testName": "test_read_skip_locked"
-        }
-      ],
-      "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 13,
-        "supports": 13,
-        "alternativeMechanism": 0,
-        "counterexamples": 0,
-        "insufficientEvidence": 0,
-        "notApplicable": 0
-      },
-      "confidence": "HIGH",
-      "status": "PROMOTED",
-      "supportedByRepoEkus": [
-        "REKU-RIVER-001"
-      ],
-      "alternativeMechanismRepoEkus": [
-        "REKU-LITEQUEUE-001",
-        "REKU-BULLMQ-001"
-      ],
-      "commonKeywordGroups": [
-        "row_locking",
-        "mvcc_concurrency",
-        "lock_avoidance",
-        "step_dequeue"
-      ],
-      "uniqueKeywordGroups": [
-        "postgres_skip_locked",
-        "sqlite_immediate",
-        "redis_lua_atomicity"
-      ],
-      "mechanismFamilies": [
-        "relational_row_locks",
-        "atomic_script_cas",
-        "single_file_reserved_lock"
-      ],
-      "substrateFamilies": [
-        "postgres",
-        "sqlite",
-        "redis"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-REDPANDA-001",
-        "REKU-NATS-001"
-      ],
-      "counterexampleAuditNote": "Audited across River, Litequeue, BullMQ, Redpanda, and NATS. River executes PostgreSQL FOR UPDATE SKIP LOCKED. Litequeue uses SQLite IMMEDIATE transactions; Redis/BullMQ uses Lua atomic zpopmin; streaming brokers do not use MVCC row skipping."
-    },
-    {
-      "id": "EKU-QUEUE-008",
-      "title": "Sector-Aligned Append-Only Direct I/O Journal Ingestion",
-      "problem": "Kernel PageCache buffering for high-throughput messaging ingestion causes unpredictable latency spikes and CPU cache pollution during dirty page flushing.",
-      "desiredProperty": "High-throughput brokers must achieve predictable, low-jitter write latencies by bypassing kernel caching and writing directly to persistent block storage.",
-      "behavioralInvariant": "High-throughput storage engines write immutable sequential records aligned to physical block/sector boundaries (e.g., 4KB) using Direct I/O (O_DIRECT) or circular pre-allocated journals.",
-      "applicabilityConstraints": [
-        "Applies to bare-metal and high-throughput streaming/broker storage engines."
-      ],
-      "solutionFamilies": [
-        {
-          "name": "Seastar O_DIRECT DMA Log Segments",
-          "mechanisms": [
-            "C++ Seastar asynchronous direct I/O writing 4096-byte aligned DMA memory buffers directly to NVMe SSD block devices."
-          ],
-          "tradeoffs": [
-            "Zero OS page cache pollution; predictable sub-millisecond p99 write latency.",
-            "Requires strict memory alignment and custom batch buffer management."
-          ],
-          "representativeRepositories": [
-            "redpanda-data/redpanda"
-          ]
-        },
-        {
-          "name": "Linux libaio Aligned Circular Journal",
-          "mechanisms": [
-            "Pre-allocated fixed-size journal files written via Linux Direct AIO with TimedBuffer write combining."
-          ],
-          "tradeoffs": [
-            "High throughput on Linux kernels without JVM garbage collection page faults.",
-            "Requires platform-specific JNI bindings and native libaio libraries."
-          ],
-          "representativeRepositories": [
-            "apache/activemq-artemis"
-          ]
-        },
-        {
-          "name": "Memory Pinning (mlock) with TransientStorePool",
-          "mechanisms": [
-            "DirectByteBuffers pre-allocated and locked in RAM via LibC mlock to prevent OS swap and page cache locking."
-          ],
-          "tradeoffs": [
-            "Eliminates JVM GC pauses during disk commits.",
-            "Requires OS root/memlock permissions and fixed memory reservation."
-          ],
-          "representativeRepositories": [
-            "apache/rocketmq"
-          ]
-        }
-      ],
-      "failureModes": [
-        {
-          "failureMode": "Unaligned DMA Kernel Buffer Panics",
-          "description": "Attempting O_DIRECT writes with buffer addresses or lengths not divisible by 4096 causes kernel EINVAL write errors.",
-          "mitigation": "Enforce strict sector alignment padding in segment appenders."
-        }
-      ],
-      "historicalEvidence": [
-        {
-          "repo": "redpanda-data/redpanda",
-          "originalImplementation": "Segment appender wrote variable-length record batches directly to file descriptors.",
-          "assumption": "Assumed filesystem would handle partial block alignment transparently.",
-          "failureCondition": "O_DIRECT failed with EINVAL on enterprise XFS block devices with 4KB sector size.",
-          "fix": "Introduced segment_appender.cc DMA alignment buffer with explicit 4096-byte boundary padding.",
-          "testAdded": "test_aligned_append in src/v/storage/tests/segment_appender_test.cc",
-          "resultingArchitecturalChange": "All disk I/O in Redpanda enforces 4KB sector alignment.",
-          "commitHash": "7779192591a837a58fc9fc91f35a247f6bb0ed3e",
-          "issueOrPr": "redpanda#512"
-        }
-      ],
-      "counterexamples": [],
-      "epistemicTypes": [
-        "SOURCE_OBSERVED",
-        "TEST_OBSERVED",
-        "HISTORY_SUPPORTED",
-        "DOCUMENTED"
-      ],
-      "evidenceGrounds": [
-        {
-          "repo": "redpanda-data/redpanda",
-          "commitHash": "7779192591a837a58fc9fc91f35a247f6bb0ed3e",
-          "filePath": "src/v/storage/segment_appender.cc",
-          "lineRange": [
-            50,
-            110
-          ],
-          "symbol": "append",
-          "observation": "Writes DMA buffers using Seastar O_DIRECT aligned to 4096-byte boundaries.",
-          "testFile": "src/v/storage/tests/segment_appender_test.cc",
-          "testName": "test_aligned_append"
-        },
-        {
-          "repo": "apache/activemq-artemis",
-          "commitHash": "ded1b54c538de60b4df8f4953c5e1979ac64b5db",
-          "filePath": "artemis-journal/src/main/java/org/apache/activemq/artemis/core/journal/impl/JournalImpl.java",
-          "lineRange": [
-            850,
-            920
-          ],
-          "symbol": "appendRecord",
-          "observation": "Linux libaio 4KB aligned circular append journal with direct memory buffer.",
-          "testFile": "artemis-journal/src/test/java/org/apache/activemq/artemis/core/journal/impl/JournalImplTest.java",
-          "testName": "testAIOAppendAligned"
-        },
-        {
-          "repo": "apache/rocketmq",
-          "commitHash": "efa1be59d6fc747ad220f036c86030f05f0419f9",
-          "filePath": "store/src/main/java/org/apache/rocketmq/store/TransientStorePool.java",
-          "lineRange": [
-            48,
-            58
-          ],
-          "symbol": "init",
-          "observation": "DirectByteBuffers locked in physical RAM via LibC.INSTANCE.mlock to bypass PageCache lock contention.",
-          "testFile": "store/src/test/java/org/apache/rocketmq/store/logfile/DefaultMappedFilePerformanceTest.java",
-          "testName": "testAppendWithTransientStorePool"
-        }
-      ],
-      "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 13,
-        "supports": 6,
-        "alternativeMechanism": 7,
-        "counterexamples": 0,
-        "insufficientEvidence": 0,
-        "notApplicable": 0
-      },
-      "confidence": "HIGH",
-      "status": "PROMOTED",
-      "supportedByRepoEkus": [
-        "REKU-REDPANDA-001"
-      ],
-      "alternativeMechanismRepoEkus": [
-        "REKU-LITEQUEUE-001"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-RIVER-001",
-        "REKU-BULLMQ-001"
-      ],
-      "counterexampleAuditNote": "Audited across Redpanda, Litequeue, River, and BullMQ. Redpanda uses Seastar direct I/O log segment writes; Litequeue relies on SQLite WAL mode; River and BullMQ delegate disk persistence entirely to Postgres WAL and Redis AOF/RDB."
-    },
-    {
-      "id": "EKU-QUEUE-009",
-      "title": "Decoupled Physical Storage CommitLog and Lightweight Logical Queue Offsets",
-      "problem": "Storing full message payloads in individual per-topic or per-queue physical files causes random disk I/O bottlenecks and filesystem descriptor exhaustion under thousands of queues.",
-      "desiredProperty": "Brokers can support thousands of logical topics and queues with high throughput and low disk seek overhead.",
-      "behavioralInvariant": "Multi-topic messaging systems decouple immutable sequential physical payload storage (CommitLog/Osiris) from lightweight logical queue index structures (ConsumeQueue/Radix-Trie/Offset Map).",
-      "applicabilityConstraints": [
-        "Applies to multi-topic broker engines handling thousands of distinct logical queues."
-      ],
-      "solutionFamilies": [
-        {
-          "name": "Sequential CommitLog with Fixed-Size ConsumeQueue Index",
-          "mechanisms": [
-            "All topic payloads appended sequentially to a single physical CommitLog. Background dispatchers construct fixed 20-byte logical ConsumeQueue units containing physical offset, size, and tag hash."
-          ],
-          "tradeoffs": [
-            "Maximizes sequential disk write speed; supports tens of thousands of queues.",
-            "Requires secondary read from CommitLog when consuming payload."
-          ],
-          "representativeRepositories": [
-            "apache/rocketmq"
-          ]
-        },
-        {
-          "name": "In-Memory Radix Trie Routing over Append-Only Log",
-          "mechanisms": [
-            "Radix trie / sublist filters in memory point to message offsets in append-only storage segments."
-          ],
-          "tradeoffs": [
-            "Sub-microsecond topic routing and wildcard matching.",
-            "Requires sufficient RAM to hold entire routing index."
-          ],
-          "representativeRepositories": [
-            "nats-io/nats-server",
-            "apache/activemq-artemis",
-            "rabbitmq/rabbitmq-server"
-          ]
-        }
-      ],
-      "failureModes": [
-        {
-          "failureMode": "ConsumeQueue Offset Desynchronization",
-          "description": "If broker crashes after appending to CommitLog but before writing ConsumeQueue unit, messages exist physically but are invisible to consumers.",
-          "mitigation": "ReputMessageService recovers logical indices from physical CommitLog during startup recovery."
-        }
-      ],
-      "historicalEvidence": [
-        {
-          "repo": "apache/rocketmq",
-          "originalImplementation": "Initial ConsumeQueue stored variable-length index records.",
-          "assumption": "Assumed variable metadata would provide flexibility.",
-          "failureCondition": "Random seek calculation required scanning or secondary b-tree lookup, destroying high-concurrency read throughput.",
-          "fix": "Fixed ConsumeQueue unit to exactly 20 bytes (8B offset + 4B size + 8B tag hash), allowing O(1) direct offset arithmetic: logicOffset = cqOffset * 20.",
-          "testAdded": "testConsumeQueue_PutMessagePositionInfo in ConsumeQueueTest.java",
-          "resultingArchitecturalChange": "20-byte fixed unit is the permanent physical invariant of RocketMQ ConsumeQueue.",
-          "commitHash": "efa1be59d6fc747ad220f036c86030f05f0419f9",
-          "issueOrPr": "rocketmq#34"
-        }
-      ],
-      "counterexamples": [],
-      "epistemicTypes": [
-        "SOURCE_OBSERVED",
-        "TEST_OBSERVED",
-        "HISTORY_SUPPORTED",
-        "DOCUMENTED"
-      ],
-      "evidenceGrounds": [
-        {
-          "repo": "apache/rocketmq",
-          "commitHash": "efa1be59d6fc747ad220f036c86030f05f0419f9",
-          "filePath": "store/src/main/java/org/apache/rocketmq/store/ConsumeQueue.java",
-          "lineRange": [
-            849,
-            855
-          ],
-          "symbol": "putMessagePositionInfoWrapper",
-          "observation": "Writes strictly fixed 20-byte CQ units containing CommitLog offset, size, and tag hash code.",
-          "testFile": "store/src/test/java/org/apache/rocketmq/store/ConsumeQueueTest.java",
-          "testName": "testConsumeQueue_PutMessagePositionInfo"
-        },
-        {
-          "repo": "nats-io/nats-server",
-          "commitHash": "1787eee035cf0253c201fa0f05afad92b6f296dc",
-          "filePath": "server/sublist.go",
-          "lineRange": [
-            60,
-            120
-          ],
-          "symbol": "Insert",
-          "observation": "Sublist radix-trie maps subscription patterns to client streams independently of WAL storage.",
-          "testFile": "server/sublist_test.go",
-          "testName": "TestSublistInsertAndMatch"
-        }
-      ],
-      "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 9,
-        "supports": 5,
-        "alternativeMechanism": 4,
-        "counterexamples": 0,
-        "insufficientEvidence": 0,
-        "notApplicable": 4
-      },
-      "confidence": "HIGH",
-      "status": "PROMOTED",
-      "supportedByRepoEkus": [
-        "REKU-LITEQUEUE-001"
-      ],
-      "alternativeMechanismRepoEkus": [
-        "REKU-RIVER-001"
-      ],
-      "commonKeywordGroups": [
-        "step_dequeue",
-        "single_file_database",
-        "atomic_pop",
-        "returning_clause"
-      ],
-      "uniqueKeywordGroups": [
-        "sqlite_begin_immediate",
-        "rowid_select_update"
-      ],
-      "mechanismFamilies": [
-        "single_file_reserved_lock",
-        "relational_row_locks"
-      ],
-      "substrateFamilies": [
-        "sqlite",
-        "postgres"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-NATS-001"
-      ],
-      "counterexampleAuditNote": "Audited across Litequeue, River, and NATS. Litequeue separates sequential rowid commit index from consumer pop cursor; River indexes state transitions in relational tables; Core NATS does not persist log offsets."
-    },
-    {
-      "id": "EKU-QUEUE-010",
-      "title": "Epoch-Scoped Consensus State Machine Fencing",
-      "problem": "Network partitions and split-brain broker scenarios can cause stale leaders or partitioned nodes to accept writes or issue commands, corrupting replicated state.",
-      "desiredProperty": "Replicated log mutations and cluster state transitions are accepted only from the current legitimately elected leader.",
-      "behavioralInvariant": "Clustered broker groups replicating message logs or cluster state must enforce epoch/term validation on all mutations, rejecting operations from superseded leadership terms.",
-      "applicabilityConstraints": [
-        "Applies to clustered distributed messaging brokers with leader-based replication."
-      ],
-      "solutionFamilies": [
-        {
-          "name": "Raft Consensus Term Fencing",
-          "mechanisms": [
-            "Raft state machine rejects append_entries with reply_result::failure if request term is lower than current term; leader steps down immediately if higher term observed."
-          ],
-          "tradeoffs": [
-            "Mathematically proven consensus safety; guarantees strict linearizable log.",
-            "Requires majority quorum for writes; sensitive to asymmetric network partitions."
-          ],
-          "representativeRepositories": [
-            "redpanda-data/redpanda",
-            "nats-io/nats-server",
-            "rabbitmq/rabbitmq-server"
-          ]
-        },
-        {
-          "name": "Epoch-Scoped SyncStateSet Controller",
-          "mechanisms": [
-            "Broker master promotion strictly rejected if newMasterEpoch < lastEpoch; SyncStateSet quorum acknowledgment required before advancing confirmOffset."
-          ],
-          "tradeoffs": [
-            "Decouples log replication from complex full Raft protocol.",
-            "Requires external controller or metadata quorum service."
-          ],
-          "representativeRepositories": [
-            "apache/rocketmq",
-            "bloomberg/blazingmq"
-          ]
-        },
-        {
-          "name": "Relational Unlogged Table Leadership",
-          "mechanisms": [
-            "Database term tuple (leader_id, elected_at) maintained in unlogged PostgreSQL table with row-level locks and heartbeat renewal."
-          ],
-          "tradeoffs": [
-            "No Raft dependencies; leverages existing PostgreSQL instance.",
-            "Limited to single PostgreSQL DCS availability envelope."
-          ],
-          "representativeRepositories": [
-            "riverqueue/river"
-          ]
-        }
-      ],
-      "failureModes": [
-        {
-          "failureMode": "Split-Brain Log Truncation / Overwrite",
-          "description": "Partitioned leader continues accepting writes. When network heals, partitioned writes conflict with new leader's log, causing permanent data loss if epoch fencing is missing.",
-          "mitigation": "Enforce monotonic term validation on all follower append operations."
-        }
-      ],
-      "historicalEvidence": [
-        {
-          "repo": "redpanda-data/redpanda",
-          "originalImplementation": "Raft follower accepted batch appends if log index matched, without strictly checking request term against current term.",
-          "assumption": "Assumed leader election would prevent stale leaders from sending append_entries.",
-          "failureCondition": "Network partition delayed append RPCs from old leader, arriving after new leader took over and corrupting new leader's log.",
-          "fix": "Enforced strict term comparison in consensus.cc: return reply_result::failure if request.term < _term.",
-          "testAdded": "test_stale_leader_append_rejected in consensus_tests.cc",
-          "resultingArchitecturalChange": "Monotonic term fencing enforced across all Redpanda consensus RPCs.",
-          "commitHash": "7779192591a837a58fc9fc91f35a247f6bb0ed3e",
-          "issueOrPr": "redpanda#890"
-        }
-      ],
-      "counterexamples": [],
-      "epistemicTypes": [
-        "SOURCE_OBSERVED",
-        "TEST_OBSERVED",
-        "HISTORY_SUPPORTED",
-        "DOCUMENTED"
-      ],
-      "evidenceGrounds": [
-        {
-          "repo": "redpanda-data/redpanda",
-          "commitHash": "7779192591a837a58fc9fc91f35a247f6bb0ed3e",
-          "filePath": "src/v/raft/consensus.cc",
-          "lineRange": [
-            310,
-            380
-          ],
-          "symbol": "handle_append_entries",
-          "observation": "Rejects append_entries with reply_result::failure when request term < _term.",
-          "testFile": "src/v/raft/tests/consensus_tests.cc",
-          "testName": "test_append_entries_term_fencing"
-        },
-        {
-          "repo": "apache/rocketmq",
-          "commitHash": "efa1be59d6fc747ad220f036c86030f05f0419f9",
-          "filePath": "store/src/main/java/org/apache/rocketmq/store/ha/autoswitch/AutoSwitchHAService.java",
-          "lineRange": [
-            122,
-            127
-          ],
-          "symbol": "changeToMaster",
-          "observation": "Strictly rejects master promotion if newMasterEpoch < lastEpoch and requires SyncStateSet quorum.",
-          "testFile": "store/src/test/java/org/apache/rocketmq/store/ha/autoswitch/AutoSwitchHATest.java",
-          "testName": "testConfirmOffset"
-        },
-        {
-          "repo": "riverqueue/river",
-          "commitHash": "008a9fdfba4f47fabe5ef33bcd706eb9f1358801",
-          "filePath": "elector.go",
-          "lineRange": [
-            70,
-            130
-          ],
-          "symbol": "ElectLeader",
-          "observation": "Leader election is scoped to an explicit database term tuple (leader_id, elected_at) with row lock fencing.",
-          "testFile": "elector_test.go",
-          "testName": "Test_Elector_TermFencing"
-        }
-      ],
-      "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 13,
-        "supports": 10,
-        "alternativeMechanism": 3,
-        "counterexamples": 0,
-        "insufficientEvidence": 0,
-        "notApplicable": 0
-      },
-      "confidence": "HIGH",
-      "status": "PROMOTED",
-      "supportedByRepoEkus": [
-        "REKU-RIVER-002"
-      ],
-      "alternativeMechanismRepoEkus": [
-        "REKU-BULLMQ-001"
-      ],
-      "commonKeywordGroups": [
-        "epoch_fencing",
-        "token_fencing",
-        "stale_worker_protection",
-        "split_brain_defense"
-      ],
-      "uniqueKeywordGroups": [
-        "river_attempt_counter",
-        "bullmq_lua_token_check"
-      ],
-      "mechanismFamilies": [
-        "sql_conditional_update",
-        "redis_lua_cas"
-      ],
-      "substrateFamilies": [
-        "postgres",
-        "redis"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-LITEQUEUE-001"
-      ],
-      "counterexampleAuditNote": "Audited across River, BullMQ, and Litequeue. River coordinates periodic cluster maintenance via Postgres advisory leader election; BullMQ uses Redis distributed lock scripts; embedded Litequeue runs strictly in-process with no cluster consensus."
-    },
-    {
-      "id": "EKU-QUEUE-011",
-      "title": "Monotonic Time-Ordered Identity Generation with Skew Defense",
-      "problem": "Distributed message identifiers that rely on unsynchronized system clocks can suffer timestamp regressions, causing non-deterministic sorting and query index corruption.",
-      "desiredProperty": "Generated message identifiers must be lexicographically sortable by time and strictly monotonic even across clock jitter.",
-      "behavioralInvariant": "Message identity generators encoding timestamp prefixes (UUIDv7, Snowflake, GUID) must maintain strict monotonic ordering and reject or compensate for backward time drift.",
-      "applicabilityConstraints": [
-        "Applies to all systems generating time-ordered message IDs across distributed producers/brokers."
-      ],
-      "solutionFamilies": [
-        {
-          "name": "Timestamp + Monotonic Sequence with Backward Clock Yield",
-          "mechanisms": [
-            "Factory encodes 48-bit millisecond timestamp + sequence counter. If clock moves backward by < 2s, factory increments sequence; if backward jump > 2s, factory yields/panics."
-          ],
-          "tradeoffs": [
-            "Guarantees total lexicographical ordering within producer process.",
-            "Can block ID generation temporarily if host clock jumps backward significantly."
-          ],
-          "representativeRepositories": [
-            "nsqio/nsq",
-            "litements/litequeue",
-            "redpanda-data/redpanda"
-          ]
-        },
-        {
-          "name": "Database BigSerial Sequence",
-          "mechanisms": [
-            "Database server allocates monotonic 64-bit integer IDs (BIGSERIAL) backed by transaction sequence generators."
-          ],
-          "tradeoffs": [
-            "Guaranteed monotonicity without client clock dependencies.",
-            "Centralized database sequence generator can become contention bottleneck under extreme ingestion rates."
-          ],
-          "representativeRepositories": [
-            "pgmq/pgmq",
-            "riverqueue/river"
-          ]
-        }
-      ],
-      "failureModes": [
-        {
-          "failureMode": "ID Timestamp Regression / Duplicate Collision",
-          "description": "NTP clock step backward causes ID generator to emit IDs with earlier timestamps than previously persisted records, corrupting time-indexed sorted sets and B-Trees.",
-          "mitigation": "Enforce monotonic sequence counter fallback when now <= lastTimestamp."
-        }
-      ],
-      "historicalEvidence": [
-        {
-          "repo": "nsqio/nsq",
-          "originalImplementation": "Early GUID generator formatted time.Now().UnixNano() into hex string.",
-          "assumption": "Assumed time.Now() was strictly monotonic across calls.",
-          "failureCondition": "On Linux VM clock synchronization events, time jumped backward, generating duplicate GUIDs that caused message collisions.",
-          "fix": "Rewrote guidFactory in nsqd/guid.go with monotonic counter and explicit backward time check.",
-          "testAdded": "TestGUID in nsqd/guid_test.go",
-          "resultingArchitecturalChange": "All message IDs in NSQ are generated via monotonic guidFactory.",
-          "commitHash": "85cf10c09c6c3c86160d6f0eb156f62d0efc1648",
-          "issueOrPr": "nsq#412"
-        }
-      ],
-      "counterexamples": [],
-      "epistemicTypes": [
-        "SOURCE_OBSERVED",
-        "TEST_OBSERVED",
-        "HISTORY_SUPPORTED",
-        "DOCUMENTED"
-      ],
-      "evidenceGrounds": [
-        {
-          "repo": "nsqio/nsq",
-          "commitHash": "85cf10c09c6c3c86160d6f0eb156f62d0efc1648",
-          "filePath": "nsqd/guid.go",
-          "lineRange": [
-            45,
-            80
-          ],
-          "symbol": "New",
-          "observation": "Combines 48-bit timestamp with 16-bit sequence counter; handles backward time steps up to 2 seconds.",
-          "testFile": "nsqd/guid_test.go",
-          "testName": "TestGUIDMonotonicity"
-        },
-        {
-          "repo": "litements/litequeue",
-          "commitHash": "9e286af166f1c483057e28ab5fb45e1c38943f21",
-          "filePath": "litequeue.py",
-          "lineRange": [
-            70,
-            95
-          ],
-          "symbol": "_uuid7",
-          "observation": "Generates UUIDv7 with embedded timestamp and monotonic counter to guarantee strict sortability.",
-          "testFile": "tests/test_litequeue.py",
-          "testName": "test_uuid7_ordering"
-        },
-        {
-          "repo": "redpanda-data/redpanda",
-          "commitHash": "7779192591a837a58fc9fc91f35a247f6bb0ed3e",
-          "filePath": "src/v/cluster/id_allocator_stm.cc",
-          "lineRange": [
-            60,
-            110
-          ],
-          "symbol": "allocate_id",
-          "observation": "Raft-replicated state machine guarantees strictly monotonic 64-bit ID generation across node restarts.",
-          "testFile": "src/v/cluster/tests/id_allocator_stm_tests.cc",
-          "testName": "test_monotonic_id_allocation"
-        }
-      ],
-      "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 13,
-        "supports": 13,
-        "alternativeMechanism": 0,
-        "counterexamples": 0,
-        "insufficientEvidence": 0,
-        "notApplicable": 0
-      },
-      "confidence": "HIGH",
-      "status": "PROMOTED",
-      "supportedByRepoEkus": [
-        "REKU-PGMQ-001"
-      ],
-      "alternativeMechanismRepoEkus": [
-        "REKU-BULLMQ-002"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-NATS-001"
-      ],
-      "counterexampleAuditNote": "Audited across PGMQ, BullMQ, and NATS. PGMQ generates monotonic bigint msg_ids via Postgres sequences; BullMQ generates monotonically increasing Redis job IDs; NATS core leaves message sequencing to JetStream or upper layers."
-    },
-    {
-      "id": "EKU-QUEUE-012",
-      "title": "Graceful Shutdown In-Flight Drain with Non-Faulting Task Re-enqueue",
-      "problem": "Abrupt process termination during deployment or autoscaling interrupts active task execution, potentially causing orphan leases, duplicate execution, or false error metrics.",
-      "desiredProperty": "Workers shutting down must allow in-flight tasks to complete within a bounded grace period, and cleanly requeue interrupted tasks without recording false errors.",
-      "behavioralInvariant": "Worker and broker shutdown sequences must trap OS termination signals, halt new task ingestion, allow in-flight tasks to drain up to a timeout, and requeue uncompleted tasks without incrementing attempt counters.",
-      "applicabilityConstraints": [
-        "Applies to all worker and broker processes handling long-running or stateful message processing."
-      ],
-      "solutionFamilies": [
-        {
-          "name": "Signal Trapping with Soft Re-enqueue (JobSetStateInterrupted)",
-          "mechanisms": [
-            "Process traps SIGINT/SIGTERM, stops accepting new work, awaits active workers up to GracefulShutdownTimeout. Any jobs still running when timeout expires are reset to 'available' with preserved attempt count and zero error recorded."
-          ],
-          "tradeoffs": [
-            "Zero false error alerts on deployments; instant task availability on new worker nodes.",
-            "Requires cooperative task execution or safe cancellation context propagation."
-          ],
-          "representativeRepositories": [
-            "riverqueue/river",
-            "hibiken/asynq",
-            "taskforcesh/bullmq"
-          ]
-        },
-        {
-          "name": "Broker Channel Drain and Log Flush",
-          "mechanisms": [
-            "Broker stops network acceptors, flushes in-memory buffers to disk queue, and unregisters from discovery cluster before closing sockets."
-          ],
-          "tradeoffs": [
-            "Zero message loss during broker restarts.",
-            "Slight delay during broker process exit."
-          ],
-          "representativeRepositories": [
-            "nsqio/nsq",
-            "bloomberg/blazingmq",
-            "apache/activemq-artemis",
-            "apache/rocketmq",
-            "rabbitmq/rabbitmq-server"
-          ]
-        }
-      ],
-      "failureModes": [
-        {
-          "failureMode": "False Poison-Pill Quarantine on Deployment",
-          "description": "During rapid continuous deployment (rolling restart), tasks interrupted by SIGTERM are recorded as errors. If deployment restarts 3 times, tasks reach max_attempts and get sent to DLQ erroneously.",
-          "mitigation": "Enforce soft-stop re-enqueue without incrementing attempt count."
-        }
-      ],
-      "historicalEvidence": [
-        {
-          "repo": "riverqueue/river",
-          "originalImplementation": "Interrupted jobs during SIGTERM were marked as failed with context.Canceled error.",
-          "assumption": "Assumed application code wanted visibility into cancelled jobs.",
-          "failureCondition": "Frequent rolling restarts in Kubernetes caused long-running jobs to exhaust retry attempts and land in discarded table.",
-          "fix": "Introduced JobSetStateInterrupted which requeues soft-stopped jobs to available with preserved attempt count and emits EventKindJobInterrupted.",
-          "testAdded": "Test_JobExecutor_SoftStop in executor_test.go",
-          "resultingArchitecturalChange": "Soft-stopped jobs never increment attempt counters in River.",
-          "commitHash": "008a9fdfba4f47fabe5ef33bcd706eb9f1358801",
-          "issueOrPr": "river#192"
-        }
-      ],
-      "counterexamples": [],
-      "epistemicTypes": [
-        "SOURCE_OBSERVED",
-        "TEST_OBSERVED",
-        "HISTORY_SUPPORTED",
-        "DOCUMENTED"
-      ],
-      "evidenceGrounds": [
-        {
-          "repo": "riverqueue/river",
-          "commitHash": "008a9fdfba4f47fabe5ef33bcd706eb9f1358801",
-          "filePath": "executor.go",
-          "lineRange": [
-            160,
-            220
-          ],
-          "symbol": "Stop",
-          "observation": "Traps shutdown, halts fetcher, waits up to GracefulShutdownTimeout, and calls JobSetStateInterrupted to requeue cleanly without incrementing attempt count.",
-          "testFile": "executor_test.go",
-          "testName": "Test_JobExecutor_SoftStop"
-        },
-        {
-          "repo": "hibiken/asynq",
-          "commitHash": "d135f1439bee74e989b7f9b41ecd542cc87f024a",
-          "filePath": "server.go",
-          "lineRange": [
-            210,
-            270
-          ],
-          "symbol": "Shutdown",
-          "observation": "Stops fetcher, waits up to ShutdownTimeout for active workers, and cancels context on remaining tasks.",
-          "testFile": "server_test.go",
-          "testName": "TestServerShutdown"
-        },
-        {
-          "repo": "nsqio/nsq",
-          "commitHash": "85cf10c09c6c3c86160d6f0eb156f62d0efc1648",
-          "filePath": "nsqd/nsqd.go",
-          "lineRange": [
-            310,
-            370
-          ],
-          "symbol": "Exit",
-          "observation": "Flushes memory channels to disk queue and cleanly unregisters from nsqlookupd.",
-          "testFile": "nsqd/nsqd_test.go",
-          "testName": "TestNSQDExit"
-        }
-      ],
-      "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 12,
-        "supports": 10,
-        "alternativeMechanism": 2,
-        "counterexamples": 0,
-        "insufficientEvidence": 0,
-        "notApplicable": 1
-      },
-      "confidence": "HIGH",
-      "status": "PROMOTED",
-      "supportedByRepoEkus": [
-        "REKU-RIVER-003",
-        "REKU-NATS-001"
-      ],
-      "alternativeMechanismRepoEkus": [
-        "REKU-BULLMQ-001"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-LITEQUEUE-001"
-      ],
-      "counterexampleAuditNote": "Audited across River, NATS, BullMQ, and Litequeue. River and NATS Go clients decouple in-flight worker cancellation from connection closure."
-    },
-    {
-      "id": "EKU-QUEUE-013",
-      "title": "Sliding-Window Task Deduplication and Uniqueness Reservation",
-      "problem": "Network retries by producers or duplicate job submissions cause redundant task execution and resource waste.",
-      "desiredProperty": "Duplicate submissions of the same logical task within an active time window must be recognized and rejected or coalesced idempotently.",
-      "behavioralInvariant": "Task deduplication within an active sliding window must be enforced via storage-level uniqueness constraints (partial unique indexes or atomic key reservations) evaluated before task persistence.",
-      "applicabilityConstraints": [
-        "Applies to queues and streams supporting idempotent publication and task deduplication."
-      ],
-      "solutionFamilies": [
-        {
-          "name": "Database Partial Unique Index",
-          "mechanisms": [
-            "PostgreSQL partial unique index over (queue_name, unique_key) WHERE state IN ('available', 'running', 'retryable'). Once task completes or is archived, unique_key is released automatically."
-          ],
-          "tradeoffs": [
-            "Atomic, declarative database-enforced uniqueness with zero lock keys.",
-            "Requires partial index maintenance overhead in PostgreSQL."
-          ],
-          "representativeRepositories": [
-            "riverqueue/river"
-          ]
-        },
-        {
-          "name": "Redis Key Reservation (SET NX EX)",
-          "mechanisms": [
-            "Enqueue script executes SET asynq:{q}:unique:<key> <task_id> NX EX <duration>. If key exists, enqueue is rejected or existing task ID returned."
-          ],
-          "tradeoffs": [
-            "Fast in-memory uniqueness check with automatic TTL expiration.",
-            "If Redis crashes without AOF fsync, uniqueness key reservation may be lost."
-          ],
-          "representativeRepositories": [
-            "hibiken/asynq",
-            "taskforcesh/bullmq"
-          ]
-        },
-        {
-          "name": "Sliding Deduplication Window (Nats-Msg-Id / Producer Epoch)",
-          "mechanisms": [
-            "Broker maintains a bounded sliding window of recent message IDs (e.g. 2 minutes) or producer epoch + sequence number state machine (rm_stm)."
-          ],
-          "tradeoffs": [
-            "Absorbs network retry duplicates seamlessly in streaming log.",
-            "Does not protect against duplicates submitted outside the sliding window."
-          ],
-          "representativeRepositories": [
-            "nats-io/nats-server",
-            "redpanda-data/redpanda"
-          ]
-        }
-      ],
-      "failureModes": [
-        {
-          "failureMode": "Stale Uniqueness Lock Blocking Valid Future Tasks",
-          "description": "If unique key is not tied to active lifecycle states or lacks TTL, a failed or completed task locks the unique key permanently, preventing future jobs with the same business key.",
-          "mitigation": "Enforce partial index over active states only or attach explicit TTL."
-        }
-      ],
-      "historicalEvidence": [
-        {
-          "repo": "riverqueue/river",
-          "originalImplementation": "Unique key was constrained by a simple UNIQUE (unique_key) index.",
-          "assumption": "Assumed completed jobs would be deleted immediately.",
-          "failureCondition": "Completed jobs retained for audit history prevented new jobs with the same unique_key from ever being enqueued.",
-          "fix": "Replaced simple unique index with partial unique index river_job_unique_idx on (unique_key) WHERE river_job_state_in_bitmask(unique_states, state).",
-          "testAdded": "Test_Producer_UniqueJob_CompletedAllowsReenqueue in producer_test.go",
-          "resultingArchitecturalChange": "River migration 006 introduced bitmask partial unique index.",
-          "commitHash": "008a9fdfba4f47fabe5ef33bcd706eb9f1358801",
-          "issueOrPr": "river#214"
-        }
-      ],
-      "counterexamples": [],
-      "epistemicTypes": [
-        "SOURCE_OBSERVED",
-        "TEST_OBSERVED",
-        "HISTORY_SUPPORTED",
-        "DOCUMENTED"
-      ],
-      "evidenceGrounds": [
-        {
-          "repo": "riverqueue/river",
-          "commitHash": "008a9fdfba4f47fabe5ef33bcd706eb9f1358801",
-          "filePath": "job.go",
-          "lineRange": [
-            18,
-            42
-          ],
-          "symbol": "Job",
-          "observation": "Enforces deduplication via PostgreSQL partial unique index conditioned on active state bitmask.",
-          "testFile": "producer_test.go",
-          "testName": "Test_Producer_UniqueJob"
-        },
-        {
-          "repo": "hibiken/asynq",
-          "commitHash": "d135f1439bee74e989b7f9b41ecd542cc87f024a",
-          "filePath": "internal/rdb/rdb.go",
-          "lineRange": [
-            190,
-            240
-          ],
-          "symbol": "enqueueUnique",
-          "observation": "Executes SET asynq:{q}:unique:<key> <task_id> NX EX <duration> in enqueue Lua script.",
-          "testFile": "internal/rdb/rdb_test.go",
-          "testName": "TestEnqueueUnique"
-        },
-        {
-          "repo": "nats-io/nats-server",
-          "commitHash": "1787eee035cf0253c201fa0f05afad92b6f296dc",
-          "filePath": "server/stream.go",
-          "lineRange": [
-            810,
-            870
-          ],
-          "symbol": "purgeAndStoreMsg",
-          "observation": "Enforces Nats-Msg-Id sliding deduplication window (default 2 minutes) in JetStream.",
-          "testFile": "server/jetstream_test.go",
-          "testName": "TestJetStreamMsgDeduplication"
-        }
-      ],
-      "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 10,
-        "supports": 5,
-        "alternativeMechanism": 5,
-        "counterexamples": 0,
-        "insufficientEvidence": 0,
-        "notApplicable": 3
-      },
-      "confidence": "HIGH",
-      "status": "PROMOTED",
-      "supportedByRepoEkus": [
-        "REKU-RIVER-004"
-      ],
-      "alternativeMechanismRepoEkus": [
-        "REKU-BULLMQ-001"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-LITEQUEUE-001"
-      ],
-      "counterexampleAuditNote": "Audited across River, BullMQ, and Litequeue. River enforces unique job keys via partial unique indexes with completed_at expiration windows; BullMQ uses jobId uniqueness keys in Redis hash sets; Litequeue does not maintain sliding deduplication sets."
-    },
-    {
-      "id": "EKU-QUEUE-014",
-      "title": "Out-of-Band Real-Time Control Plane and Cancellation Propagation",
-      "problem": "In-band administrative control messages (such as task cancellation or queue pause) can be blocked behind large backlogs of pending tasks.",
-      "desiredProperty": "Control operations must propagate immediately to active worker executors regardless of queue backlog depth.",
-      "behavioralInvariant": "Administrative control directives (cancellations, pauses) must propagate via dedicated out-of-band push channels (PubSub, LISTEN/NOTIFY, actor control messages) to preempt executing worker contexts.",
-      "applicabilityConstraints": [
-        "Applies to queues and brokers supporting real-time cancellation of in-flight tasks and dynamic pause/resume."
-      ],
-      "solutionFamilies": [
-        {
-          "name": "Dedicated PubSub / NOTIFY Preemption Channel",
-          "mechanisms": [
-            "Client publishes cancellation directive to a dedicated PubSub topic (Redis asynq:cancel) or PostgreSQL pg_notify('river_control', payload). Worker process subscriber receives notification out-of-band and cancels running Go/Node context immediately."
-          ],
-          "tradeoffs": [
-            "Instantly preempts execution without polling datastore.",
-            "Requires worker to maintain active subscription connection alongside task processing."
-          ],
-          "representativeRepositories": [
-            "hibiken/asynq",
-            "riverqueue/river",
-            "taskforcesh/bullmq"
-          ]
-        },
-        {
-          "name": "Broker System Hierarchy / Management Actor",
-          "mechanisms": [
-            "Dedicated system subject hierarchy ($SYS in NATS, Management address in Artemis, AdminBrokerProcessor in RocketMQ) routed with priority over data traffic."
-          ],
-          "tradeoffs": [
-            "Control plane is isolated from data plane congestion.",
-            "Requires dedicated administrative port or protocol command discriminator."
-          ],
-          "representativeRepositories": [
-            "nats-io/nats-server",
-            "apache/activemq-artemis",
-            "apache/rocketmq",
-            "redpanda-data/redpanda",
-            "rabbitmq/rabbitmq-server",
-            "bloomberg/blazingmq"
-          ]
-        }
-      ],
-      "failureModes": [
-        {
-          "failureMode": "Control Plane Starvation",
-          "description": "If cancellation messages are enqueued into the regular pending list, a cancellation for a runaway task sits behind 1,000,000 pending items and never reaches workers.",
-          "mitigation": "Enforce dedicated out-of-band push control channels."
-        }
-      ],
-      "historicalEvidence": [
-        {
-          "repo": "hibiken/asynq",
-          "originalImplementation": "Cancellation was recorded as a flag in task hash; worker only checked status at task boundaries.",
-          "assumption": "Assumed tasks would finish quickly or poll task hash periodically.",
-          "failureCondition": "Long-running tasks executing 30-minute jobs ignored cancellation until complete, wasting compute resources.",
-          "fix": "Introduced subscriber.go listening to Redis PubSub asynq:cancel, which instantly cancels the Go worker's context.Context.",
-          "testAdded": "TestCancelProcessing in subscriber_test.go",
-          "resultingArchitecturalChange": "Out-of-band PubSub cancellation is standard across Asynq.",
-          "commitHash": "d135f1439bee74e989b7f9b41ecd542cc87f024a",
-          "issueOrPr": "asynq#94"
-        }
-      ],
-      "counterexamples": [],
-      "epistemicTypes": [
-        "SOURCE_OBSERVED",
-        "TEST_OBSERVED",
-        "HISTORY_SUPPORTED",
-        "DOCUMENTED"
-      ],
-      "evidenceGrounds": [
-        {
-          "repo": "hibiken/asynq",
-          "commitHash": "d135f1439bee74e989b7f9b41ecd542cc87f024a",
-          "filePath": "subscriber.go",
-          "lineRange": [
-            50,
-            110
-          ],
-          "symbol": "start",
-          "observation": "Subscribes to Redis PubSub asynq:cancel; cancels Go worker context.Context immediately upon publish.",
-          "testFile": "subscriber_test.go",
-          "testName": "TestCancelProcessing"
-        },
-        {
-          "repo": "riverqueue/river",
-          "commitHash": "008a9fdfba4f47fabe5ef33bcd706eb9f1358801",
-          "filePath": "internal/jobdeq/job_deq.go",
-          "lineRange": [
-            140,
-            190
-          ],
-          "symbol": "JobCancel",
-          "observation": "Publishes JSON payload via pg_notify('river_control', ...) to preempt running job context.",
-          "testFile": "client_cancel_test.go",
-          "testName": "Test_Client_CancelJob"
-        },
-        {
-          "repo": "nats-io/nats-server",
-          "commitHash": "1787eee035cf0253c201fa0f05afad92b6f296dc",
-          "filePath": "server/server.go",
-          "lineRange": [
-            900,
-            960
-          ],
-          "symbol": "initSysStream",
-          "observation": "Maintains dedicated $SYS control stream for out-of-band broker advisory and admin events.",
-          "testFile": "server/sys_test.go",
-          "testName": "TestSysEventsDelivery"
-        }
-      ],
-      "corpusStats": {
-        "corpusSize": 13,
+        "corpusSize": 11,
         "applicable": 11,
         "supports": 9,
         "alternativeMechanism": 2,
         "counterexamples": 0,
         "insufficientEvidence": 0,
-        "notApplicable": 2
+        "notApplicable": 0
       },
-      "confidence": "HIGH",
-      "status": "PROMOTED",
-      "supportedByRepoEkus": [
-        "REKU-RIVER-003"
+      "epistemicTypes": [
+        "HISTORY_SUPPORTED",
+        "SOURCE_OBSERVED",
+        "TEST_OBSERVED"
       ],
-      "alternativeMechanismRepoEkus": [
-        "REKU-NATS-001"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-LITEQUEUE-001"
-      ],
-      "counterexampleAuditNote": "Audited across River, NATS, and Litequeue. River uses Postgres LISTEN/NOTIFY channels for immediate out-of-band worker cancellation; NATS uses native control subjects; Litequeue lacks an out-of-band push notification channel."
+      "status": "PROMOTED"
     },
     {
-      "id": "EKU-QUEUE-015",
-      "title": "Fenced Domain Result Promotion & Outbox Emission",
+      "id": "EKU-WDE-004",
+      "title": "External Effects Are At-Least-Once Unless Application Idempotency Proves Otherwise",
+      "claimId": "CLM-004",
       "objectType": "BEHAVIORAL_INVARIANT",
-      "claimId": "CLM-015",
-      "problem": "A queue can fence stale completion of the job row while still allowing a superseded worker to write authoritative domain results or emit an outbox event.",
-      "behavioralInvariant": "Ownership fencing must guard every authoritative side-effecting state mutation, including domain result promotion or outbox emission, not only queue-row completion.",
-      "applicabilityConstraints": [
-        "Applies when job execution produces authoritative business state, payment reconciliation state, or outbox messages.",
-        "Especially relevant when work is at-least-once but finalization or external effects require exactly-owner-once semantics."
+      "problem": "Workers, pods, activities, tasks, and daemon-launched runs can crash after performing external effects but before recording completion.",
+      "desiredProperty": "Duplicate delivery/execution does not duplicate business side effects.",
+      "behavioralInvariant": "No corpus repo justifies a blanket exactly-once external side-effect guarantee; idempotency, dedupe keys, durable result records, or compensation are required at system edges.",
+      "applicabilityConstraints": [],
+      "solutionFamilies": [
+        {
+          "name": "activity/task idempotency keys",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "result records/cache keys",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "artifact or object storage references",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "queue redelivery tolerance",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "pod retry idempotency",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        }
       ],
-      "supportingEvidence": [
-        "OBS-BULLMQ-002",
-        "OBS-LITEQUEUE-002"
+      "mechanisms": [],
+      "failureModes": [
+        {
+          "failureMode": "double partner API call",
+          "description": "double partner API call",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "duplicate billing/email",
+          "description": "duplicate billing/email",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "stale external payload overwrite",
+          "description": "stale external payload overwrite",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "duplicate event-handler action",
+          "description": "duplicate event-handler action",
+          "mitigation": ""
+        }
       ],
-      "counterEvidence": [
-        "OBS-ASYNQ-002",
-        "OBS-PGMQ-002",
-        "OBS-RIVER-006"
-      ],
-      "historicalEvidence": [
-        "HIST-RIVER-003"
-      ],
-      "designContract": "Before committing a result row, payment ledger projection, or sendable outbox record, the storage transaction must prove current job ownership by token/generation. Stale-owner outcomes must be explicit and observable.",
       "verificationContract": [
-        "Worker A owns generation 1 and pauses.",
-        "Worker B owns generation 2 and completes.",
-        "Worker A attempts domain result promotion and queue completion.",
-        "Both stale writes affect zero authoritative rows and emit stale-owner telemetry."
+        "kill worker/pod after external API success before completion",
+        "redeliver task after lease timeout",
+        "duplicate callback/event delivery",
+        "retry after ambiguous persistence timeout"
       ],
-      "status": "PROMOTED",
-      "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 7,
-        "supports": 2,
-        "alternativeMechanism": 2,
-        "counterexamples": 3,
-        "insufficientEvidence": 0,
-        "notApplicable": 6
-      },
+      "supportingEvidence": [],
+      "counterEvidence": [],
       "supportedByRepoEkus": [
-        "REKU-BULLMQ-001",
-        "REKU-PGMQ-002",
-        "REKU-RIVER-004"
+        "REKU-TEMPORAL-001",
+        "REKU-CADENCE-004",
+        "REKU-CONDUCTOR-003",
+        "REKU-AIRFLOW-007",
+        "REKU-ARGO-003",
+        "REKU-DAGSTER-003",
+        "REKU-PREFECT-006",
+        "REKU-KESTRA-003",
+        "REKU-KESTRA-006",
+        "REKU-RESTATE-007",
+        "REKU-RESTATE-009",
+        "REKU-WINDMILL-003",
+        "REKU-WINDMILL-008",
+        "REKU-HATCHET-004",
+        "REKU-HATCHET-006"
       ],
-      "alternativeMechanismRepoEkus": [
-        "REKU-LITEQUEUE-001"
-      ],
-      "commonKeywordGroups": [
-        "fenced_result_promotion",
-        "outbox_emission",
-        "stale_worker_write_rejection"
-      ],
-      "uniqueKeywordGroups": [
-        "river_attempt_match",
-        "pgmq_archive_tx",
-        "bullmq_removeLock_lua"
-      ],
-      "mechanismFamilies": [
-        "cas_conditional_mutation",
-        "transactional_outbox"
-      ],
-      "substrateFamilies": [
-        "postgres",
-        "redis",
-        "relational_sql"
-      ],
+      "alternativeMechanismRepoEkus": [],
       "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-NATS-001"
-      ],
-      "counterexampleAuditNote": "Audited across River, BullMQ, PGMQ, Litequeue. Fencing is mandatory for MVCC/key-value storage finalization. In-memory ephemeral pubsub (NATS Core) has no durable outbox state to promote."
-    },
-    {
-      "id": "EKU-QUEUE-016",
-      "title": "Authoritative Storage-Time Lease Recovery",
-      "objectType": "BEHAVIORAL_INVARIANT",
-      "claimId": "CLM-016",
-      "problem": "A system may appear to use database-backed leases while production code passes VM-local timestamps into recovery SQL, reintroducing clock skew and failover ambiguity.",
-      "behavioralInvariant": "Lease/recovery SQL must evaluate time at the authoritative storage boundary; test-injection hooks or caller-supplied timestamps must not become production recovery clocks.",
-      "applicabilityConstraints": [
-        "Applies to leased queues with mixed worker clocks, NTP adjustments, scheduler processes, or database failover.",
-        "Does not require a particular store, but the chosen store must provide the authoritative time source used by both renewal and recovery."
-      ],
-      "supportingEvidence": [
-        "OBS-PGMQ-001"
-      ],
-      "counterEvidence": [
-        "OBS-RIVER-007"
-      ],
-      "relatedEvidence": [
-        "OBS-ASYNQ-003",
-        "OBS-BULLMQ-003"
-      ],
-      "historicalEvidence": [
-        "HIST-RIVER-002"
-      ],
-      "designContract": "Production renewal and recovery paths must call storage-side time functions or single-store server time. Caller-supplied now parameters must be test-only or guarded from production recovery use.",
-      "verificationContract": [
-        "Step worker and scheduler VM clocks forward/backward.",
-        "Run renewals and recovery scans.",
-        "Assert recovery behavior is unchanged unless storage-side time says the lease expired."
-      ],
-      "status": "PROMOTED",
+      "notApplicableRepoEkus": [],
+      "counterexampleAuditNote": "Audited across 11 workflow/durable-execution repositories (temporal, cadence, conductor, airflow, argo-workflows, dagster, prefect, kestra, restate, windmill, hatchet); matrix classes record supports, alternatives, counterexamples, not-applicable rows, and insufficient evidence per repository.",
       "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 13,
-        "supports": 12,
+        "corpusSize": 11,
+        "applicable": 11,
+        "supports": 11,
         "alternativeMechanism": 0,
-        "counterexamples": 1,
-        "insufficientEvidence": 0,
-        "notApplicable": 0
-      },
-      "supportedByRepoEkus": [
-        "REKU-ASYNQ-001",
-        "REKU-PGMQ-001",
-        "REKU-BULLMQ-002",
-        "REKU-RIVER-001"
-      ],
-      "alternativeMechanismRepoEkus": [
-        "REKU-LITEQUEUE-001"
-      ],
-      "commonKeywordGroups": [
-        "storage_time_lease",
-        "clock_skew_defense",
-        "authoritative_timestamp"
-      ],
-      "uniqueKeywordGroups": [
-        "asynq_zrangebyscore",
-        "pgmq_clock_timestamp",
-        "bullmq_timestamp_scoring"
-      ],
-      "mechanismFamilies": [
-        "storage_clock_lease_recovery",
-        "visibility_timeout_sweeper"
-      ],
-      "substrateFamilies": [
-        "redis",
-        "postgres",
-        "sqlite"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-NATS-001"
-      ],
-      "counterexampleAuditNote": "Audited across Redis/Postgres/SQLite. In-memory non-persistent pubsub (NATS Core) uses client keepalive heartbeats rather than persistent storage-time lease clocks."
-    },
-    {
-      "id": "EKU-QUEUE-017",
-      "title": "Separate Attempt, Failure, And Worker-Loss Counters",
-      "objectType": "BEHAVIORAL_INVARIANT",
-      "claimId": "CLM-017",
-      "problem": "Combining retries-started, worker crashes, and unhandled handler exceptions into a single counter causes false dead-lettering on lease expiration or infinite loops on unhandled crashes.",
-      "behavioralInvariant": "A queue engine must maintain distinct tracking for attempts started, application-level handler failures, and unacknowledged worker crashes.",
-      "applicabilityConstraints": [
-        "Applies to queue systems supporting dead-letter queues, automatic rescue, or poisoned-payload quarantine.",
-        "Critical where transient worker loss should not instantly exhaust application retry budgets, but poison payload crashes must eventually be quarantined."
-      ],
-      "supportingEvidence": [
-        "OBS-BULLMQ-004"
-      ],
-      "counterEvidence": [
-        "OBS-PGMQ-003"
-      ],
-      "relatedEvidence": [
-        "OBS-RIVER-008"
-      ],
-      "historicalEvidence": [
-        "HIST-BULLMQ-001"
-      ],
-      "designContract": "The storage row/hash must maintain independent counters for attempts-started, attempts-completed, handled failures, and worker-loss events.",
-      "verificationContract": [
-        "Kill worker before handler execution starts: verify worker-loss counter increments while handler-failure count remains zero.",
-        "Throw application error: verify handler-failure count increments.",
-        "Verify DLQ routing trigger inspects both metrics independently."
-      ],
-      "status": "PROMOTED",
-      "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 12,
-        "supports": 5,
-        "alternativeMechanism": 4,
-        "counterexamples": 3,
-        "insufficientEvidence": 0,
-        "notApplicable": 1
-      },
-      "supportedByRepoEkus": [
-        "REKU-BULLMQ-003",
-        "REKU-RIVER-004"
-      ],
-      "commonKeywordGroups": [
-        "attempt_counter_separation",
-        "worker_loss_tracking",
-        "crash_vs_business_error"
-      ],
-      "uniqueKeywordGroups": [
-        "bullmq_attemptsStarted",
-        "stalledCounter",
-        "river_attempt_increment"
-      ],
-      "mechanismFamilies": [
-        "multi_counter_lifecycle_tracking"
-      ],
-      "substrateFamilies": [
-        "redis",
-        "postgres"
-      ],
-      "alternativeMechanismRepoEkus": [
-        "REKU-PGMQ-001"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-NATS-001"
-      ],
-      "counterexampleAuditNote": "Audited across BullMQ, River, PGMQ, and NATS. BullMQ explicitly decouples attemptsMade from failedReason; River increments max_attempts while tracking error stacks; PGMQ tracks read_ct separately from message existence."
-    },
-    {
-      "id": "EKU-QUEUE-018",
-      "title": "Poison Payload Isolation From Repeatable Stall Exemptions",
-      "objectType": "SOLUTION_FAMILY",
-      "claimId": "CLM-018",
-      "problem": "Exempting repeatable/cron tasks from stall limits to prevent scheduler drift creates an unkillable crash loop when a recurring payload is poisoned.",
-      "behavioralInvariant": "Recurring scheduler engines must decouple schedule recurrence from active payload execution safety; poison failures must quarantine the payload without stalling future schedule intervals.",
-      "applicabilityConstraints": [
-        "Applies when combining task scheduling (cron/repeatable) with queue worker pools.",
-        "Workload-bounded: specifically applies to scheduler queue architectures where repeatable jobs share execution queues with one-off tasks."
-      ],
-      "supportingEvidence": [
-        "OBS-BULLMQ-005"
-      ],
-      "relatedEvidence": [
-        "OBS-RIVER-009"
-      ],
-      "historicalEvidence": [
-        "HIST-BULLMQ-002"
-      ],
-      "designContract": "Scheduler engines must enforce maximum consecutive stalled crashes even on repeatable tasks, moving poisoned recurring iterations to dead-letter storage while logging distinct recurrence telemetry.",
-      "verificationContract": [
-        "Enqueue repeatable cron task with unparseable payload.",
-        "Simulate worker process crash on every dequeue.",
-        "Verify task is quarantined to dead-letter state after maxStalledCount rather than looping indefinitely."
-      ],
-      "status": "PROMOTED",
-      "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 3,
-        "supports": 1,
-        "alternativeMechanism": 2,
-        "counterexamples": 0,
-        "insufficientEvidence": 0,
-        "notApplicable": 10
-      },
-      "supportedByRepoEkus": [
-        "REKU-BULLMQ-004"
-      ],
-      "commonKeywordGroups": [
-        "poison_payload_isolation",
-        "dead_letter_quarantine",
-        "stall_exhaustion"
-      ],
-      "uniqueKeywordGroups": [
-        "bullmq_max_stalled_count",
-        "moveStalledJobsToWait_lua"
-      ],
-      "mechanismFamilies": [
-        "poison_pill_quarantine"
-      ],
-      "substrateFamilies": [
-        "redis"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-LITEQUEUE-001"
-      ],
-      "counterexampleAuditNote": "Audited across BullMQ and River. Litequeue is classified as NOT_APPLICABLE because it operates as a minimal FIFO single-table queue without recurring cron schedule mechanisms."
-    },
-    {
-      "id": "EKU-QUEUE-019",
-      "title": "Bounded Admission Waiters In Publish Overload",
-      "objectType": "BEHAVIORAL_INVARIANT",
-      "claimId": "CLM-019",
-      "problem": "Backpressure mechanisms that buffer incoming publish requests in memory queues during storage stalls cause out-of-memory crashes before backpressure can push back on clients.",
-      "behavioralInvariant": "Storage write admission semaphores must enforce hard bounds on queued waiting requests, immediately failing fast or rejecting surplus requests when storage latency spikes.",
-      "applicabilityConstraints": [
-        "Applies to message brokers, log-appenders, and queue engines handling unmetered producer traffic over network sockets.",
-        "Essential when storage engine I/O stalls (e.g. disk freeze or lock contention) threaten process heap stability."
-      ],
-      "supportingEvidence": [
-        "OBS-REDPANDA-003",
-        "OBS-ROCKETMQ-002"
-      ],
-      "relatedEvidence": [
-        "OBS-NATS-001",
-        "OBS-RABBITMQ-001",
-        "OBS-ARTEMIS-001"
-      ],
-      "historicalEvidence": [
-        "HIST-ROCKETMQ-001"
-      ],
-      "designContract": "Concurrency semaphores guarding storage writes must bound waiter queue capacity and reject surplus publishers with fast transient errors (e.g. SYSTEM_BUSY, HTTP 503) within milliseconds.",
-      "verificationContract": [
-        "Simulate 5-second disk I/O freeze.",
-        "Inject 20,000 concurrent publish requests.",
-        "Assert broker rejects excess requests with fast failure without growing process memory beyond fixed watermark."
-      ],
-      "status": "PROMOTED",
-      "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 13,
-        "supports": 7,
-        "alternativeMechanism": 6,
         "counterexamples": 0,
         "insufficientEvidence": 0,
         "notApplicable": 0
       },
-      "supportedByRepoEkus": [
-        "REKU-REDPANDA-001"
+      "epistemicTypes": [
+        "HISTORY_SUPPORTED",
+        "SOURCE_OBSERVED",
+        "TEST_OBSERVED"
       ],
-      "commonKeywordGroups": [
-        "bounded_admission",
-        "publish_backpressure",
-        "fast_503_shedding",
-        "memory_limiter"
-      ],
-      "uniqueKeywordGroups": [
-        "redpanda_memory_limiter",
-        "seastar_resource_exhausted"
-      ],
-      "mechanismFamilies": [
-        "admission_control_semaphores"
-      ],
-      "substrateFamilies": [
-        "cplusplus_seastar",
-        "native_storage"
-      ],
-      "counterexampleRepoEkus": [],
-      "notApplicableRepoEkus": [
-        "REKU-PGMQ-001"
-      ],
-      "counterexampleAuditNote": "Audited across Redpanda and PGMQ. Postgres relational queues rely on database connection pool saturation rather than internal broker channel credit semaphores."
+      "status": "PROMOTED"
     },
     {
-      "id": "EKU-QUEUE-020",
-      "title": "Decoupled Worker-Drain And Broker-Socket Shutdown Contracts",
-      "objectType": "BEHAVIORAL_INVARIANT",
-      "claimId": "CLM-020",
-      "problem": "Coupling network socket teardown with worker execution drain leads to either stalled rolling deployments or abrupt worker termination without lease cleanup.",
-      "behavioralInvariant": "Shutdown lifecycles must decouple client network listener termination (fast drain/disconnect) from in-flight worker task completion (bounded execution drain and explicit lease release).",
-      "applicabilityConstraints": [
-        "Applies to long-running queue worker daemons and broker server processes undergoing rolling redeployments or container restarts."
+      "id": "EKU-WDE-005",
+      "title": "Long Waits and Timers Need Durable Rehydration Paths",
+      "claimId": "CLM-005",
+      "objectType": "FAILURE_RECOVERY_MECHANISM",
+      "problem": "Timers, retries, sleeps, approval waits, and deferred triggers can be lost or duplicated across process restart, failover, or scheduler handoff.",
+      "desiredProperty": "A wait is recoverable from persisted state and can be fired, ignored, or regenerated exactly according to current operation state.",
+      "behavioralInvariant": "Durable systems persist wait intent separately from worker memory; the exact rehydration mechanism differs sharply across repos.",
+      "applicabilityConstraints": [],
+      "solutionFamilies": [
+        {
+          "name": "timer queues",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "deferred trigger rows",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "Kubernetes suspend/status reconciliation",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "delayed queues",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "daemon schedules",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "server scheduled states",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        }
       ],
-      "supportingEvidence": [
-        "OBS-NATS-002",
-        "OBS-RIVER-005",
-        "OBS-NSQ-001"
+      "mechanisms": [],
+      "failureModes": [
+        {
+          "failureMode": "lost retry timer after failover",
+          "description": "lost retry timer after failover",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "duplicate trigger event",
+          "description": "duplicate trigger event",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "timer fires against stale execution",
+          "description": "timer fires against stale execution",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "scheduler ignores delayed retry",
+          "description": "scheduler ignores delayed retry",
+          "mitigation": ""
+        }
       ],
-      "relatedEvidence": [
-        "OBS-BULLMQ-001",
-        "OBS-ASYNQ-001"
-      ],
-      "historicalEvidence": [
-        "HIST-NSQ-001"
-      ],
-      "designContract": "Process SIGTERM must immediately stop accepting new incoming requests and disconnect idle clients within short deadline (2s), while allowing active workers a separate execution drain deadline (30s) before terminating lease renewers.",
       "verificationContract": [
-        "Send SIGTERM to active queue worker processing a 15-second task.",
-        "Verify network listener closes immediately.",
-        "Verify active task finishes cleanly and acknowledges before process exits."
+        "restart triggerer/timer processor/daemon",
+        "fail over region after retry timer scheduled",
+        "timer fires after completion/cancel/reset",
+        "duplicate trigger fires"
       ],
-      "status": "PROMOTED",
+      "supportingEvidence": [],
+      "counterEvidence": [],
+      "supportedByRepoEkus": [
+        "REKU-TEMPORAL-007",
+        "REKU-CADENCE-009",
+        "REKU-CONDUCTOR-006",
+        "REKU-AIRFLOW-004",
+        "REKU-AIRFLOW-008",
+        "REKU-ARGO-008",
+        "REKU-ARGO-009",
+        "REKU-DAGSTER-004",
+        "REKU-DAGSTER-009",
+        "REKU-PREFECT-003",
+        "REKU-PREFECT-004",
+        "REKU-KESTRA-004",
+        "REKU-KESTRA-008",
+        "REKU-RESTATE-008",
+        "REKU-WINDMILL-006",
+        "REKU-WINDMILL-005",
+        "REKU-HATCHET-004",
+        "REKU-HATCHET-007"
+      ],
+      "alternativeMechanismRepoEkus": [],
+      "counterexampleRepoEkus": [],
+      "notApplicableRepoEkus": [],
+      "counterexampleAuditNote": "Audited across 11 workflow/durable-execution repositories (temporal, cadence, conductor, airflow, argo-workflows, dagster, prefect, kestra, restate, windmill, hatchet); matrix classes record supports, alternatives, counterexamples, not-applicable rows, and insufficient evidence per repository.",
       "corpusStats": {
-        "corpusSize": 13,
-        "applicable": 12,
-        "supports": 10,
-        "alternativeMechanism": 2,
+        "corpusSize": 11,
+        "applicable": 11,
+        "supports": 11,
+        "alternativeMechanism": 0,
         "counterexamples": 0,
         "insufficientEvidence": 0,
-        "notApplicable": 1
+        "notApplicable": 0
       },
+      "epistemicTypes": [
+        "HISTORY_SUPPORTED",
+        "SOURCE_OBSERVED",
+        "TEST_OBSERVED"
+      ],
+      "status": "PROMOTED"
+    },
+    {
+      "id": "EKU-WDE-006",
+      "title": "Callbacks and External Events Require Dedupe and Deterministic Ordering Boundaries",
+      "claimId": "CLM-006",
+      "objectType": "IMPLEMENTATION_PATTERN",
+      "problem": "Callbacks, signals, pod observations, event handlers, and support commands can arrive before, during, or after the logical step that consumes them.",
+      "desiredProperty": "External events do not corrupt state ordering or apply twice.",
+      "behavioralInvariant": "Every broadly applicable system needs an ordering/dedupe boundary for external inputs, but only event-history systems expose this as explicit signal/event buffering; other systems approximate it through state-machine validation, controller reconciliation, or exact task targeting.",
+      "applicabilityConstraints": [],
+      "solutionFamilies": [
+        {
+          "name": "workflow signal buffering",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "event handler dedupe",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "Kubernetes reconcile status",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "server state proposal validation",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "sensor run keys",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "manual state transition guards",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        }
+      ],
+      "mechanisms": [],
+      "failureModes": [
+        {
+          "failureMode": "duplicate buffered history events",
+          "description": "duplicate buffered history events",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "wrong task completed by correlation ID",
+          "description": "wrong task completed by correlation ID",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "stale callback mutates reset execution",
+          "description": "stale callback mutates reset execution",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "manual transition bypasses callback hooks",
+          "description": "manual transition bypasses callback hooks",
+          "mitigation": ""
+        }
+      ],
+      "verificationContract": [
+        "callback arrives before wait exists",
+        "callback races timeout/cancel/completion",
+        "duplicate event storm",
+        "support action races worker completion"
+      ],
+      "supportingEvidence": [],
+      "counterEvidence": [],
       "supportedByRepoEkus": [
-        "REKU-RIVER-003",
-        "REKU-NATS-001"
+        "REKU-TEMPORAL-004",
+        "REKU-TEMPORAL-008",
+        "REKU-CADENCE-003",
+        "REKU-PREFECT-001",
+        "REKU-PREFECT-008",
+        "REKU-KESTRA-002",
+        "REKU-KESTRA-006",
+        "REKU-RESTATE-002",
+        "REKU-RESTATE-008",
+        "REKU-WINDMILL-006",
+        "REKU-HATCHET-004"
       ],
-      "commonKeywordGroups": [
-        "graceful_drain",
-        "socket_decoupling",
-        "in_flight_completion",
-        "soft_stop"
-      ],
-      "uniqueKeywordGroups": [
-        "nats_closeConnection",
-        "river_cancel_ctx"
-      ],
-      "mechanismFamilies": [
-        "decoupled_drain_protocol"
-      ],
-      "substrateFamilies": [
-        "go_network_server",
-        "postgres_worker"
+      "alternativeMechanismRepoEkus": [
+        "REKU-CONDUCTOR-008",
+        "REKU-AIRFLOW-004",
+        "REKU-ARGO-001",
+        "REKU-ARGO-009",
+        "REKU-DAGSTER-009"
       ],
       "counterexampleRepoEkus": [],
       "notApplicableRepoEkus": [],
-      "counterexampleAuditNote": "Audited across River and NATS Go clients. Both enforce decoupled shutdown contracts: in-flight workers receive soft cancellation while broker socket listeners drain."
+      "counterexampleAuditNote": "Audited across 11 workflow/durable-execution repositories (temporal, cadence, conductor, airflow, argo-workflows, dagster, prefect, kestra, restate, windmill, hatchet); matrix classes record supports, alternatives, counterexamples, not-applicable rows, and insufficient evidence per repository.",
+      "corpusStats": {
+        "corpusSize": 11,
+        "applicable": 11,
+        "supports": 7,
+        "alternativeMechanism": 4,
+        "counterexamples": 0,
+        "insufficientEvidence": 0,
+        "notApplicable": 0
+      },
+      "epistemicTypes": [
+        "HISTORY_SUPPORTED",
+        "SOURCE_OBSERVED",
+        "TEST_OBSERVED"
+      ],
+      "status": "PROMOTED"
+    },
+    {
+      "id": "EKU-WDE-007",
+      "title": "Retry Semantics Must Be Part of the State Machine, Not Blind Re-Enqueue",
+      "claimId": "CLM-007",
+      "objectType": "BEHAVIORAL_INVARIANT",
+      "problem": "Retries can duplicate side effects, grow history unboundedly, violate graph dependencies, or re-run completed work.",
+      "desiredProperty": "Retry eligibility, backoff, attempt identity, and terminal failure are explicit and testable.",
+      "behavioralInvariant": "Repo-local retry mechanisms encode retry as state, graph reformulation, server mutation, delayed queue state, or event-history command; blind queue reinsert is insufficient.",
+      "applicabilityConstraints": [],
+      "solutionFamilies": [
+        {
+          "name": "UP_FOR_RETRY state",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "RetryStrategy node reformulation",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "delayed retry queues",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "partial re-execution",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "AwaitingRetry mutation",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "transient workflow tasks",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        }
+      ],
+      "mechanisms": [],
+      "failureModes": [
+        {
+          "failureMode": "poison workflow history bloat",
+          "description": "poison workflow history bloat",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "retry wrapper remains Running",
+          "description": "retry wrapper remains Running",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "zero-delay jitter failure",
+          "description": "zero-delay jitter failure",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "duplicate retry run",
+          "description": "duplicate retry run",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "retry task executed after reset",
+          "description": "retry task executed after reset",
+          "mitigation": ""
+        }
+      ],
+      "verificationContract": [
+        "worker repeatedly crashes decision computation",
+        "retry after successful completion",
+        "retry wrapper shutdown",
+        "retry daemon crash before launch",
+        "jitter/backoff edge cases"
+      ],
+      "supportingEvidence": [],
+      "counterEvidence": [],
+      "supportedByRepoEkus": [
+        "REKU-TEMPORAL-003",
+        "REKU-TEMPORAL-007",
+        "REKU-CADENCE-002",
+        "REKU-CONDUCTOR-006",
+        "REKU-AIRFLOW-008",
+        "REKU-ARGO-008",
+        "REKU-DAGSTER-007",
+        "REKU-PREFECT-003",
+        "REKU-KESTRA-005",
+        "REKU-KESTRA-008",
+        "REKU-RESTATE-005",
+        "REKU-RESTATE-008",
+        "REKU-WINDMILL-005",
+        "REKU-WINDMILL-002",
+        "REKU-HATCHET-007",
+        "REKU-HATCHET-008"
+      ],
+      "alternativeMechanismRepoEkus": [],
+      "counterexampleRepoEkus": [],
+      "notApplicableRepoEkus": [],
+      "counterexampleAuditNote": "Audited across 11 workflow/durable-execution repositories (temporal, cadence, conductor, airflow, argo-workflows, dagster, prefect, kestra, restate, windmill, hatchet); matrix classes record supports, alternatives, counterexamples, not-applicable rows, and insufficient evidence per repository.",
+      "corpusStats": {
+        "corpusSize": 11,
+        "applicable": 11,
+        "supports": 11,
+        "alternativeMechanism": 0,
+        "counterexamples": 0,
+        "insufficientEvidence": 0,
+        "notApplicable": 0
+      },
+      "epistemicTypes": [
+        "HISTORY_SUPPORTED",
+        "SOURCE_OBSERVED",
+        "TEST_OBSERVED"
+      ],
+      "status": "PROMOTED"
+    },
+    {
+      "id": "EKU-WDE-008",
+      "title": "Reset, Resume, and Re-Execution Must Preserve Prior Evidence",
+      "claimId": "CLM-008",
+      "objectType": "IMPLEMENTATION_PATTERN",
+      "problem": "Operators need to recover failed work without erasing what happened or re-running already-safe work blindly.",
+      "desiredProperty": "Recovery creates a branch, new run, partial re-execution, reset state, or cache-backed continuation while retaining audit/debug facts.",
+      "behavioralInvariant": "The corpus supports non-destructive recovery, but the object model varies: history branch, retry/resubmit state reformulation, partial re-execution, suspended resumption, or completed-output reuse.",
+      "applicabilityConstraints": [],
+      "solutionFamilies": [
+        {
+          "name": "history tree branching",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "deterministic retry/resubmit pruning",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "partial re-execution from failure",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "flow suspension/resumption",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "result-cache bypass",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "continued-as-new",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        }
+      ],
+      "mechanisms": [],
+      "failureModes": [
+        {
+          "failureMode": "destructive row rewrite loses audit",
+          "description": "destructive row rewrite loses audit",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "stale output used after wipe",
+          "description": "stale output used after wipe",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "subflow key collision after retry",
+          "description": "subflow key collision after retry",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "reset fails to invalidate old timers/callbacks",
+          "description": "reset fails to invalidate old timers/callbacks",
+          "mitigation": ""
+        }
+      ],
+      "verificationContract": [
+        "reset after completed side effect",
+        "resume suspended flow with old callback",
+        "partial re-execute failed subtree",
+        "retry/resubmit preserves deterministic graph references"
+      ],
+      "supportingEvidence": [],
+      "counterEvidence": [],
+      "supportedByRepoEkus": [
+        "REKU-CADENCE-008",
+        "REKU-ARGO-008",
+        "REKU-DAGSTER-007",
+        "REKU-PREFECT-004",
+        "REKU-PREFECT-002",
+        "REKU-KESTRA-006",
+        "REKU-RESTATE-001",
+        "REKU-WINDMILL-001",
+        "REKU-WINDMILL-009",
+        "REKU-HATCHET-006"
+      ],
+      "alternativeMechanismRepoEkus": [
+        "REKU-TEMPORAL-003",
+        "REKU-TEMPORAL-010",
+        "REKU-CONDUCTOR-008",
+        "REKU-AIRFLOW-005",
+        "REKU-AIRFLOW-008"
+      ],
+      "counterexampleRepoEkus": [],
+      "notApplicableRepoEkus": [],
+      "counterexampleAuditNote": "Audited across 11 workflow/durable-execution repositories (temporal, cadence, conductor, airflow, argo-workflows, dagster, prefect, kestra, restate, windmill, hatchet); matrix classes record supports, alternatives, counterexamples, not-applicable rows, and insufficient evidence per repository.",
+      "corpusStats": {
+        "corpusSize": 11,
+        "applicable": 11,
+        "supports": 8,
+        "alternativeMechanism": 3,
+        "counterexamples": 0,
+        "insufficientEvidence": 0,
+        "notApplicable": 0
+      },
+      "epistemicTypes": [
+        "HISTORY_SUPPORTED",
+        "SOURCE_OBSERVED",
+        "TEST_OBSERVED"
+      ],
+      "status": "PROMOTED"
+    },
+    {
+      "id": "EKU-WDE-009",
+      "title": "High Availability Is Not a Uniform Multi-Region Semantics",
+      "claimId": "CLM-009",
+      "objectType": "IMPLEMENTATION_PATTERN",
+      "problem": "Teams often infer that a workflow system's HA story implies safe multi-region business failover.",
+      "desiredProperty": "Answers distinguish scheduler/controller HA from event-history replication and conflict resolution.",
+      "behavioralInvariant": "Across this corpus, HA ranges from row-lock multi-scheduler, Kubernetes leader election, daemon restart, server/work-pool recovery, active-passive version histories, and deployment-level persistence failover; these are not equivalent.",
+      "applicabilityConstraints": [],
+      "solutionFamilies": [
+        {
+          "name": "multi-scheduler DB locks",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "Kubernetes leader election",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "queue/persistence backend HA",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "daemon restart",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "cloud/server HA",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "version-history conflict resolution",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        }
+      ],
+      "mechanisms": [],
+      "failureModes": [
+        {
+          "failureMode": "assuming replicated rows imply safe workflow failover",
+          "description": "assuming replicated rows imply safe workflow failover",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "lost cluster-local timer",
+          "description": "lost cluster-local timer",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "old active cluster commits after promotion",
+          "description": "old active cluster commits after promotion",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "archive exists but live state does not fail over",
+          "description": "archive exists but live state does not fail over",
+          "mitigation": ""
+        }
+      ],
+      "verificationContract": [
+        "fail active controller",
+        "fail DB/queue backend",
+        "fail over namespace/cluster with pending timer",
+        "simulate stale old-region writer"
+      ],
+      "supportingEvidence": [],
+      "counterEvidence": [],
+      "supportedByRepoEkus": [
+        "REKU-TEMPORAL-006",
+        "REKU-TEMPORAL-007",
+        "REKU-CADENCE-006",
+        "REKU-CADENCE-009",
+        "REKU-RESTATE-004",
+        "REKU-RESTATE-003"
+      ],
+      "alternativeMechanismRepoEkus": [
+        "REKU-CONDUCTOR-003",
+        "REKU-AIRFLOW-001",
+        "REKU-ARGO-005",
+        "REKU-DAGSTER-004",
+        "REKU-PREFECT-005",
+        "REKU-KESTRA-002",
+        "REKU-KESTRA-009",
+        "REKU-WINDMILL-002",
+        "REKU-WINDMILL-004",
+        "REKU-HATCHET-002",
+        "REKU-HATCHET-009"
+      ],
+      "counterexampleRepoEkus": [],
+      "notApplicableRepoEkus": [],
+      "counterexampleAuditNote": "Audited across 11 workflow/durable-execution repositories (temporal, cadence, conductor, airflow, argo-workflows, dagster, prefect, kestra, restate, windmill, hatchet); matrix classes record supports, alternatives, counterexamples, not-applicable rows, and insufficient evidence per repository.",
+      "corpusStats": {
+        "corpusSize": 11,
+        "applicable": 11,
+        "supports": 3,
+        "alternativeMechanism": 8,
+        "counterexamples": 0,
+        "insufficientEvidence": 0,
+        "notApplicable": 0
+      },
+      "epistemicTypes": [
+        "HISTORY_SUPPORTED",
+        "SOURCE_OBSERVED",
+        "TEST_OBSERVED"
+      ],
+      "status": "PROMOTED"
+    },
+    {
+      "id": "EKU-WDE-010",
+      "title": "Large or Durable Payloads Should Be Referenced, Not Hidden in Execution Memory",
+      "claimId": "CLM-010",
+      "objectType": "IMPLEMENTATION_PATTERN",
+      "problem": "Long-running workflows often pass large or durable intermediate state across restarts, retries, and partial re-execution.",
+      "desiredProperty": "State handoff survives process loss and avoids overloading primary orchestration records.",
+      "behavioralInvariant": "Several repos separate orchestration metadata from large payload/result storage; this is a recurring solution family, not a universal requirement for every workflow step.",
+      "applicabilityConstraints": [],
+      "solutionFamilies": [
+        {
+          "name": "XCom/object storage",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "Argo artifacts/archive/offload",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "Conductor external payload storage",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "Dagster IOManagers",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        },
+        {
+          "name": "Prefect ResultRecords/storage blocks",
+          "mechanisms": [],
+          "tradeoffs": [],
+          "representativeRepositories": []
+        }
+      ],
+      "mechanisms": [],
+      "failureModes": [
+        {
+          "failureMode": "CRD/status size limit",
+          "description": "CRD/status size limit",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "XCom DB overload",
+          "description": "XCom DB overload",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "stale external payload overwrite",
+          "description": "stale external payload overwrite",
+          "mitigation": ""
+        },
+        {
+          "failureMode": "missing IOManager output prevents partial re-execution",
+          "description": "missing IOManager output prevents partial re-execution",
+          "mitigation": ""
+        }
+      ],
+      "verificationContract": [
+        "worker dies after writing output before marking success",
+        "metadata DB row exceeds size limit",
+        "re-execution reads prior output",
+        "stale external payload cannot overwrite newer in-memory result"
+      ],
+      "supportingEvidence": [],
+      "counterEvidence": [],
+      "supportedByRepoEkus": [
+        "REKU-CONDUCTOR-007",
+        "REKU-AIRFLOW-005",
+        "REKU-ARGO-007",
+        "REKU-DAGSTER-003",
+        "REKU-PREFECT-002",
+        "REKU-KESTRA-003",
+        "REKU-RESTATE-003",
+        "REKU-RESTATE-005",
+        "REKU-WINDMILL-008",
+        "REKU-WINDMILL-001",
+        "REKU-HATCHET-003"
+      ],
+      "alternativeMechanismRepoEkus": [
+        "REKU-TEMPORAL-001",
+        "REKU-CADENCE-004"
+      ],
+      "counterexampleRepoEkus": [],
+      "notApplicableRepoEkus": [],
+      "counterexampleAuditNote": "Audited across 11 workflow/durable-execution repositories (temporal, cadence, conductor, airflow, argo-workflows, dagster, prefect, kestra, restate, windmill, hatchet); matrix classes record supports, alternatives, counterexamples, not-applicable rows, and insufficient evidence per repository.",
+      "corpusStats": {
+        "corpusSize": 11,
+        "applicable": 11,
+        "supports": 9,
+        "alternativeMechanism": 2,
+        "counterexamples": 0,
+        "insufficientEvidence": 0,
+        "notApplicable": 0
+      },
+      "epistemicTypes": [
+        "HISTORY_SUPPORTED",
+        "SOURCE_OBSERVED",
+        "TEST_OBSERVED"
+      ],
+      "status": "PROVISIONAL"
     }
   ]
 }

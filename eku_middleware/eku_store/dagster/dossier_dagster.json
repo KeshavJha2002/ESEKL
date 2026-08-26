@@ -1,0 +1,55 @@
+{
+  "repo": "dagster",
+  "targetRepo": "dagster-io/dagster",
+  "remote": "https://github.com/dagster-io/dagster.git",
+  "commit": "560289892c1c9b2c882dfea2f442e5e7bbd7e0df",
+  "analyzedAt": "2026-08-26T14:30:35.346752+00:00",
+  "domain": "workflow_durable_execution",
+  "systemSummary": {
+    "name": "Dagster Asset-Oriented Orchestration Platform",
+    "description": "Data orchestrator for machine learning, analytics, and ETL pipelines structuring computation around Software-Defined Assets, typed event streams, and durable IO managers.",
+    "coreLanguages": [
+      "Python"
+    ],
+    "architecture": {
+      "executionEngine": {
+        "description": "Compiles jobs and asset graphs into execution plans, executing steps via multiprocess, in-process, or Kubernetes executors.",
+        "entrypoint": "python_modules/dagster/dagster/_core/execution/plan/plan.py"
+      },
+      "storageLayer": {
+        "description": "Relational storage backends for event logs (SqlEventLogStorage) and run records (SqlRunStorage).",
+        "entrypoint": "python_modules/dagster/dagster/_core/storage/"
+      },
+      "ioManagerLayer": {
+        "description": "Durable input/output management handling artifact serialization and inter-step data exchange.",
+        "entrypoint": "python_modules/dagster/dagster/_core/storage/io_manager.py"
+      },
+      "daemonSubsystem": {
+        "description": "Background daemons for run queue coordination, sensor evaluation, and auto-materialize policies.",
+        "entrypoint": "python_modules/dagster/dagster/_daemon/"
+      }
+    }
+  },
+  "durableExecutionModel": {
+    "assetGraph": "Pipelines are defined as declarative Software-Defined Assets with lineage and partition definitions. Runs compile into an ExecutionPlan of discrete ExecutionSteps.",
+    "eventLogStream": "Execution progress is emitted as strongly-typed DagsterEvent records (STEP_START, STEP_OUTPUT, ASSET_MATERIALIZATION, STEP_SUCCESS, STEP_FAILURE) stored in relational databases.",
+    "ioManagement": "Step inputs and outputs are managed by IOManagers. Outputs are stored in durable blob storage, allowing failed runs to resume execution from the point of failure without re-running completed steps.",
+    "runCoordination": "Runs are submitted to a queue and dequeued by QueuedRunCoordinatorDaemon based on tag-level and global concurrency limits.",
+    "autoMaterialization": "AssetDaemons autonomously evaluate asset data freshness and upstream partition state to trigger reconciliation runs."
+  },
+  "dimensionsAnalyzed": [
+    "workflow_definition_model",
+    "execution_state_machine",
+    "task_activity_scheduling",
+    "persistence_and_checkpointing",
+    "timers_and_durable_sleeps",
+    "retries_and_backoff",
+    "child_workflows_subflows",
+    "worker_leasing_heartbeats_liveness",
+    "idempotency_duplicate_suppression",
+    "versioning_and_workflow_evolution",
+    "failure_recovery_crash_failover",
+    "concurrency_and_backpressure",
+    "dynamic_task_mapping"
+  ]
+}

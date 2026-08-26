@@ -1,0 +1,53 @@
+{
+  "repo": "restate",
+  "targetRepo": "restatedev/restate",
+  "remote": "https://github.com/restatedev/restate.git",
+  "commit": "e812a2907f1001880f089376f071f2845b54f207",
+  "analyzedAt": "2026-08-26T19:45:56.577892+00:00",
+  "domain": "workflow_durable_execution",
+  "systemSummary": {
+    "name": "Restate Distributed Durable Execution Runtime",
+    "description": "High-throughput, event-driven runtime providing resilient virtual actors, durable workflows, and transactional state journals communicating over HTTP/2 and gRPC.",
+    "coreLanguages": [
+      "Rust"
+    ],
+    "architecture": {
+      "executionEngine": {
+        "description": "Virtual actor state machine executing journal replaying and suspension loops.",
+        "entrypoint": "crates/invoker-impl/src/invocation_state_machine.rs"
+      },
+      "protocolLayer": {
+        "description": "Binary streaming protocol between Restate engine and user service SDKs.",
+        "entrypoint": "crates/service-protocol/src/codec.rs"
+      },
+      "storageLayer": {
+        "description": "Embedded RocksDB partition database with durable LSN tracking and outbox journals.",
+        "entrypoint": "crates/partition-store/src/partition_db.rs"
+      },
+      "consensusLayer": {
+        "description": "Bifrost consensus protocol managing replicated loglets across cluster nodes.",
+        "entrypoint": "crates/bifrost/src/bifrost.rs"
+      }
+    }
+  },
+  "durableExecutionModel": {
+    "virtualActorJournaling": "Each virtual object invocation executes as an event-sourced stream. Non-deterministic operations (calls, sleeps, side-effects) append entries to the partition journal.",
+    "serviceProtocolStreaming": "User services stream journal entries over HTTP/2. When an uncompleted promise/awakeable is encountered, the connection suspends without holding server threads.",
+    "singleActorConcurrency": "Virtual objects enforce strict single-writer concurrency per object ID via VQueues, preventing concurrent mutating state corruption.",
+    "durableTimers": "Timers and durable sleeps are registered in TimerQueue and awaken suspended invocations when deadlines elapse.",
+    "bifrostReplication": "Log entries are replicated via Bifrost consensus before acknowledgments are returned to callers."
+  },
+  "dimensionsAnalyzed": [
+    "workflow_definition_model",
+    "execution_state_machine",
+    "task_activity_scheduling",
+    "event_history_and_replay",
+    "deterministic_replay_constraints",
+    "persistence_and_checkpointing",
+    "timers_and_durable_sleeps",
+    "cancellation_signals_queries",
+    "idempotency_duplicate_suppression",
+    "partition_failover_behavior",
+    "concurrency_limits_backpressure"
+  ]
+}

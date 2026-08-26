@@ -1,0 +1,3670 @@
+[
+  {
+    "commitHash": "65652d8aa71fb9ef6321362c72793dd40483e06a",
+    "authorDate": "2026-08-25T10:39:00-05:00",
+    "subject": "Fix ProcessWorker auto-uv after pull steps (#22857)",
+    "body": "",
+    "issueRefs": [
+      "#22857"
+    ],
+    "touchedFiles": [
+      "src/prefect/cli/flow_run.py",
+      "src/prefect/runner/AGENTS.md",
+      "src/prefect/runner/_cancellation_manager.py",
+      "src/prefect/runner/_flow_run_executor.py",
+      "src/prefect/runner/_hook_runner.py",
+      "src/prefect/runner/_process_manager.py",
+      "src/prefect/runner/_starter_engine.py",
+      "src/prefect/runner/_workspace_hook_runner.py",
+      "src/prefect/runner/_workspace_resolver.py",
+      "src/prefect/runner/_workspace_runtime.py",
+      "src/prefect/runner/_workspace_runtime_bootstrap.py",
+      "src/prefect/runner/_workspace_starter.py",
+      "src/prefect/runner/_workspace_supervisor.py",
+      "src/prefect/workers/AGENTS.md",
+      "src/prefect/workers/process.py",
+      "tests/cli/test_flow_run.py",
+      "tests/runner/test__process_manager.py",
+      "tests/runner/test__starter_engine.py",
+      "tests/runner/test__workspace_hook_runner.py",
+      "tests/runner/test__workspace_resolver.py",
+      "tests/runner/test__workspace_runtime.py",
+      "tests/runner/test__workspace_runtime_bootstrap.py",
+      "tests/runner/test__workspace_starter.py",
+      "tests/runner/test__workspace_supervisor.py",
+      "tests/workers/test_process_worker.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cd45b58343715d8d198a9f5047c51c3351ac2eca",
+    "authorDate": "2026-08-24T14:16:55-05:00",
+    "subject": "Fix readable run durations in the V2 UI (#22922)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22922"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/dashboard/flow-runs-accordion/flow-runs-accordion.test.tsx",
+      "ui-v2/src/components/flow-runs/flow-run-card/card-properties/flow-run-duration.test.tsx",
+      "ui-v2/src/components/flow-runs/flow-run-card/card-properties/flow-run-duration.tsx",
+      "ui-v2/src/components/task-runs/task-run-details/task-run-details.test.tsx",
+      "ui-v2/src/components/task-runs/task-run-details/task-run-details.tsx",
+      "ui-v2/src/components/ui/run-card/run-card.test.tsx",
+      "ui-v2/src/components/ui/run-card/run-card.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8c4adb721dbf12dbe487d6fd2cca2c2bccec1159",
+    "authorDate": "2026-08-24T09:36:35-07:00",
+    "subject": "fix(ui-v2): carry rounded-up seconds into larger units (#22915)",
+    "body": "Co-authored-by: nolantonio <nolantonio@users.noreply.github.com>",
+    "issueRefs": [
+      "#22915"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/utils/seconds.test.ts",
+      "ui-v2/src/utils/seconds.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ce79dd3d6cfa2b7337265498210dbc4d25bcdc98",
+    "authorDate": "2026-08-21T11:27:33-05:00",
+    "subject": "docs: warn e2e AGENTS.md about shared-prefix cleanup races within a file (#22893)",
+    "body": "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#22893"
+    ],
+    "touchedFiles": [
+      "ui-v2/e2e/AGENTS.md"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "cf41cb930b75bc05e30f1b489e4b5cdca36215b4",
+    "authorDate": "2026-08-21T11:27:00-05:00",
+    "subject": "docs: document zod v4 record/issues convention and fix stale resolver note (#22898)",
+    "body": "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#22898"
+    ],
+    "touchedFiles": [
+      "ui-v2/AGENTS.md",
+      "ui-v2/src/components/AGENTS.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fcef49953220cf71c42e9f28d380885300174004",
+    "authorDate": "2026-08-21T17:03:56+02:00",
+    "subject": "(ui-v2) Fix inconsistent deployment status display on flow detail page (#22901)",
+    "body": "",
+    "issueRefs": [
+      "#22901"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/flows/detail/deployment-columns.tsx",
+      "ui-v2/src/components/flows/detail/flow-deployments-tab.test.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5d7a348304161f6152b7b606706f7430a0ff4fb4",
+    "authorDate": "2026-08-20T15:24:43-05:00",
+    "subject": "Fix lateness label on flow run cards in ui-v2 (#22896)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <desertaxle@users.noreply.github.com>",
+    "issueRefs": [
+      "#22896"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/flow-runs/flow-run-card/card-properties/flow-run-start-time.test.tsx",
+      "ui-v2/src/components/flow-runs/flow-run-card/card-properties/flow-run-start-time.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "983789bdf5bfb971558bd532c25831f7980fa3dd",
+    "authorDate": "2026-08-20T14:39:35-05:00",
+    "subject": "Fix flaky blocks E2E test: scope block cleanup to a single test (#22892)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22892"
+    ],
+    "touchedFiles": [
+      "ui-v2/e2e/blocks/blocks.spec.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c49c15c349ee47fc03a13a2e119999fa7f8d4860",
+    "authorDate": "2026-08-20T20:59:21+02:00",
+    "subject": "Fix stale Azure Container Instance examples (#22830)",
+    "body": "Co-authored-by: samrusani <14844597+samrusani@users.noreply.github.com>",
+    "issueRefs": [
+      "#22830"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-azure/README.md",
+      "src/integrations/prefect-azure/prefect_azure/container_instance.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cdb9e439c4116f18762249bacdbe3d54c7b7231a",
+    "authorDate": "2026-08-20T13:57:33-05:00",
+    "subject": "Fix flaky deployment detail e2e tests: scope details assertions to the sidebar (#22880)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22880"
+    ],
+    "touchedFiles": [
+      "ui-v2/e2e/deployments/deployment-detail.spec.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ff0ac9ed3451c9c3e2e3dfa94e3c50cf0d4b40f3",
+    "authorDate": "2026-08-18T12:35:08-05:00",
+    "subject": "Fix flaky e2e test: scope deployment name assertion to breadcrumb in runs tab test (#22878)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22878"
+    ],
+    "touchedFiles": [
+      "ui-v2/e2e/deployments/deployment-detail.spec.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bb69a01f179829c8625ed4d2d992be3c0f77a435",
+    "authorDate": "2026-08-17T20:54:17+02:00",
+    "subject": "fix(ui-v2): pass skipUpdateTransform=false to fix invisible graph nodes (#22849)",
+    "body": "",
+    "issueRefs": [
+      "#22849"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/graphs/objects/culling.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a8f32d9285ed17c5ce0a5594573992235d1daac1",
+    "authorDate": "2026-08-13T09:00:02-07:00",
+    "subject": "Fix nested deployment parameter rendering (#22760)",
+    "body": "Co-authored-by: abhinav <abhinav@aidash.com>",
+    "issueRefs": [
+      "#22760"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/deployments/deployment-parameters-table/deployment-parameters-table.stories.tsx",
+      "ui-v2/src/components/deployments/deployment-parameters-table/deployment-parameters-table.test.tsx",
+      "ui-v2/src/components/deployments/deployment-parameters-table/deployment-parameters-table.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d4bce246c8784f186785b65cbcb277d78411d622",
+    "authorDate": "2026-08-12T16:08:23-05:00",
+    "subject": "Stop leaking watcher-thread timeout enforcers (#22817)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22817"
+    ],
+    "touchedFiles": [
+      "src/prefect/_internal/concurrency/cancellation.py",
+      "tests/_internal/concurrency/test_cancellation.py"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "9e78db2a7f4b686715007abf837713c6e6f79c8a",
+    "authorDate": "2026-08-12T20:11:32+05:30",
+    "subject": "fix .deploy() example in how-to versioning guide (#22810)",
+    "body": "",
+    "issueRefs": [
+      "#22810"
+    ],
+    "touchedFiles": [
+      "docs/v3/how-to-guides/deployments/versioning.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "01a43518b3b5bcf30b7444127517eda5a3ce304e",
+    "authorDate": "2026-08-11T10:02:12-05:00",
+    "subject": "fix(ui-v2): select a valid anyOf branch for record values in schema forms (#22806)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22806"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/schemas/schema-form-input-any-of.test.tsx",
+      "ui-v2/src/components/schemas/utilities/getIndexForAnyOfPropertyValue.test.ts",
+      "ui-v2/src/components/schemas/utilities/getIndexForAnyOfPropertyValue.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7d377adfd43019a26cc901d7f50491489a86377f",
+    "authorDate": "2026-08-11T04:55:57+08:00",
+    "subject": "fix(snowflake): close() swallows a failing cursor reset (#22800)",
+    "body": "",
+    "issueRefs": [
+      "#22800"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-snowflake/prefect_snowflake/database.py",
+      "src/integrations/prefect-snowflake/tests/test_database.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "411ec69351893088832e4f1691e4a12d7baf9c7b",
+    "authorDate": "2026-08-10T21:55:16+01:00",
+    "subject": "docs: Fix block end (#22802)",
+    "body": "",
+    "issueRefs": [
+      "#22802"
+    ],
+    "touchedFiles": [
+      "src/prefect/flows.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fc2add9829b99be48dd45e7d61a8518e27b8954d",
+    "authorDate": "2026-08-10T09:01:19-05:00",
+    "subject": "Make FileSystemLockManager hold-timeout tests time-independent (#22716)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22716"
+    ],
+    "touchedFiles": [
+      "tests/test_locking.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "ed86ff7f6d59d9f7824b08831933bea9a751b2fd",
+    "authorDate": "2026-08-10T08:19:21-05:00",
+    "subject": "fix(ui-v2): stop applying inline code styling inside fenced code blocks (#22771)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <desertaxle@users.noreply.github.com>",
+    "issueRefs": [
+      "#22771"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/deployments/deployment-description.stories.tsx",
+      "ui-v2/src/index.css"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "40a34ba1f53d46a791358459eb96d9cd006f4628",
+    "authorDate": "2026-08-09T09:46:16-05:00",
+    "subject": "fix(ui-v2): render sanitized inline HTML in markdown content (#22763)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22763"
+    ],
+    "touchedFiles": [
+      "ui-v2/package-lock.json",
+      "ui-v2/package.json",
+      "ui-v2/src/components/ui/lazy-markdown.test.tsx",
+      "ui-v2/src/components/ui/lazy-markdown.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "920e9f52ff2adc3d90e6dcbfaa212122032e079e",
+    "authorDate": "2026-08-07T15:37:38-05:00",
+    "subject": "fix(concurrency): release leases granted to callers that were cancelled mid-acquire (#22621)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: bot_apk <apk@cognition.ai>\nCo-authored-by: desertaxle <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22621"
+    ],
+    "touchedFiles": [
+      "src/prefect/_internal/concurrency/services.py",
+      "src/prefect/concurrency/_asyncio.py",
+      "src/prefect/concurrency/services.py",
+      "tests/concurrency/test_acquire_concurrency_slots.py",
+      "tests/concurrency/test_concurrency_slot_acquisition_with_lease_service.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "eff3759c0edd62edb46e6edbe3a5e04854f5cf73",
+    "authorDate": "2026-08-06T17:18:46+03:00",
+    "subject": "Fix docstring Args entries that name a parameter the function does not take (#22733)",
+    "body": "Co-authored-by: darkdi <rantovov5@gmail.com>",
+    "issueRefs": [
+      "#22733"
+    ],
+    "touchedFiles": [
+      "src/prefect/client/orchestration/_work_pools/client.py",
+      "src/prefect/client/schemas/objects.py",
+      "src/prefect/context.py",
+      "src/prefect/events/clients.py",
+      "src/prefect/flows.py",
+      "src/prefect/infrastructure/provisioners/container_instance.py",
+      "src/prefect/runner/storage.py",
+      "src/prefect/server/database/_migrations/env.py",
+      "src/prefect/server/database/configurations.py",
+      "src/prefect/server/events/storage/database.py",
+      "src/prefect/server/models/block_schemas.py",
+      "src/prefect/tasks.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "10fb44aef8d0053316b65ee7c810a813a95a7ab0",
+    "authorDate": "2026-08-06T16:16:51+02:00",
+    "subject": "fix(ui-v2): preserve empty array when clearing list parameter selections (#22737)",
+    "body": "",
+    "issueRefs": [
+      "#22737"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/schemas/schema-form-input-array-enum.test.tsx",
+      "ui-v2/src/components/schemas/schema-form-input-array.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "baa13ab830c96045672f4588f2d9da992c9a0afd",
+    "authorDate": "2026-08-05T12:36:13-05:00",
+    "subject": "fix(ui-v2): propagate array item edits and link deployments from flow page (#22726)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22726"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/flows/detail/deployment-columns.tsx",
+      "ui-v2/src/components/flows/detail/flow-deployments-tab.test.tsx",
+      "ui-v2/src/components/flows/detail/flow-deployments-tab.tsx",
+      "ui-v2/src/components/schemas/schema-form-input-array-list.test.tsx",
+      "ui-v2/src/components/schemas/schema-form-input-array-list.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cf053b7d0f3375e5af315a7e743ee83aedce71a8",
+    "authorDate": "2026-08-05T23:04:53+05:30",
+    "subject": "fix incorrect examples in global-concurrency-limits doc (#22724)",
+    "body": "",
+    "issueRefs": [
+      "#22724"
+    ],
+    "touchedFiles": [
+      "docs/v3/how-to-guides/workflows/global-concurrency-limits.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2a1c139bfcccd35107ef7bafbbf934d88c392ae4",
+    "authorDate": "2026-08-05T12:33:57-05:00",
+    "subject": "Crash flow runs when a Vertex AI job fails before the container starts (#22728)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <desertaxle@users.noreply.github.com>",
+    "issueRefs": [
+      "#22728"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-gcp/prefect_gcp/workers/vertex.py",
+      "src/integrations/prefect-gcp/tests/test_vertex_worker.py"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "3a42f2f6ed2da190b044eecb871bc0724a1c6bda",
+    "authorDate": "2026-08-05T09:42:37-05:00",
+    "subject": "fix(prefect-aws): suppress CloudFormation validation warnings in ECS worker CDK synthesis (#22715)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <desertaxle@users.noreply.github.com>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22715"
+    ],
+    "touchedFiles": [
+      "docs/v3/release-notes/integrations/prefect-aws.mdx",
+      "src/integrations/prefect-aws/infra/worker/service_stack.py",
+      "src/integrations/prefect-aws/prefect_aws/templates/ecs/service.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2997d9c6976731efd481039b026a92f0527fc5e0",
+    "authorDate": "2026-08-04T20:37:52+05:30",
+    "subject": "fix tooltip hiding behind chart row (#22707)",
+    "body": "",
+    "issueRefs": [
+      "#22707"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/ui/flow-run-activity-bar-graph/index.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c0e4c1b6c5dc6ffaa91c4f5afc31fa9664b2abcf",
+    "authorDate": "2026-08-04T01:11:00+05:30",
+    "subject": "fix text not visible in image (#22661)",
+    "body": "",
+    "issueRefs": [
+      "#22661"
+    ],
+    "touchedFiles": [
+      "docs/v3/concepts/states.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "822be8856f2833cda7d6443cefcf82d8b2b37f7b",
+    "authorDate": "2026-08-03T20:40:10+01:00",
+    "subject": "fix: raise ValueError for negative timeout in PrefectFutureList.result, as_completed, and wait (#22692)",
+    "body": "",
+    "issueRefs": [
+      "#22692"
+    ],
+    "touchedFiles": [
+      "src/prefect/futures.py",
+      "tests/test_futures.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "fbcc7ca71112a3915e16c032b412816da9447b08",
+    "authorDate": "2026-08-03T11:57:20-05:00",
+    "subject": "fix(context): normalize settings paths for cross-OS context transport (#22700)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22700"
+    ],
+    "touchedFiles": [
+      "src/prefect/context.py",
+      "tests/test_context.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b53e61d750b2b216900351e5dcc011007feeaeb8",
+    "authorDate": "2026-08-03T09:00:42-05:00",
+    "subject": "fix(ui-v2): open date picker calendar on the selected date's month (#22699)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22699"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/schemas/schema-form-input-string-format-date.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6180ecb5c89e49a6d2c398be95bb0645b95a2bb5",
+    "authorDate": "2026-07-30T15:42:19-05:00",
+    "subject": "Fix saved block parameters in deployments (#22568)",
+    "body": "",
+    "issueRefs": [
+      "#22568"
+    ],
+    "touchedFiles": [
+      "src/prefect/blocks/core.py",
+      "src/prefect/deployments/runner.py",
+      "tests/runner/test_runner.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "edc4fdd5e71151ca2faf696c4c15bad403b00c42",
+    "authorDate": "2026-07-30T13:29:38-05:00",
+    "subject": "fix(prefect-slack): include subject in SlackWebhook notifications (#22682)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22682"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-slack/prefect_slack/credentials.py",
+      "src/integrations/prefect-slack/tests/test_credentials.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9d0940af8d688fdddda66c177b76dce9473defb9",
+    "authorDate": "2026-07-31T01:46:36+10:00",
+    "subject": "fix(ui-v2): allow any float precision on schema number inputs (#22643)",
+    "body": "Co-authored-by: Cursor <cursoragent@cursor.com>",
+    "issueRefs": [
+      "#22643"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/schemas/__snapshots__/schema-form.snapshot.test.tsx.snap",
+      "ui-v2/src/components/schemas/schema-form-input-number.test.tsx",
+      "ui-v2/src/components/schemas/schema-form-input-number.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "db34b483e50b348a41ba1c6e14b3398d3618590f",
+    "authorDate": "2026-07-29T08:55:06-05:00",
+    "subject": "docs: fix stale lease-cleanup invariant in concurrency AGENTS.md (#22559)",
+    "body": "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#22559"
+    ],
+    "touchedFiles": [
+      "src/prefect/concurrency/AGENTS.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e96154f4ea1ec47bc65a91c0f07bc3b713c13316",
+    "authorDate": "2026-07-29T15:50:36+02:00",
+    "subject": "Fix codspell error on unit test TEST_BLOCK_CODE_BAD_SYNTAX on Windows (#22642)",
+    "body": "",
+    "issueRefs": [
+      "#22642"
+    ],
+    "touchedFiles": [
+      "pyproject.toml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9fef82c1bf275f325220516421790f47b837100a",
+    "authorDate": "2026-07-28T12:44:51-05:00",
+    "subject": "fix(ui-v2): render ANSI color escape codes in flow run logs (#22653)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22653"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/ui/run-logs/index.tsx",
+      "ui-v2/src/components/ui/run-logs/render-log-message.test.tsx",
+      "ui-v2/src/components/ui/run-logs/render-log-message.tsx",
+      "ui-v2/src/components/ui/run-logs/run-logs.stories.tsx",
+      "ui-v2/src/lib/linkify.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "929aee19037b11c62b6908a128377c1369ff506a",
+    "authorDate": "2026-07-28T23:02:25+05:30",
+    "subject": "docs: fix flows doclink linking to get started page (#22648)",
+    "body": "",
+    "issueRefs": [
+      "#22648"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/flows/empty-state/flows-empty-state.test.tsx",
+      "ui-v2/src/components/ui/docs-link/constants.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "92dbc8fdc1ef03b1b3d8d177ef3c36cf45d3d976",
+    "authorDate": "2026-07-28T09:30:13-05:00",
+    "subject": "fix(prefect-aws): scope pull_from_s3 listing to the requested folder (#22647)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22647"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-aws/prefect_aws/deployments/steps.py",
+      "src/integrations/prefect-aws/tests/deployments/test_steps.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c78eb30a9531de5555f7fb02dad5dc76abed8808",
+    "authorDate": "2026-07-28T08:39:13-05:00",
+    "subject": "fix(futures): make PrefectFutureList.result timeout message reachable (#22634)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22634"
+    ],
+    "touchedFiles": [
+      "src/prefect/futures.py",
+      "tests/test_futures.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "ecd2d79cd5a06e1364c302e649f55cd801ed1a70",
+    "authorDate": "2026-07-23T15:33:39-05:00",
+    "subject": "docs: point migration timeout guidance at PREFECT_SERVER_DATABASE_MIGRATION_TIMEOUT (#22610)",
+    "body": "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#22610"
+    ],
+    "touchedFiles": [
+      "docs/v3/advanced/self-hosted.mdx",
+      "docs/v3/how-to-guides/self-hosted/server-cli.mdx"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "502c9935c57fb5bdc41d53bc20d1cd1fd051346e",
+    "authorDate": "2026-07-23T15:18:11-05:00",
+    "subject": "Fix db_vacuum retention-override full scan of event_resources (#22536)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22536"
+    ],
+    "touchedFiles": [
+      "docs/v3/api-ref/rest-api/server/schema.json",
+      "docs/v3/api-ref/settings-ref.mdx",
+      "schemas/settings.schema.json",
+      "src/prefect/server/database/_migrations/MIGRATION-NOTES.md",
+      "src/prefect/server/database/_migrations/env.py",
+      "src/prefect/server/database/_migrations/versions/postgresql/2026_07_20_000000_50737cdaee36_add_event_resources_event_id_index.py",
+      "src/prefect/server/database/_migrations/versions/sqlite/2026_07_20_000000_14806cb26270_add_event_resources_event_id_index.py",
+      "src/prefect/server/database/orm_models.py",
+      "src/prefect/settings/_types.py",
+      "src/prefect/settings/models/server/database.py",
+      "tests/server/database/test_migrations.py",
+      "tests/test_settings.py",
+      "ui-v2/src/api/prefect.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dd6d16fdea4c2d3e939059b42e22fa9e3072411a",
+    "authorDate": "2026-07-23T10:07:41-05:00",
+    "subject": "Fix as_completed timeout enforcement in worker threads and on Windows (#22607)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex S <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22607"
+    ],
+    "touchedFiles": [
+      ".github/workflows/windows-tests.yaml",
+      "src/prefect/futures.py",
+      "tests/test_futures.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "83d6eb07244b9cd7e1518bedaf452b4d71a5249a",
+    "authorDate": "2026-07-23T08:13:37-05:00",
+    "subject": "fix(ui-v2): guard deployment Parameters tab against missing schema properties (#22604)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22604"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/deployments/deployment-parameters-table/deployment-parameters-table.test.tsx",
+      "ui-v2/src/components/deployments/deployment-parameters-table/deployment-parameters-table.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ca9bf2482c9b058fcd0e33d01591fb4958be1505",
+    "authorDate": "2026-07-22T14:06:24-05:00",
+    "subject": "fix(tests): stabilize flaky cleanup renewal and flow-discovery log tests (#22572)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: PrefectHQ/prefect (service account) <noreply@prefect.io>\nCo-authored-by: bot_apk <apk@cognition.ai>",
+    "issueRefs": [
+      "#22572"
+    ],
+    "touchedFiles": [
+      "tests/cli/test_prompts.py",
+      "tests/workers/test_cleanup.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a82864118fbedb423ff27fbb2d73046c2eee4230",
+    "authorDate": "2026-07-22T19:41:47+05:30",
+    "subject": "docs: minor fixes in docker workflow (#22585)",
+    "body": "",
+    "issueRefs": [
+      "#22585"
+    ],
+    "touchedFiles": [
+      "docs/v3/how-to-guides/deployment_infra/docker.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1144d63fd38a83d06527f353fddc4febc357c0ee",
+    "authorDate": "2026-07-21T11:27:06-05:00",
+    "subject": "fix(server/api): consistent zero-limit behavior for core pagination endpoints (#22566)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex S <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22566"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/api/deployments.py",
+      "src/prefect/server/api/flow_runs.py",
+      "src/prefect/server/api/flows.py",
+      "src/prefect/server/api/task_runs.py",
+      "tests/server/orchestration/api/test_deployments.py",
+      "tests/server/orchestration/api/test_flow_runs.py",
+      "tests/server/orchestration/api/test_flows.py",
+      "tests/server/orchestration/api/test_task_runs.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c5b68c5a47da85441c6d4aba44d8b312b218f1f9",
+    "authorDate": "2026-07-21T19:23:32+05:30",
+    "subject": "fix(runner): preserve stdlib precedence in flow runs (#22529)",
+    "body": "",
+    "issueRefs": [
+      "#22529"
+    ],
+    "touchedFiles": [
+      "src/prefect/runner/_workspace_starter.py",
+      "tests/runner/test__workspace_starter.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "975aae5649680c6177c1c3eeb8519fed1d1c554b",
+    "authorDate": "2026-07-21T18:54:16+05:30",
+    "subject": "docs: fix title in run background tasks (#22561)",
+    "body": "",
+    "issueRefs": [
+      "#22561"
+    ],
+    "touchedFiles": [
+      "docs/v3/how-to-guides/workflows/run-background-tasks.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "22aad393a32b87a24124fc5b221bcaca0d5855ca",
+    "authorDate": "2026-07-20T14:35:22-05:00",
+    "subject": "fix(concurrency): record lease at acquisition so a cancelled acquire can't leak a slot (#22542)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22542"
+    ],
+    "touchedFiles": [
+      "src/prefect/concurrency/_asyncio.py",
+      "src/prefect/concurrency/_sync.py"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "f281b778259abda2b24798650df91f77477738d6",
+    "authorDate": "2026-07-20T13:17:19-05:00",
+    "subject": "Catch Abort in Kubernetes observer crash-mark to keep Jobs watcher alive (#22555)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <desertaxle@users.noreply.github.com>",
+    "issueRefs": [
+      "#22555"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-kubernetes/prefect_kubernetes/observer.py",
+      "src/integrations/prefect-kubernetes/tests/test_observer.py"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "b749a6732bccbdcee1351e9afa806d32fb530d99",
+    "authorDate": "2026-07-15T14:29:10-04:00",
+    "subject": "fix(prefect-aws): bump aws-cdk CLI to 2.1131.0 (#22520)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22520"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-aws/infra/package-lock.json",
+      "src/integrations/prefect-aws/infra/package.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "68a21f2a3ec3f824bef16a8c5abd1f217cfaffb5",
+    "authorDate": "2026-07-14T16:14:21-07:00",
+    "subject": "fix: quote argument-hint YAML values so Copilot CLI ≥1.0.65 loads all skills (closes #22483) (#22484)",
+    "body": "",
+    "issueRefs": [
+      "closes #22483",
+      "#22484"
+    ],
+    "touchedFiles": [
+      ".claude/commands/repro.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6c39a5eb0c0e0d8e40c535827e4e25d067bd86c3",
+    "authorDate": "2026-07-13T15:11:47-05:00",
+    "subject": "[ui-v2] Fix deployment search empty state blocking typing (#22497)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex S <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22497"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/deployments/data-table/data-table.test.tsx",
+      "ui-v2/src/components/deployments/data-table/index.tsx",
+      "ui-v2/src/routes/deployments/index.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2a79a67a8fdb4b6cb33063578a7652435694806a",
+    "authorDate": "2026-07-09T08:58:57-05:00",
+    "subject": "fix(tests): loop until suspended in external-suspension integration test (#22466)",
+    "body": "Co-authored-by: Alex Streed <alex.@prefect.io>",
+    "issueRefs": [
+      "#22466"
+    ],
+    "touchedFiles": [
+      "integration-tests/test_flow_suspension.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "467544da6cd2526a549c1003d8a991c95a514392",
+    "authorDate": "2026-07-08T18:12:47-05:00",
+    "subject": "Fix RRULE schedule anchor computed in UTC but interpreted as local time (#22456)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22456"
+    ],
+    "touchedFiles": [
+      "src/prefect/_internal/schemas/validators.py",
+      "tests/_internal/schemas/test_validation.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b2c95fd622d9ba86e5da2be0f7a63d4017f2a695",
+    "authorDate": "2026-07-07T22:16:30-05:00",
+    "subject": "Fix Windows permission error on git pull in runner storage (#22447)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22447"
+    ],
+    "touchedFiles": [
+      "src/prefect/runner/storage.py",
+      "tests/runner/test_storage.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "013ae5c0f2eacadd8e72558ad1e9f4206fcf56bc",
+    "authorDate": "2026-07-03T17:56:03+05:30",
+    "subject": "Fix parameter name mismatches in docstrings",
+    "body": "- server/models/work_queues.py: read_work_queue_by_name docstring said\n  \"by id\" with a `work_queue_id` arg; it takes `name`\n- server/models/workers.py: `worker` -> `work_pool` in update_work_pool\n- server/schemas/core.py: `late_runs` -> `late_runs_count` in\n  evaluate_health_status\n- server/models/artifacts.py: remove stale `work_pool_filter` entry\n  from read_artifacts and read_latest_artifacts (not a parameter)",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/prefect/server/models/artifacts.py",
+      "src/prefect/server/models/work_queues.py",
+      "src/prefect/server/models/workers.py",
+      "src/prefect/server/schemas/core.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8798ccf96487d9106244030e11453f918bd37cb2",
+    "authorDate": "2026-07-02T14:37:22-05:00",
+    "subject": "fix(ui-v2): prevent date picker from jumping when switching months (#22431)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22431"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/ui/calendar.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ab6a0dc6d01900814612a11dc41d0d80c9549112",
+    "authorDate": "2026-07-01T15:02:16-04:00",
+    "subject": "[Bug] ECS observer leaves runs PENDING when capacity provider can't place task (#22417)",
+    "body": "Co-authored-by: goingforstudying-ctrl <goingforstudying-ctrl@users.noreply.github.com>",
+    "issueRefs": [
+      "#22417"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-aws/prefect_aws/observers/ecs.py",
+      "src/integrations/prefect-aws/tests/observers/test_ecs_observer_crash.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d04a7c8d46fe52e14fd1e776d93b65bec9a68e9f",
+    "authorDate": "2026-06-29T19:37:10+02:00",
+    "subject": "fix(prefect-redis): return a definite bool from write_path/awrite_path",
+    "body": "The SET result is bool | str | bytes | None; coerce success to True so the\nmethods actually return bool, matching the -> bool signature.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/integrations/prefect-redis/prefect_redis/blocks.py",
+      "src/integrations/prefect-redis/tests/test_blocks.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "14b8a483a51b6e3d2339eae2cfbd129d291ecde0",
+    "authorDate": "2026-06-29T19:31:39+02:00",
+    "subject": "fix(prefect-redis): type write_path/awrite_path as -> bool",
+    "body": "Both already return the redis SET result (True on success) and the tests assert\nthat; the -> None annotation was wrong. Address review feedback on #22394.",
+    "issueRefs": [
+      "#22394"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-redis/prefect_redis/blocks.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0510f1234efba8af0c5c3cef0fc8eb6fd30928ec",
+    "authorDate": "2026-06-28T10:00:57+02:00",
+    "subject": "fix(prefect-redis): preserve redis SET return value in write_path",
+    "body": "Addresses review: awrite_path/write_path were dropping redis-py's SET\nresult (returning None). Restore the return so async callers awaiting\nwrite_path keep getting the boolean status, as before. Add regression tests.",
+    "issueRefs": [],
+    "touchedFiles": [
+      "src/integrations/prefect-redis/tests/test_blocks.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "407bfa67b9f2b9289d5e63f489c257d713bb2259",
+    "authorDate": "2026-06-28T09:50:04+02:00",
+    "subject": "fix(prefect-redis): make RedisDatabase usable as sync result_storage",
+    "body": "closes #22393\n\n`RedisDatabase.read_path`/`write_path` were plain `async def`, so core's\nsync result persistence (`call_explicitly_sync_block_method`, which passes\n`_sync=True`) raised `TypeError` and silently dropped the result — every\ncached run was a MISS. Split each into an async `aread_path`/`awrite_path`\nplus an `@async_dispatch` sync wrapper, mirroring core's `WritableFileSystem`\nblocks (`LocalFileSystem`/`RemoteFileSystem`).\n\nBackward compatible: awaiting `read_path`/`write_path` from async code still\ndispatches to the async implementation.",
+    "issueRefs": [
+      "closes #22393"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-redis/prefect_redis/blocks.py",
+      "src/integrations/prefect-redis/tests/test_blocks.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e5b9dbcbcc607ac8d5be46eb15392ea493f363db",
+    "authorDate": "2026-06-30T17:41:34-05:00",
+    "subject": "docs: fix Airflow migration typo (#22416)",
+    "body": "",
+    "issueRefs": [
+      "#22416"
+    ],
+    "touchedFiles": [
+      "docs/v3/how-to-guides/migrate/airflow.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5bbc9f513a41a6666809839555361663a8f0383b",
+    "authorDate": "2026-06-29T21:21:15-05:00",
+    "subject": "Fix UI version redirect leaking internal host behind reverse proxy (#22406)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22406"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/api/server.py",
+      "tests/server/api/test_server.py"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "138ddaa60bb1e55e38308e47e6c71e5edf4c128f",
+    "authorDate": "2026-06-30T01:17:06+05:00",
+    "subject": "fix: run pull steps for module-path entrypoints when loading flow from flow run (#22376)",
+    "body": "",
+    "issueRefs": [
+      "#22376"
+    ],
+    "touchedFiles": [
+      "src/prefect/flows.py",
+      "tests/test_flows.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6da5a09a2f8b130036970e7e27a67a86fcba8b38",
+    "authorDate": "2026-06-29T10:32:31-05:00",
+    "subject": "Fix `set_working_directory` relative path resolution in workspace resolver (#22392)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22392"
+    ],
+    "touchedFiles": [
+      "src/prefect/deployments/steps/core.py",
+      "src/prefect/deployments/steps/pull.py",
+      "src/prefect/runner/_workspace_resolver.py",
+      "tests/runner/test__workspace_resolver.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7f2538fd97ea6e7fa7c762949a8c937a5b4c4833",
+    "authorDate": "2026-06-26T14:20:10-05:00",
+    "subject": "Update security issue reporting instructions (#22356)",
+    "body": "",
+    "issueRefs": [
+      "#22356"
+    ],
+    "touchedFiles": [
+      "SECURITY.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "afce0658af2b7243869933fb939a5fce9308548e",
+    "authorDate": "2026-06-26T20:11:18+01:00",
+    "subject": "Fix typo in documentation about task result handling (#22389)",
+    "body": "",
+    "issueRefs": [
+      "#22389"
+    ],
+    "touchedFiles": [
+      "docs/v3/how-to-guides/workflows/run-work-concurrently.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1bce221fb3157c966f93833dd5a635f0d7dfdc93",
+    "authorDate": "2026-06-25T16:00:49-05:00",
+    "subject": "fix(databricks): conform partner User-Agent to Databricks telemetry attribution format (#22359)",
+    "body": "Co-authored-by: Claude Opus 4.8 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#22359"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-databricks/prefect_databricks/credentials.py",
+      "src/integrations/prefect-databricks/tests/test_credentials.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7165d86955ad5f073b30e40d684341ea517544c8",
+    "authorDate": "2026-06-25T11:48:51-05:00",
+    "subject": "fix(prefect-gcp): normalize dict parquet_options in BigQuery load job config (#22379)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22379"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-gcp/prefect_gcp/bigquery.py",
+      "src/integrations/prefect-gcp/tests/test_bigquery.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5a0211832c604fcdb046d0f5c44795827718b80f",
+    "authorDate": "2026-06-24T13:28:57-05:00",
+    "subject": "fix(ui-v2): add dark mode theme to CodeMirror editors (#22368)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22368"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/artifacts/artifact/artifact-raw-data-display.tsx",
+      "ui-v2/src/components/ui/markdown-input.tsx",
+      "ui-v2/src/components/ui/python-input.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "77beae679fcef4c251b60dc5651adef3fa6e5582",
+    "authorDate": "2026-06-24T13:28:10-05:00",
+    "subject": "fix(ui-v2): improve parameters text readability in dark mode on flow run cards (#22367)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22367"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/flow-runs/flow-run-card/card-properties/flow-run-parameters.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2d0373be93a1720f2726729836a3d9945771d3ca",
+    "authorDate": "2026-06-24T13:27:41-05:00",
+    "subject": "fix(ui-v2): increase contrast of automation card name text (#22366)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22366"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/automations/automations-page.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f32335e857ee43fa2f4208df65015db7d10449f3",
+    "authorDate": "2026-06-24T09:20:13-05:00",
+    "subject": "Fix race condition in UI static directory creation with multiple workers (#22363)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <desertaxle@users.noreply.github.com>",
+    "issueRefs": [
+      "#22363"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/api/server.py",
+      "tests/server/api/test_server.py"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "50d5123eb5d652a76cc2851943ab85c717ce6a70",
+    "authorDate": "2026-06-23T14:26:31-05:00",
+    "subject": "fix(ui-v2): remove redundant \"Scheduled for\" prefix from start time display (#22360)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Nate Nowack <nate@prefect.io>",
+    "issueRefs": [
+      "#22360"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/flow-runs/flow-run-card/card-properties/flow-run-start-time.tsx",
+      "ui-v2/src/components/task-runs/task-runs-list/task-runs-list-item.test.tsx",
+      "ui-v2/src/components/task-runs/task-runs-list/task-runs-list-item.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "871639d876110640c2dad259f382e147cc59a2f8",
+    "authorDate": "2026-06-23T11:24:47-05:00",
+    "subject": "fix(tasks): return `PrefectFutureList` from `Task.map` when `deferred=True` (#22355)",
+    "body": "Co-authored-by: Alex Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22355"
+    ],
+    "touchedFiles": [
+      "src/prefect/tasks.py",
+      "tests/test_tasks.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9790a398c8ae3900570238164cec526aa01277a8",
+    "authorDate": "2026-06-23T10:18:02-05:00",
+    "subject": "fix: quote -q and -p args separately in work-queue create output (#22350)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22350"
+    ],
+    "touchedFiles": [
+      "src/prefect/cli/work_queue.py",
+      "tests/cli/test_work_queues.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "da06a691398aac0d411bea669ddf86cca8da8778",
+    "authorDate": "2026-06-22T16:10:33-05:00",
+    "subject": "docs: redirects for removed SDK stubs + fix databricks broken link (#22349)",
+    "body": "Co-authored-by: Claude Opus 4.8 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#22349"
+    ],
+    "touchedFiles": [
+      "docs/docs.json",
+      "docs/integrations/prefect-databricks/api-ref/prefect_databricks-jobs.mdx",
+      "src/integrations/prefect-databricks/prefect_databricks/jobs.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "52a551f363570c74cea00ef5fbf3e6f82b7c7364",
+    "authorDate": "2026-06-22T15:43:41-05:00",
+    "subject": "Fix flaky test_dispatches_cleanup_message_and_sends_ack_result (#22347)",
+    "body": "Co-authored-by: Alex Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22347"
+    ],
+    "touchedFiles": [
+      "tests/server/orchestration/api/test_worker_channel_cleanup_dispatcher.py",
+      "tests/server/orchestration/api/worker_channel_cleanup_test_utils.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "00b6dc3c94f6fc939e61fa01958c94fb4bfa669e",
+    "authorDate": "2026-06-22T19:50:36+05:00",
+    "subject": "fix(server): prevent duplicate Late state transitions in MarkLateRuns (#22316)",
+    "body": "",
+    "issueRefs": [
+      "#22316"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/orchestration/core_policy.py",
+      "src/prefect/server/services/late_runs.py",
+      "tests/server/orchestration/test_core_policy.py",
+      "tests/server/services/test_late_runs.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "441d5e112d263706d963612aabc8f252df94a42e",
+    "authorDate": "2026-06-19T11:35:19-05:00",
+    "subject": "docs: document CANCELLING timeout that auto-transitions stuck flow runs to CANCELLED (#22305)",
+    "body": "Co-authored-by: Alex Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22305"
+    ],
+    "touchedFiles": [
+      "docs/v3/advanced/cancel-workflows.mdx"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "5f580b62f0df180e60bcc5b80b84855569aa4ac6",
+    "authorDate": "2026-06-19T11:34:16-05:00",
+    "subject": "docs: document CANCELLING timeout contract in server orchestration pitfalls (#22306)",
+    "body": "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#22306"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/AGENTS.md"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "b5cb7a469571615d1e2c515747ada629b7f34779",
+    "authorDate": "2026-06-19T11:33:10-05:00",
+    "subject": "fix(tests): widen timing tolerance in lease TTL test to prevent CI flakiness (#22328)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22328"
+    ],
+    "touchedFiles": [
+      "tests/server/orchestration/api/test_concurrency_limits_v2.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "da409d2aec674f760ccc26a21babb73df2fa1b8c",
+    "authorDate": "2026-06-18T14:17:38-05:00",
+    "subject": "Run db_vacuum maintenance queries without the API statement timeout (#22291)",
+    "body": "Co-authored-by: Claude Opus 4.8 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#22291"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/services/db_vacuum.py",
+      "tests/server/services/test_db_vacuum.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "0a4a29a5390e043630e09a4273f282e0b8ea17f3",
+    "authorDate": "2026-06-18T13:19:26-05:00",
+    "subject": "fix(engine): avoid subflow tracking key collisions (#22286)",
+    "body": "",
+    "issueRefs": [
+      "#22286"
+    ],
+    "touchedFiles": [
+      "src/prefect/flow_engine.py",
+      "src/prefect/tasks.py",
+      "tests/test_flow_engine.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1edd3c0d4918d646c3ee247549c6c02e7ac28e2f",
+    "authorDate": "2026-06-18T08:47:53-05:00",
+    "subject": "Fix \"Add item\" button submitting form in deployment run page (#22325)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22325"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/schemas/__snapshots__/schema-form.snapshot.test.tsx.snap",
+      "ui-v2/src/components/schemas/schema-form-input-array-list.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "174a0f8fae07293c83a5767bf7936251e7620d69",
+    "authorDate": "2026-06-17T10:16:47-05:00",
+    "subject": "Fix `profile inspect --output json` emitting invalid JSON for active profile (#22317)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22317"
+    ],
+    "touchedFiles": [
+      "src/prefect/cli/profile.py",
+      "tests/cli/test_profile.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f85b0e4b006a9c3803f7bdb47734a2983c7093ac",
+    "authorDate": "2026-06-16T14:42:31-05:00",
+    "subject": "Fix stale EventLoopThread globals after fork causing subprocess deadlocks (#22308)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22308"
+    ],
+    "touchedFiles": [
+      "src/prefect/_internal/concurrency/threads.py"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "956b4c619658aba28277db060b473bce7dd82300",
+    "authorDate": "2026-06-16T11:22:59-05:00",
+    "subject": "Add cancelling timeout cleanup producer (#22238)",
+    "body": "",
+    "issueRefs": [
+      "#22238"
+    ],
+    "touchedFiles": [
+      ".github/workflows/integration-package-tests.yaml",
+      "docs/v3/api-ref/rest-api/server/schema.json",
+      "docs/v3/api-ref/settings-ref.mdx",
+      "schemas/settings.schema.json",
+      "src/prefect/server/api/background_workers.py",
+      "src/prefect/server/api/flow_runs.py",
+      "src/prefect/server/services/cancellation_cleanup.py",
+      "src/prefect/settings/_types.py",
+      "src/prefect/settings/models/server/services.py",
+      "tests/server/api/test_docket_task_keys.py",
+      "tests/server/orchestration/api/test_flow_runs.py",
+      "tests/server/services/test_cancellation_cleanup.py",
+      "tests/server/services/test_perpetual_services.py",
+      "tests/test_settings.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "d26ca5871053fae88d1f757a6c1e9eab7ae48ac1",
+    "authorDate": "2026-06-15T16:18:26-05:00",
+    "subject": "fix(server): snapshot block registry before iterating in auto-registration (#22297)",
+    "body": "Co-authored-by: Alexander Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22297"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/models/block_registration.py",
+      "tests/server/models/test_block_registration.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "32ac27c4bd64fc5a12cb83144b3fc9166205ff34",
+    "authorDate": "2026-06-15T13:58:22-05:00",
+    "subject": "Fix pending task runs in flow run graph (#22287)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex S <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22287"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/database/query_components.py",
+      "tests/server/orchestration/api/test_flow_run_graph_v2.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1dcd828a96d9f8c72190c2df05c0f4ad80adffd9",
+    "authorDate": "2026-06-15T12:05:59-04:00",
+    "subject": "fix(server): URL-encode credentials in asyncpg LISTEN/NOTIFY DSN (#22089)",
+    "body": "Co-authored-by: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#22089"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/utilities/postgres_listener.py",
+      "tests/server/utilities/test_postgres_listener.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0695a03c409a8c9a4c9bf1c67861238943f814f0",
+    "authorDate": "2026-06-15T10:55:23-05:00",
+    "subject": "docs: fix deployment name format in schedule creation guide (#22284)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22284"
+    ],
+    "touchedFiles": [
+      "docs/v3/how-to-guides/deployments/create-schedules.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d74d6ab288dc34870cef4d9f26a0f33b2e3d40fc",
+    "authorDate": "2026-06-15T10:37:41-05:00",
+    "subject": "fix(events): declare ESCAPE character in LIKE expressions for SQLite compatibility (#22264)",
+    "body": "Co-authored-by: Alexander Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22264"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/events/filters.py",
+      "tests/events/server/test_events_queries.py",
+      "ui-v2/src/api/prefect.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "84730ac99b68192dc3076af7139a4b635bee671f",
+    "authorDate": "2026-06-16T00:36:41+09:00",
+    "subject": "fix(runner): degrade events WebSocket on transient connection failures (#22241)",
+    "body": "",
+    "issueRefs": [
+      "#22241"
+    ],
+    "touchedFiles": [
+      "src/prefect/runner/AGENTS.md",
+      "src/prefect/runner/_event_emitter.py",
+      "tests/runner/test__event_emitter.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fb3cd21d19e12effac8e03b1c662d20cc94b5b9b",
+    "authorDate": "2026-06-15T10:15:12-05:00",
+    "subject": "fix(ui-v2): persist page size preference across navigation (#22280)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22280"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/hooks/use-page-size-preference.test.ts",
+      "ui-v2/src/hooks/use-page-size-preference.ts",
+      "ui-v2/src/routes/blocks/index.tsx",
+      "ui-v2/src/routes/deployments/index.tsx",
+      "ui-v2/src/routes/flows/index.tsx",
+      "ui-v2/src/routes/variables/index.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "336bb4900a3bbca169ca3582aeeff9d58976a51c",
+    "authorDate": "2026-06-15T09:58:09-05:00",
+    "subject": "fix(server): FastAPI 0.137 compatibility — skip route deletion when router is referenced (#22277)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22277"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/api/server.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7d7cd722bc2d696ba5b2cb79135f69e8b67811a8",
+    "authorDate": "2026-06-12T14:57:02-05:00",
+    "subject": "fix(prefect-github): guard against `None` token in `GitHubCredentials` (#22270)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Nate Nowack <nate@prefect.io>",
+    "issueRefs": [
+      "#22270"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-github/prefect_github/repository.py",
+      "src/integrations/prefect-github/tests/test_repository.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "86aa5f6a7e4d99891ecf730cf9ab00b7c0ad311c",
+    "authorDate": "2026-06-12T13:35:04-05:00",
+    "subject": "fix(tests): use retry_asserts for flaky automation notification test (#22246)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Andrew Kravets <apk@cognition.ai>",
+    "issueRefs": [
+      "#22246"
+    ],
+    "touchedFiles": [
+      "tests/events/server/models/test_automation_notifications.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "323be54bec5ce0eeac278cb011eea3536587460f",
+    "authorDate": "2026-06-12T13:09:46-05:00",
+    "subject": "fix(db): add index on `event_resources(occurred)` for vacuum performance (#22250)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#22250"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/database/_migrations/versions/postgresql/2026_06_10_000000_bad1e352c597_add_event_resources_occurred_index.py",
+      "src/prefect/server/database/_migrations/versions/sqlite/2026_06_10_000000_79e7a60e43d8_add_event_resources_occurred_index.py",
+      "src/prefect/server/database/orm_models.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "65ea05bef8d98f9df644852369cf0abe864e4651",
+    "authorDate": "2026-06-12T13:48:35-04:00",
+    "subject": "fix: prevent SSRF via remote $ref in JSON schema validation (#22252)",
+    "body": "Co-authored-by: Claude Opus 4.8 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#22252"
+    ],
+    "touchedFiles": [
+      "src/prefect/_internal/schemas/_registry.py",
+      "src/prefect/_internal/schemas/validators.py",
+      "src/prefect/client/schemas/actions.py",
+      "src/prefect/server/api/deployments.py",
+      "src/prefect/server/api/ui/schemas.py",
+      "src/prefect/utilities/schema_tools/validation.py",
+      "tests/_internal/schemas/test_validation.py",
+      "tests/server/orchestration/api/test_deployments.py",
+      "tests/server/orchestration/api/ui/test_schemas.py",
+      "tests/utilities/schema_tools/test_ssrf.py",
+      "ui-v2/src/api/prefect.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e6ad0cafdb0f9107898c569ea2ec0ebd2eaf52bf",
+    "authorDate": "2026-06-12T12:45:39-05:00",
+    "subject": "fix(docker): add \"context deadline exceeded\" to transient build error patterns (#22266)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: apk <apk@cognition.ai>",
+    "issueRefs": [
+      "#22266"
+    ],
+    "touchedFiles": [
+      "src/prefect/utilities/dockerutils.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "4c3d694411495a9d6fb8e57127f5d321e5d4f65b",
+    "authorDate": "2026-06-10T23:33:17-05:00",
+    "subject": "fix(ui-v2): prevent activity chart tooltip from being clipped in deployments table (#22257)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Nate Nowack <nate@prefect.io>",
+    "issueRefs": [
+      "#22257"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/deployments/data-table/index.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d858cb6725864c9a993be6a6633009b03b5e6f5e",
+    "authorDate": "2026-06-08T15:53:22-04:00",
+    "subject": "fix: handle RecursionError in Flow.serialize_parameters (#22245)",
+    "body": "",
+    "issueRefs": [
+      "#22245"
+    ],
+    "touchedFiles": [
+      "src/prefect/flows.py",
+      "tests/test_flows.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "db66b14dbaea18e726fc4ea0100fd194383c6c59",
+    "authorDate": "2026-06-05T15:17:18-05:00",
+    "subject": "docs: document Cloud-only features and fix the Cloud badge (#22229)",
+    "body": "",
+    "issueRefs": [
+      "#22229"
+    ],
+    "touchedFiles": [
+      "docs/AGENTS.md",
+      "docs/styles.css",
+      "docs/v3/concepts/automations.mdx",
+      "docs/v3/concepts/slas.mdx",
+      "docs/v3/concepts/workers.mdx",
+      "docs/v3/how-to-guides/deployment_infra/managed-aws-federated-identity.mdx",
+      "docs/v3/how-to-guides/deployment_infra/managed.mdx",
+      "docs/v3/how-to-guides/deployment_infra/serverless.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f04ad8cc1cf1593bda08e907389a905d7cb4f440",
+    "authorDate": "2026-06-05T14:40:20-05:00",
+    "subject": "fix(client): preserve IANA timezone names in RRuleSchedule.from_rrule() (#22232)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22232"
+    ],
+    "touchedFiles": [
+      "src/prefect/client/schemas/schedules.py",
+      "tests/client/schemas/test_schedules.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f8e3053c68e98bdaba32d2f5c977ab51deb793f3",
+    "authorDate": "2026-06-05T11:02:49-05:00",
+    "subject": "fix(cli): prompt to save new deployments into an existing prefect.yaml (#22195)",
+    "body": "Co-authored-by: Claude Opus 4.8 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#22195"
+    ],
+    "touchedFiles": [
+      "src/prefect/cli/deploy/_core.py",
+      "src/prefect/deployments/base.py",
+      "tests/cli/test_deploy.py",
+      "tests/deployment/test_base.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e7182eeaa1da47ba991f0883b8ee3364175975c1",
+    "authorDate": "2026-06-05T09:22:45-05:00",
+    "subject": "fix(e2e): use server-side name filter in block catalog test (#22236)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22236"
+    ],
+    "touchedFiles": [
+      "ui-v2/e2e/blocks/block-catalog.spec.ts",
+      "ui-v2/e2e/fixtures/api-helpers/blocks.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "13a37b0d9e279b18a6e2770fb99cd14d8d0b0baa",
+    "authorDate": "2026-06-05T09:11:11-05:00",
+    "subject": "fix(docker): upgrade UI builder stages from bullseye to bookworm (#22231)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22231"
+    ],
+    "touchedFiles": [
+      "Dockerfile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0bad21f4ce99db95716f64cc2eab836eb274b52c",
+    "authorDate": "2026-06-04T14:16:20-05:00",
+    "subject": "fix(services): use automatic=True for cleanup reconciler perpetual service (#22225)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22225"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/services/cleanup_reconciler.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fcc7fe84140fdc57a7490a3a278af0f482681a83",
+    "authorDate": "2026-06-05T01:54:38+09:00",
+    "subject": "fix(prefect-gcp): retry transient errors on all Cloud Run V2 worker reads (#22207)",
+    "body": "",
+    "issueRefs": [
+      "#22207"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-gcp/prefect_gcp/settings.py",
+      "src/integrations/prefect-gcp/prefect_gcp/workers/cloud_run_v2.py",
+      "src/integrations/prefect-gcp/tests/test_cloud_run_worker_v2.py",
+      "src/integrations/prefect-gcp/tests/test_settings.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "27c8ee6110b5748438dde988464f7370fb7e9824",
+    "authorDate": "2026-06-03T17:11:56-05:00",
+    "subject": "fix(services): recover perpetual services after Redis disruption (#22213)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22213"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/services/cancellation_cleanup.py",
+      "src/prefect/server/services/db_vacuum.py",
+      "src/prefect/server/services/foreman.py",
+      "src/prefect/server/services/late_runs.py",
+      "src/prefect/server/services/pause_expirations.py",
+      "src/prefect/server/services/repossessor.py",
+      "src/prefect/server/services/scheduler.py",
+      "tests/server/services/test_perpetual_services.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6467bc4c9a621ebcb30c26980553c3169dd5f95d",
+    "authorDate": "2026-06-02T12:50:11-05:00",
+    "subject": "fix(tests): increase hold_timeout in test_wait_for_lock to prevent race (#22202)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22202"
+    ],
+    "touchedFiles": [
+      "tests/test_locking.py"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "dd7dda66ba0f7fc085a86c1cdcc24f5451cefbe6",
+    "authorDate": "2026-06-02T10:58:46-05:00",
+    "subject": "Fix deploy init field parsing (#22183)",
+    "body": "",
+    "issueRefs": [
+      "#22183"
+    ],
+    "touchedFiles": [
+      "src/prefect/cli/deploy/_commands.py",
+      "tests/cli/test_deploy.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "aab7d68c9cf95562c25cd2113d79d086fe23e1af",
+    "authorDate": "2026-06-02T09:34:30-04:00",
+    "subject": "fix(pydantic): parse_obj_as() crashes with StopIteration on empty dict (#22188)",
+    "body": "Co-authored-by: devteamaegis <devteamaegis@users.noreply.github.com>",
+    "issueRefs": [
+      "#22188"
+    ],
+    "touchedFiles": [
+      "src/prefect/utilities/pydantic.py",
+      "tests/utilities/test_pydantic.py"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "93a50b1a122dd5a712d04a65a2bf9ca5b9cfde1b",
+    "authorDate": "2026-06-01T19:30:39-05:00",
+    "subject": "fix(tests): preserve cyclopts modules in reset_sys_modules (#22194)",
+    "body": "",
+    "issueRefs": [
+      "#22194"
+    ],
+    "touchedFiles": [
+      "tests/conftest.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "00b01ad96ff32ae8b3d8d386f5555bfc7aaa8674",
+    "authorDate": "2026-06-01T15:02:04-05:00",
+    "subject": "fix(prefect-redis): add redis-py 8 compatible connection defaults (#22189)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22189"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-redis/prefect_redis/client.py",
+      "src/integrations/prefect-redis/tests/test_client.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ca004b6fc3ce494f312702a3964c7287fd0b6f33",
+    "authorDate": "2026-06-01T09:11:50-05:00",
+    "subject": "fix(runner): remove double client injection in `_resolve_flow_for_hooks` (#22176)",
+    "body": "Co-authored-by: Alexander Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22176"
+    ],
+    "touchedFiles": [
+      "src/prefect/runner/runner.py",
+      "tests/runner/test__hook_runner.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2018fb1a03a5e607dc6e361efacbb4254db3e44e",
+    "authorDate": "2026-06-01T08:53:27-05:00",
+    "subject": "fix(tests): pin local worker registry in `test_create_with_unsupported_type` (#22153)",
+    "body": "Co-authored-by: Alexander Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22153"
+    ],
+    "touchedFiles": [
+      "tests/cli/test_work_pool.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f23d1fce00ccc0f5a87a42b6d5513eb084d27fe5",
+    "authorDate": "2026-06-01T08:48:51-05:00",
+    "subject": "fix(tests): use direct API calls in suspension integration test (#22152)",
+    "body": "Co-authored-by: Alexander Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22152"
+    ],
+    "touchedFiles": [],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5e6f056d2dba0902c571f0d27555d567e1d73ae2",
+    "authorDate": "2026-06-01T08:45:49-05:00",
+    "subject": "fix(cli): lowercase work pool name in block document names for `storage configure` (#22144)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: Alex Streed <desertaxle@users.noreply.github.com>",
+    "issueRefs": [
+      "#22144"
+    ],
+    "touchedFiles": [
+      "src/prefect/cli/work_pool.py",
+      "tests/cli/test_work_pool.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f2f4bff50e33a669c7189f00dfc1e6893abeff18",
+    "authorDate": "2026-05-31T16:33:15-04:00",
+    "subject": "fix(tests): use direct API calls in suspension integration test (#22157)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22157"
+    ],
+    "touchedFiles": [
+      "integration-tests/test_flow_suspension.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4d7cecaad7e72f97c26fb791470271304b806d56",
+    "authorDate": "2026-05-29T09:53:17-04:00",
+    "subject": "fix(tests): add timeout and transport retries to `hosted_api_client` fixture (#22130)",
+    "body": "Co-authored-by: Alexander Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22130"
+    ],
+    "touchedFiles": [
+      "tests/fixtures/api.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "b1546f98149859416a662fb75baa575cd0a71a5f",
+    "authorDate": "2026-05-29T09:42:56-04:00",
+    "subject": "fix(tests): fix flaky tests on main — regenerate SettingAccessor and widen timing tolerance (#22133)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: apk <apk@cognition.ai>\nCo-authored-by: Alex Streed <desertaxle@users.noreply.github.com>",
+    "issueRefs": [
+      "#22133"
+    ],
+    "touchedFiles": [
+      "src/prefect/settings/_types.py",
+      "tests/server/orchestration/api/test_flow_runs.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "64314433590ebcb55192d7e8fa01c69bd973dcab",
+    "authorDate": "2026-05-27T14:00:39-05:00",
+    "subject": "Don't copy file-derived labels from linked issues (#22115)",
+    "body": "Co-authored-by: Claude Opus 4.7 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#22115"
+    ],
+    "touchedFiles": [
+      ".github/workflows/copy-linked-issue-labels.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "894b1d0a59c0d2de769e93d1e9af92f414fc7b06",
+    "authorDate": "2026-05-27T13:59:00-05:00",
+    "subject": "fix(prefect-gcp): retry Cloud Run v2 execution polling (#22113)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22113"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-gcp/prefect_gcp/workers/cloud_run_v2.py",
+      "src/integrations/prefect-gcp/tests/test_cloud_run_worker_v2.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "20dfd41a9feee112c9026d7054796a7cff13b69e",
+    "authorDate": "2026-05-27T14:04:26-04:00",
+    "subject": "feat(server): expose WebSocket ping interval/timeout settings for uvicorn (#22091)",
+    "body": "Co-authored-by: Claude Opus 4.6 (1M context) <noreply@anthropic.com>\nCo-authored-by: Alex Streed <desertaxle@users.noreply.github.com>",
+    "issueRefs": [
+      "#22091"
+    ],
+    "touchedFiles": [
+      "src/prefect/cli/_server_utils.py",
+      "src/prefect/cli/server.py",
+      "src/prefect/settings/models/server/api.py",
+      "tests/cli/test_start_server.py",
+      "tests/test_settings.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "9d83e0f9a94e38249b566829a2fdd7ab2aeee660",
+    "authorDate": "2026-05-27T12:08:56-05:00",
+    "subject": "fix(ui-v2): prevent graph overlap when switching layout with expanded subflows (#22108)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: Alexander Streed <alexander.streed@prefect.io>",
+    "issueRefs": [
+      "#22108"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/flow-runs/flow-run-graph/flow-run-graph-settings.tsx",
+      "ui-v2/src/graphs/factories/nodes.ts",
+      "ui-v2/src/graphs/index.ts",
+      "ui-v2/src/graphs/objects/settings.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4e141b688237d1b0b4722fab1de9e43d058957e1",
+    "authorDate": "2026-05-27T09:33:25-05:00",
+    "subject": "Fix multi-worker server docs Redis requirements (#22107)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22107"
+    ],
+    "touchedFiles": [
+      "docs/v3/how-to-guides/self-hosted/server-cli.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "59744270fe99151058b80a51a1da20518a581101",
+    "authorDate": "2026-05-26T14:51:08-05:00",
+    "subject": "fix(ui-v2): replace flat Select with search-backed combobox for default result storage (#22099)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22099"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/blocks/blocks-page.tsx",
+      "ui-v2/src/components/blocks/default-result-storage-card.stories.tsx",
+      "ui-v2/src/components/blocks/default-result-storage-card.test.tsx",
+      "ui-v2/src/components/blocks/default-result-storage-card.tsx",
+      "ui-v2/src/routes/blocks/index.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "595f08320f9d2310cab3e843ddf0d10f77e6f4b7",
+    "authorDate": "2026-05-26T11:47:27-05:00",
+    "subject": "fix(databricks): add partner user agent attribution (#22094)",
+    "body": "Co-authored-by: Claude <noreply@anthropic.com>",
+    "issueRefs": [
+      "#22094"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-databricks/prefect_databricks/credentials.py",
+      "src/integrations/prefect-databricks/tests/test_credentials.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e70cf1b15735864a1066f43dacbeccfa5c42aea1",
+    "authorDate": "2026-05-26T11:40:14-05:00",
+    "subject": "Fix work-pool concurrency command examples (#22093)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22093"
+    ],
+    "touchedFiles": [
+      "docs/v3/how-to-guides/deployment_infra/manage-work-pools.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "36bc744ec18bc0d602345e9c3e7419c2f8d5cc08",
+    "authorDate": "2026-05-26T10:31:09-05:00",
+    "subject": "fix: cap reconnect_delay exponent to prevent OverflowError (#22086)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22086"
+    ],
+    "touchedFiles": [
+      "src/prefect/workers/_worker_channel/_transport.py",
+      "tests/workers/test_base_worker.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "add45477ba827a138ae867f71f19e2c3f4a4c818",
+    "authorDate": "2026-05-26T10:29:56-05:00",
+    "subject": "fix(prefect-gcp): retry transient errors during Cloud Run v2 readiness poll (#22087)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22087"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-gcp/prefect_gcp/workers/cloud_run_v2.py",
+      "src/integrations/prefect-gcp/tests/test_cloud_run_worker_v2.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "891582edf50a965a7b08d6df9cfef715d60ad0cf",
+    "authorDate": "2026-05-26T10:52:55-04:00",
+    "subject": "fix(orchestration): guard ZeroDivisionError in RetryFailedTasks when retry_jitter_factor set without retry_delay (#22071)",
+    "body": "Co-authored-by: devteamaegis <devteamaegis@users.noreply.github.com>",
+    "issueRefs": [
+      "#22071"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/orchestration/core_policy.py",
+      "tests/server/orchestration/test_core_policy.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "822447055dd0600580c832572eb9bdf8adca2cb9",
+    "authorDate": "2026-05-25T09:47:56-05:00",
+    "subject": "fix(azure): retry transient 5xx errors in ACI container group polling (#22078)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22078"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-azure/prefect_azure/workers/container_instance.py",
+      "src/integrations/prefect-azure/tests/test_aci_worker.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e153ad224278855318f1c39334c712b02770daf7",
+    "authorDate": "2026-05-24T18:26:03-05:00",
+    "subject": "fix(deps): raise pydantic-settings lower bound to >=2.9.1 (#22075)",
+    "body": "",
+    "issueRefs": [
+      "#22075"
+    ],
+    "touchedFiles": [
+      "client/pyproject.toml",
+      "pyproject.toml",
+      "uv.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2a9d9f76deaa7f448acfd52027e0d880b872d6d0",
+    "authorDate": "2026-05-22T16:51:29-05:00",
+    "subject": "fix: worker-channel ready frame returns `worker_id=None` (#22067)",
+    "body": "",
+    "issueRefs": [
+      "#22067"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/api/workers.py",
+      "tests/server/orchestration/api/test_workers.py",
+      "tests/workers/test_base_worker.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7f16fbc1540100b98b35e1e36085da5ad658ed63",
+    "authorDate": "2026-05-22T15:48:39-05:00",
+    "subject": "Fix default result store existence checks (#22058)",
+    "body": "",
+    "issueRefs": [
+      "#22058"
+    ],
+    "touchedFiles": [
+      "src/prefect/results.py",
+      "tests/results/test_result_store.py",
+      "tests/test_transactions.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e021a03b139d7de49fb0d1089a14b4fb93d50343",
+    "authorDate": "2026-05-22T12:52:23-05:00",
+    "subject": "Fix low-risk import cycles (#22040)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>\nCo-authored-by: Alex Streed <desertaxle@users.noreply.github.com>",
+    "issueRefs": [
+      "#22040"
+    ],
+    "touchedFiles": [
+      "src/prefect/events/clients.py",
+      "src/prefect/events/subscribers.py",
+      "src/prefect/logging/handlers.py",
+      "src/prefect/server/schemas/filters.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "138064cae7e44cb1c19168f4e36113f6640f0260",
+    "authorDate": "2026-05-22T10:01:25-05:00",
+    "subject": "fix: route lease renewal failure log through run logger (#22053)",
+    "body": "",
+    "issueRefs": [
+      "#22053"
+    ],
+    "touchedFiles": [
+      "src/prefect/concurrency/_leases.py",
+      "tests/concurrency/test_leases.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e7d54c422cb4a70c7ad26360f0cf605d48a687d1",
+    "authorDate": "2026-05-22T09:30:16-05:00",
+    "subject": "docs: fix retired deployment-doc links in create-deployments page (#22061)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22061"
+    ],
+    "touchedFiles": [
+      "docs/v3/how-to-guides/deployments/create-deployments.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6f3c68fdbf0aafae02c4c50662f2993221056b3c",
+    "authorDate": "2026-05-22T08:56:39-05:00",
+    "subject": "fix(server): surface actionable error when UI static files fail due to insufficient disk space (#22057)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22057"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/api/_ui_static.py",
+      "src/prefect/server/api/server.py",
+      "tests/server/api/test_server.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "12ac5c7d8843e21003838981f9bd9aa44cd90854",
+    "authorDate": "2026-05-21T07:19:42-05:00",
+    "subject": "fix(ui-v2): add dark:prose-invert to all prose containers for dark mode (#22049)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22049"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/artifacts/artifact/detail-image.tsx",
+      "ui-v2/src/components/artifacts/artifact/detail-markdown.tsx",
+      "ui-v2/src/components/artifacts/key/artifacts-key-header.tsx",
+      "ui-v2/src/components/blocks/block-type-details.tsx",
+      "ui-v2/src/components/blocks/block-type-page/block-type-page.tsx",
+      "ui-v2/src/components/blocks/blocks-catalog-page/block-type-card.tsx",
+      "ui-v2/src/components/deployments/deployment-description.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "354623c1258b2e75de62230b8e3f0400f2722cf1",
+    "authorDate": "2026-05-20T15:43:23-05:00",
+    "subject": "fix(ui-v2): persist flow run log sort order via localStorage (#22038)",
+    "body": "Co-authored-by: Alexander Streed <ajstreed1@gmail.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22038"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/flow-runs/flow-run-details-page/flow-run-logs.test.tsx",
+      "ui-v2/src/components/flow-runs/flow-run-details-page/flow-run-logs.tsx",
+      "ui-v2/src/components/task-runs/task-run-logs/index.tsx",
+      "ui-v2/src/components/task-runs/task-run-logs/task-run-logs.test.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "81b91c52f418cccf555f641084cce09b9d50588c",
+    "authorDate": "2026-05-20T12:47:05-05:00",
+    "subject": "fix(ui-v2): use calmer dark-mode shades for flow run graph nodes (#22034)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22034"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/flow-runs/flow-run-graph/consts.test.ts",
+      "ui-v2/src/components/flow-runs/flow-run-graph/consts.ts",
+      "ui-v2/src/components/flow-runs/flow-run-graph/flow-run-graph.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f9d68dfbf83f322644fd9c1c10c490e7c5a0f73f",
+    "authorDate": "2026-05-20T23:15:44+05:30",
+    "subject": "Fix Azure blob result storage to overwrite on rewrite (#19411) (#22035)",
+    "body": "",
+    "issueRefs": [
+      "#19411",
+      "#22035"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-azure/prefect_azure/blob_storage.py",
+      "src/integrations/prefect-azure/tests/test_blob_storage.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bff9d7990d1c075a0a6a7e249807eae897a80e81",
+    "authorDate": "2026-05-20T22:34:39+05:30",
+    "subject": "fix: reset-runs-page-on-search-update (#21993)",
+    "body": "Signed-off-by: Hemant M Mehta <hemant29mehta@gmail.com>",
+    "issueRefs": [
+      "#21993"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/runs/runs-page.test.tsx",
+      "ui-v2/src/components/runs/use-runs-saved-filters.ts",
+      "ui-v2/src/components/ui-version-switch/actions.test.ts",
+      "ui-v2/src/hooks/use-runs-filters.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f9e3acd99cded740ef8e3a0ece15d63752985a24",
+    "authorDate": "2026-05-20T20:29:58+05:30",
+    "subject": "fix: correctly check process liveness before adding to process map in… (#22006)",
+    "body": "Co-authored-by: Alex Streed <desertaxle@users.noreply.github.com>",
+    "issueRefs": [
+      "#22006"
+    ],
+    "touchedFiles": [
+      "src/prefect/runner/runner.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "823fde15bdbe7fa31a90454bce665388d4c7dbab",
+    "authorDate": "2026-05-20T09:59:27-05:00",
+    "subject": "fix: clean CLI error for malformed TOML settings files (#22030)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: Alex Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22030"
+    ],
+    "touchedFiles": [
+      "src/prefect/__init__.py",
+      "src/prefect/cli/_app.py",
+      "src/prefect/settings/sources.py",
+      "tests/cli/test_config.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "876219b592726224cd6aaa0901515c54c8d7b45c",
+    "authorDate": "2026-05-20T09:48:05-05:00",
+    "subject": "docs: fix stale internal links on work-pools concept page (#22031)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22031"
+    ],
+    "touchedFiles": [
+      "docs/v3/concepts/work-pools.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "25f44095fe43ccf5fe39fb2a0ddfc28dce507c09",
+    "authorDate": "2026-05-20T09:11:31-05:00",
+    "subject": "fix(ui-v2): schedule status reflects active flag only, improve badge layout (#22029)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22029"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/deployments/deployment-schedules/deployment-schedule-item.test.tsx",
+      "ui-v2/src/components/deployments/deployment-schedules/deployment-schedule-item.tsx",
+      "ui-v2/src/components/ui/schedule-badge/index.tsx",
+      "ui-v2/src/components/ui/schedule-badge/schedule-badge.test.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "eb250d38db52e45f74d36bb587f6e84c8be0b804",
+    "authorDate": "2026-05-20T07:19:53-05:00",
+    "subject": "fix: measure true cold imports in CodSpeed benchmarks (#22019)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: Alex Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22019"
+    ],
+    "touchedFiles": [
+      ".github/workflows/codspeed-benchmarks.yaml",
+      "benches/bench_import.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5010356137a623b1dcc379772f39871341b10279",
+    "authorDate": "2026-05-20T07:16:17-05:00",
+    "subject": "fix(tests): make `test_read_flow_runs_filters_by_start_time` deterministic (#22024)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22024"
+    ],
+    "touchedFiles": [
+      "tests/server/models/test_flow_runs.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a3d1df27872531c2d9f9afc196c8ca21e576ade6",
+    "authorDate": "2026-05-19T16:28:21-05:00",
+    "subject": "fix(bundles): make ZipBuilder storage keys truly content-addressed (#22008)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#22008"
+    ],
+    "touchedFiles": [
+      "src/prefect/bundles/_zip_builder.py",
+      "tests/_experimental/bundles/test_zip_builder.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "25e6abc344fbe39f5a407b9cbfa256a71cfa2a51",
+    "authorDate": "2026-05-19T23:23:57+05:30",
+    "subject": "fix: improve missing block reference error messages (#21945)",
+    "body": "Signed-off-by: Hemant M Mehta <hemant29mehta@gmail.com>",
+    "issueRefs": [
+      "#21945"
+    ],
+    "touchedFiles": [
+      "src/prefect/cli/block.py",
+      "src/prefect/utilities/templating/__init__.py",
+      "tests/utilities/test_templating.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "97b3c86680db581131c52c588786f8e63880d3c7",
+    "authorDate": "2026-05-19T11:24:58-05:00",
+    "subject": "fix: use stdlib `importlib.metadata` instead of `importlib_metadata` backport (#22012)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <astreed@prefect.io>\nCo-authored-by: Alex Streed <desertaxle@users.noreply.github.com>",
+    "issueRefs": [
+      "#22012"
+    ],
+    "touchedFiles": [
+      "src/prefect/workers/base.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2fd007d8af051ed378f74073e47813f738214512",
+    "authorDate": "2026-05-19T10:26:21-05:00",
+    "subject": "fix(tests): fix flaky `test_worker` integration test with event subscription race (#22010)",
+    "body": "Co-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#22010"
+    ],
+    "touchedFiles": [
+      "integration-tests/test_worker.py",
+      "pyproject.toml"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "467c391f32e966977fa520ee54955847b40e7558",
+    "authorDate": "2026-05-18T21:39:57+05:30",
+    "subject": "fix: apprise-logger-level-normalization (#21709)",
+    "body": "Signed-off-by: Hemant M Mehta <hemant29mehta@gmail.com>\nCo-authored-by: Copilot <copilot@github.com>",
+    "issueRefs": [
+      "#21709"
+    ],
+    "touchedFiles": [
+      "src/prefect/blocks/notifications.py",
+      "tests/blocks/test_notifications.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6478caf91a6afd456e549685063ee2315797b41c",
+    "authorDate": "2026-05-18T10:33:04-05:00",
+    "subject": "fix(tests): widen suspension propagation window in external-suspension integration test (#21972)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <alex.s@prefect.io>",
+    "issueRefs": [
+      "#21972"
+    ],
+    "touchedFiles": [
+      "integration-tests/test_flow_suspension.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fb584c1ac968992229a6f257977c5b2606832488",
+    "authorDate": "2026-05-18T10:32:18-05:00",
+    "subject": "fix(tests): make `test_flow_parameter_caching` deterministic (#21973)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#21973"
+    ],
+    "touchedFiles": [
+      "tests/test_task_engine.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1ff0817fb022f826a76f9e5fc6814e5eda2f8991",
+    "authorDate": "2026-05-18T10:05:20-05:00",
+    "subject": "fix(prefect-dbt): restore dbt-core 1.7.0 compatibility (#21996)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21996"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-dbt/prefect_dbt/cli/commands.py",
+      "src/integrations/prefect-dbt/prefect_dbt/core/_artifacts.py",
+      "src/integrations/prefect-dbt/prefect_dbt/core/_executor.py",
+      "src/integrations/prefect-dbt/prefect_dbt/core/_freshness.py",
+      "src/integrations/prefect-dbt/prefect_dbt/core/_manifest.py",
+      "src/integrations/prefect-dbt/prefect_dbt/core/_orchestrator.py",
+      "src/integrations/prefect-dbt/prefect_dbt/core/runner.py",
+      "src/integrations/prefect-dbt/prefect_dbt/core/settings.py",
+      "src/integrations/prefect-dbt/tests/core/conftest.py",
+      "src/integrations/prefect-dbt/tests/core/test_cloud_executor.py",
+      "src/integrations/prefect-dbt/tests/core/test_executor.py",
+      "src/integrations/prefect-dbt/tests/core/test_freshness.py",
+      "src/integrations/prefect-dbt/tests/core/test_manifest.py",
+      "src/integrations/prefect-dbt/tests/core/test_orchestrator_artifacts.py",
+      "src/integrations/prefect-dbt/tests/core/test_orchestrator_cache.py",
+      "src/integrations/prefect-dbt/tests/core/test_orchestrator_plan.py",
+      "src/integrations/prefect-dbt/tests/core/test_orchestrator_test_strategies.py",
+      "src/integrations/prefect-dbt/tests/core/test_runner.py",
+      "src/integrations/prefect-dbt/tests/core/test_settings.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0d88257e99d044844418096c4f8ebeb1a87a45ee",
+    "authorDate": "2026-05-17T20:53:42-05:00",
+    "subject": "fix(prefect-dbt): support dbt unit tests in PrefectDbtRunner (#21989)",
+    "body": "",
+    "issueRefs": [
+      "#21989"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-dbt/prefect_dbt/core/runner.py",
+      "src/integrations/prefect-dbt/tests/core/test_runner.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d4554c30224993186187abf9b87e7bddb57509b5",
+    "authorDate": "2026-05-17T19:31:03-05:00",
+    "subject": "fix(ui-v2): fall back to `crypto.getRandomValues` for UUID generation in non-secure contexts (#21992)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21992"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/api/csrf.test.ts",
+      "ui-v2/src/api/csrf.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ac9d445d51c13d6f0f2604d1f197d2c5a9f1e9c7",
+    "authorDate": "2026-05-15T20:10:26-05:00",
+    "subject": "fix(prefect-aws): disable CDK version reporting for deterministic template generation (#21985)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21985"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-aws/infra/cdk.json",
+      "src/integrations/prefect-aws/prefect_aws/templates/ecs/events-only.json",
+      "src/integrations/prefect-aws/prefect_aws/templates/ecs/service.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "24ad69933be37ffcdc7f00acd6b517cad80a15ec",
+    "authorDate": "2026-05-15T14:47:13-05:00",
+    "subject": "Fix ECS deployment circuit breaker and harden CDK version pinning (#21979)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21979"
+    ],
+    "touchedFiles": [
+      ".github/workflows/integration-package-release.yaml",
+      "src/integrations/prefect-aws/infra/justfile",
+      "src/integrations/prefect-aws/infra/package-lock.json",
+      "src/integrations/prefect-aws/infra/package.json",
+      "src/integrations/prefect-aws/infra/tests/test_worker_stack.py",
+      "src/integrations/prefect-aws/infra/worker/service_stack.py",
+      "src/integrations/prefect-aws/prefect_aws/templates/ecs/events-only.json",
+      "src/integrations/prefect-aws/prefect_aws/templates/ecs/service.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "649f9b91abea3e135b02fb4389a573416db907b9",
+    "authorDate": "2026-05-15T11:16:56-05:00",
+    "subject": "Fix flaky `test_reschedule_flow_runs` timeout under CI load (#21966)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <ajstreed1@gmail.com>\nCo-authored-by: bot_apk <apk@cognition.ai>",
+    "issueRefs": [
+      "#21966"
+    ],
+    "touchedFiles": [
+      "tests/runner/test_runner.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "3a357d66bb9113855d3da00d2d941a202936462e",
+    "authorDate": "2026-05-15T15:47:23+00:00",
+    "subject": "chore(tests): fix duplicated \"the\" in flow_run_slas test comments (#21943)",
+    "body": "Signed-off-by: Noa Levi <275430404+lphuc2250gma@users.noreply.github.com>\nCo-authored-by: Noa Levi <275430404+lphuc2250gma@users.noreply.github.com>",
+    "issueRefs": [
+      "#21943"
+    ],
+    "touchedFiles": [
+      "tests/events/server/triggers/test_flow_run_slas.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "704ecb1e6b76e3c12391fb710d581538f986bf37",
+    "authorDate": "2026-05-15T10:27:21-05:00",
+    "subject": "Fix subflow duplication when process is re-executed against same flow_run_id (#21951)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21951"
+    ],
+    "touchedFiles": [
+      "src/prefect/flow_engine.py",
+      "tests/test_flow_engine.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3123e390ead60fd16158541a58b96bc1ccb59ec2",
+    "authorDate": "2026-05-15T10:12:36-05:00",
+    "subject": "fix(tests): widen timing tolerance in `test_renew_concurrency_lease` (#21965)",
+    "body": "Co-authored-by: Alex Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#21965"
+    ],
+    "touchedFiles": [
+      "tests/server/orchestration/api/test_concurrency_limits_v2.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d6258911934bc530344c5f808fef97b532a1b8e9",
+    "authorDate": "2026-05-15T10:09:13-05:00",
+    "subject": "fix(server): guard `.get()` calls on arbitrary `State.data` in result-data-loss rules (#21967)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21967"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/orchestration/core_policy.py",
+      "tests/server/orchestration/api/test_flow_runs.py",
+      "tests/server/orchestration/test_core_policy.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8c20fc4d3672c5448cf18c96eaa29a826d599ae5",
+    "authorDate": "2026-05-15T09:45:56-05:00",
+    "subject": "docs: fix stale claim that all experimental/ subpackages are deprecated shims (#21947)",
+    "body": "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#21947"
+    ],
+    "touchedFiles": [
+      "src/integrations/AGENTS.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "473bf5feaaf140454e25e9ef62997d69296354bd",
+    "authorDate": "2026-05-15T08:57:25-05:00",
+    "subject": "fix(types): enforce tz-aware `DateTime` on Python >= 3.13 (#21952)",
+    "body": "",
+    "issueRefs": [
+      "#21952"
+    ],
+    "touchedFiles": [
+      "src/prefect/types/_datetime.py",
+      "tests/events/client/test_events_schema.py",
+      "tests/test_datetime.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a73716e3bdb996e2741f8252163d36b627db43ec",
+    "authorDate": "2026-05-15T19:20:45+05:30",
+    "subject": "fix(runner): use tz-aware now(\"UTC\") for last_adhoc_pull timestamp (#21961)",
+    "body": "",
+    "issueRefs": [
+      "#21961"
+    ],
+    "touchedFiles": [
+      "src/prefect/runner/_scheduled_run_poller.py",
+      "src/prefect/runner/runner.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "520fd9eac04cadec40879335337e8172a7ef29d5",
+    "authorDate": "2026-05-14T10:43:48-05:00",
+    "subject": "feat(snowflake): SPCS worker improvements — crash diagnostics, pending state, partner ID (#21624)",
+    "body": "Co-authored-by: zzstoatzz <thrast36@gmail.com>",
+    "issueRefs": [
+      "#21624"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-snowflake/prefect_snowflake/__init__.py",
+      "src/integrations/prefect-snowflake/prefect_snowflake/experimental/workers/spcs.py",
+      "src/integrations/prefect-snowflake/pyproject.toml",
+      "src/integrations/prefect-snowflake/tests/experimental/test_spcs_worker.py"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "7057b0df499b140407d3abf264538c21444724ce",
+    "authorDate": "2026-05-13T19:18:32-05:00",
+    "subject": "Add `cancelling_timeout_teardown.v1` cleanup handler (#21911)",
+    "body": "Co-authored-by: Claude Opus 4.7 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#21911"
+    ],
+    "touchedFiles": [
+      "src/prefect/workers/_cleanup_handlers.py",
+      "src/prefect/workers/base.py",
+      "tests/workers/test_base_worker.py",
+      "tests/workers/test_cleanup_handlers.py",
+      "tests/workers/test_process_worker.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "55ba4959d2885438ed68b9ce2cc076184ac6a7e3",
+    "authorDate": "2026-05-13T16:18:22-05:00",
+    "subject": "docs(events): note metric-trigger Cloud gating and event prefix difference (#21935)",
+    "body": "Co-authored-by: Claude Opus 4 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#21935"
+    ],
+    "touchedFiles": [
+      "src/prefect/events/AGENTS.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "62e6b4559228cb9382f8b1015adbe52725ba9f61",
+    "authorDate": "2026-05-13T16:11:03-05:00",
+    "subject": "Fix concurrency lease renewal starvation with thread-backed renewal (#21925)",
+    "body": "",
+    "issueRefs": [
+      "#21925"
+    ],
+    "touchedFiles": [
+      "integration-tests/test_concurrency_leases.py",
+      "src/prefect/concurrency/AGENTS.md",
+      "src/prefect/concurrency/_leases.py",
+      "tests/concurrency/test_leases.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "35c7f1ed90b2a8605bc9f39b83d917ed2b862e08",
+    "authorDate": "2026-05-12T22:23:34-05:00",
+    "subject": "fix(ui-v2): handle named pending states (#21931)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex S <alex.s@prefect.io>",
+    "issueRefs": [
+      "#21931"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/api/flow-runs/constants.ts",
+      "ui-v2/src/api/flow-runs/state-utilities.test.ts",
+      "ui-v2/src/components/automations/automations-wizard/trigger-step/state-multi-select.test.tsx",
+      "ui-v2/src/components/automations/trigger-details/trigger-details-flow-run-state.test.tsx",
+      "ui-v2/src/components/automations/trigger-details/trigger-details-flow-run-state.tsx",
+      "ui-v2/src/components/flow-runs/flow-run-details-page/flow-run-details-page.test.tsx",
+      "ui-v2/src/components/flow-runs/flow-runs-list/flow-runs-filters/state-filter.test.tsx",
+      "ui-v2/src/components/flow-runs/flow-runs-list/flow-runs-filters/state-filters.constants.ts",
+      "ui-v2/src/components/task-runs/task-run-state-filter.test.tsx",
+      "ui-v2/src/components/ui/state-badge/state-badge.stories.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a363ff649da83d4c9a5fdd6557c3bb07a75ecb11",
+    "authorDate": "2026-05-12T15:49:28-05:00",
+    "subject": "fix(prefect-ray): only shut down Ray in `__exit__` if the task runner started it (#21921)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>\nCo-authored-by: Alex Streed <desertaxle@users.noreply.github.com>",
+    "issueRefs": [
+      "#21921"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-ray/prefect_ray/task_runners.py",
+      "src/integrations/prefect-ray/tests/test_task_runners.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "00960f627269084f14e4bc0e1d241bdadf7edb57",
+    "authorDate": "2026-05-12T15:40:35-05:00",
+    "subject": "fix(ui-v2): drop TagBadge magic-number max-width, accept className (#21913)",
+    "body": "Co-authored-by: Claude Opus 4 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#21913"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/ui/tag-badge-group.tsx",
+      "ui-v2/src/components/ui/tag-badge.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "125503dcfa6a4ac23a48536f36a46ce59e004525",
+    "authorDate": "2026-05-12T14:59:42-05:00",
+    "subject": "fix(prefect-ray): stabilize flaky integration tests (#21924)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Sanchez <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21924"
+    ],
+    "touchedFiles": [
+      ".github/workflows/integration-package-tests.yaml",
+      "src/integrations/prefect-ray/pyproject.toml",
+      "src/integrations/prefect-ray/tests/conftest.py",
+      "src/integrations/prefect-ray/tests/test_task_runners.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "431fb79a8600abe0adb696d59f22e40ee62b146c",
+    "authorDate": "2026-05-12T09:53:12-05:00",
+    "subject": "fix: preserve trailing slash when redirecting neutral entry points to V2 UI (#21912)",
+    "body": "Co-authored-by: Claude Opus 4 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#21912"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/api/server.py",
+      "tests/server/api/test_server.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ad65e14dc6de9fa45412f0b178601ec5a8d2077e",
+    "authorDate": "2026-05-11T14:35:19-05:00",
+    "subject": "docs: add unlisted infrastructure debugging overview page (#21900)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21900"
+    ],
+    "touchedFiles": [
+      "docs/resources/infrastructure-debugging.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5036642c0e3670a7c374a44101e50579f665a139",
+    "authorDate": "2026-05-11T13:47:26-05:00",
+    "subject": "Fix #21897: preserve custom run form values across deployment refetches (#21901)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#21897",
+      "#21901"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/deployments/create-flow-run-form/use-create-flow-run-form.test.tsx",
+      "ui-v2/src/components/deployments/create-flow-run-form/use-create-flow-run-form.tsx",
+      "ui-v2/src/components/deployments/custom-run-page.tsx",
+      "ui-v2/src/components/schemas/hooks/useSchemaForm.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3a832b4fc454cec3d6e2b218430088f9c25ab975",
+    "authorDate": "2026-05-10T23:10:31-04:00",
+    "subject": "fix(cli): infer logs page size from API response (#21711)",
+    "body": "Signed-off-by: alighazi288 <51366992+alighazi288@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#21711"
+    ],
+    "touchedFiles": [
+      "src/prefect/cli/flow_run.py",
+      "tests/cli/test_flow_run.py",
+      "tests/cli/test_task_run.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5c86faf6891e63f0ce83a30b9b8369049f890a1c",
+    "authorDate": "2026-05-09T22:09:58-05:00",
+    "subject": "docs: fix stale _engine.py refs after move to prefect._internal.engine (#21888)",
+    "body": "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#21888"
+    ],
+    "touchedFiles": [
+      "src/prefect/utilities/AGENTS.md",
+      "src/prefect/utilities/engine/AGENTS.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a41105e185d358945ea4196f5a25bb34f7f6c71c",
+    "authorDate": "2026-05-09T21:24:36-05:00",
+    "subject": "Fix git argument injection in GitHubRepository block (#21886)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21886"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-github/prefect_github/repository.py",
+      "src/integrations/prefect-github/tests/test_repository.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ec8dcdab699a64b3e9cdc927163b2c74212c564f",
+    "authorDate": "2026-05-08T22:34:49-05:00",
+    "subject": "Fix flow run suspension at orchestration boundaries (#21875)",
+    "body": "Co-authored-by: Alexander Streed <desertaxle@Alexanders-MacBook-Pro.local>",
+    "issueRefs": [
+      "#21875"
+    ],
+    "touchedFiles": [
+      "integration-tests/test_flow_suspension.py",
+      "src/prefect/_flow_run_suspension.py",
+      "src/prefect/_observers.py",
+      "src/prefect/context.py",
+      "src/prefect/flow_engine.py",
+      "src/prefect/flow_runs.py",
+      "src/prefect/futures.py",
+      "src/prefect/task_engine.py",
+      "src/prefect/task_runners.py",
+      "src/prefect/tasks.py",
+      "tests/test_flow_engine.py",
+      "tests/test_futures.py",
+      "tests/test_observers.py",
+      "tests/test_task_engine.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d7dbb8f43666d9109c9b974b60d74134e1ec33f0",
+    "authorDate": "2026-05-08T11:15:26-05:00",
+    "subject": "Fix ui-v2 run duration formatting (#21871)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21871"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/flow-runs/flow-run-card/card-properties/flow-run-duration.test.tsx",
+      "ui-v2/src/components/flow-runs/flow-run-card/card-properties/flow-run-duration.tsx",
+      "ui-v2/src/components/ui/run-card/run-card.test.tsx",
+      "ui-v2/src/components/ui/run-card/run-card.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "037cc519b71f908e1f7cba87fa0f205bd96cee05",
+    "authorDate": "2026-05-08T08:30:31-05:00",
+    "subject": "Fix flaky `test_flow_run_execute_cancellation_runs_nested_subflow_hooks` by always running on_cancellation hooks in `CancellationManager.cancel()` (#21866)",
+    "body": "Co-authored-by: Alexander Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21866"
+    ],
+    "touchedFiles": [
+      "src/prefect/runner/_cancellation_manager.py",
+      "tests/runner/test__cancellation_manager.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7b04d8f79b6541cb914d55f2860a83cf85bd9d5f",
+    "authorDate": "2026-05-08T15:19:39+10:00",
+    "subject": "Fixes typing issues as ** accepts Any parameter, not just dicts (#21864)",
+    "body": "",
+    "issueRefs": [
+      "#21864"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-sqlalchemy/prefect_sqlalchemy/database.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d09f96a627eb1cf2b9942c98a68047ca79f8207c",
+    "authorDate": "2026-05-07T22:33:42+03:00",
+    "subject": "fix(server): fix flow run logs download from Prefect UI in browser (#21718)",
+    "body": "Co-authored-by: Alex Streed <desertaxle@users.noreply.github.com>",
+    "issueRefs": [
+      "#21718"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/api/flow_runs.py",
+      "tests/server/api/test_flow_run_logs_download.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "203ea44b1c319f69c23d500ad1bb34cc2889dd6a",
+    "authorDate": "2026-05-06T13:55:55-05:00",
+    "subject": "Fix V2 deployments table action clicks (#21842)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex S <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21842"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/deployments/data-table/cells.tsx",
+      "ui-v2/src/components/deployments/data-table/data-table.test.tsx",
+      "ui-v2/src/components/ui/data-table.test.tsx",
+      "ui-v2/src/components/ui/data-table.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8e24ba1d29ac466dda9da0ca1cbaaf80231dfbfc",
+    "authorDate": "2026-05-06T10:25:03-04:00",
+    "subject": "fix(server): prevent deadlock in mark_deployments_ready / mark_deployments_not_ready (#21792)",
+    "body": "Co-authored-by: Claude Opus 4.7 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#21792"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/models/deployments.py",
+      "tests/server/models/test_deployments.py"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "2b9d462118706889dfeee26df45a1b6108491070",
+    "authorDate": "2026-05-05T17:22:36-05:00",
+    "subject": "Fix rate limit slot display not updating in UI (#21828)",
+    "body": "",
+    "issueRefs": [
+      "#21828"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/api/concurrency_limits_v2.py",
+      "tests/server/orchestration/api/test_concurrency_limits_v2.py",
+      "ui-v2/src/api/global-concurrency-limits/global-concurrency-limits.test.ts",
+      "ui-v2/src/api/global-concurrency-limits/global-concurrency-limits.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0387cc6154596b498ac637f1d7e19e71086fdc8b",
+    "authorDate": "2026-05-05T12:55:58-05:00",
+    "subject": "docs: document ThreadPoolTaskRunner nested-submit deadlock risk and mitigations (#21823)",
+    "body": "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#21823"
+    ],
+    "touchedFiles": [
+      "docs/v3/concepts/task-runners.mdx"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "735bff7245c4fd512f278e59838fcb2041fddeed",
+    "authorDate": "2026-05-05T12:52:45-05:00",
+    "subject": "docs: document ThreadPoolTaskRunner pickling and nested-submit deadlock pitfalls (#21822)",
+    "body": "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#21822"
+    ],
+    "touchedFiles": [
+      "src/prefect/AGENTS.md"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "258608251dec1454c304756b902f52d1abcd5cd5",
+    "authorDate": "2026-05-05T12:50:05-05:00",
+    "subject": "Warn when nested `ThreadPoolTaskRunner` submission would deadlock (#21800)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21800"
+    ],
+    "touchedFiles": [
+      "src/prefect/task_runners.py",
+      "tests/test_task_runners.py"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "dff8de6ea0ebbd574fc19f944df81726413f29a5",
+    "authorDate": "2026-05-05T12:47:02-05:00",
+    "subject": "fix(tests): use thread-based pytest-timeout for test_timeout_stops_execution_at_next_task_for_sync_flows (#21819)",
+    "body": "Co-authored-by: devin-ai-integration[bot] <158243242+devin-ai-integration[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#21819"
+    ],
+    "touchedFiles": [
+      "tests/test_flows.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "51744ec24c008c8b38b595162e8af9c39502f64a",
+    "authorDate": "2026-05-05T09:37:18-05:00",
+    "subject": "fix(ci): add apt retry config to old-sqlite.Dockerfile (#21814)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: bot_apk <apk@cognition.ai>",
+    "issueRefs": [
+      "#21814"
+    ],
+    "touchedFiles": [
+      ".github/docker/old-sqlite.Dockerfile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "675e9bd16b8771210e15bb11f95ffa85d08704e1",
+    "authorDate": "2026-05-05T09:15:36-05:00",
+    "subject": "Fix V2 concurrency lease release errors (#21797)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex S <alex.s@prefect.io>",
+    "issueRefs": [
+      "#21797"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/orchestration/core_policy.py",
+      "tests/server/orchestration/test_core_policy.py",
+      "tests/server/orchestration/test_task_concurrency_v2_integration.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "aedbd9ed73462fc87ffaf41128e1b1f56a66cca8",
+    "authorDate": "2026-05-04T20:43:31-05:00",
+    "subject": "docs: document heartbeat-thread timeout pitfall for concurrency+timeout tests (#21789)",
+    "body": "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#21789"
+    ],
+    "touchedFiles": [
+      "tests/AGENTS.md"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "8d09af5e3913bac3f92d4cb5fb18332b2701f95c",
+    "authorDate": "2026-05-04T15:59:18-05:00",
+    "subject": "Fix race condition in `GitRepository.pull_code()` with file-based locking (#21388)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>\nCo-authored-by: Alexander Streed <desertaxle@users.noreply.github.com>",
+    "issueRefs": [
+      "#21388"
+    ],
+    "touchedFiles": [
+      "src/prefect/locking/_filelock.py",
+      "src/prefect/runner/storage.py",
+      "tests/locking/test_filelock.py",
+      "tests/runner/test_storage.py"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "bbdace10fa966ab723b6eb207c8813dbfb211c0e",
+    "authorDate": "2026-05-04T14:51:30-05:00",
+    "subject": "fix(tests): widen flow timeout in test_timeout_concurrency_slot_released to avoid pre-yield cancellation (#21788)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: bot_apk <apk@cognition.ai>",
+    "issueRefs": [
+      "#21788"
+    ],
+    "touchedFiles": [
+      "tests/test_flow_engine.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "b840901607b49da9c53bc635ba8b49dab9fdbdd0",
+    "authorDate": "2026-05-04T13:17:46-05:00",
+    "subject": "fix(tests): widen wiggle room for test_flow_run_lateness_when_scheduled (#21781)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#21781"
+    ],
+    "touchedFiles": [
+      "tests/server/models/test_orm.py"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "5034abd579507e6e731ee86a9f43fa02d2a6c4cd",
+    "authorDate": "2026-05-04T11:16:37-05:00",
+    "subject": "fix(tests): avoid run_coro_as_sync deadlock in wait futures test (#21766)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21766"
+    ],
+    "touchedFiles": [
+      "tests/test_futures.py"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "7af55e163cbd96389d9f361e80d0d972a017015b",
+    "authorDate": "2026-05-01T20:11:02-04:00",
+    "subject": "Fix #21768: Use now() helper instead of DateTime.now() in deployment CLI (#21769)",
+    "body": "",
+    "issueRefs": [
+      "#21768",
+      "#21769"
+    ],
+    "touchedFiles": [
+      "src/prefect/cli/deployment.py",
+      "tests/cli/deployment/test_deployment_cli.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a85e6b786fdab44d244994c8dc676319bd0fea75",
+    "authorDate": "2026-05-02T06:13:42+09:00",
+    "subject": "Fix task run recorder conflict handling (#21726)",
+    "body": "Co-authored-by: Alex Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21726"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/services/task_run_recorder.py",
+      "tests/server/services/test_task_run_recorder.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ba706b7d8eda4011e0ee5e97ab981fef7661d14d",
+    "authorDate": "2026-05-01T13:45:08-05:00",
+    "subject": "docs: document pytest-timeout thread method requirement for flow timeout tests (#21760)",
+    "body": "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#21760"
+    ],
+    "touchedFiles": [
+      "tests/AGENTS.md"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "7fb21d402a8a45f48f7715167a0dc742bc09e802",
+    "authorDate": "2026-05-01T13:43:36-05:00",
+    "subject": "fix(filesystems): always enforce basepath containment in LocalFileSystem (#21643)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21643"
+    ],
+    "touchedFiles": [
+      "src/prefect/filesystems.py",
+      "tests/test_filesystems.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f27a156d212b3abcde8f96c315d76a28eab44d62",
+    "authorDate": "2026-05-01T13:32:47-05:00",
+    "subject": "fix(tests): prevent pytest-timeout SIGALRM from interfering with flow timeout test (#21757)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21757"
+    ],
+    "touchedFiles": [
+      "tests/test_flows.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "d2a8441e67878acaf01622feda5f6171de9920d1",
+    "authorDate": "2026-05-01T12:03:20-05:00",
+    "subject": "docs: document UnknownSerializer graceful degradation for cross-environment result inspection (#21650)",
+    "body": "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>\nCo-authored-by: zzstoatzz <thrast36@gmail.com>\nCo-authored-by: Claude Opus 4 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#21650"
+    ],
+    "touchedFiles": [
+      "docs/v3/advanced/results.mdx"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "091a0900ff5ed7416843bab3b12cffc94c7c539e",
+    "authorDate": "2026-05-01T11:52:33-05:00",
+    "subject": "Fix #21720: Clear BlockStorageAdapter destination before each pull (#21721)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21720",
+      "#21721"
+    ],
+    "touchedFiles": [
+      "src/prefect/runner/storage.py",
+      "tests/runner/test_storage.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2a469b0daa16ed95ec38fe1eff2a5025cce01eb5",
+    "authorDate": "2026-05-01T21:29:46+05:30",
+    "subject": "docs: fix GitLab token scopes for stored flow code (#21748)",
+    "body": "Co-authored-by: Harsh Thakare <harsh@pybex.io>",
+    "issueRefs": [
+      "#21748"
+    ],
+    "touchedFiles": [
+      "docs/v3/how-to-guides/deployments/store-flow-code.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "70e8167824db61fa20cb61f0ea469b2a55303f23",
+    "authorDate": "2026-05-01T08:54:36-05:00",
+    "subject": "Fix #21734: Use wildcard in zombie flow detection docs for custom state names (#21736)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alexander.streed@prefect.io>",
+    "issueRefs": [
+      "#21734",
+      "#21736"
+    ],
+    "touchedFiles": [
+      "docs/v3/advanced/detect-zombie-flows.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "98a1e3b9105b96b15963d8bf3c85d1ea2c1169d9",
+    "authorDate": "2026-04-30T12:04:48-04:00",
+    "subject": "docs: fix DbtHookContext field availability for error and node_ids in core AGENTS.md (#21742)",
+    "body": "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#21742"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-dbt/prefect_dbt/core/AGENTS.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ad7d169de41835dc9c2388ae317503a4982c7310",
+    "authorDate": "2026-04-30T10:52:45-04:00",
+    "subject": "docs: document task_run_recorder sort-by-ID invariant to prevent deadlocks (#21723)",
+    "body": "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#21723"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/AGENTS.md"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "10cedbaa9222224dbe2de3de2503fe6fdec41925",
+    "authorDate": "2026-04-28T20:30:36-04:00",
+    "subject": "fix: sort TRR bulk upsert batches by task_run.id to prevent deadlocks (#21717)",
+    "body": "",
+    "issueRefs": [
+      "#21717"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/services/task_run_recorder.py",
+      "tests/server/services/test_task_run_recorder.py"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "ef612bb388de54a3d22cbfa7d127064cfb04b855",
+    "authorDate": "2026-04-27T12:39:30+09:00",
+    "subject": "fix(prefect-gcp): detect CONTAINER_MISSING using current Cloud Run V2 enums (#21712)",
+    "body": "",
+    "issueRefs": [
+      "#21712"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-gcp/prefect_gcp/models/cloud_run_v2.py",
+      "src/integrations/prefect-gcp/tests/test_cloud_run_v2.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cc8d64aa26f6d6fa58e4329eaaf263980b5f26d2",
+    "authorDate": "2026-04-26T22:36:07-05:00",
+    "subject": "fix(e2e): fix flaky tab-switching test by ensuring pagination after filter (#21714)",
+    "body": "Co-authored-by: Alexander Streed <alex.s@prefect.io>",
+    "issueRefs": [
+      "#21714"
+    ],
+    "touchedFiles": [
+      "ui-v2/e2e/runs/runs-flow-runs.spec.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "41e0335ba1ddbaad4d3523d3bcc7fd5024ac0415",
+    "authorDate": "2026-04-24T09:24:01-05:00",
+    "subject": "stop leaking `sys.modules` entries in `load_script_as_module` (#21692)",
+    "body": "Co-authored-by: Claude Opus 4 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#21692"
+    ],
+    "touchedFiles": [
+      "src/prefect/utilities/importtools.py",
+      "tests/utilities/test_importtools.py"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "7ef768043f0f928ed47fa41215a792303d6b962c",
+    "authorDate": "2026-04-23T16:28:47-05:00",
+    "subject": "fix(tests): await asyncio.sleep in test_delete_flow_run_deletes_logs (#21657)",
+    "body": "Co-authored-by: devin-ai-integration[bot] <158243242+devin-ai-integration[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#21657"
+    ],
+    "touchedFiles": [
+      "tests/server/orchestration/api/test_flow_runs.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "59c0f682ea6a595d53e1871487baab205e521252",
+    "authorDate": "2026-04-23T15:04:37-05:00",
+    "subject": "fix(ui-v2): scope task run detail name assertion to breadcrumb in E2E test (#21693)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: API User <apiuser@prefect.io>\nCo-authored-by: bot_apk <apk@cognition.ai>",
+    "issueRefs": [
+      "#21693"
+    ],
+    "touchedFiles": [
+      "ui-v2/e2e/runs/runs-task-runs.spec.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c00b05116fdd796e8916e40aa3bdf306c48455c6",
+    "authorDate": "2026-04-23T14:44:06-05:00",
+    "subject": "Fix `PrefectConcurrentFuture` completion tracking when done callbacks raise (#21686)",
+    "body": "",
+    "issueRefs": [
+      "#21686"
+    ],
+    "touchedFiles": [
+      "src/prefect/futures.py",
+      "tests/test_futures.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6b8350f1e443257e1038ba0fd38c8e112b12a7c4",
+    "authorDate": "2026-04-23T19:30:14+00:00",
+    "subject": "docs: fix broken internal links (#21688)",
+    "body": "Co-authored-by: Jonathan Amponsah <amponsahjonathan442@gmail.com>",
+    "issueRefs": [
+      "#21688"
+    ],
+    "touchedFiles": [
+      "docs/integrations/prefect-dbt/index.mdx",
+      "docs/v3/advanced/daemonize-processes.mdx",
+      "docs/v3/advanced/worker-healthchecks.mdx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "21e5527c89b533f1664a2e2111521fc07f6b4164",
+    "authorDate": "2026-04-22T07:46:43-05:00",
+    "subject": "Fix #21664: pass pydantic-settings source kwargs by name (#21665)",
+    "body": "",
+    "issueRefs": [
+      "#21664",
+      "#21665"
+    ],
+    "touchedFiles": [
+      "src/prefect/settings/sources.py",
+      "tests/test_settings.py",
+      "uv.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ab7ce614a35294df888074c6256027672f8b18be",
+    "authorDate": "2026-04-21T22:45:31-05:00",
+    "subject": "fix(tests): wait for on_cancellation hook markers in nested cancellation tests (#21660)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: bot_apk <apk@cognition.ai>",
+    "issueRefs": [
+      "#21660"
+    ],
+    "touchedFiles": [
+      "integration-tests/test_nested_cancellation.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7c854857639a551b631a9992d476a5782028fcac",
+    "authorDate": "2026-04-21T21:57:54-05:00",
+    "subject": "fix(prefect-dbt): silence dbt console output during `plan()` (#21653)",
+    "body": "Co-authored-by: devin-ai-integration[bot] <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21653"
+    ],
+    "touchedFiles": [
+      ".gitignore",
+      "src/integrations/prefect-dbt/prefect_dbt/core/_freshness.py",
+      "src/integrations/prefect-dbt/prefect_dbt/core/_manifest.py",
+      "src/integrations/prefect-dbt/prefect_dbt/core/_orchestrator.py",
+      "src/integrations/prefect-dbt/tests/core/conftest.py",
+      "src/integrations/prefect-dbt/tests/core/test_freshness.py",
+      "src/integrations/prefect-dbt/tests/core/test_manifest.py",
+      "src/integrations/prefect-dbt/tests/core/test_orchestrator_integration.py",
+      "src/integrations/prefect-dbt/tests/core/test_orchestrator_per_wave.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "36b62eb5d0ad85e1be700fc0a12424104a179744",
+    "authorDate": "2026-04-21T21:55:29-05:00",
+    "subject": "fix(prefect-dbt): cache models with injected test edges under IMMEDIATE + PER_NODE (#21656)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21656"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-dbt/prefect_dbt/core/_orchestrator.py",
+      "src/integrations/prefect-dbt/tests/core/test_orchestrator_cache.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6577e65b1921d3fa837c88f16c5c9743591cb474",
+    "authorDate": "2026-04-21T21:55:03-05:00",
+    "subject": "fix(prefect-dbt): fail flow runs when dbt nodes error (#21654)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21654"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-dbt/benches/bench_orchestrator.py",
+      "src/integrations/prefect-dbt/prefect_dbt/core/_orchestrator.py",
+      "src/integrations/prefect-dbt/tests/core/test_orchestrator_cache.py",
+      "src/integrations/prefect-dbt/tests/core/test_orchestrator_per_node.py",
+      "src/integrations/prefect-dbt/tests/core/test_orchestrator_per_wave.py",
+      "src/integrations/prefect-dbt/tests/core/test_orchestrator_test_strategies.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "94da2fa7e90dcabfd64b4e32372bc469fb5a2bdc",
+    "authorDate": "2026-04-22T04:05:59+02:00",
+    "subject": "refactor `whenever` API compat helpers and fix `in_local_tz` for naive `datetimes` (#21640)",
+    "body": "",
+    "issueRefs": [
+      "#21640"
+    ],
+    "touchedFiles": [
+      ".github/workflows/python-tests.yaml",
+      "src/prefect/_internal/compatibility/deprecated.py",
+      "src/prefect/server/schemas/schedules.py",
+      "src/prefect/types/_datetime.py",
+      "tests/cli/deployment/test_deployment_run.py",
+      "tests/events/server/test_events_counts.py",
+      "tests/server/orchestration/api/test_run_history.py",
+      "tests/server/schemas/test_schedules.py",
+      "tests/test_datetime.py",
+      "uv.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ac02fb038bad77560efb159f5fc901ae117e64be",
+    "authorDate": "2026-04-21T21:03:05-05:00",
+    "subject": "fix(tests): remove cancellation race in watch_flow_run timeout test (#21648)",
+    "body": "Co-authored-by: Alexander Streed <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21648"
+    ],
+    "touchedFiles": [
+      "tests/cli/test_flow_run_watching.py"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "5e993f2f60c9ca99ce7d7bf3171088863bbce54f",
+    "authorDate": "2026-04-21T21:01:53-05:00",
+    "subject": "fix(bundles): pin current Prefect version in bundle-step `uv run` commands (#21651)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21651"
+    ],
+    "touchedFiles": [
+      "src/prefect/_experimental/bundles/__init__.py",
+      "tests/experimental/test_bundles.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5524827f6f3802a0bf067a71562b43f378fb8deb",
+    "authorDate": "2026-04-21T12:57:37-05:00",
+    "subject": "fix bundle execute path duplicate pending proposal (#21646)",
+    "body": "",
+    "issueRefs": [
+      "#21646"
+    ],
+    "touchedFiles": [
+      "src/prefect/_experimental/bundles/execute.py",
+      "tests/_experimental/bundles/test_execute.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3f8656aa08bf05e2f438994c6d7a81b5e318f14e",
+    "authorDate": "2026-04-21T08:51:14-05:00",
+    "subject": "fix(ui-v2): default work pool queue page to the Details tab (#21629)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alex Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21629"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/work-pools/work-pool-queue-tabs-sync/index.ts",
+      "ui-v2/src/components/work-pools/work-pool-queue-tabs-sync/use-redirect-details-tab-on-desktop.test.ts",
+      "ui-v2/src/components/work-pools/work-pool-queue-tabs-sync/use-redirect-details-tab-on-desktop.ts",
+      "ui-v2/src/routes/work-pools/work-pool_.$workPoolName.queue.$workQueueName.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "aa14fbd34b559e0bc490dae7cfdcb728c005b5b0",
+    "authorDate": "2026-04-21T08:41:01-05:00",
+    "subject": "fix(ui-v2): include automation name in edit page breadcrumb (#21628)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21628"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/automations/automation-edit-page.tsx",
+      "ui-v2/src/components/automations/automations-edit-header/automations-edit-header.stories.tsx",
+      "ui-v2/src/components/automations/automations-edit-header/automations-edit-header.test.tsx",
+      "ui-v2/src/components/automations/automations-edit-header/automations-edit-header.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "70319f0b7e1af2258e6734f826b6f5fe0d305467",
+    "authorDate": "2026-04-21T08:39:37-05:00",
+    "subject": "fix(ui-v2): set 'Settings' browser page title on settings page (#21627)",
+    "body": "Co-authored-by: Devin AI <devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <alex.s@prefect.io>",
+    "issueRefs": [
+      "#21627"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/settings/settings-page.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "908d792f2f3e418421c41155708200c90f4a4f34",
+    "authorDate": "2026-04-21T08:39:00-05:00",
+    "subject": "fix(ui-v2): restore block name read-only field with explanation on block edit page (#21626)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21626"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/blocks/block-document-edit-page/block-document-edit-page.test.tsx",
+      "ui-v2/src/components/blocks/block-document-edit-page/block-document-edit-page.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "55975190f07b1add50697c0ded5f10162e30a1b8",
+    "authorDate": "2026-04-21T08:28:20-05:00",
+    "subject": "fix(ui-v2): default work pool detail tab to Details to match V1 (#21634)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21634"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/routes/work-pools/-use-redirect-details-tab-on-desktop.test.tsx",
+      "ui-v2/src/routes/work-pools/-use-redirect-details-tab-on-desktop.ts",
+      "ui-v2/src/routes/work-pools/work-pool.$workPoolName.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6f89b6d66878624ed5e572f85370cb518b630208",
+    "authorDate": "2026-04-20T14:20:45-05:00",
+    "subject": "fix(tests): raise asyncpg connection_timeout in unit test mode (#21614)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: API User <requestor@prefecthq.invalid>\nCo-authored-by: bot_apk <apk@cognition.ai>",
+    "issueRefs": [
+      "#21614"
+    ],
+    "touchedFiles": [
+      "src/prefect/server/database/configurations.py"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "1589b454f2958e377cbaf2d7fc4fe83faccb6c2b",
+    "authorDate": "2026-04-20T14:17:30-05:00",
+    "subject": "fix(tests): prevent aiosqlite teardown race in legacy events/out test (#21619)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: bot_apk <apk@cognition.ai>",
+    "issueRefs": [
+      "#21619"
+    ],
+    "touchedFiles": [
+      "tests/events/server/gateway/test_gateway_out.py"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "7c70ac54a5e101431d83b9f2681ec88d5e0021ed",
+    "authorDate": "2026-04-20T14:14:41-05:00",
+    "subject": "Fix DNS rebinding TOCTOU bypass in `validate_restricted_url` (#21591)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: Alexander Streed <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>",
+    "issueRefs": [
+      "#21591"
+    ],
+    "touchedFiles": [
+      "src/prefect/blocks/notifications.py",
+      "src/prefect/blocks/webhook.py",
+      "src/prefect/utilities/urls.py",
+      "tests/utilities/test_urls.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "34586366f0eed9112df75a4e683a4ef91fda8db6",
+    "authorDate": "2026-04-20T11:01:25-04:00",
+    "subject": "Fix _UnpicklingFuture.add_done_callback swallowing deserialization errors (#21612)",
+    "body": "Co-authored-by: Sebastian Schwartz <sebastian.schwartz@chicagotrading.com>\nCo-authored-by: Claude Opus 4.6 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#21612"
+    ],
+    "touchedFiles": [
+      "src/prefect/task_runners.py",
+      "tests/test_task_runners.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6373056dad307ad9526f0257987e885e30934f87",
+    "authorDate": "2026-04-19T21:54:56-05:00",
+    "subject": "fix(prefect-shell): kill whole process tree on ShellOperation cleanup (#21586)",
+    "body": "Co-authored-by: Claude Opus 4 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#21586"
+    ],
+    "touchedFiles": [
+      "src/integrations/prefect-shell/prefect_shell/commands.py",
+      "src/integrations/prefect-shell/tests/test_commands.py"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9f9bed74e6b830e8e2ca56b7154191a88f39fc8e",
+    "authorDate": "2026-04-17T16:25:21-05:00",
+    "subject": "fix(ui-v2): default deployment detail tab to Details to match V1 (#21601)",
+    "body": "Co-authored-by: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>\nCo-authored-by: alex.s <alex.s@prefect.io>\nCo-authored-by: alex.s <ajstreed1@gmail.com>\nCo-authored-by: Alex Streed <desertaxle@users.noreply.github.com>",
+    "issueRefs": [
+      "#21601"
+    ],
+    "touchedFiles": [
+      "ui-v2/src/components/deployments/deployment-details-tabs.test.tsx",
+      "ui-v2/src/components/deployments/deployment-details-tabs.tsx",
+      "ui-v2/src/routes/deployments/deployment.$id.tsx"
+    ],
+    "fixCategory": "other"
+  }
+]

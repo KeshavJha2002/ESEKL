@@ -1,0 +1,864 @@
+[
+  {
+    "id": "REKU-DAGSTER-001",
+    "repository": "dagster",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Dagster models pipelines as declarative Software-Defined Assets with lineage and partition schemes, compiling executions into a deterministic ExecutionPlan composed of discrete ExecutionStep nodes.",
+    "mechanism": "ExecutionPlan.build resolves upstream asset inputs, builds topological step dependency trees, attaches IO managers, and validates schema types prior to launching worker execution.",
+    "applicabilityConditions": [
+      "All Dagster Job and Asset pipeline executions"
+    ],
+    "evidenceIds": [
+      "OBS-DAGSTER-001",
+      "OBS-DAGSTER-002",
+      "OBS-DAGSTER-012"
+    ],
+    "commonKeywords": [
+      "software-defined",
+      "asset",
+      "dependency",
+      "graph",
+      "execution",
+      "plan",
+      "mapping",
+      "dagster"
+    ],
+    "uniqueKeywords": [
+      "reku_dagster_001",
+      "dagster",
+      "software-defined",
+      "asset",
+      "dependency",
+      "graph",
+      "execution"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "dagster",
+        "models",
+        "pipelines"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "executionplan",
+        "build",
+        "resolves",
+        "upstream",
+        "asset"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "ExecutionPlan.build resolves upstream asset inputs, builds topological step dependency trees, attaches IO managers, and validates schema types prior to launching worker execution. Known limits: Cycles in asset dependencies are rejected during definition time prior to plan compilation.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001"
+    ],
+    "linkedClaims": [
+      "CLM-001"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "python_modules/dagster/dagster/_core/execution/plan/plan.py",
+      "lineRange": [
+        135,
+        185
+      ],
+      "queryOrCodeSnippet": "ExecutionPlan.build evaluates pipeline dependencies, resolves required resources, creates ExecutionStep nodes with input/output bindings, and computes the topological execution graph.",
+      "symbol": "ExecutionPlan.build"
+    }
+  },
+  {
+    "id": "REKU-DAGSTER-002",
+    "repository": "dagster",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Pipeline execution progress is emitted as strongly-typed DagsterEvent records (STEP_START, STEP_OUTPUT, ASSET_MATERIALIZATION, STEP_SUCCESS, STEP_FAILURE) stored in relational event log tables with secondary index validation.",
+    "mechanism": "core_dagster_event_sequence_for_step yields typed events to SqlEventLogStorage.store_event, committing records transactionally and updating cached materialization tables while respecting log wipe boundaries.",
+    "applicabilityConditions": [
+      "All Dagster runs across SqlEventLogStorage implementations (PostgreSQL, MySQL, SQLite)"
+    ],
+    "evidenceIds": [
+      "OBS-DAGSTER-002",
+      "OBS-DAGSTER-003",
+      "HIST-DAGSTER-002"
+    ],
+    "commonKeywords": [
+      "structured",
+      "event-driven",
+      "execution",
+      "stream",
+      "relational",
+      "event",
+      "log",
+      "storage"
+    ],
+    "uniqueKeywords": [
+      "reku_dagster_002",
+      "dagster",
+      "structured",
+      "event-driven",
+      "execution",
+      "stream",
+      "relational"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "pipeline",
+        "execution",
+        "progress"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "core_dagster_event_sequence_for_step",
+        "yields",
+        "typed",
+        "events",
+        "sqleventlogstorage"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "core_dagster_event_sequence_for_step yields typed events to SqlEventLogStorage.store_event, committing records transactionally and updating cached materialization tables while respecting log wipe boundaries. Known limits: High event volume under wide fan-outs requires database index optimization and event log sharding.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-006"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-006"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "python_modules/dagster/dagster/_core/execution/plan/execute_step.py",
+      "lineRange": [
+        438,
+        485
+      ],
+      "queryOrCodeSnippet": "core_dagster_event_sequence_for_step loads step inputs via IOManager, executes user compute functions, captures outputs, logs AssetMaterialization events, and yields STEP_SUCCESS or STEP_FAILURE.",
+      "symbol": "core_dagster_event_sequence_for_step"
+    },
+    "testProvenance": {
+      "filePath": "python_modules/dagster/dagster_tests/storage_tests/test_event_log.py",
+      "testName": "test_get_latest_materialization_ignores_stale_cached_row_after_wipe",
+      "assertionSnippet": "Asserts that get_latest_materialization_event ignores stale cached index records after an asset wipe."
+    },
+    "historyProvenance": {
+      "commitHash": "9a0e965bb6d882ed908a4311d967cdd124aca835",
+      "failureId": "HIST-DAGSTER-002",
+      "prOrIssue": "https://github.com/dagster-io/dagster/commit/9a0e965bb6d882ed908a4311d967cdd124aca835",
+      "fixDescription": "Added validation to ensure cached materialization index rows verify against the latest event log wipe boundary timestamp before returning."
+    },
+    "historyChainIds": [
+      "CHAIN-DAGSTER-002"
+    ]
+  },
+  {
+    "id": "REKU-DAGSTER-003",
+    "repository": "dagster",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Inter-step data exchange is decoupled from compute logic via IOManagers that persist intermediate outputs to durable storage, allowing failed runs to resume execution without recomputing successful steps.",
+    "mechanism": "IOManager.handle_output serializes outputs to durable storage paths; IOManager.load_input loads values by asset key and partition key during downstream step execution.",
+    "applicabilityConditions": [
+      "All pipeline executions with configured IOManagers (FSIOManager, S3PickleIOManager, GCSFileIOManager)"
+    ],
+    "evidenceIds": [
+      "OBS-DAGSTER-002",
+      "OBS-DAGSTER-005",
+      "OBS-DAGSTER-010",
+      "HIST-DAGSTER-004"
+    ],
+    "commonKeywords": [
+      "durable",
+      "management",
+      "asset-centric",
+      "output",
+      "memoization",
+      "inter-step",
+      "data",
+      "exchange"
+    ],
+    "uniqueKeywords": [
+      "reku_dagster_003",
+      "dagster",
+      "durable",
+      "management",
+      "asset-centric",
+      "output",
+      "memoization"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "inter-step",
+        "data",
+        "exchange"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "iomanager",
+        "handle_output",
+        "serializes",
+        "outputs",
+        "durable"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "IOManager.handle_output serializes outputs to durable storage paths; IOManager.load_input loads values by asset key and partition key during downstream step execution. Known limits: Custom python objects must be picklable or supported by custom type serializers in the IOManager.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-004",
+      "EKU-WDE-008",
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-004",
+      "CLM-008",
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "python_modules/dagster/dagster/_core/execution/plan/execute_step.py",
+      "lineRange": [
+        438,
+        485
+      ],
+      "queryOrCodeSnippet": "core_dagster_event_sequence_for_step loads step inputs via IOManager, executes user compute functions, captures outputs, logs AssetMaterialization events, and yields STEP_SUCCESS or STEP_FAILURE.",
+      "symbol": "core_dagster_event_sequence_for_step"
+    },
+    "testProvenance": {
+      "filePath": "python_modules/dagster/dagster_tests/storage_tests/test_fs_io_manager.py",
+      "testName": "test_fs_io_manager_escapes_path_operators_in_partition_keys",
+      "assertionSnippet": "Asserts that FSIOManager escapes path operators in partition keys and prevents escaping the base directory."
+    },
+    "historyProvenance": {
+      "commitHash": "f675f3b3f7629b92b24ad0ae31dad8cdec71402b",
+      "failureId": "HIST-DAGSTER-004",
+      "prOrIssue": "https://github.com/dagster-io/dagster/commit/f675f3b3f7629b92b24ad0ae31dad8cdec71402b",
+      "fixDescription": "Added strict path escaping and traversal validation to ensure all partitioned output paths remain strictly inside the configured base directory."
+    },
+    "historyChainIds": [
+      "CHAIN-DAGSTER-004"
+    ]
+  },
+  {
+    "id": "REKU-DAGSTER-004",
+    "repository": "dagster",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Runs submitted to Dagster instances enter QUEUED state and are scheduled by background QueuedRunCoordinatorDaemon evaluating global and tag-level concurrency slot limits.",
+    "mechanism": "submit_run records QUEUED status in SqlRunStorage. QueuedRunCoordinatorDaemon.run_iteration queries in-progress runs, checks concurrency tag limits, and dequeues eligible runs to invoke DefaultRunLauncher.",
+    "applicabilityConditions": [
+      "Instances configured with QueuedRunCoordinator"
+    ],
+    "evidenceIds": [
+      "OBS-DAGSTER-006",
+      "OBS-DAGSTER-007",
+      "OBS-DAGSTER-008"
+    ],
+    "commonKeywords": [
+      "centralized",
+      "daemon-driven",
+      "run",
+      "queueing",
+      "concurrency",
+      "tag",
+      "limits",
+      "runs"
+    ],
+    "uniqueKeywords": [
+      "reku_dagster_004",
+      "dagster",
+      "centralized",
+      "daemon-driven",
+      "run",
+      "queueing",
+      "concurrency"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "runs",
+        "submitted",
+        "dagster"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "submit_run",
+        "records",
+        "queued",
+        "status",
+        "sqlrunstorage"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "submit_run records QUEUED status in SqlRunStorage. QueuedRunCoordinatorDaemon.run_iteration queries in-progress runs, checks concurrency tag limits, and dequeues eligible runs to invoke DefaultRunLauncher. Known limits: Queue dequeue latency is governed by dequeue_interval_seconds (default 0.5s) in the daemon loop.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-003",
+      "EKU-WDE-005",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-003",
+      "CLM-005",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "python_modules/dagster/dagster/_core/run_coordinator/queued_run_coordinator.py",
+      "lineRange": [
+        308,
+        330
+      ],
+      "queryOrCodeSnippet": "submit_run transitions the DagsterRun to QUEUED status, reports a job_enqueue event, and registers the run for evaluation by the background run coordinator daemon.",
+      "symbol": "QueuedRunCoordinator.submit_run"
+    }
+  },
+  {
+    "id": "REKU-DAGSTER-005",
+    "repository": "dagster",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "FAILURE_RECOVERY_MECHANISM",
+    "claim": "Event log polling watcher threads must snapshot worker thread collections under internal dictionary locks and execute join() outside the lock to prevent teardown deadlocks during callback unwatching.",
+    "mechanism": "SqlPollingEventWatcher.close() sets should_thread_exit and empties the thread dictionary inside _dict_lock, releasing the lock before calling thread.join(), allowing re-entrant unwatch_run callbacks to complete without deadlock.",
+    "applicabilityConditions": [
+      "SqlPollingEventWatcher and event stream subscription lifecycles"
+    ],
+    "evidenceIds": [
+      "OBS-DAGSTER-003",
+      "OBS-DAGSTER-009",
+      "HIST-DAGSTER-001"
+    ],
+    "commonKeywords": [
+      "safe",
+      "thread",
+      "teardown",
+      "lock-free",
+      "joining",
+      "event",
+      "log",
+      "watchers"
+    ],
+    "uniqueKeywords": [
+      "reku_dagster_005",
+      "dagster",
+      "safe",
+      "thread",
+      "teardown",
+      "lock-free",
+      "joining"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "event",
+        "log",
+        "polling"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "sqlpollingeventwatcher",
+        "close",
+        "sets",
+        "should_thread_exit",
+        "empties"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "SqlPollingEventWatcher.close() sets should_thread_exit and empties the thread dictionary inside _dict_lock, releasing the lock before calling thread.join(), allowing re-entrant unwatch_run callbacks to complete without deadlock. Known limits: Applies specifically to multi-threaded polling event watchers in long-running daemon and test contexts.",
+    "linkedDomainEkus": [
+      "EKU-WDE-006"
+    ],
+    "linkedClaims": [
+      "CLM-006"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "python_modules/dagster/dagster/_core/storage/event_log/sql_event_log.py",
+      "lineRange": [
+        388,
+        435
+      ],
+      "queryOrCodeSnippet": "store_event serializes DagsterEvent objects, writes event records to the event_logs SQL table, and updates secondary asset materialization and observation index caches.",
+      "symbol": "SqlEventLogStorage.store_event"
+    },
+    "testProvenance": {
+      "filePath": "python_modules/dagster/dagster_tests/storage_tests/utils/event_log_storage.py",
+      "testName": "test_watch_unwatch",
+      "assertionSnippet": "Asserts that starting and ending event log watchers terminates watcher threads cleanly without hanging on close()."
+    },
+    "historyProvenance": {
+      "commitHash": "82c05550006ed860e0c7a5d6ce12b27291c251d4",
+      "failureId": "HIST-DAGSTER-001",
+      "prOrIssue": "https://github.com/dagster-io/dagster/commit/82c05550006ed860e0c7a5d6ce12b27291c251d4",
+      "fixDescription": "Snapshot the watcher list and set should_thread_exit inside _dict_lock, clear the map, and call join() outside the lock so re-entrant unwatch_run() calls can complete."
+    },
+    "historyChainIds": [
+      "CHAIN-DAGSTER-001"
+    ]
+  },
+  {
+    "id": "REKU-DAGSTER-006",
+    "repository": "dagster",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Storage directory path resolution in IOManagers escapes partition keys and validates path containment to prevent path traversal outside configured base storage prefixes.",
+    "mechanism": "FSIOManager._get_path sanitizes partition keys containing path operators (../), ensuring resolved file paths remain strictly nested inside the configured base directory.",
+    "applicabilityConditions": [
+      "Partitioned asset storage in FSIOManager and UPathIOManager"
+    ],
+    "evidenceIds": [
+      "OBS-DAGSTER-010",
+      "HIST-DAGSTER-004"
+    ],
+    "commonKeywords": [
+      "partition-key",
+      "path",
+      "escaping",
+      "storage",
+      "traversal",
+      "validation",
+      "directory",
+      "resolution"
+    ],
+    "uniqueKeywords": [
+      "reku_dagster_006",
+      "dagster",
+      "partition-key",
+      "path",
+      "escaping",
+      "storage",
+      "traversal"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "storage",
+        "directory",
+        "path"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "fsiomanager",
+        "_get_path",
+        "sanitizes",
+        "partition",
+        "keys"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "FSIOManager._get_path sanitizes partition keys containing path operators (../), ensuring resolved file paths remain strictly nested inside the configured base directory. Known limits: Partition keys with special filesystem characters are URL-encoded or path-escaped on disk.",
+    "linkedDomainEkus": [
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "python_modules/dagster/dagster/_core/storage/fs_io_manager.py",
+      "lineRange": [
+        45,
+        90
+      ],
+      "queryOrCodeSnippet": "_get_path constructs storage file paths from asset keys and partition keys, validating path containment to prevent path traversal outside configured base directories.",
+      "symbol": "FSIOManager._get_path"
+    },
+    "testProvenance": {
+      "filePath": "python_modules/dagster/dagster_tests/storage_tests/test_fs_io_manager.py",
+      "testName": "test_fs_io_manager_escapes_path_operators_in_partition_keys",
+      "assertionSnippet": "Asserts that FSIOManager escapes path operators in partition keys and prevents escaping the base directory."
+    },
+    "historyProvenance": {
+      "commitHash": "f675f3b3f7629b92b24ad0ae31dad8cdec71402b",
+      "failureId": "HIST-DAGSTER-004",
+      "prOrIssue": "https://github.com/dagster-io/dagster/commit/f675f3b3f7629b92b24ad0ae31dad8cdec71402b",
+      "fixDescription": "Added strict path escaping and traversal validation to ensure all partitioned output paths remain strictly inside the configured base directory."
+    },
+    "historyChainIds": [
+      "CHAIN-DAGSTER-004"
+    ]
+  },
+  {
+    "id": "REKU-DAGSTER-007",
+    "repository": "dagster",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "When a multi-step execution fails, Dagster compiles a partial re-execution plan targeting only failed or unexecuted steps, reloading upstream outputs from IOManager using KnownExecutionState.",
+    "mechanism": "KnownExecutionState tracks completed step outputs from the parent run. ExecutionPlan.build prunes already-succeeded steps and generates synthetic input-loading steps to fetch persisted outputs from the IOManager.",
+    "applicabilityConditions": [
+      "Pipeline re-executions (from failure, or selected sub-graphs)"
+    ],
+    "evidenceIds": [
+      "OBS-DAGSTER-001",
+      "OBS-DAGSTER-005",
+      "OBS-DAGSTER-012"
+    ],
+    "commonKeywords": [
+      "sub-tree",
+      "resumption",
+      "partial",
+      "re-execution",
+      "failure",
+      "points",
+      "multi-step",
+      "execution"
+    ],
+    "uniqueKeywords": [
+      "reku_dagster_007",
+      "dagster",
+      "sub-tree",
+      "resumption",
+      "partial",
+      "re-execution",
+      "failure"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "multi-step",
+        "execution",
+        "fails"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "knownexecutionstate",
+        "tracks",
+        "completed",
+        "step",
+        "outputs"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "KnownExecutionState tracks completed step outputs from the parent run. ExecutionPlan.build prunes already-succeeded steps and generates synthetic input-loading steps to fetch persisted outputs from the IOManager. Known limits: Requires upstream intermediate outputs to remain available in durable IOManager storage.",
+    "linkedDomainEkus": [
+      "EKU-WDE-004",
+      "EKU-WDE-007",
+      "EKU-WDE-008",
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-004",
+      "CLM-007",
+      "CLM-008",
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "python_modules/dagster/dagster/_core/execution/plan/plan.py",
+      "lineRange": [
+        135,
+        185
+      ],
+      "queryOrCodeSnippet": "ExecutionPlan.build evaluates pipeline dependencies, resolves required resources, creates ExecutionStep nodes with input/output bindings, and computes the topological execution graph.",
+      "symbol": "ExecutionPlan.build"
+    }
+  },
+  {
+    "id": "REKU-DAGSTER-008",
+    "repository": "dagster",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "FAILURE_RECOVERY_MECHANISM",
+    "claim": "Run failure reason tags must be written before or atomically with run status updates in SQL storage to prevent race conditions where polling readers observe a failed run with missing failure tags.",
+    "mechanism": "SqlRunStorage.handle_run_event writes the RunTagsTable row containing dagster/failure_reason before committing the RunsTable status update to FAILURE and embeds the tag in the serialized run_body.",
+    "applicabilityConditions": [
+      "SqlRunStorage status transition event handling"
+    ],
+    "evidenceIds": [
+      "OBS-DAGSTER-004",
+      "HIST-DAGSTER-003"
+    ],
+    "commonKeywords": [
+      "atomic",
+      "transactional",
+      "ordering",
+      "failure",
+      "metadata",
+      "run",
+      "status",
+      "updates"
+    ],
+    "uniqueKeywords": [
+      "reku_dagster_008",
+      "dagster",
+      "atomic",
+      "transactional",
+      "ordering",
+      "failure",
+      "metadata"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "run",
+        "failure",
+        "reason"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "sqlrunstorage",
+        "handle_run_event",
+        "writes",
+        "runtagstable",
+        "row"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "SqlRunStorage.handle_run_event writes the RunTagsTable row containing dagster/failure_reason before committing the RunsTable status update to FAILURE and embeds the tag in the serialized run_body. Known limits: Guarantees tag visibility across databases with autocommit connections (PostgreSQL).",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-003",
+      "EKU-WDE-007"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-003",
+      "CLM-007"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "python_modules/dagster/dagster/_core/storage/runs/sql_run_storage.py",
+      "lineRange": [
+        157,
+        205
+      ],
+      "queryOrCodeSnippet": "SqlRunStorage.add_run and handle_run_event persist DagsterRun metadata, manage run status transitions (QUEUED, STARTING, STARTED, SUCCESS, FAILURE), and enforce atomic failure tag ordering.",
+      "symbol": "SqlRunStorage.add_run"
+    },
+    "testProvenance": {
+      "filePath": "python_modules/dagster/dagster_tests/storage_tests/utils/run_storage.py",
+      "testName": "test_failure_event_updates_tags",
+      "assertionSnippet": "Asserts that failure events write failure reason tags atomically alongside run failure status updates."
+    },
+    "historyProvenance": {
+      "commitHash": "6388276b94572df63b1adc095ddc148c1fdf351f",
+      "failureId": "HIST-DAGSTER-003",
+      "prOrIssue": "https://github.com/dagster-io/dagster/commit/6388276b94572df63b1adc095ddc148c1fdf351f",
+      "fixDescription": "Write the RunTagsTable row first before the RunsTable status update and include the tag in the serialized run_body."
+    },
+    "historyChainIds": [
+      "CHAIN-DAGSTER-003"
+    ]
+  },
+  {
+    "id": "REKU-DAGSTER-009",
+    "repository": "dagster",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "postgres",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Autonomous background daemon loops evaluate declarative auto-materialize policies across asset partitions, evaluating upstream freshness timestamps and data times to schedule incremental runs.",
+    "mechanism": "AssetDaemon continuously evaluates upstream partition materialization timestamps and data times via CachingDataTimeResolver, generating auto-materialize evaluation ticks and submitting runs when freshness criteria require materialization.",
+    "applicabilityConditions": [
+      "Asset pipelines with AutoMaterializePolicy or AutomationCondition"
+    ],
+    "evidenceIds": [
+      "OBS-DAGSTER-003",
+      "OBS-DAGSTER-011",
+      "HIST-DAGSTER-005"
+    ],
+    "commonKeywords": [
+      "continuous",
+      "asset",
+      "reconciliation",
+      "auto-materialize",
+      "evaluation",
+      "daemon",
+      "autonomous",
+      "background"
+    ],
+    "uniqueKeywords": [
+      "reku_dagster_009",
+      "dagster",
+      "continuous",
+      "asset",
+      "reconciliation",
+      "auto-materialize",
+      "evaluation"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "autonomous",
+        "background",
+        "daemon"
+      ],
+      "stateStorage": [
+        "postgres"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "assetdaemon",
+        "continuously",
+        "evaluates",
+        "upstream",
+        "partition"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "postgres"
+      ]
+    },
+    "localContext": "AssetDaemon continuously evaluates upstream partition materialization timestamps and data times via CachingDataTimeResolver, generating auto-materialize evaluation ticks and submitting runs when freshness criteria require materialization. Known limits: High asset partition counts require partition subset batching to prevent evaluation timeouts in the daemon loop.",
+    "linkedDomainEkus": [
+      "EKU-WDE-005",
+      "EKU-WDE-006"
+    ],
+    "linkedClaims": [
+      "CLM-005",
+      "CLM-006"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "python_modules/dagster/dagster/_core/storage/event_log/sql_event_log.py",
+      "lineRange": [
+        388,
+        435
+      ],
+      "queryOrCodeSnippet": "store_event serializes DagsterEvent objects, writes event records to the event_logs SQL table, and updates secondary asset materialization and observation index caches.",
+      "symbol": "SqlEventLogStorage.store_event"
+    },
+    "testProvenance": {
+      "filePath": "python_modules/dagster/dagster_tests/core_tests/test_data_time.py",
+      "testName": "test_calculate_data_time_unpartitioned",
+      "assertionSnippet": "Asserts that asset data time calculation evaluates timestamp boundaries consistently across database backends."
+    },
+    "historyProvenance": {
+      "commitHash": "396f81ff59e66977509f8b603b22351ed98c5581",
+      "failureId": "HIST-DAGSTER-005",
+      "prOrIssue": "https://github.com/dagster-io/dagster/commit/396f81ff59e66977509f8b603b22351ed98c5581",
+      "fixDescription": "Truncated sub-microsecond bits in CachingDataTimeResolver leaves to enforce uniform timestamp granularity across backends."
+    },
+    "historyChainIds": [
+      "CHAIN-DAGSTER-005"
+    ]
+  }
+]

@@ -1,0 +1,54 @@
+{
+  "repo": "kestra",
+  "targetRepo": "kestra-io/kestra",
+  "remote": "https://github.com/kestra-io/kestra.git",
+  "commit": "c1cc21209a773586bc06a1336b219aaceb382bf6",
+  "analyzedAt": "2026-08-26T19:39:46.217682+00:00",
+  "domain": "workflow_durable_execution",
+  "systemSummary": {
+    "name": "Kestra Event-Driven Declarative Orchestrator",
+    "description": "Event-driven workflow orchestration platform using declarative YAML definitions, queue-based actor communication (Kafka / JDBC), and decoupled blob storage.",
+    "coreLanguages": [
+      "Java",
+      "Kotlin"
+    ],
+    "architecture": {
+      "executionEngine": {
+        "description": "Stateful Executor consuming execution events, evaluating flowable task DAGs, and dispatching WorkerTasks.",
+        "entrypoint": "executor/src/main/java/io/kestra/executor/DefaultExecutor.java"
+      },
+      "workerLayer": {
+        "description": "Stateless Worker agents polling WorkerTasks, executing task runners (Docker, Process, Kubernetes), and outputting WorkerTaskResults.",
+        "entrypoint": "worker/src/main/java/io/kestra/worker/WorkerAgent.java"
+      },
+      "queueLayer": {
+        "description": "Asynchronous messaging bus decoupling Executor, Worker, and Scheduler instances.",
+        "entrypoint": "core/src/main/java/io/kestra/core/queues/QueueInterface.java"
+      },
+      "storageLayer": {
+        "description": "Durable blob storage for inter-task artifact passing using kestra:// URIs.",
+        "entrypoint": "core/src/main/java/io/kestra/core/storages/StorageInterface.java"
+      }
+    }
+  },
+  "durableExecutionModel": {
+    "eventDrivenQueues": "Executors and Workers communicate strictly via asynchronous typed Queues. State is reconstructed from execution stream messages.",
+    "flowableDAGs": "DAG and parallel task execution is orchestrated by Flowable task handlers emitting next executable task runs as prior tasks complete.",
+    "storageIsolation": "Large inputs/outputs are written to StorageInterface, preventing memory bloating in message queues.",
+    "concurrencySLA": "Global and flow-level concurrency limits use atomic database/queue counters, fenced against double slot release on SLA timeouts.",
+    "deadlockResilience": "JDBC database wrappers detect nested SQL deadlock exceptions and perform automated transaction retries."
+  },
+  "dimensionsAnalyzed": [
+    "workflow_definition_model",
+    "execution_state_machine",
+    "task_activity_scheduling",
+    "persistence_and_checkpointing",
+    "timers_and_durable_sleeps",
+    "retries_and_backoff",
+    "child_workflows_subflows",
+    "worker_leasing_heartbeats_liveness",
+    "idempotency_duplicate_suppression",
+    "concurrency_and_backpressure",
+    "failure_recovery_crash_failover"
+  ]
+}

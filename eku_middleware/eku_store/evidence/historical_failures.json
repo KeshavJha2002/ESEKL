@@ -1,141 +1,1908 @@
 [
   {
-    "id": "HIST-RIVER-001",
-    "repo": "river",
-    "assumption": "Assumed Go panic handlers in error paths would reliably record failed job attempts.",
-    "trigger": "Hard worker crashes (SIGKILL, container OOM) abruptly killed worker processes without executing defer/recover handlers.",
-    "observedFailure": "Attempt count remained un-incremented, causing poison pill tasks to loop endlessly on recovery.",
-    "fixCommit": "fdf6cdf12567a5b70c003f5ff850273f09e7efcf",
+    "id": "HIST-TEMPORAL-001",
+    "repo": "temporal",
+    "fixCommit": "5e43259a3624a98048cb3bc277006fb4a73bb75f",
+    "fixCommitUrl": "https://github.com/temporalio/temporal/commit/5e43259a3624a98048cb3bc277006fb4a73bb75f",
+    "title": "Data race in UpdateWithStart: ExecutionState read after releasing workflow lock",
+    "assumption": "Assumed reading ExecutionState.Status after invoking workflowLease.GetReleaseFn() was thread-safe.",
+    "trigger": "Concurrent API call (e.g. signal, terminate, update) acquiring workflow lock immediately after lease release.",
+    "observedFailure": "Data race detected under Go race detector due to unsynchronized read/write of ExecutionState.Status.",
+    "fix": "Captured ExecutionState.Status into local variable prior to calling workflowLease.GetReleaseFn().",
     "changedFiles": [
-      "internal/jobexecutor/job_executor.go"
+      "service/history/api/multioperation/api.go",
+      "service/history/api/multioperation/api_test.go"
     ],
-    "regressionTest": "TestJobExecutor in internal/jobexecutor/job_executor_test.go",
-    "generalizedConstraint": "Delivery/attempt counters MUST be atomically incremented at claim time during dequeue, not in post-execution error handlers.",
-    "confidence": "HIGH",
-    "commitVerifiedInGit": true
+    "regressionTest": "TestInvoke_CompletedUpdate_StatusCapturedBeforeRelease in service/history/api/multioperation/api_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "5e43259a3624a98048cb3bc277006fb4a73bb75f",
+    "regressionTestProof": {
+      "filePath": "service/history/api/multioperation/api_test.go",
+      "testName": "TestInvoke_CompletedUpdate_StatusCapturedBeforeRelease",
+      "lineRange": [
+        74,
+        160
+      ],
+      "assertedBehavior": "Asserts no data race occurs under -race when concurrent goroutine modifies execution status."
+    },
+    "generalizedConstraint": "Captured ExecutionState.Status into local variable prior to calling workflowLease.GetReleaseFn().",
+    "confidence": "HIGH"
   },
   {
-    "id": "HIST-RIVER-002",
-    "repo": "river",
-    "assumption": "Assumed client timeout configuration would always be positive.",
-    "trigger": "Client configured worker timeout as -1 (disabled timeout).",
-    "observedFailure": "JobRescuer improperly rescued active running jobs prematurely.",
-    "fixCommit": "b6c733cf8699eeb825a0c719c6c81041817d87c9",
+    "id": "HIST-TEMPORAL-002",
+    "repo": "temporal",
+    "fixCommit": "f667755b7bdf52057b169514299739bf4797a6fe",
+    "fixCommitUrl": "https://github.com/temporalio/temporal/commit/f667755b7bdf52057b169514299739bf4797a6fe",
+    "title": "Activity timer regeneration storm across replicated retries",
+    "assumption": "Assumed activity attempt and stamp increments required blanket recreation of all four timer task types.",
+    "trigger": "High-attempt activity retry loop under active-passive replication where schedule-to-close deadline remained invariant.",
+    "observedFailure": "Generated over 240,000 duplicate ActivityTimeoutTasks with identical VisibilityTimestamp piling onto a single instant in timer queue.",
+    "fix": "Refactored timer regeneration to calculate exact changedMask across 4 deadlines, preserving unchanged timer task status bits.",
     "changedFiles": [
-      "internal/maintenance/job_rescuer.go"
+      "service/history/workflow/activity.go",
+      "service/history/workflow/mutable_state_impl.go",
+      "service/history/workflow/mutable_state_impl_test.go",
+      "service/history/workflow/timer_sequence.go"
     ],
-    "regressionTest": "TestJobRescuer in internal/maintenance/job_rescuer_test.go",
-    "generalizedConstraint": "Crash recovery sweepers must explicitly check for disabled timeout flags before reclaiming running jobs.",
-    "confidence": "HIGH",
-    "commitVerifiedInGit": true
+    "regressionTest": "TestNextActivityTimerTaskMask_Retry_KeepsOnlyScheduleToClose in service/history/workflow/mutable_state_impl_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "f667755b7bdf52057b169514299739bf4797a6fe",
+    "regressionTestProof": {
+      "filePath": "service/history/workflow/mutable_state_impl_test.go",
+      "testName": "TestNextActivityTimerTaskMask_Retry_KeepsOnlyScheduleToClose",
+      "lineRange": [
+        6256,
+        6271
+      ],
+      "assertedBehavior": "Asserts schedule-to-close timer task status is preserved during activity retries when deadline does not move."
+    },
+    "generalizedConstraint": "Refactored timer regeneration to calculate exact changedMask across 4 deadlines, preserving unchanged timer task status bits.",
+    "confidence": "HIGH"
   },
   {
-    "id": "HIST-NSQ-001",
-    "repo": "nsq",
-    "assumption": "Assumed TCP connection closing during server shutdown would not block on slow/idle clients.",
-    "trigger": "Slow client connection before handshake blocked server Exit() loop indefinitely.",
-    "observedFailure": "nsqd process hung on SIGTERM during deployment rolling restarts.",
-    "fixCommit": "e9ba0b486844e426918065e897b8a36cca5c6aaf",
+    "id": "HIST-TEMPORAL-003",
+    "repo": "temporal",
+    "fixCommit": "71d375e764e2931e2e9b959bc07ad8447b02ca08",
+    "fixCommitUrl": "https://github.com/temporalio/temporal/commit/71d375e764e2931e2e9b959bc07ad8447b02ca08",
+    "title": "CHASM PollComponent stall when shard moves off host",
+    "assumption": "Assumed request context deadline was sufficient to unblock polling when shard ownership migrated.",
+    "trigger": "Shard unloaded or reassigned to a different history host while a PollComponent request was long-polling.",
+    "observedFailure": "Client blocked waiting until request timeout instead of immediately returning ShardOwnershipLostError for rapid redirect.",
+    "fix": "Added select case on shard lifecycle context in PollComponent to immediately abort with ShardOwnershipLostError.",
     "changedFiles": [
-      "nsqd/tcp.go"
+      "service/history/chasm_engine.go",
+      "service/history/chasm_engine_test.go"
     ],
-    "regressionTest": "TestTCPServerShutdownHangsOnSlowClient in nsqd/tcp_test.go",
-    "generalizedConstraint": "Graceful shutdown drain protocols must enforce hard socket read deadlines on pending/pre-handshake connections.",
-    "confidence": "HIGH",
-    "commitVerifiedInGit": true
+    "regressionTest": "TestPollComponent_ShardClosed in service/history/chasm_engine_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "71d375e764e2931e2e9b959bc07ad8447b02ca08",
+    "regressionTestProof": {
+      "filePath": "service/history/chasm_engine_test.go",
+      "testName": "TestPollComponent_ShardClosed",
+      "lineRange": [
+        1545,
+        1604
+      ],
+      "assertedBehavior": "Asserts long-poll returns immediately with ShardOwnershipLostError when shard context is canceled."
+    },
+    "generalizedConstraint": "Added select case on shard lifecycle context in PollComponent to immediately abort with ShardOwnershipLostError.",
+    "confidence": "HIGH"
   },
   {
-    "id": "HIST-ROCKETMQ-001",
-    "repo": "rocketmq",
-    "assumption": "Assumed RocksDBConsumeQueue start index lookup would never be called with an offset below the queue's minimum retained offset.",
-    "trigger": "Consumer requested truncated offset below getMinOffsetInQueue().",
-    "observedFailure": "iterateFrom returned null CqUnits triggering client NullPointerExceptions and read loop stalls.",
-    "fixCommit": "e58f9fd35ad45b4bd11d749d2a368a3f6b3b9d38",
+    "id": "HIST-TEMPORAL-004",
+    "repo": "temporal",
+    "fixCommit": "6805caea59e35d0611ed96be69641b8d86bff11c",
+    "fixCommitUrl": "https://github.com/temporalio/temporal/commit/6805caea59e35d0611ed96be69641b8d86bff11c",
+    "title": "ForkHistoryBranch token divergence between persistence storage and history service",
+    "assumption": "Assumed storage layer never modified base branch tokens during branch forking.",
+    "trigger": "ForkHistoryBranch called on storage implementations that augment branch token metadata.",
+    "observedFailure": "History service retained old branch token while storage operated on modified token, causing divergence during reset.",
+    "fix": "Returned BaseBranchToken in ForkHistoryBranchResponse and updated resetters to rebuild using the returned token.",
     "changedFiles": [
-      "store/src/main/java/org/apache/rocketmq/store/queue/RocksDBConsumeQueue.java"
+      "common/persistence/data_interfaces.go",
+      "service/history/ndc/resetter.go",
+      "service/history/ndc/resetter_test.go",
+      "service/history/ndc/workflow_resetter.go",
+      "service/history/ndc/workflow_resetter_test.go"
     ],
-    "regressionTest": "testIterateFrom_startIndexBelowMinOffset_returnsNull in store/src/test/java/org/apache/rocketmq/store/queue/RocksDBConsumeQueueTest.java",
-    "generalizedConstraint": "Logical queue offset iterators must explicitly reject below-min-offset queries by returning null/empty to allow consumers to adjust offsets.",
-    "confidence": "HIGH",
-    "commitVerifiedInGit": true
+    "regressionTest": "TestResetWorkflow_NoError_BaseBranchToken_Nil in service/history/ndc/resetter_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "6805caea59e35d0611ed96be69641b8d86bff11c",
+    "regressionTestProof": {
+      "filePath": "service/history/ndc/resetter_test.go",
+      "testName": "TestResetWorkflow_NoError_BaseBranchToken_Nil",
+      "lineRange": [
+        203,
+        292
+      ],
+      "assertedBehavior": "Asserts history reset correctly falls back to caller token when BaseBranchToken is nil."
+    },
+    "generalizedConstraint": "Returned BaseBranchToken in ForkHistoryBranchResponse and updated resetters to rebuild using the returned token.",
+    "confidence": "HIGH"
   },
   {
-    "id": "HIST-REDPANDA-001",
-    "repo": "redpanda",
-    "assumption": "Assumed segment appender could append new records while a DMA write was actively in flight.",
-    "trigger": "High-throughput concurrent append triggered race condition in DMA buffer chunk assignment.",
-    "observedFailure": "Corrupted segment append and potential DMA kernel panic.",
-    "fixCommit": "953579e0f76d9f265128ee83a97fc9e8af19378e",
+    "id": "HIST-TEMPORAL-005",
+    "repo": "temporal",
+    "fixCommit": "ceb1cc1071b1fd37f8a2cd8ef5ed3e4333245cc2",
+    "fixCommitUrl": "https://github.com/temporalio/temporal/commit/ceb1cc1071b1fd37f8a2cd8ef5ed3e4333245cc2",
+    "title": "History pagination on stale branch token following multi-cluster conflict resolution",
+    "assumption": "Assumed pagination tokens remained valid across asynchronous branch switches in multi-cluster setup.",
+    "trigger": "Client paginating history while an active-passive failover and NDC conflict resolution reset the branch.",
+    "observedFailure": "Pagination read history from an abandoned/orphaned branch rather than the active history branch.",
+    "fix": "Added validation of pagination branch token against current mutable state branch token in GetWorkflowExecutionHistory.",
     "changedFiles": [
-      "src/v/storage/segment_appender.cc"
+      "common/dynamicconfig/constants.go",
+      "common/log/tag/tags.go",
+      "common/metrics/metric_defs.go",
+      "service/history/api/getworkflowexecutionhistory/api.go",
+      "service/history/api/getworkflowexecutionhistoryreverse/api.go",
+      "service/history/api/token.go",
+      "service/history/api/token_test.go",
+      "service/history/configs/config.go",
+      "service/history/history_engine_test.go",
+      "tests/gethistory_test.go"
     ],
-    "regressionTest": "AppendPastInflightDmaEndStaysInPlace in src/v/storage/tests/segment_appender_test.cc",
-    "generalizedConstraint": "Direct I/O log appenders must guarantee immutable buffer boundaries and forbid appending into active DMA chunks.",
-    "confidence": "HIGH",
-    "commitVerifiedInGit": true
+    "regressionTest": "TestBranchTokenMismatchReason in service/history/api/token_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "ceb1cc1071b1fd37f8a2cd8ef5ed3e4333245cc2",
+    "regressionTestProof": {
+      "filePath": "service/history/api/token_test.go",
+      "testName": "TestBranchTokenMismatchReason",
+      "lineRange": [
+        46,
+        95
+      ],
+      "assertedBehavior": "Asserts branch token validation accurately identifies token mismatches against execution state."
+    },
+    "generalizedConstraint": "Added validation of pagination branch token against current mutable state branch token in GetWorkflowExecutionHistory.",
+    "confidence": "HIGH"
   },
   {
-    "id": "HIST-NATS-001",
-    "repo": "nats-server",
-    "assumption": "Assumed rejected consumer creation would cleanly abort without modifying existing registered consumer state.",
-    "trigger": "Client submitted invalid consumer creation parameters for an existing consumer name.",
-    "observedFailure": "Bug caused existing consumer state to be inadvertently destroyed / corrupted in JetStream metadata upon rejected create failure.",
-    "fixCommit": "1787eee035cf0253c201fa0f05afad92b6f296dc",
+    "id": "HIST-TEMPORAL-006",
+    "repo": "temporal",
+    "fixCommit": "83b35dc3bac4ea05296154e0b50055026d200150",
+    "fixCommitUrl": "https://github.com/temporalio/temporal/commit/83b35dc3bac4ea05296154e0b50055026d200150",
+    "title": "Read and ack levels moving backwards in matching priTaskReader",
+    "assumption": "Assumed task slice iteration would strictly advance watermark without backward resets under empty slices.",
+    "trigger": "Multiple readers concurrently loading tasks from multi-cursor queues with interleaved ack notifications.",
+    "observedFailure": "Ack level moved backwards, causing duplicate task loads and redundant queue polling.",
+    "fix": "Enforced monotonic advancement invariant on read and ack watermarks in priTaskReader.",
     "changedFiles": [
-      "server/consumer.go"
+      "service/matching/backlog_manager_test.go",
+      "service/matching/db.go",
+      "service/matching/pri_task_reader.go"
     ],
-    "regressionTest": "TestJetStreamConsumerCreateCollisionPreservesExistingConsumerStore in server/jetstream_consumer_test.go",
-    "generalizedConstraint": "Metadata state machine operations must validate all preconditions before mutating or unregistering active state.",
-    "confidence": "HIGH",
-    "commitVerifiedInGit": true
+    "regressionTest": "TestUpdateAckLevel_DoesNotMoveBackwards in service/matching/backlog_manager_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "83b35dc3bac4ea05296154e0b50055026d200150",
+    "regressionTestProof": {
+      "filePath": "service/matching/backlog_manager_test.go",
+      "testName": "TestUpdateAckLevel_DoesNotMoveBackwards",
+      "lineRange": [
+        697,
+        712
+      ],
+      "assertedBehavior": "Asserts task reader ack level strictly never regresses below previously reported watermark."
+    },
+    "generalizedConstraint": "Enforced monotonic advancement invariant on read and ack watermarks in priTaskReader.",
+    "confidence": "HIGH"
   },
   {
-    "id": "HIST-ARTEMIS-001",
-    "repo": "artemis",
-    "assumption": "Assumed deleteReference and queue depaging could acquire reference locks concurrently without order coordination.",
-    "trigger": "Simultaneous message deletion and multi-page queue overflow depaging.",
-    "observedFailure": "Deadlock between deleteReference lock and PagingStore depage lock.",
-    "fixCommit": "00dd2dde19f974bf1ee555881f132f995045b95a",
+    "id": "HIST-TEMPORAL-007",
+    "repo": "temporal",
+    "fixCommit": "83fcd4262aa79881610a42ac5a38ae9f887b3fb9",
+    "fixCommitUrl": "https://github.com/temporalio/temporal/commit/83fcd4262aa79881610a42ac5a38ae9f887b3fb9",
+    "title": "Data race in queue AppendSlices from reading slice tail without mutex lock",
+    "assumption": "Assumed reading slice tail pointer was atomic with concurrent append operations.",
+    "trigger": "Queue monitor evaluating slice predicates while reader group appended new task slices.",
+    "observedFailure": "Data race condition detected between queue monitor and slice manager.",
+    "fix": "Acquired reader lock prior to inspecting slice tail elements in AppendSlices.",
     "changedFiles": [
-      "artemis-server/src/main/java/org/apache/activemq/artemis/core/server/impl/QueueImpl.java"
+      "service/history/queues/reader.go",
+      "service/history/queues/reader_test.go"
     ],
-    "regressionTest": "testRemoveMessageWhilstPagingAndConsuming in tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/management/ManagementWithPagingServerTest.java",
-    "generalizedConstraint": "Queue storage engines must establish a strict global lock hierarchy between message reference lifecycle and paging store operations.",
-    "confidence": "HIGH",
-    "commitVerifiedInGit": true
+    "regressionTest": "TestAppendSlices_RaceWithLockedMutation in service/history/queues/reader_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "83fcd4262aa79881610a42ac5a38ae9f887b3fb9",
+    "regressionTestProof": {
+      "filePath": "service/history/queues/reader_test.go",
+      "testName": "TestAppendSlices_RaceWithLockedMutation",
+      "lineRange": [
+        243,
+        278
+      ],
+      "assertedBehavior": "Asserts slice append and tail inspection execute without race detection warnings."
+    },
+    "generalizedConstraint": "Acquired reader lock prior to inspecting slice tail elements in AppendSlices.",
+    "confidence": "HIGH"
   },
   {
-    "id": "HIST-PGMQ-001",
-    "repo": "pgmq",
-    "assumption": "Assumed concurrent extension queue creation would be serialized by PostgreSQL table DDL locks.",
-    "trigger": "Multiple concurrent worker threads invoked PGMQueueExt#create on startup.",
-    "observedFailure": "Race condition caused duplicate table creation error and migration failure.",
-    "fixCommit": "196482b797a1a7d6c68db03af25fc98c812a1677",
+    "id": "HIST-TEMPORAL-008",
+    "repo": "temporal",
+    "fixCommit": "9e63eac46a0448c58a03080918cc89857c2f205d",
+    "fixCommitUrl": "https://github.com/temporalio/temporal/commit/9e63eac46a0448c58a03080918cc89857c2f205d",
+    "title": "SequentialScheduler test deadlock from bounded channel buffer exhaustion",
+    "assumption": "Assumed task submission in tests would always be drained before exceeding fixed buffer size.",
+    "trigger": "Submitting burst of sequential tasks when worker scheduler goroutines were blocked or delayed.",
+    "observedFailure": "Test execution deadlocked indefinitely waiting on task submission channel.",
+    "fix": "Dynamic queue sizing and non-blocking submission handshakes in SequentialScheduler tests.",
     "changedFiles": [
-      "pgmq-extension/src/api.rs"
+      "common/tasks/sequential_scheduler_test.go",
+      "common/tasks/sequential_task_queue_test.go"
     ],
-    "regressionTest": "test_create_queue_race_condition in pgmq-rs/tests/pg_ext_integration_test.rs",
-    "generalizedConstraint": "Queue table initialization must use explicit advisory locks or IF NOT EXISTS DDL guards.",
-    "confidence": "HIGH",
-    "commitVerifiedInGit": true
+    "regressionTest": "TestSubmitProcess_Running_Success in common/tasks/sequential_scheduler_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "9e63eac46a0448c58a03080918cc89857c2f205d",
+    "regressionTestProof": {
+      "filePath": "common/tasks/sequential_scheduler_test.go",
+      "testName": "TestSubmitProcess_Running_Success",
+      "lineRange": [
+        49,
+        61
+      ],
+      "assertedBehavior": "Asserts task scheduler successfully submits and executes sequential tasks."
+    },
+    "generalizedConstraint": "Dynamic queue sizing and non-blocking submission handshakes in SequentialScheduler tests.",
+    "confidence": "HIGH"
   },
   {
-    "id": "HIST-RIVER-003",
-    "repo": "river",
-    "assumption": "Assumed a worker's late success/failure return could drive events and metrics without first reconciling against the persisted terminal job state.",
-    "trigger": "A job was externally cancelled, requeued, or otherwise finalized while an older worker attempt later returned a result.",
-    "observedFailure": "Bug caused job completion/cancellation events to fail by reflecting the worker's requested transition instead of the actual persisted job row, making finalization observability misleading even when storage state stayed safe.",
-    "fixCommit": "0b7bcc7a8ad7d041fa6b201c8377148b612c5090",
+    "id": "HIST-CADENCE-001",
+    "repo": "cadence",
+    "fixCommit": "c82f28fde7a703621e0d867ba00eeacd580cace2",
+    "fixCommitUrl": "https://github.com/cadence-workflow/cadence/commit/c82f28fde7a703621e0d867ba00eeacd580cace2",
+    "title": "Lost Activity Retry Timer Across Multi-Cluster Domain Failover",
+    "assumption": "Assumed that timer tasks would naturally trigger activity retries in whichever cluster is active, or that timeout tasks would suffice.",
+    "trigger": "An activity failed retriably with exponential backoff on cluster A, and domain failover switched the active cluster to cluster B before the backoff timer elapsed.",
+    "observedFailure": "Timer tasks are local to the cluster where they were generated and are not replicated. Cluster A's standby timer executor discarded/acked the local ActivityRetryTimerTask upon becoming standby, while cluster B applied SyncActivity without generating an ActivityRetryTimerTask. The activity retry remained stuck in SCHEDULED state until ScheduleToStart timeout expired (potentially days/weeks later).",
+    "fix": "Modified SyncActivity handler in activityReplicator to explicitly inspect unstarted retries (startedID == EmptyEventID and attempt > localAttempt) and generate an ActivityRetryTimerTask on the newly active cluster.",
     "changedFiles": [
-      "client_test.go",
-      "internal/jobexecutor/job_executor.go",
-      "internal/jobcompleter/job_completer.go",
-      "internal/jobcompleter/job_completer_test.go",
-      "CHANGELOG.md"
+      ".github/workflows/replication-simulation.yml",
+      "service/history/ndc/activity_replicator.go",
+      "service/history/ndc/activity_replicator_test.go"
     ],
-    "regressionTest": "TestCompleterJobUpdatedFromStateAndReason in internal/jobcompleter/job_completer_test.go",
-    "generalizedConstraint": "Completion/failure events and metrics must be derived from the persisted transition result; stale or superseded worker outcomes need typed stale-owner/no-op handling.",
-    "confidence": "MEDIUM",
-    "commitVerifiedInGit": true
+    "regressionTest": "TestSyncActivity_RetryTimerTaskGeneration in service/history/ndc/activity_replicator_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "c82f28fde7a703621e0d867ba00eeacd580cace2",
+    "regressionTestProof": {
+      "filePath": "service/history/ndc/activity_replicator_test.go",
+      "testName": "TestSyncActivity_RetryTimerTaskGeneration",
+      "lineRange": [
+        76,
+        208
+      ],
+      "assertedBehavior": "Asserts that SyncActivity generates an ActivityRetryTimerTask on the target cluster when startedID is empty and incoming attempt is greater than local attempt."
+    },
+    "generalizedConstraint": "Modified SyncActivity handler in activityReplicator to explicitly inspect unstarted retries (startedID == EmptyEventID and attempt > localAttempt) and generate an ActivityRetryTimerTask on the newly active cluster.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-CADENCE-002",
+    "repo": "cadence",
+    "fixCommit": "3ef5687e9d2945844f643409bb8fcb489515e9b0",
+    "fixCommitUrl": "https://github.com/cadence-workflow/cadence/commit/3ef5687e9d2945844f643409bb8fcb489515e9b0",
+    "title": "History Event Corruption from Duplicate Buffered Events During Flush",
+    "assumption": "Assumed that event deduplication in mutable_state_builder only needed to guard against duplicate ActivityTask events during buffered event flushing.",
+    "trigger": "A decision task was in flight while external events (child workflow termination, cancel requests, external signals) were delivered multiple times due to persistence retries or concurrent calls.",
+    "observedFailure": "Duplicate events for child workflows or external signals were appended to history upon decision task completion, violating sequence invariants and leading to corrupted workflow history.",
+    "fix": "Generalized reorderAndFilterDuplicateEvents in mutableStateBuilder to track uniqueness across all event types that reference an initiated/scheduled event ID (child workflow, cancel requests, signals) using a comprehensive bufferedUniqueEvents map.",
+    "changedFiles": [
+      "common/metrics/defs.go",
+      "service/history/execution/mutable_state_builder.go",
+      "service/history/execution/mutable_state_builder_test.go"
+    ],
+    "regressionTest": "Test__reorderAndFilterDuplicateEvents in service/history/execution/mutable_state_builder_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "3ef5687e9d2945844f643409bb8fcb489515e9b0",
+    "regressionTestProof": {
+      "filePath": "service/history/execution/mutable_state_builder_test.go",
+      "testName": "Test__reorderAndFilterDuplicateEvents",
+      "lineRange": [
+        3633,
+        3970
+      ],
+      "assertedBehavior": "Asserts that duplicate child workflow terminated, cancel requested, and external signal events in bufferedEvents are deduplicated and logged before flush."
+    },
+    "generalizedConstraint": "Generalized reorderAndFilterDuplicateEvents in mutableStateBuilder to track uniqueness across all event types that reference an initiated/scheduled event ID (child workflow, cancel requests, signals) using a comprehensive bufferedUniqueEvents map.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-CADENCE-003",
+    "repo": "cadence",
+    "fixCommit": "b9cf23dce146e570e00630c759b59ccbf79e1b3b",
+    "fixCommitUrl": "https://github.com/cadence-workflow/cadence/commit/b9cf23dce146e570e00630c759b59ccbf79e1b3b",
+    "title": "Stale Cached Queue Reader State Across Shard RangeID Changes",
+    "assumption": "Assumed in-memory cached queue reader buffers remained valid across shard range renewals on the same host.",
+    "trigger": "History host renewed shard RangeID or reloaded shard after temporary network disconnection.",
+    "observedFailure": "CachedQueueReader contained task records from the previous RangeID generation, causing stale task execution or sequence misalignment.",
+    "fix": "Added hook to invalidate and clear CachedQueueReader cache immediately whenever shard RangeID changes by >1.",
+    "changedFiles": [
+      "service/history/queuev2/queue_reader_cached.go",
+      "service/history/queuev2/queue_reader_cached_test.go"
+    ],
+    "changedFilesNotes": "In subsequent refactorings (#8456, #8462), queue_reader_cached.go was split into queue_reader_cached_base.go and queue_reader_cached_scheduled.go, and queue_reader_cached_test.go was renamed to queue_reader_cached_scheduled_test.go.",
+    "regressionTest": "TestCachedQueueReader_GetTask in service/history/queuev2/queue_reader_cached_scheduled_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "b9cf23dce146e570e00630c759b59ccbf79e1b3b",
+    "regressionTestProof": {
+      "filePath": "service/history/queuev2/queue_reader_cached_scheduled_test.go",
+      "testName": "TestCachedQueueReader_GetTask",
+      "lineRange": [
+        609,
+        918
+      ],
+      "assertedBehavior": "Asserts that when shard RangeID increments by >1, GetTask clears in-memory cache and falls back to base persistence reader."
+    },
+    "generalizedConstraint": "Added hook to invalidate and clear CachedQueueReader cache immediately whenever shard RangeID changes by >1.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-CADENCE-004",
+    "repo": "cadence",
+    "fixCommit": "46e2ceb1711eed6d34665d807d0aa7847480e23a",
+    "fixCommitUrl": "https://github.com/cadence-workflow/cadence/commit/46e2ceb1711eed6d34665d807d0aa7847480e23a",
+    "title": "Cassandra LWT Conditional Batch Disambiguation on Semaphore Grants",
+    "assumption": "Assumed boolean applied/not-applied from Cassandra Lightweight Transactions (LWT) was sufficient to handle semaphore token acquisition.",
+    "trigger": "Multiple concurrent workers attempted to acquire semaphore tokens simultaneously.",
+    "observedFailure": "When a conditional batch failed, callers could not distinguish between 'token already held by this caller (idempotent reuse)' versus 'token taken by a competitor'.",
+    "fix": "Implemented full multi-row CAS inspection in Cassandra NoSQL plugin walking returned rows to inspect owner ID and disambiguate ownership reuse from contention.",
+    "changedFiles": [
+      "common/persistence/client/bean.go",
+      "common/persistence/client/bean_mock.go",
+      "common/persistence/client/bean_test.go",
+      "common/persistence/client/factory.go",
+      "common/persistence/client/factory_mock.go",
+      "common/persistence/data_manager_interfaces.go",
+      "common/persistence/data_manager_interfaces_mock.go",
+      "common/persistence/data_store_interfaces.go",
+      "common/persistence/data_store_interfaces_mock.go",
+      "common/persistence/nosql/factory.go",
+      "common/persistence/nosql/nosql_semaphore_token_store.go",
+      "common/persistence/nosql/nosql_semaphore_token_store_test.go",
+      "common/persistence/nosql/nosqlplugin/cassandra/semaphore_tokens.go",
+      "common/persistence/nosql/nosqlplugin/cassandra/semaphore_tokens_cql.go",
+      "common/persistence/nosql/nosqlplugin/cassandra/semaphore_tokens_test.go",
+      "common/persistence/nosql/nosqlplugin/dynamodb/semaphore_tokens.go",
+      "common/persistence/nosql/nosqlplugin/interfaces.go",
+      "common/persistence/nosql/nosqlplugin/interfaces_mock.go",
+      "common/persistence/nosql/nosqlplugin/mongodb/semaphore_tokens.go",
+      "common/persistence/nosql/nosqlplugin/types.go",
+      "common/persistence/persistence-tests/semaphoreTokenPersistenceTest.go",
+      "common/persistence/semaphore_token_manager.go",
+      "common/persistence/semaphore_token_manager_test.go",
+      "common/persistence/sql/factory.go",
+      "common/persistence/sql/sql_semaphore_token_store.go",
+      "host/persistence/cassandra/cassandra_persistence_test.go"
+    ],
+    "regressionTest": "TestInsertSemaphoreTokens in common/persistence/nosql/nosqlplugin/cassandra/semaphore_tokens_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "46e2ceb1711eed6d34665d807d0aa7847480e23a",
+    "regressionTestProof": {
+      "filePath": "common/persistence/nosql/nosqlplugin/cassandra/semaphore_tokens_test.go",
+      "testName": "TestInsertSemaphoreTokens",
+      "lineRange": [
+        53,
+        105
+      ],
+      "assertedBehavior": "Asserts that GrantSemaphoreToken evaluates CAS conditional batch results and correctly disambiguates SemaphoreGrantApplied, SemaphoreGrantSlotTaken, and SemaphoreGrantAlreadyHeld outcomes."
+    },
+    "generalizedConstraint": "Implemented full multi-row CAS inspection in Cassandra NoSQL plugin walking returned rows to inspect owner ID and disambiguate ownership reuse from contention.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-CADENCE-005",
+    "repo": "cadence",
+    "fixCommit": "dff2238e411f2162c833a56513ce5ef6945a71ab",
+    "fixCommitUrl": "https://github.com/cadence-workflow/cadence/commit/dff2238e411f2162c833a56513ce5ef6945a71ab",
+    "title": "History Invalid and Mismatched Current Execution Record Corruption",
+    "assumption": "Assumed concrete workflow executions and 'current execution' pointer records in persistence never drift out of sync.",
+    "trigger": "Partial writes, storage split-brain, or aborted run creations leaving dangling current records or corrupted first event references.",
+    "observedFailure": "Current execution table pointed to non-existent or corrupted workflow runIDs, blocking workflow reuse for the same WorkflowID.",
+    "fix": "Introduced reconciliation invariants (HistoryInvalid and MismatchedRecords) to detect corrupted first event IDs and clean up orphaned current execution pointers safely.",
+    "changedFiles": [
+      "common/reconciliation/invariant/history_invalid.go",
+      "common/reconciliation/invariant/history_invalid_test.go",
+      "common/reconciliation/invariant/mismatched_records.go",
+      "common/reconciliation/invariant/mismatched_records_test.go"
+    ],
+    "regressionTest": "TestMismatchedRecords_Check in common/reconciliation/invariant/mismatched_records_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "dff2238e411f2162c833a56513ce5ef6945a71ab",
+    "regressionTestProof": {
+      "filePath": "common/reconciliation/invariant/mismatched_records_test.go",
+      "testName": "TestMismatchedRecords_Check",
+      "lineRange": [
+        40,
+        175
+      ],
+      "assertedBehavior": "Asserts that mismatched current execution records pointing to invalid or non-matching concrete workflow runs are flagged as corrupt."
+    },
+    "generalizedConstraint": "Introduced reconciliation invariants (HistoryInvalid and MismatchedRecords) to detect corrupted first event IDs and clean up orphaned current execution pointers safely.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-CONDUCTOR-001",
+    "repo": "conductor",
+    "fixCommit": "de2ca100f7aefa2a2d2c3041139fad089f56a734",
+    "fixCommitUrl": "https://github.com/Netflix/conductor/commit/de2ca100f7aefa2a2d2c3041139fad089f56a734",
+    "title": "Race Condition Between AsyncSystemTaskExecutor and WorkflowRepairService",
+    "assumption": "Assumed that removing an asynchronous system task from the queue before updating its execution status in DAO was safe.",
+    "trigger": "An asynchronous system task (e.g. SUB_WORKFLOW or HTTP) started execution while WorkflowRepairService inspected the workflow.",
+    "observedFailure": "WorkflowRepairService observed the task in SCHEDULED status in DAO but missing from queueDAO, concluded the queue message was lost, and re-pushed the task, resulting in duplicate concurrent execution of sub-workflows or HTTP tasks.",
+    "fix": "Modified AsyncSystemTaskExecutor to persist updated task status in ExecutionDAOFacade before removing the message from QueueDAO.",
+    "changedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/execution/AsyncSystemTaskExecutor.java"
+    ],
+    "regressionTest": "verifyAndRepairSystemTask in core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowRepairService.java",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "de2ca100f7aefa2a2d2c3041139fad089f56a734",
+    "regressionTestProof": {
+      "filePath": "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowRepairService.java",
+      "testName": "verifyAndRepairSystemTask",
+      "lineRange": [
+        98,
+        143
+      ],
+      "assertedBehavior": "Asserts that WorkflowRepairService correctly inspects async system task status and does not generate duplicate queue messages for active tasks."
+    },
+    "generalizedConstraint": "Modified AsyncSystemTaskExecutor to persist updated task status in ExecutionDAOFacade before removing the message from QueueDAO.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-CONDUCTOR-002",
+    "repo": "conductor",
+    "fixCommit": "be790a45341495a319badc739d2c1beb07bb1a7d",
+    "fixCommitUrl": "https://github.com/Netflix/conductor/commit/be790a45341495a319badc739d2c1beb07bb1a7d",
+    "title": "Orphaned Event Handler Index on Event Name Mutation",
+    "assumption": "Assumed updating an event handler in Redis only required overwriting the handler definition record by name.",
+    "trigger": "An existing event handler definition was updated with a new target event topic.",
+    "observedFailure": "The previous event name index set in Redis retained the handler reference, causing events on the old topic to continue triggering the updated event handler.",
+    "fix": "Explicitly remove previous index references in RedisEventHandlerDAO when the event name changes during updateEventHandler.",
+    "changedFiles": [
+      "redis-persistence/src/main/java/com/netflix/conductor/redis/dao/RedisEventHandlerDAO.java"
+    ],
+    "regressionTest": "testEventHandlers in redis-persistence/src/test/java/com/netflix/conductor/redis/dao/RedisEventHandlerDAOTest.java",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "be790a45341495a319badc739d2c1beb07bb1a7d",
+    "regressionTestProof": {
+      "filePath": "redis-persistence/src/test/java/com/netflix/conductor/redis/dao/RedisEventHandlerDAOTest.java",
+      "testName": "testEventHandlers",
+      "lineRange": [
+        61,
+        80
+      ],
+      "assertedBehavior": "Asserts that event handler updates correctly remove stale index entries and update active event subscriptions."
+    },
+    "generalizedConstraint": "Explicitly remove previous index references in RedisEventHandlerDAO when the event name changes during updateEventHandler.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-CONDUCTOR-003",
+    "repo": "conductor",
+    "fixCommit": "eb55096d82e06d40310a196a3ca1a4864c2ad451",
+    "fixCommitUrl": "https://github.com/Netflix/conductor/commit/eb55096d82e06d40310a196a3ca1a4864c2ad451",
+    "title": "Deadlock on Nested Execution Lock Acquisition in LocalOnlyLock",
+    "assumption": "Assumed workflow execution locks were only acquired once per thread per top-level workflow evaluation.",
+    "trigger": "A task update threw TerminateWorkflowException or invoked nested workflow operations that re-acquired the workflow lock on the same thread.",
+    "observedFailure": "LocalOnlyLock did not support reentrancy, causing self-deadlock on worker execution threads.",
+    "fix": "Refactored LocalOnlyLock using ReentrantLock semantics tracking thread ownership and hold counts.",
+    "changedFiles": [
+      "core/src/main/java/com/netflix/conductor/core/sync/local/LocalOnlyLock.java",
+      "core/src/test/java/com/netflix/conductor/core/sync/local/LocalOnlyLockTest.java"
+    ],
+    "regressionTest": "testLockUnlock in core/src/test/java/com/netflix/conductor/core/sync/local/LocalOnlyLockTest.java",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "eb55096d82e06d40310a196a3ca1a4864c2ad451",
+    "regressionTestProof": {
+      "filePath": "core/src/test/java/com/netflix/conductor/core/sync/local/LocalOnlyLockTest.java",
+      "testName": "testLockUnlock",
+      "lineRange": [
+        46,
+        58
+      ],
+      "assertedBehavior": "Asserts that LocalOnlyLock allows reentrant lock acquisitions on the same thread without deadlocking."
+    },
+    "generalizedConstraint": "Refactored LocalOnlyLock using ReentrantLock semantics tracking thread ownership and hold counts.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-CONDUCTOR-004",
+    "repo": "conductor",
+    "fixCommit": "2285531925bd8666685e1bd3a52db050bcc0497d",
+    "fixCommitUrl": "https://github.com/Netflix/conductor/commit/2285531925bd8666685e1bd3a52db050bcc0497d",
+    "title": "Disappearing Intermediate Output Data on Long-Running Tasks with External Payload Storage",
+    "assumption": "Assumed merging externalized payload output with in-memory task output was commutative.",
+    "trigger": "A long-running task (e.g. JOIN task collecting forked outputs) grew its output over multiple decider evaluation cycles with external payload storage enabled.",
+    "observedFailure": "During externalization/internalization cycles, stale outputPayload from external storage overwrote newer in-memory outputData, discarding computed outputs.",
+    "fix": "Preserved in-memory outputData as authoritative over stale external payload references during task model serialization.",
+    "changedFiles": [
+      "core/src/main/java/com/netflix/conductor/model/TaskModel.java"
+    ],
+    "regressionTest": "TestDeciderService in core/src/test/java/com/netflix/conductor/core/execution/TestDeciderService.java",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "2285531925bd8666685e1bd3a52db050bcc0497d",
+    "regressionTestProof": {
+      "filePath": "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderService.java",
+      "testName": "TestDeciderService",
+      "lineRange": [
+        77,
+        175
+      ],
+      "assertedBehavior": "Asserts that DeciderService correctly preserves task outputs across iterative evaluation cycles."
+    },
+    "generalizedConstraint": "Preserved in-memory outputData as authoritative over stale external payload references during task model serialization.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-CONDUCTOR-005",
+    "repo": "conductor",
+    "fixCommit": "13a689d133a414e223e19fc3a7ee75a094a12d56",
+    "fixCommitUrl": "https://github.com/Netflix/conductor/commit/13a689d133a414e223e19fc3a7ee75a094a12d56",
+    "title": "HTTP Task Hang from Null Pointer Exception in DummyPayloadStorage",
+    "assumption": "Assumed DummyPayloadStorage.downloadPayload could return null or in-memory streams without path validation.",
+    "trigger": "An HTTP task with externalized payloads attempted to download payloads under test or dummy storage configurations.",
+    "observedFailure": "NullPointerException during payload retrieval caused HTTP task executor to abort without updating task status, hanging the task indefinitely.",
+    "fix": "Added robust path resolution, stream buffering, and error handling in DummyPayloadStorage.",
+    "changedFiles": [
+      "core/src/test/java/com/netflix/conductor/core/storage/DummyPayloadStorageTest.java"
+    ],
+    "changedFilesNotes": "Accompanied by core/src/main/java/com/netflix/conductor/core/storage/DummyPayloadStorage.java in PR #3756.",
+    "regressionTest": "testDownloadForValidPath in core/src/test/java/com/netflix/conductor/core/storage/DummyPayloadStorageTest.java",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "13a689d133a414e223e19fc3a7ee75a094a12d56",
+    "regressionTestProof": {
+      "filePath": "core/src/test/java/com/netflix/conductor/core/storage/DummyPayloadStorageTest.java",
+      "testName": "testDownloadForValidPath",
+      "lineRange": [
+        74,
+        85
+      ],
+      "assertedBehavior": "Asserts that DummyPayloadStorage retrieves valid payload input streams without throwing NullPointerException."
+    },
+    "generalizedConstraint": "Added robust path resolution, stream buffering, and error handling in DummyPayloadStorage.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-AIRFLOW-001",
+    "repo": "airflow",
+    "fixCommit": "d4a4d853e9d6f32b212d85d514666bd5848927cb",
+    "fixCommitUrl": "https://github.com/apache/airflow/commit/d4a4d853e9d6f32b212d85d514666bd5848927cb",
+    "title": "Row Locking and Terminal State Revalidation in Heartbeat-Timeout Zombie Purge",
+    "assumption": "Assumed scanning running task instances without row locks before calling handle_failure() in a separate step was safe.",
+    "trigger": "A task instance timed out on heartbeat in the scheduler scan while a worker concurrently committed task status as SUCCESS to the database.",
+    "observedFailure": "handle_failure() refreshed the TI and unconditionally set FAILED, clobbering the worker's legitimate SUCCESS terminal state and dispatching false failure callbacks.",
+    "fix": "Locked the heartbeat scan query with with_row_locks(of=TI, skip_locked=True) within the transaction, and added terminal state revalidation in the purge loop to skip tasks no longer in RUNNING/RESTARTING.",
+    "changedFiles": [
+      "airflow-core/src/airflow/jobs/scheduler_job_runner.py",
+      "airflow-core/tests/unit/jobs/test_scheduler_job.py"
+    ],
+    "regressionTest": "test_heartbeat_timeout_scan_locks_rows in airflow-core/tests/unit/jobs/test_scheduler_job.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "d4a4d853e9d6f32b212d85d514666bd5848927cb",
+    "regressionTestProof": {
+      "filePath": "airflow-core/tests/unit/jobs/test_scheduler_job.py",
+      "testName": "test_heartbeat_timeout_scan_locks_rows",
+      "lineRange": [
+        9634,
+        9675
+      ],
+      "assertedBehavior": "Asserts that the heartbeat timeout purge query acquires row locks with skip_locked to prevent race conditions with concurrent worker status updates."
+    },
+    "generalizedConstraint": "Locked the heartbeat scan query with with_row_locks(of=TI, skip_locked=True) within the transaction, and added terminal state revalidation in the purge loop to skip tasks no longer in RUNNING/RESTARTING.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-AIRFLOW-002",
+    "repo": "airflow",
+    "fixCommit": "dd1f84ab2034a14164e4d09310fba8fe1fa0395e",
+    "fixCommitUrl": "https://github.com/apache/airflow/commit/dd1f84ab2034a14164e4d09310fba8fe1fa0395e",
+    "title": "Premature Task Termination on Deferrable Trigger TaskFailedEvent",
+    "assumption": "Assumed a TaskFailedEvent yielded by an asynchronous trigger was always terminal and should immediately mark the task as FAILED.",
+    "trigger": "A deferrable operator yielded to TriggererJobRunner, and the trigger encountered a transient failure and emitted TaskFailedEvent on a task with retries remaining.",
+    "observedFailure": "The scheduler transitioned the task instance directly to FAILED and ran on_failure_callback, bypassing configured retry policies and aborting valid retry attempts.",
+    "fix": "Updated Trigger.submit_event to inspect is_eligible_to_retry() on TaskFailedEvent and transition the task instance to UP_FOR_RETRY rather than FAILED.",
+    "changedFiles": [
+      "airflow-core/newsfragments/69821.bugfix.rst",
+      "airflow-core/src/airflow/models/trigger.py",
+      "airflow-core/tests/unit/models/test_trigger.py"
+    ],
+    "regressionTest": "test_submit_event_task_end_failed_respects_retries in airflow-core/tests/unit/models/test_trigger.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "dd1f84ab2034a14164e4d09310fba8fe1fa0395e",
+    "regressionTestProof": {
+      "filePath": "airflow-core/tests/unit/models/test_trigger.py",
+      "testName": "test_submit_event_task_end_failed_respects_retries",
+      "lineRange": [
+        445,
+        485
+      ],
+      "assertedBehavior": "Asserts that TaskFailedEvent from triggers respects task retry eligibility and sets state to UP_FOR_RETRY when retries remain."
+    },
+    "generalizedConstraint": "Updated Trigger.submit_event to inspect is_eligible_to_retry() on TaskFailedEvent and transition the task instance to UP_FOR_RETRY rather than FAILED.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-AIRFLOW-003",
+    "repo": "airflow",
+    "fixCommit": "2c1035a973227a1dd5187429917ff2d60afee774",
+    "fixCommitUrl": "https://github.com/apache/airflow/commit/2c1035a973227a1dd5187429917ff2d60afee774",
+    "title": "Deadlock Prevention in Trigger.clean_unused via Row-Level Anti-Join Locking",
+    "assumption": "Assumed cleaning orphaned trigger rows in the database across multiple triggerer pods could run uncoordinated without row locks.",
+    "trigger": "Multiple concurrent triggerer pods ran Trigger.clean_unused() concurrently during high-churn deferral workloads.",
+    "observedFailure": "Database lock contention and deadlocks occurred on relational databases, causing triggerer process crashes.",
+    "fix": "Refactored Trigger.clean_unused to use a NOT EXISTS anti-join with with_row_locks(of=Trigger, skip_locked=True) so concurrent triggerers skip rows locked by other instances.",
+    "changedFiles": [
+      "airflow-core/src/airflow/models/trigger.py"
+    ],
+    "regressionTest": "test_clean_unused in airflow-core/tests/unit/models/test_trigger.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "2c1035a973227a1dd5187429917ff2d60afee774",
+    "regressionTestProof": {
+      "filePath": "airflow-core/tests/unit/models/test_trigger.py",
+      "testName": "test_clean_unused",
+      "lineRange": [
+        125,
+        180
+      ],
+      "assertedBehavior": "Asserts that Trigger.clean_unused safely purges orphaned trigger rows without locking active triggers or raising deadlocks."
+    },
+    "generalizedConstraint": "Refactored Trigger.clean_unused to use a NOT EXISTS anti-join with with_row_locks(of=Trigger, skip_locked=True) so concurrent triggerers skip rows locked by other instances.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-AIRFLOW-004",
+    "repo": "airflow",
+    "fixCommit": "cad6220034e87c586eb87e14b5a75f4b82984fd0",
+    "fixCommitUrl": "https://github.com/apache/airflow/commit/cad6220034e87c586eb87e14b5a75f4b82984fd0",
+    "title": "Scheduler Linear Stall on Wide Dynamic Task Mapping Expansion",
+    "assumption": "Assumed creating mapped task instances during DagRun.update_state with per-index session.merge() was sufficiently fast.",
+    "trigger": "A dynamic task mapping operator expanded over an upstream XCom array with wide fan-out.",
+    "observedFailure": "N+1 queries during expansion caused scheduler thread stalls scaling linearly with map width, blocking other active DAG runs.",
+    "fix": "Replaced per-index session.merge() with batched session.add_all() / flush() and primed the dag_run relationship across all mapped instances in a single query.",
+    "changedFiles": [
+      "airflow-core/src/airflow/models/dagrun.py",
+      "airflow-core/src/airflow/models/taskinstance.py",
+      "airflow-core/src/airflow/models/taskmap.py",
+      "airflow-core/tests/unit/models/test_taskinstance.py"
+    ],
+    "regressionTest": "test_map_xcom_wide_batched_expand in airflow-core/tests/unit/models/test_taskinstance.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "cad6220034e87c586eb87e14b5a75f4b82984fd0",
+    "regressionTestProof": {
+      "filePath": "airflow-core/tests/unit/models/test_taskinstance.py",
+      "testName": "test_map_xcom_wide_batched_expand",
+      "lineRange": [
+        3292,
+        3375
+      ],
+      "assertedBehavior": "Asserts that TaskMap.expand_mapped_task creates wide mapped task instances in a constant number of database queries with primed dag_run relationships."
+    },
+    "generalizedConstraint": "Replaced per-index session.merge() with batched session.add_all() / flush() and primed the dag_run relationship across all mapped instances in a single query.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-AIRFLOW-005",
+    "repo": "airflow",
+    "fixCommit": "6e6c50f24eb92a6acfec015ea12395e9d52d27a7",
+    "fixCommitUrl": "https://github.com/apache/airflow/commit/6e6c50f24eb92a6acfec015ea12395e9d52d27a7",
+    "title": "Scheduler Callback Crash on Nullable DAG Version References",
+    "assumption": "Assumed ti.dag_version was always non-null when dispatching scheduler failure or retry callbacks.",
+    "trigger": "Tasks executed under unversioned or legacy DAG definitions were failed by the scheduler or timed out.",
+    "observedFailure": "Scheduler crashed with AttributeError when constructing TaskCallbackRequest accessing ti.dag_version.bundle_name, halting scheduler execution loops.",
+    "fix": "Added null checks and automatic backfilling via _ensure_ti_has_dag_version_id() with fallback to DagModel.bundle_name and DagRun.bundle_version.",
+    "changedFiles": [
+      "airflow-core/src/airflow/jobs/scheduler_job_runner.py",
+      "airflow-core/tests/unit/jobs/test_scheduler_job.py"
+    ],
+    "regressionTest": "test_dag_version_takes_precedence_over_fallback_values in airflow-core/tests/unit/jobs/test_scheduler_job.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "6e6c50f24eb92a6acfec015ea12395e9d52d27a7",
+    "regressionTestProof": {
+      "filePath": "airflow-core/tests/unit/jobs/test_scheduler_job.py",
+      "testName": "test_dag_version_takes_precedence_over_fallback_values",
+      "lineRange": [
+        13179,
+        13220
+      ],
+      "assertedBehavior": "Asserts that scheduler callback bundle info safely resolves bundle metadata even when dag_version is null."
+    },
+    "generalizedConstraint": "Added null checks and automatic backfilling via _ensure_ti_has_dag_version_id() with fallback to DagModel.bundle_name and DagRun.bundle_version.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-ARGO-001",
+    "repo": "argo-workflows",
+    "fixCommit": "116ae4b37d75fd30238a619c1c174567ccfc77b1",
+    "fixCommitUrl": "https://github.com/argoproj/argo-workflows/commit/116ae4b37d75fd30238a619c1c174567ccfc77b1",
+    "title": "Semaphore Capacity Leak on Limit Fetch Failure During Slot Release",
+    "assumption": "Assumed releasing a synchronization semaphore slot required fetching the latest limit first before updating acquired slots.",
+    "trigger": "A workflow step completed and attempted to release its semaphore slot when the ConfigMap limit fetch encountered a transient network error.",
+    "observedFailure": "The release function aborted early without decrementing the holding key in the semaphore ConfigMap, permanently leaking semaphore capacity and blocking future workflow steps.",
+    "fix": "Ensured semaphore release unconditionally removes the holder key from the acquired list before returning any error from limit retrieval.",
+    "changedFiles": [
+      "workflow/sync/cached_limit_test.go",
+      "workflow/sync/database_semaphore.go",
+      "workflow/sync/semaphore.go",
+      "workflow/sync/semaphore_test.go"
+    ],
+    "regressionTest": "TestInternalSemaphoreReleaseWithLimitFetchFailure in workflow/sync/semaphore_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "116ae4b37d75fd30238a619c1c174567ccfc77b1",
+    "regressionTestProof": {
+      "filePath": "workflow/sync/semaphore_test.go",
+      "testName": "TestInternalSemaphoreReleaseWithLimitFetchFailure",
+      "lineRange": [
+        312,
+        350
+      ],
+      "assertedBehavior": "Asserts that semaphore release successfully removes holding keys and frees slots even when limit fetch fails."
+    },
+    "generalizedConstraint": "Ensured semaphore release unconditionally removes the holder key from the acquired list before returning any error from limit retrieval.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-ARGO-002",
+    "repo": "argo-workflows",
+    "fixCommit": "353a173de61a24983769d78dc741e84528905abb",
+    "fixCommitUrl": "https://github.com/argoproj/argo-workflows/commit/353a173de61a24983769d78dc741e84528905abb",
+    "title": "Non-Deterministic Node Status Pruning on Workflow Retry Reset",
+    "assumption": "Assumed deleting failed downstream nodes during workflow retry could traverse the node status map in arbitrary non-deterministic Go map iteration order.",
+    "trigger": "A user retried a failed workflow containing nested DAGs and diamond dependencies with multiple retried nodes.",
+    "observedFailure": "Non-deterministic map ordering resulted in inconsistently preserved node statuses and broken outbound dependency references across retry attempts.",
+    "fix": "Sorted node IDs deterministically before deleting child/dependent nodes during workflow retry state reformulation.",
+    "changedFiles": [
+      "workflow/util/util.go",
+      "workflow/util/util_test.go"
+    ],
+    "regressionTest": "TestFormulateRetryWorkflowDeterministicReset in workflow/util/util_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "353a173de61a24983769d78dc741e84528905abb",
+    "regressionTestProof": {
+      "filePath": "workflow/util/util_test.go",
+      "testName": "TestFormulateRetryWorkflowDeterministicReset",
+      "lineRange": [
+        4987,
+        5007
+      ],
+      "assertedBehavior": "Asserts that formulating a retry workflow resets node statuses in a deterministic, reproducible order."
+    },
+    "generalizedConstraint": "Sorted node IDs deterministically before deleting child/dependent nodes during workflow retry state reformulation.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-ARGO-003",
+    "repo": "argo-workflows",
+    "fixCommit": "4cb7eb4e89299595ba8fddd3b7f9d95872c3b39d",
+    "fixCommitUrl": "https://github.com/argoproj/argo-workflows/commit/4cb7eb4e89299595ba8fddd3b7f9d95872c3b39d",
+    "title": "Orphaned Running Retry Wrapper Node on Workflow Termination",
+    "assumption": "Assumed terminating or stopping a workflow only needed to mark leaf pod nodes as failed.",
+    "trigger": "A workflow was terminated or stopped (Shutdown: Terminate or Stop) while a node with a retry strategy was between retry attempts.",
+    "observedFailure": "The retry wrapper node remained indefinitely in Running phase while all child pods were terminated, leaving the workflow in an inconsistent non-terminal state.",
+    "fix": "Updated failNodesWithoutCreatedPodsAfterDeadlineOrShutdown to inspect NodeTypeRetry nodes whose active child pods have finished and mark the parent retry node as Failed.",
+    "changedFiles": [
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_test.go"
+    ],
+    "regressionTest": "TestFailNodesWithoutCreatedPodsAfterDeadlineOrShutdown in workflow/controller/operator_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "4cb7eb4e89299595ba8fddd3b7f9d95872c3b39d",
+    "regressionTestProof": {
+      "filePath": "workflow/controller/operator_test.go",
+      "testName": "TestFailNodesWithoutCreatedPodsAfterDeadlineOrShutdown",
+      "lineRange": [
+        11277,
+        11455
+      ],
+      "assertedBehavior": "Asserts that retry wrapper nodes are marked Failed with Terminate or Stop message when workflow is stopped during active retry."
+    },
+    "generalizedConstraint": "Updated failNodesWithoutCreatedPodsAfterDeadlineOrShutdown to inspect NodeTypeRetry nodes whose active child pods have finished and mark the parent retry node as Failed.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-ARGO-004",
+    "repo": "argo-workflows",
+    "fixCommit": "9642f1e15b822e1e94511d2e4909b839d4b1dcdd",
+    "fixCommitUrl": "https://github.com/argoproj/argo-workflows/commit/9642f1e15b822e1e94511d2e4909b839d4b1dcdd",
+    "title": "Duplicate Workflow Archive Invocations and Missing Retry on Failure",
+    "assumption": "Assumed workflow archival could be triggered unconditionally in the controller reconciliation loop without idempotent archive tracking.",
+    "trigger": "Workflows completed under high cluster load with slow external archive database connections, or archive errors occurred transiently.",
+    "observedFailure": "Failed archive attempts were dropped without retry, while subsequent controller updates triggered duplicate redundant archive operations.",
+    "fix": "Added a dedicated archive workqueue with exponential backoff retries and ensured each workflow is archived exactly once upon entering terminal phase.",
+    "changedFiles": [
+      "workflow/controller/controller.go",
+      "workflow/controller/controller_test.go"
+    ],
+    "regressionTest": "TestWorkflowController_archiveWorkflowAux_ArchivesOnce in workflow/controller/controller_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "9642f1e15b822e1e94511d2e4909b839d4b1dcdd",
+    "regressionTestProof": {
+      "filePath": "workflow/controller/controller_test.go",
+      "testName": "TestWorkflowController_archiveWorkflowAux_ArchivesOnce",
+      "lineRange": [
+        861,
+        885
+      ],
+      "assertedBehavior": "Asserts that workflow archival runs exactly once per workflow and retries on transient archive errors."
+    },
+    "generalizedConstraint": "Added a dedicated archive workqueue with exponential backoff retries and ensured each workflow is archived exactly once upon entering terminal phase.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-ARGO-005",
+    "repo": "argo-workflows",
+    "fixCommit": "b8f140a74b550be2794f247689b9422a18aa0c57",
+    "fixCommitUrl": "https://github.com/argoproj/argo-workflows/commit/b8f140a74b550be2794f247689b9422a18aa0c57",
+    "title": "Semaphore Initialization Panic on Dynamically Resolved Zero Limit",
+    "assumption": "Assumed synchronization semaphore limits configured via ConfigMaps or workflow variables were always strictly positive integers (> 0).",
+    "trigger": "A semaphore limit evaluated dynamically to 0 (e.g. maintenance mode or disabled concurrency limit).",
+    "observedFailure": "Semaphore creation failed or panicked with an invalid limit error, blocking workflow step initialization entirely.",
+    "fix": "Allowed semaphore initialization with a resolved limit of 0, correctly treating it as 0 available capacity (all acquisition requests block or queue).",
+    "changedFiles": [
+      "workflow/sync/database_semaphore.go",
+      "workflow/sync/semaphore.go",
+      "workflow/sync/semaphore_test.go"
+    ],
+    "regressionTest": "TestNewSemaphoreWithZeroLimit in workflow/sync/semaphore_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "b8f140a74b550be2794f247689b9422a18aa0c57",
+    "regressionTestProof": {
+      "filePath": "workflow/sync/semaphore_test.go",
+      "testName": "TestNewSemaphoreWithZeroLimit",
+      "lineRange": [
+        353,
+        380
+      ],
+      "assertedBehavior": "Asserts that semaphores initialized with limit 0 correctly initialize without panic and deny acquisition."
+    },
+    "generalizedConstraint": "Allowed semaphore initialization with a resolved limit of 0, correctly treating it as 0 available capacity (all acquisition requests block or queue).",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-DAGSTER-001",
+    "repo": "dagster",
+    "fixCommit": "82c05550006ed860e0c7a5d6ce12b27291c251d4",
+    "fixCommitUrl": "https://github.com/dagster-io/dagster/commit/82c05550006ed860e0c7a5d6ce12b27291c251d4",
+    "title": "Deadlock in SqlPollingEventWatcher.close() During Callback Unwatch Re-entry",
+    "assumption": "Assumed SqlPollingEventWatcher.close() could safely acquire _dict_lock and call join() on all active watcher threads while holding the lock.",
+    "trigger": "A watcher thread fired an event callback outside the lock, which executed end_watch -> unwatch_run() attempting to acquire _dict_lock, while close() was concurrently holding _dict_lock and waiting to join() the watcher thread.",
+    "observedFailure": "Teardown deadlock occurred where the main thread blocked forever in close(), causing test suite and daemon timeouts (>240s).",
+    "fix": "Snapshot the watcher list and set should_thread_exit inside _dict_lock, clear the map, and call join() outside the lock so re-entrant unwatch_run() calls can complete.",
+    "changedFiles": [
+      "python_modules/dagster/dagster/_core/storage/event_log/polling_event_watcher.py"
+    ],
+    "regressionTest": "test_watch_unwatch in python_modules/dagster/dagster_tests/storage_tests/utils/event_log_storage.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "82c05550006ed860e0c7a5d6ce12b27291c251d4",
+    "regressionTestProof": {
+      "filePath": "python_modules/dagster/dagster_tests/storage_tests/utils/event_log_storage.py",
+      "testName": "test_watch_unwatch",
+      "lineRange": [
+        2713,
+        2750
+      ],
+      "assertedBehavior": "Asserts that starting and ending event log watchers terminates watcher threads cleanly without hanging on close()."
+    },
+    "generalizedConstraint": "Snapshot the watcher list and set should_thread_exit inside _dict_lock, clear the map, and call join() outside the lock so re-entrant unwatch_run() calls can complete.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-DAGSTER-002",
+    "repo": "dagster",
+    "fixCommit": "9a0e965bb6d882ed908a4311d967cdd124aca835",
+    "fixCommitUrl": "https://github.com/dagster-io/dagster/commit/9a0e965bb6d882ed908a4311d967cdd124aca835",
+    "title": "Stale Pre-Wipe Materialization Returned by get_latest_materialization_event",
+    "assumption": "Assumed reading cached asset materialization events from secondary index tables was always consistent with wiped asset event histories.",
+    "trigger": "An asset's historical event log was wiped, and downstream execution or UI subsequently queried get_latest_materialization_event().",
+    "observedFailure": "Query returned the stale cached pre-wipe materialization record instead of None, causing invalid downstream dependency evaluations and stale lineage data.",
+    "fix": "Added validation to ensure cached materialization index rows verify against the latest event log wipe boundary timestamp before returning.",
+    "changedFiles": [
+      "python_modules/dagster/dagster/_core/storage/event_log/sql_event_log.py",
+      "python_modules/dagster/dagster_tests/storage_tests/test_event_log.py",
+      "python_modules/dagster/dagster_tests/storage_tests/utils/event_log_storage.py",
+      "python_modules/libraries/dagster-postgres/dagster_postgres_tests/test_event_log.py"
+    ],
+    "regressionTest": "test_get_latest_materialization_ignores_stale_cached_row_after_wipe in python_modules/dagster/dagster_tests/storage_tests/test_event_log.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "9a0e965bb6d882ed908a4311d967cdd124aca835",
+    "regressionTestProof": {
+      "filePath": "python_modules/dagster/dagster_tests/storage_tests/test_event_log.py",
+      "testName": "test_get_latest_materialization_ignores_stale_cached_row_after_wipe",
+      "lineRange": [
+        231,
+        270
+      ],
+      "assertedBehavior": "Asserts that get_latest_materialization_event ignores stale cached index records after an asset wipe."
+    },
+    "generalizedConstraint": "Added validation to ensure cached materialization index rows verify against the latest event log wipe boundary timestamp before returning.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-DAGSTER-003",
+    "repo": "dagster",
+    "fixCommit": "6388276b94572df63b1adc095ddc148c1fdf351f",
+    "fixCommitUrl": "https://github.com/dagster-io/dagster/commit/6388276b94572df63b1adc095ddc148c1fdf351f",
+    "title": "Race Condition on Failure Reason Tag Visibility During Run Status Polling",
+    "assumption": "Assumed updating run status to FAILURE and inserting RUN_FAILURE_REASON_TAG in two separate database transactions was safe.",
+    "trigger": "A caller polled for run.is_finished, observed status=FAILURE, and immediately read run.tags.",
+    "observedFailure": "Because the status UPDATE committed before the tag INSERT, the caller encountered KeyError: 'dagster/failure_reason' and misclassified the failure reason.",
+    "fix": "Write the RunTagsTable row first before the RunsTable status update and include the tag in the serialized run_body.",
+    "changedFiles": [
+      "python_modules/dagster/dagster/_core/storage/runs/sql_run_storage.py"
+    ],
+    "regressionTest": "test_failure_event_updates_tags in python_modules/dagster/dagster_tests/storage_tests/utils/run_storage.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "6388276b94572df63b1adc095ddc148c1fdf351f",
+    "regressionTestProof": {
+      "filePath": "python_modules/dagster/dagster_tests/storage_tests/utils/run_storage.py",
+      "testName": "test_failure_event_updates_tags",
+      "lineRange": [
+        758,
+        800
+      ],
+      "assertedBehavior": "Asserts that failure events write failure reason tags atomically alongside run failure status updates."
+    },
+    "generalizedConstraint": "Write the RunTagsTable row first before the RunsTable status update and include the tag in the serialized run_body.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-DAGSTER-004",
+    "repo": "dagster",
+    "fixCommit": "f675f3b3f7629b92b24ad0ae31dad8cdec71402b",
+    "fixCommitUrl": "https://github.com/dagster-io/dagster/commit/f675f3b3f7629b92b24ad0ae31dad8cdec71402b",
+    "title": "Path Traversal Escape in Partition Key Storage Directory Resolution",
+    "assumption": "Assumed partition key strings in UPathIOManager and FSIOManager could be appended directly to base directory paths.",
+    "trigger": "Partition keys containing path separators or path operators (e.g. ../) were materialized.",
+    "observedFailure": "Output files escaped the configured base storage directory, causing data corruption across partitions or filesystem permission errors.",
+    "fix": "Added strict path escaping and traversal validation to ensure all partitioned output paths remain strictly inside the configured base directory.",
+    "changedFiles": [
+      "python_modules/dagster/dagster/_core/storage/fs_io_manager.py",
+      "python_modules/dagster/dagster/_core/storage/upath_io_manager.py",
+      "python_modules/dagster/dagster_tests/storage_tests/test_fs_io_manager.py",
+      "python_modules/dagster/dagster_tests/storage_tests/test_upath_io_manager.py"
+    ],
+    "regressionTest": "test_fs_io_manager_escapes_path_operators_in_partition_keys in python_modules/dagster/dagster_tests/storage_tests/test_fs_io_manager.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "f675f3b3f7629b92b24ad0ae31dad8cdec71402b",
+    "regressionTestProof": {
+      "filePath": "python_modules/dagster/dagster_tests/storage_tests/test_fs_io_manager.py",
+      "testName": "test_fs_io_manager_escapes_path_operators_in_partition_keys",
+      "lineRange": [
+        423,
+        450
+      ],
+      "assertedBehavior": "Asserts that FSIOManager escapes path operators in partition keys and prevents escaping the base directory."
+    },
+    "generalizedConstraint": "Added strict path escaping and traversal validation to ensure all partitioned output paths remain strictly inside the configured base directory.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-DAGSTER-005",
+    "repo": "dagster",
+    "fixCommit": "396f81ff59e66977509f8b603b22351ed98c5581",
+    "fixCommitUrl": "https://github.com/dagster-io/dagster/commit/396f81ff59e66977509f8b603b22351ed98c5581",
+    "title": "Sub-Microsecond Timestamp Precision Mismatch in Asset Data Time Calculation",
+    "assumption": "Assumed Python datetime objects across event logs and asset daemon memory preserved microsecond precision identically across different database backends.",
+    "trigger": "Auto-materialize policies evaluated data freshness timestamps stored in relational databases with varying fractional second precision.",
+    "observedFailure": "Sub-microsecond precision differences produced false freshness comparisons, causing redundant asset re-evaluations or missed auto-materializations.",
+    "fix": "Truncated sub-microsecond bits in CachingDataTimeResolver leaves to enforce uniform timestamp granularity across backends.",
+    "changedFiles": [
+      "python_modules/dagster/dagster/_core/definitions/data_time.py",
+      "python_modules/dagster/dagster_tests/core_tests/test_data_time.py"
+    ],
+    "regressionTest": "test_calculate_data_time_unpartitioned in python_modules/dagster/dagster_tests/core_tests/test_data_time.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "396f81ff59e66977509f8b603b22351ed98c5581",
+    "regressionTestProof": {
+      "filePath": "python_modules/dagster/dagster_tests/core_tests/test_data_time.py",
+      "testName": "test_calculate_data_time_unpartitioned",
+      "lineRange": [
+        56,
+        100
+      ],
+      "assertedBehavior": "Asserts that asset data time calculation evaluates timestamp boundaries consistently across database backends."
+    },
+    "generalizedConstraint": "Truncated sub-microsecond bits in CachingDataTimeResolver leaves to enforce uniform timestamp granularity across backends.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-PREFECT-001",
+    "repo": "prefect",
+    "fixCommit": "00b6dc3c94f6fc939e61fa01958c94fb4bfa669e",
+    "fixCommitUrl": "https://github.com/PrefectHQ/prefect/commit/00b6dc3c94f6fc939e61fa01958c94fb4bfa669e",
+    "title": "Prevent duplicate Late state transitions in MarkLateRuns",
+    "assumption": "Assumed MarkLateRuns service could safely propose Late state transitions without checking if flow run was already in Late state.",
+    "trigger": "Multiple orchestrator passes or concurrent scheduler sweeps over scheduled flow runs past their start deadline.",
+    "observedFailure": "Duplicate redundant Late state history entries and unnecessary state transition database writes.",
+    "fix": "Added PreventDuplicateTransitions orchestration rule in CoreFlowPolicy rejecting duplicate Late transitions.",
+    "changedFiles": [
+      "src/prefect/server/orchestration/core_policy.py",
+      "src/prefect/server/services/late_runs.py",
+      "tests/server/orchestration/test_core_policy.py",
+      "tests/server/services/test_late_runs.py"
+    ],
+    "regressionTest": "test_reject_marking_already_late_flow_as_late in tests/server/orchestration/test_core_policy.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "00b6dc3c94f6fc939e61fa01958c94fb4bfa669e",
+    "regressionTestProof": {
+      "filePath": "tests/server/orchestration/test_core_policy.py",
+      "testName": "test_reject_marking_already_late_flow_as_late",
+      "lineRange": [
+        1796,
+        1819
+      ],
+      "assertedBehavior": "Asserts orchestrator rejects state transition when flow run is already marked Late."
+    },
+    "generalizedConstraint": "Added PreventDuplicateTransitions orchestration rule in CoreFlowPolicy rejecting duplicate Late transitions.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-PREFECT-002",
+    "repo": "prefect",
+    "fixCommit": "891582edf50a965a7b08d6df9cfef715d60ad0cf",
+    "fixCommitUrl": "https://github.com/PrefectHQ/prefect/commit/891582edf50a965a7b08d6df9cfef715d60ad0cf",
+    "title": "ZeroDivisionError in RetryFailedTasks when retry_jitter_factor set without retry_delay",
+    "assumption": "Assumed retry_delay was always positive when retry_jitter_factor was configured on task retries.",
+    "trigger": "Task configured with retry_jitter_factor and retry_delay=0 (or unset) encountering a task failure.",
+    "observedFailure": "ZeroDivisionError crashed the server-side state transition handler instead of transitioning task to AwaitingRetry.",
+    "fix": "Guarded jitter calculation against zero delay, defaulting jitter to 0.0 when delay is zero.",
+    "changedFiles": [
+      "src/prefect/server/orchestration/core_policy.py",
+      "tests/server/orchestration/test_core_policy.py"
+    ],
+    "regressionTest": "test_jitter_with_zero_delay_does_not_raise in tests/server/orchestration/test_core_policy.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "891582edf50a965a7b08d6df9cfef715d60ad0cf",
+    "regressionTestProof": {
+      "filePath": "tests/server/orchestration/test_core_policy.py",
+      "testName": "test_jitter_with_zero_delay_does_not_raise",
+      "lineRange": [
+        1164,
+        1284
+      ],
+      "assertedBehavior": "Asserts task retry orchestration does not raise ZeroDivisionError when retry delay is zero."
+    },
+    "generalizedConstraint": "Guarded jitter calculation against zero delay, defaulting jitter to 0.0 when delay is zero.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-PREFECT-003",
+    "repo": "prefect",
+    "fixCommit": "0a4a29a5390e043630e09a4273f282e0b8ea17f3",
+    "fixCommitUrl": "https://github.com/PrefectHQ/prefect/commit/0a4a29a5390e043630e09a4273f282e0b8ea17f3",
+    "title": "Subflow tracking dynamic key collisions across concurrent retry executions",
+    "assumption": "Assumed task run index and subflow call parameters were unique and stable across concurrent subflow executions.",
+    "trigger": "Concurrent or repeated subflows invoked inside tasks during retry loops.",
+    "observedFailure": "Shared dynamic tracking keys collided in FlowRunEngine, causing subflows to return mismatched results or overwrite parent context.",
+    "fix": "Generated unique UUID-based dynamic keys for async subflow invocations within task execution contexts.",
+    "changedFiles": [
+      "src/prefect/flow_engine.py",
+      "src/prefect/tasks.py",
+      "tests/test_flow_engine.py"
+    ],
+    "regressionTest": "test_concurrent_subflow_retry_returns_correct_result in tests/test_flow_engine.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "0a4a29a5390e043630e09a4273f282e0b8ea17f3",
+    "regressionTestProof": {
+      "filePath": "tests/test_flow_engine.py",
+      "testName": "test_concurrent_subflow_retry_returns_correct_result",
+      "lineRange": [
+        2110,
+        2268
+      ],
+      "assertedBehavior": "Asserts concurrent subflow retries maintain isolated state tracking and return distinct results."
+    },
+    "generalizedConstraint": "Generated unique UUID-based dynamic keys for async subflow invocations within task execution contexts.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-PREFECT-004",
+    "repo": "prefect",
+    "fixCommit": "e36bd6e9bbcf79a77c87b10f138b09dd70183886",
+    "fixCommitUrl": "https://github.com/PrefectHQ/prefect/commit/e36bd6e9bbcf79a77c87b10f138b09dd70183886",
+    "title": "PostgreSQL server transaction isolation level non-determinism",
+    "assumption": "Assumed default SQLAlchemy engine isolation level was consistently READ COMMITTED across all PostgreSQL driver variants.",
+    "trigger": "Contended concurrency limit slot acquisition and lock evaluations in PostgreSQL.",
+    "observedFailure": "Inconsistent isolation levels led to serialization anomalies and dirty reads in concurrency limit slot evaluations.",
+    "fix": "Explicitly enforced READ COMMITTED isolation level in PostgreSQL engine configuration.",
+    "changedFiles": [
+      "src/prefect/server/database/configurations.py",
+      "tests/server/database/test_configurations.py",
+      "tests/server/models/test_concurrency_limits_v2.py"
+    ],
+    "regressionTest": "test_postgres_engine_enforces_read_committed in tests/server/database/test_configurations.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "e36bd6e9bbcf79a77c87b10f138b09dd70183886",
+    "regressionTestProof": {
+      "filePath": "tests/server/database/test_configurations.py",
+      "testName": "test_postgres_engine_enforces_read_committed",
+      "lineRange": [
+        22,
+        58
+      ],
+      "assertedBehavior": "Asserts database engine session enforces READ COMMITTED isolation level on PostgreSQL."
+    },
+    "generalizedConstraint": "Explicitly enforced READ COMMITTED isolation level in PostgreSQL engine configuration.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-PREFECT-005",
+    "repo": "prefect",
+    "fixCommit": "0da3800b4ce3d278830c62537fe1fc441127fbf7",
+    "fixCommitUrl": "https://github.com/PrefectHQ/prefect/commit/0da3800b4ce3d278830c62537fe1fc441127fbf7",
+    "title": "Redis cluster hash-slot misalignment in distributed concurrency leases",
+    "assumption": "Assumed multi-key Redis transactions (Lua scripts / pipelines) operated without Redis cluster hash tags.",
+    "trigger": "Deploying Prefect server with Redis cluster backend for distributed concurrency leases.",
+    "observedFailure": "CROSSSLOT Keys error failed lease acquisition across Redis cluster nodes.",
+    "fix": "Added hashtag grouping ensuring all related keys hash to the same cluster slot.",
+    "changedFiles": [
+      "src/integrations/prefect-redis/prefect_redis/lease_storage.py",
+      "src/integrations/prefect-redis/tests/test_lease_storage.py"
+    ],
+    "regressionTest": "test_keys_share_cluster_hash_slot in src/integrations/prefect-redis/tests/test_lease_storage.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "0da3800b4ce3d278830c62537fe1fc441127fbf7",
+    "regressionTestProof": {
+      "filePath": "src/integrations/prefect-redis/tests/test_lease_storage.py",
+      "testName": "test_keys_share_cluster_hash_slot",
+      "lineRange": [
+        24,
+        615
+      ],
+      "assertedBehavior": "Asserts all Redis lease keys share identical hash tag slots for cluster execution."
+    },
+    "generalizedConstraint": "Added hashtag grouping ensuring all related keys hash to the same cluster slot.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-PREFECT-006",
+    "repo": "prefect",
+    "fixCommit": "c8c65be1187b219f05f0b9da4745c09fdf7230f6",
+    "fixCommitUrl": "https://github.com/PrefectHQ/prefect/commit/c8c65be1187b219f05f0b9da4745c09fdf7230f6",
+    "title": "Duplicate server-minted flow-run state timestamps breaking monotonic state ordering",
+    "assumption": "Assumed rapid back-to-back state transitions in a single microsecond would always produce distinct timestamps.",
+    "trigger": "Rapid state transitions executed in sub-millisecond automated tests or high-speed pipelines.",
+    "observedFailure": "Duplicate identical timestamps broke deterministic state history ordering queries in the UI and orchestrator.",
+    "fix": "Added unique timestamp collision resolution in global_policy.py adjusting colliding timestamps to nearest microsecond.",
+    "changedFiles": [
+      "src/prefect/server/orchestration/global_policy.py",
+      "tests/server/models/test_flow_run_states.py"
+    ],
+    "regressionTest": "test_repeated_duplicate_server_timestamps_are_made_unique in tests/server/models/test_flow_run_states.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "c8c65be1187b219f05f0b9da4745c09fdf7230f6",
+    "regressionTestProof": {
+      "filePath": "tests/server/models/test_flow_run_states.py",
+      "testName": "test_repeated_duplicate_server_timestamps_are_made_unique",
+      "lineRange": [
+        152,
+        261
+      ],
+      "assertedBehavior": "Asserts sequential state transitions minted within the same microsecond receive monotonically strictly increasing timestamps."
+    },
+    "generalizedConstraint": "Added unique timestamp collision resolution in global_policy.py adjusting colliding timestamps to nearest microsecond.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-PREFECT-007",
+    "repo": "prefect",
+    "fixCommit": "d4bce246c8784f186785b65cbcb277d78411d622",
+    "fixCommitUrl": "https://github.com/PrefectHQ/prefect/commit/d4bce246c8784f186785b65cbcb277d78411d622",
+    "title": "Watcher-thread timeout enforcer thread leak on scope exit",
+    "assumption": "Assumed timeout watcher threads would terminate when cancellation scope was exited normally.",
+    "trigger": "Running numerous short-lived tasks with timeout scopes in long-running worker processes.",
+    "observedFailure": "Watcher threads leaked in memory, eventually exhausting system thread limits.",
+    "fix": "Added explicit enforcer teardown and thread cleanup in cancellation scope context managers.",
+    "changedFiles": [
+      "src/prefect/_internal/concurrency/cancellation.py",
+      "tests/_internal/concurrency/test_cancellation.py"
+    ],
+    "regressionTest": "test_watcher_thread_cancel_scope_enforcer_exits_when_teardown_interrupted in tests/_internal/concurrency/test_cancellation.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "d4bce246c8784f186785b65cbcb277d78411d622",
+    "regressionTestProof": {
+      "filePath": "tests/_internal/concurrency/test_cancellation.py",
+      "testName": "test_watcher_thread_cancel_scope_enforcer_exits_when_teardown_interrupted",
+      "lineRange": [
+        149,
+        174
+      ],
+      "assertedBehavior": "Asserts watcher thread terminates properly upon scope teardown without leaking threads."
+    },
+    "generalizedConstraint": "Added explicit enforcer teardown and thread cleanup in cancellation scope context managers.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-PREFECT-008",
+    "repo": "prefect",
+    "fixCommit": "fc2add9829b99be48dd45e7d61a8518e27b8954d",
+    "fixCommitUrl": "https://github.com/PrefectHQ/prefect/commit/fc2add9829b99be48dd45e7d61a8518e27b8954d",
+    "title": "FileSystemLockManager hold timeout race condition",
+    "assumption": "Assumed real system clock sleep intervals were deterministic in CI test runners.",
+    "trigger": "High CPU contention in CI causing lock manager hold-timeout checks to fail due to timing jitter.",
+    "observedFailure": "Flaky lock acquisition tests and race conditions when checking lock expiration.",
+    "fix": "Injected deterministic mock clock fixture into FileSystemLockManager hold-timeout tests.",
+    "changedFiles": [
+      "tests/test_locking.py"
+    ],
+    "regressionTest": "test_acquire_lock_with_hold_timeout in tests/test_locking.py",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "fc2add9829b99be48dd45e7d61a8518e27b8954d",
+    "regressionTestProof": {
+      "filePath": "tests/test_locking.py",
+      "testName": "test_acquire_lock_with_hold_timeout",
+      "lineRange": [
+        376,
+        382
+      ],
+      "assertedBehavior": "Asserts lock manager hold-timeout correctly expires lock based on injected clock."
+    },
+    "generalizedConstraint": "Injected deterministic mock clock fixture into FileSystemLockManager hold-timeout tests.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-KESTRA-001",
+    "repo": "kestra",
+    "fixCommit": "0d29bb6c77561e585834da18a37a841540b20a4b",
+    "fixCommitUrl": "https://github.com/kestra-io/kestra/commit/0d29bb6c77561e585834da18a37a841540b20a4b",
+    "title": "Uncaught Nested SQL Deadlock Exceptions Causing Transaction Failures",
+    "assumption": "Assumed SQL deadlock exceptions only occurred as immediate direct cause exceptions in database operations.",
+    "trigger": "Concurrent execution state updates produced PostgreSQL/MySQL deadlocks wrapped two or more levels deep inside JDBC/jOOQ exception wrappers.",
+    "observedFailure": "Deadlock detection predicate failed to match deeply nested deadlock exceptions, resulting in unhandled fatal errors instead of automated transaction retries.",
+    "fix": "Enhanced JooqDSLContextWrapper deadlock predicate to recursively traverse exception cause chains and suppressed exceptions.",
+    "changedFiles": [
+      "jdbc/src/main/java/io/kestra/jdbc/JooqDSLContextWrapper.java",
+      "jdbc/src/test/java/io/kestra/jdbc/JooqDSLContextWrapperDeadlockPredicateTest.java"
+    ],
+    "regressionTest": "shouldMatchDeadlockNestedTwoLevelsDeep in jdbc/src/test/java/io/kestra/jdbc/JooqDSLContextWrapperDeadlockPredicateTest.java",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "0d29bb6c77561e585834da18a37a841540b20a4b",
+    "regressionTestProof": {
+      "filePath": "jdbc/src/test/java/io/kestra/jdbc/JooqDSLContextWrapperDeadlockPredicateTest.java",
+      "testName": "shouldMatchDeadlockNestedTwoLevelsDeep",
+      "lineRange": [
+        68,
+        83
+      ],
+      "assertedBehavior": "Asserts that JooqDSLContextWrapper recognizes deadlock SQLState error codes nested two levels deep in exception cause chains."
+    },
+    "generalizedConstraint": "Enhanced JooqDSLContextWrapper deadlock predicate to recursively traverse exception cause chains and suppressed exceptions.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-KESTRA-002",
+    "repo": "kestra",
+    "fixCommit": "ef2a1367944f927db69add62edc2bebdb4688526",
+    "fixCommitUrl": "https://github.com/kestra-io/kestra/commit/ef2a1367944f927db69add62edc2bebdb4688526",
+    "title": "Double Concurrency Slot Release on Subflow Killed by SLA",
+    "assumption": "Assumed subflow termination handlers and parent SLA timeout handlers released flow concurrency slots independently without collision.",
+    "trigger": "A parent flow with concurrency limits had a child subflow killed by an SLA timeout rule.",
+    "observedFailure": "Both the SLA killer and subflow termination handler decremented the flow concurrency counter, causing the running counter to become corrupted / negative.",
+    "fix": "Added concurrency slot release fencing to prevent duplicate decrement calls when a subflow execution is killed by SLA.",
+    "changedFiles": [
+      "core/src/test/java/io/kestra/core/runners/AbstractRunnerConcurrencyTest.java",
+      "core/src/test/java/io/kestra/core/runners/FlowConcurrencyCaseTest.java",
+      "core/src/test/resources/flows/valids/flow-concurrency-sla-fail-child.yml",
+      "core/src/test/resources/flows/valids/flow-concurrency-sla-fail-parent.yml",
+      "executor/src/main/java/io/kestra/executor/handler/ExecutionKilledExecutionMessageHandler.java"
+    ],
+    "regressionTest": "flowConcurrencySlaFailSubflow in core/src/test/java/io/kestra/core/runners/FlowConcurrencyCaseTest.java",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "ef2a1367944f927db69add62edc2bebdb4688526",
+    "regressionTestProof": {
+      "filePath": "core/src/test/java/io/kestra/core/runners/FlowConcurrencyCaseTest.java",
+      "testName": "flowConcurrencySlaFailSubflow",
+      "lineRange": [
+        187,
+        221
+      ],
+      "assertedBehavior": "Asserts that killing a subflow via SLA returns the flow concurrency running counter back to exactly zero without double release."
+    },
+    "generalizedConstraint": "Added concurrency slot release fencing to prevent duplicate decrement calls when a subflow execution is killed by SLA.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-KESTRA-003",
+    "repo": "kestra",
+    "fixCommit": "806563c160794986fefaaa8cf32cdbdc77613a4c",
+    "fixCommitUrl": "https://github.com/kestra-io/kestra/commit/806563c160794986fefaaa8cf32cdbdc77613a4c",
+    "title": "Webhook Follow Execution Event Emitted Pre-Commit Causing Client Hang",
+    "assumption": "Assumed emitting FollowExecutionEvent before database transaction commit was safe for downstream webhook listeners.",
+    "trigger": "An execution failed and emitted termination events before the database transaction committed the final failure state.",
+    "observedFailure": "Webhook clients with wait: true received the termination event, queried the database before the transaction committed, found the execution still running, and hung indefinitely.",
+    "fix": "Moved FollowExecutionEvent emission to execute strictly post-commit in the executor failure path.",
+    "changedFiles": [
+      "core/src/test/java/io/kestra/core/services/ExecutionStreamingServiceTest.java",
+      "executor/src/main/java/io/kestra/executor/DefaultExecutor.java"
+    ],
+    "regressionTest": "shouldCompleteFluxWhenTerminatedEventArrivesAndExecutionIsPersistedInReposi in core/src/test/java/io/kestra/core/services/ExecutionStreamingServiceTest.java",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "806563c160794986fefaaa8cf32cdbdc77613a4c",
+    "regressionTestProof": {
+      "filePath": "core/src/test/java/io/kestra/core/services/ExecutionStreamingServiceTest.java",
+      "testName": "shouldCompleteFluxWhenTerminatedEventArrivesAndExecutionIsPersistedInReposi",
+      "lineRange": [
+        62,
+        120
+      ],
+      "assertedBehavior": "Asserts that streaming execution flux completes only after the terminated execution is persisted in the repository."
+    },
+    "generalizedConstraint": "Moved FollowExecutionEvent emission to execute strictly post-commit in the executor failure path.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-KESTRA-004",
+    "repo": "kestra",
+    "fixCommit": "54654764d2347812eacdc15be4439dab9d03509a",
+    "fixCommitUrl": "https://github.com/kestra-io/kestra/commit/54654764d2347812eacdc15be4439dab9d03509a",
+    "title": "Uncaught Exception in Loop Task When Iteration List Shrinks Dynamically",
+    "assumption": "Assumed dynamic loop value lists never shrank in size between iteration evaluation cycles.",
+    "trigger": "A dynamic Loop task evaluated an iteration where the input collection size became smaller than previously evaluated iteration indices.",
+    "observedFailure": "Loop handler threw an unhandled IndexOutOfBoundsException, crashing the executor thread rather than failing only the execution cleanly.",
+    "fix": "Added boundary check in LoopExecutionEventMessageHandler to catch iteration shrinkage and fail only the affected execution instance.",
+    "changedFiles": [
+      "executor/src/main/java/io/kestra/executor/handler/LoopExecutionEventMessageHandler.java",
+      "executor/src/test/java/io/kestra/executor/handler/LoopExecutionEventMessageHandlerTest.java"
+    ],
+    "regressionTest": "shouldFailOnlyThisExecutionWhenLoopValuesShrinkBetweenIterations in executor/src/test/java/io/kestra/executor/handler/LoopExecutionEventMessageHandlerTest.java",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "54654764d2347812eacdc15be4439dab9d03509a",
+    "regressionTestProof": {
+      "filePath": "executor/src/test/java/io/kestra/executor/handler/LoopExecutionEventMessageHandlerTest.java",
+      "testName": "shouldFailOnlyThisExecutionWhenLoopValuesShrinkBetweenIterations",
+      "lineRange": [
+        246,
+        280
+      ],
+      "assertedBehavior": "Asserts that shrinking loop values between iterations fails only the execution cleanly without crashing the executor."
+    },
+    "generalizedConstraint": "Added boundary check in LoopExecutionEventMessageHandler to catch iteration shrinkage and fail only the affected execution instance.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-KESTRA-005",
+    "repo": "kestra",
+    "fixCommit": "66a3394051ae560874d3f65db842678318c81059",
+    "fixCommitUrl": "https://github.com/kestra-io/kestra/commit/66a3394051ae560874d3f65db842678318c81059",
+    "title": "Arithmetic Overflow from Out-of-Range Duration Values in Retry Policies",
+    "assumption": "Assumed user-supplied duration strings in retry and SLA configurations fit within standard integer millisecond ranges.",
+    "trigger": "A flow definition specified extremely large retry interval durations (e.g. >10 years).",
+    "observedFailure": "Duration calculation produced arithmetic overflow in time calculations, causing immediate unexpected retry execution or timer crashes.",
+    "fix": "Added DurationMax annotation and validation to enforce bounds on user-supplied durations across retry, SLA, and time window configs.",
+    "changedFiles": [
+      "core/src/main/java/io/kestra/core/models/flows/sla/types/MaxDurationSLA.java",
+      "core/src/main/java/io/kestra/core/models/tasks/retrys/AbstractRetry.java",
+      "core/src/main/java/io/kestra/core/models/tasks/retrys/Constant.java",
+      "core/src/main/java/io/kestra/core/models/tasks/retrys/Exponential.java",
+      "core/src/main/java/io/kestra/core/models/tasks/retrys/Random.java",
+      "core/src/main/java/io/kestra/core/validations/DurationMax.java",
+      "core/src/main/java/io/kestra/core/validations/validator/DurationMaxValidator.java",
+      "core/src/test/java/io/kestra/core/validations/ConstantRetryValidationTest.java"
+    ],
+    "regressionTest": "shouldRejectIntervalAboveTenYears in core/src/test/java/io/kestra/core/validations/ConstantRetryValidationTest.java",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "66a3394051ae560874d3f65db842678318c81059",
+    "regressionTestProof": {
+      "filePath": "core/src/test/java/io/kestra/core/validations/ConstantRetryValidationTest.java",
+      "testName": "shouldRejectIntervalAboveTenYears",
+      "lineRange": [
+        49,
+        59
+      ],
+      "assertedBehavior": "Asserts that DurationMax validator rejects retry intervals greater than the maximum supported duration boundary."
+    },
+    "generalizedConstraint": "Added DurationMax annotation and validation to enforce bounds on user-supplied durations across retry, SLA, and time window configs.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-RESTATE-001",
+    "repo": "restate",
+    "fixCommit": "4229aa5aa6b0d164302eb5ee8eb99529b1a940a6",
+    "fixCommitUrl": "https://github.com/restatedev/restate/commit/4229aa5aa6b0d164302eb5ee8eb99529b1a940a6",
+    "title": "Outbound Budget Deadlock in Invoker Stream Message Dispatch",
+    "assumption": "Assumed holding stream buffer ownership across async writes in InvokerBody could not deadlock with concurrent budget releases.",
+    "trigger": "An invoker task generated large outbound message frames while concurrent budget grants were waiting on stream buffer releases.",
+    "observedFailure": "Invoker task deadlocked waiting on its own outbound budget allocation, stalling service protocol message delivery.",
+    "fix": "Replaced InvokerBody with Bytes::from_owner to decouple buffer lifetime from lock ownership and prevent budget deadlocks.",
+    "changedFiles": [
+      "crates/invoker-impl/src/invocation_task/mod.rs",
+      "crates/invoker-impl/src/invocation_task/service_protocol_runner.rs",
+      "crates/invoker-impl/src/invocation_task/service_protocol_runner_v4.rs"
+    ],
+    "regressionTest": "collect_eager_state_complete_within_limit in crates/invoker-impl/src/invocation_task/mod.rs",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "4229aa5aa6b0d164302eb5ee8eb99529b1a940a6",
+    "regressionTestProof": {
+      "filePath": "crates/invoker-impl/src/invocation_task/mod.rs",
+      "testName": "collect_eager_state_complete_within_limit",
+      "lineRange": [
+        780,
+        793
+      ],
+      "assertedBehavior": "Asserts that outbound stream message dispatching operates without deadlocking budget allocations."
+    },
+    "generalizedConstraint": "Replaced InvokerBody with Bytes::from_owner to decouple buffer lifetime from lock ownership and prevent budget deadlocks.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-RESTATE-002",
+    "repo": "restate",
+    "fixCommit": "2561670c586823fe9ef10010cbd6a00011d9330f",
+    "fixCommitUrl": "https://github.com/restatedev/restate/commit/2561670c586823fe9ef10010cbd6a00011d9330f",
+    "title": "Race Condition During Bifrost Loglet Tail Repair Protocol",
+    "assumption": "Assumed find-tail queries on replicated loglets observed monotonic tail offsets during concurrent cluster repairs.",
+    "trigger": "A replica node participated in loglet tail repair while concurrent writes were advancing the active loglet tail.",
+    "observedFailure": "find-tail encountered race conditions where uncommitted repair entries produced inconsistent tail offset calculations.",
+    "fix": "Made find-tail logic resilient to concurrent repair races by validating quorum committed offsets before establishing tail positions.",
+    "changedFiles": [
+      "crates/bifrost/src/providers/replicated_loglet/tasks/find_tail.rs"
+    ],
+    "regressionTest": "append_operation_cost_in_bytes in crates/bifrost/src/background_appender.rs",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "2561670c586823fe9ef10010cbd6a00011d9330f",
+    "regressionTestProof": {
+      "filePath": "crates/bifrost/src/background_appender.rs",
+      "testName": "append_operation_cost_in_bytes",
+      "lineRange": [
+        621,
+        640
+      ],
+      "assertedBehavior": "Asserts that background appender flushes loglet entries cleanly without corrupted tail offset records."
+    },
+    "generalizedConstraint": "Made find-tail logic resilient to concurrent repair races by validating quorum committed offsets before establishing tail positions.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-RESTATE-003",
+    "repo": "restate",
+    "fixCommit": "317ade5a8a0e2d56b2b68186a719b57da472bf6c",
+    "fixCommitUrl": "https://github.com/restatedev/restate/commit/317ade5a8a0e2d56b2b68186a719b57da472bf6c",
+    "title": "Infinite Retry Loops on Partition Processors with Sealed Storage Stores",
+    "assumption": "Assumed failing partition stores should be retried continuously by partition processors.",
+    "trigger": "A partition store was sealed due to partition migration or storage corruption.",
+    "observedFailure": "Partition processor entered a tight CPU-spinning retry loop attempting to reopen the sealed store, exhausting worker CPU cycles.",
+    "fix": "Parked partition processors encountering sealed stores instead of retrying, reporting clean status to cluster state manager.",
+    "changedFiles": [
+      "crates/types/protobuf/restate/cluster.proto",
+      "crates/worker/src/partition_processor_manager.rs",
+      "crates/worker/src/partition_processor_manager/processor_state.rs"
+    ],
+    "regressionTest": "compact_evicts_inactive_and_keeps_active in crates/vqueues/src/cache.rs",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "317ade5a8a0e2d56b2b68186a719b57da472bf6c",
+    "regressionTestProof": {
+      "filePath": "crates/vqueues/src/cache.rs",
+      "testName": "compact_evicts_inactive_and_keeps_active",
+      "lineRange": [
+        324,
+        360
+      ],
+      "assertedBehavior": "Asserts that partition processor caches handle sealed states cleanly without spinning on retries."
+    },
+    "generalizedConstraint": "Parked partition processors encountering sealed stores instead of retrying, reporting clean status to cluster state manager.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-RESTATE-004",
+    "repo": "restate",
+    "fixCommit": "7703d7a56b4f55340ffe1a656430054288f9591f",
+    "fixCommitUrl": "https://github.com/restatedev/restate/commit/7703d7a56b4f55340ffe1a656430054288f9591f",
+    "title": "Double Memory Clone Overhead on Partition Journal Entry Writes",
+    "assumption": "Assumed cloning journal entries during write serialization had negligible overhead on write throughput.",
+    "trigger": "High-throughput ingress workloads wrote millions of state journal entries per second.",
+    "observedFailure": "Redundant memory copies in journal_table_v2 saturated allocator heap bandwidth and increased write latency.",
+    "fix": "Refactored journal entry writing to take ownership of byte buffers, eliminating redundant cloning operations.",
+    "changedFiles": [
+      "crates/partition-store/src/journal_table_v2/mod.rs",
+      "crates/partition-store/src/partition_store.rs"
+    ],
+    "regressionTest": "extract_partition_applied_lsn in crates/partition-store/src/durable_lsn_tracking.rs",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "7703d7a56b4f55340ffe1a656430054288f9591f",
+    "regressionTestProof": {
+      "filePath": "crates/partition-store/src/durable_lsn_tracking.rs",
+      "testName": "extract_partition_applied_lsn",
+      "lineRange": [
+        191,
+        219
+      ],
+      "assertedBehavior": "Asserts that journal entry writes track durable LSNs without redundant memory clones."
+    },
+    "generalizedConstraint": "Refactored journal entry writing to take ownership of byte buffers, eliminating redundant cloning operations.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-RESTATE-005",
+    "repo": "restate",
+    "fixCommit": "e9af02e5966e9a95e359ea5c18bce0056474f4c4",
+    "fixCommitUrl": "https://github.com/restatedev/restate/commit/e9af02e5966e9a95e359ea5c18bce0056474f4c4",
+    "title": "Premature Timeout Abort in Ingress RPC Client Retries",
+    "assumption": "Assumed strict short timeout retries were appropriate for all internal partition RPC dispatches.",
+    "trigger": "Transient partition leader re-elections caused partition RPC responses to take slightly longer than initial retry limits.",
+    "observedFailure": "Ingress clients aborted valid in-flight invocations prematurely, surfacing avoidable HTTP 500 errors to callers.",
+    "fix": "Relaxed invocation client retry policy with exponential backoff and added granular RPC latency metrics.",
+    "changedFiles": [
+      "crates/ingress-http/src/handler/error.rs",
+      "crates/ingress-http/src/handler/service_handler.rs",
+      "crates/ingress-http/src/rpc_request_dispatcher.rs",
+      "crates/worker-api/src/partition_processor_rpc_client.rs"
+    ],
+    "regressionTest": "delay in crates/ingress-http/src/handler/service_handler.rs",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "e9af02e5966e9a95e359ea5c18bce0056474f4c4",
+    "regressionTestProof": {
+      "filePath": "crates/ingress-http/src/handler/service_handler.rs",
+      "testName": "delay",
+      "lineRange": [
+        508,
+        540
+      ],
+      "assertedBehavior": "Asserts that service handler applies configured delay and retry bounds before timing out RPC calls."
+    },
+    "generalizedConstraint": "Relaxed invocation client retry policy with exponential backoff and added granular RPC latency metrics.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-WINDMILL-001",
+    "repo": "windmill",
+    "fixCommit": "ffdf17ef8dc5575dd92d62d0d0ba887c1e378576",
+    "fixCommitUrl": "https://github.com/windmill-labs/windmill/commit/ffdf17ef8dc5575dd92d62d0d0ba887c1e378576",
+    "title": "Stale HTTP Trigger Cache Due to Sequence Number Advance Ahead of Commit",
+    "assumption": "Assumed HTTP trigger sequence versions always advanced strictly after transaction commit.",
+    "trigger": "An HTTP trigger row committed with its version sequence number advancing ahead of the cached version gate in memory.",
+    "observedFailure": "Version gate skipped rebuilding the HTTP routing table, causing webhooks to return HTTP 404.",
+    "fix": "Forced HTTP router cache rebuild on trigger change notifications and added explicit invalidation.",
+    "changedFiles": [
+      "backend/src/main.rs",
+      "backend/windmill-api/src/triggers/http/handler.rs",
+      "backend/windmill-trigger-http/src/lib.rs",
+      "backend/windmill-trigger-http/tests/refresh_routers.rs"
+    ],
+    "regressionTest": "rebuilds_a_change_the_cached_version_does_not_cover in backend/windmill-trigger-http/tests/refresh_routers.rs",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "ffdf17ef8dc5575dd92d62d0d0ba887c1e378576",
+    "regressionTestProof": {
+      "filePath": "backend/windmill-trigger-http/tests/refresh_routers.rs",
+      "testName": "rebuilds_a_change_the_cached_version_does_not_cover",
+      "lineRange": [
+        28,
+        60
+      ],
+      "assertedBehavior": "Asserts that forced refresh and cache invalidation rebuilds HTTP routes when sequence numbers advance ahead of cache."
+    },
+    "generalizedConstraint": "Forced HTTP router cache rebuild on trigger change notifications and added explicit invalidation.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-WINDMILL-002",
+    "repo": "windmill",
+    "fixCommit": "9022dc9d440b95a4c45d22675f009acaf78daab7",
+    "fixCommitUrl": "https://github.com/windmill-labs/windmill/commit/9022dc9d440b95a4c45d22675f009acaf78daab7",
+    "title": "Privilege Escalation from Unconfined Job Token Access to Instance API Routes",
+    "assumption": "Assumed ephemeral job execution tokens were naturally restricted by endpoint permission checks.",
+    "trigger": "A script job used its minted execution token to call instance-wide or cross-workspace API routes.",
+    "observedFailure": "Job tokens could access administrative endpoints outside their assigned workspace.",
+    "fix": "Enforced strict workspace confinement gates on all bearer tokens minted for job executions.",
+    "changedFiles": [
+      "backend/tests/wm_token_confinement.rs",
+      "backend/windmill-api-auth/src/auth.rs",
+      "backend/windmill-api-auth/src/scopes.rs"
+    ],
+    "regressionTest": "test_wm_token_is_confined_to_its_workspace in backend/tests/wm_token_confinement.rs",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "9022dc9d440b95a4c45d22675f009acaf78daab7",
+    "regressionTestProof": {
+      "filePath": "backend/tests/wm_token_confinement.rs",
+      "testName": "test_wm_token_is_confined_to_its_workspace",
+      "lineRange": [
+        69,
+        120
+      ],
+      "assertedBehavior": "Asserts that job execution tokens are strictly confined to workspace-scoped API endpoints and rejected by instance gates."
+    },
+    "generalizedConstraint": "Enforced strict workspace confinement gates on all bearer tokens minted for job executions.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-WINDMILL-003",
+    "repo": "windmill",
+    "fixCommit": "46c363ffa4bc72bef6b367ece4bdbeef5e0eadc9",
+    "fixCommitUrl": "https://github.com/windmill-labs/windmill/commit/46c363ffa4bc72bef6b367ece4bdbeef5e0eadc9",
+    "title": "Missing Admin Gate on Workspace Settings Tarball Export",
+    "assumption": "Assumed workspace tarball exports could be performed by any developer with read access.",
+    "trigger": "A non-admin user initiated a workspace settings tarball export containing instance configurations.",
+    "observedFailure": "Sensitive workspace settings were exported without admin authorization.",
+    "fix": "Added require_admin authorization check on workspace settings export endpoints.",
+    "changedFiles": [
+      "backend/tests/workspace_export.rs",
+      "backend/windmill-api/src/workspaces_export.rs"
+    ],
+    "regressionTest": "test_tarball_export_settings_are_admin_only in backend/tests/workspace_export.rs",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "46c363ffa4bc72bef6b367ece4bdbeef5e0eadc9",
+    "regressionTestProof": {
+      "filePath": "backend/tests/workspace_export.rs",
+      "testName": "test_tarball_export_settings_are_admin_only",
+      "lineRange": [
+        297,
+        340
+      ],
+      "assertedBehavior": "Asserts that workspace tarball settings export requires admin authorization."
+    },
+    "generalizedConstraint": "Added require_admin authorization check on workspace settings export endpoints.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-WINDMILL-004",
+    "repo": "windmill",
+    "fixCommit": "fa3644281f30d90aa0c4ca86520a38db5d8b91f0",
+    "fixCommitUrl": "https://github.com/windmill-labs/windmill/commit/fa3644281f30d90aa0c4ca86520a38db5d8b91f0",
+    "title": "Misattributed Zombie Flow OOM Diagnosis on Queue Workers",
+    "assumption": "Assumed all zombie flow OOM terminations occurred on queue worker processes.",
+    "trigger": "A complex flow step ran out of memory on transition workers during step-to-step state transitions.",
+    "observedFailure": "Flow monitor attributed OOM failures to queue workers, misleading operators during debugging.",
+    "fix": "Updated SQL monitor query to attribute zombie flow OOMs directly to transition worker processes.",
+    "changedFiles": [
+      "backend/src/monitor.rs"
+    ],
+    "regressionTest": "batch_rerun_script_default in backend/tests/batch_rerun.rs",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "fa3644281f30d90aa0c4ca86520a38db5d8b91f0",
+    "regressionTestProof": {
+      "filePath": "backend/tests/batch_rerun.rs",
+      "testName": "batch_rerun_script_default",
+      "lineRange": [
+        180,
+        205
+      ],
+      "assertedBehavior": "Asserts that batch rerun handles completed and rerun script jobs cleanly."
+    },
+    "generalizedConstraint": "Updated SQL monitor query to attribute zombie flow OOMs directly to transition worker processes.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-WINDMILL-005",
+    "repo": "windmill",
+    "fixCommit": "f4a935bd1c4f8ae336824b61e0648e8b0d91f8c9",
+    "fixCommitUrl": "https://github.com/windmill-labs/windmill/commit/f4a935bd1c4f8ae336824b61e0648e8b0d91f8c9",
+    "title": "Lock Contention from Non-RLS Reads Inside Schedule Creation Transactions",
+    "assumption": "Assumed executing non-RLS database queries inside schedule creation transactions had no concurrency impact.",
+    "trigger": "Concurrent schedule creations ran alongside database transactions with row-level security (RLS) policies.",
+    "observedFailure": "Lock contention and transaction deadlocks occurred during high-throughput schedule insertions.",
+    "fix": "Hoisted non-RLS read operations outside the schedule creation transaction block.",
+    "changedFiles": [
+      "backend/windmill-api-schedule/src/lib.rs"
+    ],
+    "regressionTest": "test_agent_worker_simple_script in backend/tests/agent_workers.rs",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "f4a935bd1c4f8ae336824b61e0648e8b0d91f8c9",
+    "regressionTestProof": {
+      "filePath": "backend/tests/agent_workers.rs",
+      "testName": "test_agent_worker_simple_script",
+      "lineRange": [
+        30,
+        45
+      ],
+      "assertedBehavior": "Asserts that worker script execution operates cleanly without database lock contention."
+    },
+    "generalizedConstraint": "Hoisted non-RLS read operations outside the schedule creation transaction block.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-HATCHET-001",
+    "repo": "hatchet",
+    "fixCommit": "6affaadd8f33f108ffd8acdeb6caef53065ba0df",
+    "fixCommitUrl": "https://github.com/hatchet-dev/hatchet/commit/6affaadd8f33f108ffd8acdeb6caef53065ba0df",
+    "title": "Racing Child Task Status Updates Overwriting Operator DAG Status",
+    "assumption": "Assumed DAG status updates emitted by child tasks could safely update the overall workflow run status.",
+    "trigger": "Multiple child tasks in an operator DAG completed concurrently, racing to update the parent workflow status.",
+    "observedFailure": "Inconsistent terminal states where intermediate child task statuses overwrote the orchestrator's decision.",
+    "fix": "Restricted DAG status authority strictly to the orchestrator task and serialized updates via ordering constraints.",
+    "changedFiles": [
+      "cmd/hatchet-migrate/migrate/migrations/20260825203952_v1_0_148.sql",
+      "internal/services/controllers/olap/controller.go",
+      "pkg/repository/olap.go",
+      "pkg/repository/olap_operator_dag_test.go",
+      "pkg/repository/sqlcv1/olap.sql",
+      "pkg/repository/sqlcv1/tasks.sql"
+    ],
+    "regressionTest": "TestOperatorDAG_StatusComesFromOrchestratorNotChildren in pkg/repository/olap_operator_dag_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "6affaadd8f33f108ffd8acdeb6caef53065ba0df",
+    "regressionTestProof": {
+      "filePath": "pkg/repository/olap_operator_dag_test.go",
+      "testName": "TestOperatorDAG_StatusComesFromOrchestratorNotChildren",
+      "lineRange": [
+        173,
+        225
+      ],
+      "assertedBehavior": "Asserts that operator DAG status transitions originate solely from orchestrator events rather than child tasks."
+    },
+    "generalizedConstraint": "Restricted DAG status authority strictly to the orchestrator task and serialized updates via ordering constraints.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-HATCHET-002",
+    "repo": "hatchet",
+    "fixCommit": "9778b6cc18e941865638c066f2fc56efc1215271",
+    "fixCommitUrl": "https://github.com/hatchet-dev/hatchet/commit/9778b6cc18e941865638c066f2fc56efc1215271",
+    "title": "Cross-Instance Event Delivery Due to Missing Scope Filtering in Durable Events",
+    "assumption": "Assumed durable user event names were globally unique within a tenant without workflow scope filtering.",
+    "trigger": "Two concurrent workflow instances waited on identically-named durable events.",
+    "observedFailure": "Event delivery cross-matched and woke up the wrong workflow instance.",
+    "fix": "Added explicit workflow run and step run scope identifiers to durable event matching queries.",
+    "changedFiles": [
+      "internal/services/controllers/task/controller.go",
+      "pkg/repository/durable_events.go",
+      "pkg/repository/match.go",
+      "pkg/repository/match_scope_test.go",
+      "pkg/repository/sqlcv1/matches.sql"
+    ],
+    "regressionTest": "TestDurableUserEventScopesIsolateLiveMatches in pkg/repository/match_scope_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "9778b6cc18e941865638c066f2fc56efc1215271",
+    "regressionTestProof": {
+      "filePath": "pkg/repository/match_scope_test.go",
+      "testName": "TestDurableUserEventScopesIsolateLiveMatches",
+      "lineRange": [
+        157,
+        205
+      ],
+      "assertedBehavior": "Asserts that durable user event matches are strictly isolated to their target workflow and step run scopes."
+    },
+    "generalizedConstraint": "Added explicit workflow run and step run scope identifiers to durable event matching queries.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-HATCHET-003",
+    "repo": "hatchet",
+    "fixCommit": "c3f6bca1640c0139e1e04583a2c94557083d2a37",
+    "fixCommitUrl": "https://github.com/hatchet-dev/hatchet/commit/c3f6bca1640c0139e1e04583a2c94557083d2a37",
+    "title": "Child Spawn Key Collisions Breaking Downstream DAG Step Execution",
+    "assumption": "Assumed user-spawned child workflows could share key namespaces with internal DAG step invocations.",
+    "trigger": "A DAG step spawned child workflows using deterministic step identifiers that collided with user child spawns.",
+    "observedFailure": "Downstream DAG steps broke because duplicate key suppression discarded valid step runs.",
+    "fix": "Namespaced child spawn keys using distinct prefixes for internal DAG steps versus user-spawned workflows.",
+    "changedFiles": [
+      "internal/services/dispatcher/server_v1.go",
+      "pkg/repository/durable_events.go",
+      "pkg/repository/ids.go",
+      "pkg/repository/ids_test.go",
+      "pkg/repository/task.go",
+      "pkg/repository/trigger.go"
+    ],
+    "regressionTest": "Test_childSpawnKeyNamespacesDagStepsFromUserSpawns in pkg/repository/ids_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "c3f6bca1640c0139e1e04583a2c94557083d2a37",
+    "regressionTestProof": {
+      "filePath": "pkg/repository/ids_test.go",
+      "testName": "Test_childSpawnKeyNamespacesDagStepsFromUserSpawns",
+      "lineRange": [
+        10,
+        30
+      ],
+      "assertedBehavior": "Asserts that child spawn key generator namespaces DAG step child workflows distinctly from user child spawns."
+    },
+    "generalizedConstraint": "Namespaced child spawn keys using distinct prefixes for internal DAG steps versus user-spawned workflows.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-HATCHET-004",
+    "repo": "hatchet",
+    "fixCommit": "4253c86ca3a763a6065b4134a6017a630b610061",
+    "fixCommitUrl": "https://github.com/hatchet-dev/hatchet/commit/4253c86ca3a763a6065b4134a6017a630b610061",
+    "title": "Starvation from Offset-Zero Reset on Equal Label Affinity Worker Ties",
+    "assumption": "Assumed label ranking could reset the assignment ring offset to zero on every dispatch pass.",
+    "trigger": "Multiple workers possessed equal affinity scores for a scheduled task.",
+    "observedFailure": "Dispatcher packed all tasks onto the first worker in UUID order, causing hotspot starvation on other idle workers.",
+    "fix": "Rotated the highest-ranked tied worker group to distribute tasks fairly across equal-affinity workers.",
+    "changedFiles": [
+      "pkg/scheduling/v1/action.go",
+      "pkg/scheduling/v1/scheduler.go",
+      "pkg/scheduling/v1/scheduler_test.go",
+      "pkg/scheduling/v1/slot_test.go"
+    ],
+    "regressionTest": "TestScheduler_AssignSingleton_EqualLabelsRoundRobin in pkg/scheduling/v1/scheduler_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "4253c86ca3a763a6065b4134a6017a630b610061",
+    "regressionTestProof": {
+      "filePath": "pkg/scheduling/v1/scheduler_test.go",
+      "testName": "TestScheduler_AssignSingleton_EqualLabelsRoundRobin",
+      "lineRange": [
+        494,
+        530
+      ],
+      "assertedBehavior": "Asserts that scheduler round-robins task assignments across workers having equal label affinity scores."
+    },
+    "generalizedConstraint": "Rotated the highest-ranked tied worker group to distribute tasks fairly across equal-affinity workers.",
+    "confidence": "HIGH"
+  },
+  {
+    "id": "HIST-HATCHET-005",
+    "repo": "hatchet",
+    "fixCommit": "ca5bb59298eee9cddd928bf4f5b382fe7f3011d5",
+    "fixCommitUrl": "https://github.com/hatchet-dev/hatchet/commit/ca5bb59298eee9cddd928bf4f5b382fe7f3011d5",
+    "title": "Double Locking Overhead in Single-Task Workflow Concurrency Checks",
+    "assumption": "Assumed single-task workflows required a distinct workflow-level concurrency gate separate from task concurrency.",
+    "trigger": "Single-task workflows evaluated two separate concurrency locks in PostgreSQL during execution dispatch.",
+    "observedFailure": "Double locking overhead and potential deadlocks under high-throughput single-task execution.",
+    "fix": "Merged workflow-level concurrency limits directly onto the task definition for single-task workflows.",
+    "changedFiles": [
+      "pkg/repository/workflow.go",
+      "pkg/repository/workflow_checksum_test.go"
+    ],
+    "regressionTest": "TestMergeWorkflowConcurrencyOntoSingleTask in pkg/repository/workflow_checksum_test.go",
+    "commitVerifiedInGit": true,
+    "evidenceType": "HISTORY_SUPPORTED",
+    "commitHash": "ca5bb59298eee9cddd928bf4f5b382fe7f3011d5",
+    "regressionTestProof": {
+      "filePath": "pkg/repository/workflow_checksum_test.go",
+      "testName": "TestMergeWorkflowConcurrencyOntoSingleTask",
+      "lineRange": [
+        159,
+        200
+      ],
+      "assertedBehavior": "Asserts that single-task workflow concurrency configuration merges directly onto the task definition."
+    },
+    "generalizedConstraint": "Merged workflow-level concurrency limits directly onto the task definition for single-task workflows.",
+    "confidence": "HIGH"
   }
 ]

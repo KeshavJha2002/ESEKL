@@ -1,0 +1,55 @@
+{
+  "repo": "argo-workflows",
+  "targetRepo": "argoproj/argo-workflows",
+  "remote": "https://github.com/argoproj/argo-workflows.git",
+  "commit": "8f0d28008aaf288fe73bc380c174a8623d73a786",
+  "analyzedAt": "2026-08-26T14:01:15.634587+00:00",
+  "domain": "workflow_durable_execution",
+  "systemSummary": {
+    "name": "Argo Workflows Kubernetes-Native Orchestration Engine",
+    "description": "Container-native workflow orchestrator for Kubernetes modeling workflows as DAGs and Steps, executing steps as Pods with injected argoexec sidecars, and reconciling state via Kubernetes custom resource controllers.",
+    "coreLanguages": [
+      "Go"
+    ],
+    "architecture": {
+      "workflowController": {
+        "description": "Core Kubernetes Custom Resource controller reconciling Workflow and Pod resources via informers.",
+        "entrypoint": "workflow/controller/controller.go"
+      },
+      "operatorEngine": {
+        "description": "Per-workflow reconciliation state machine evaluating templates, DAGs, steps, and pod lifecycles.",
+        "entrypoint": "workflow/controller/operator.go"
+      },
+      "argoexecSidecar": {
+        "description": "Injected pod init and wait container managing artifact hydration, exit code harvesting, and output capture.",
+        "entrypoint": "cmd/argoexec/"
+      },
+      "syncManager": {
+        "description": "ConfigMap and database-backed semaphore/mutex concurrency coordination subsystem.",
+        "entrypoint": "workflow/sync/sync_manager.go"
+      }
+    }
+  },
+  "durableExecutionModel": {
+    "crReconciliation": "Workflows are defined as Kubernetes Workflow CRDs. WorkflowController watches CRD and Pod events via informers and reconciles state in level-triggered loops using optimistic ResourceVersion locking.",
+    "podExecution": "Each task node is dispatched as a Kubernetes Pod. An argoexec init container pulls input artifacts; an argoexec wait container monitors the user container, saves output parameters/artifacts, and posts completion annotations.",
+    "dagStepEvaluation": "DAGs and Steps evaluate task dependencies (depends logic, when expressions) and fan out parallel iterations (withItems, withParam).",
+    "synchronization": "Semaphores and mutexes coordinate cross-workflow concurrency limits via ConfigMaps.",
+    "archival": "Completed workflows are offloaded to SQL databases (PostgreSQL/MySQL) to avoid etcd storage limits."
+  },
+  "dimensionsAnalyzed": [
+    "workflow_definition_model",
+    "execution_state_machine",
+    "task_activity_scheduling",
+    "persistence_and_checkpointing",
+    "timers_and_durable_sleeps",
+    "retries_and_backoff",
+    "child_workflows_subflows",
+    "worker_leasing_heartbeats_liveness",
+    "idempotency_duplicate_suppression",
+    "versioning_and_workflow_evolution",
+    "failure_recovery_crash_failover",
+    "concurrency_and_backpressure",
+    "dynamic_task_mapping"
+  ]
+}

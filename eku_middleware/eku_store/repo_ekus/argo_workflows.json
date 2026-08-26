@@ -1,0 +1,849 @@
+[
+  {
+    "id": "REKU-ARGO-001",
+    "repository": "argo-workflows",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Argo Workflows persists workflow execution state directly in Kubernetes Workflow CRDs, updating NodeStatus trees during level-triggered reconciliation loops with optimistic ResourceVersion concurrency control.",
+    "mechanism": "WorkflowController watches Workflow and Pod resource events via informers. Each reconciliation pass (wfOperationCtx.operate()) evaluates template dependencies, advances node states in Workflow.Status.Nodes, and commits updates via Kubernetes API. On 409 Conflict, the workflow is requeued for a fresh pass.",
+    "applicabilityConditions": [
+      "All Argo Workflows executions on Kubernetes"
+    ],
+    "evidenceIds": [
+      "OBS-ARGO-001",
+      "OBS-ARGO-002",
+      "OBS-ARGO-010",
+      "HIST-ARGO-003"
+    ],
+    "commonKeywords": [
+      "kubernetes-native",
+      "custom",
+      "resource",
+      "reconciler",
+      "state",
+      "machine",
+      "argo",
+      "workflows"
+    ],
+    "uniqueKeywords": [
+      "reku_argo_001",
+      "argo-workflows",
+      "kubernetes-native",
+      "custom",
+      "resource",
+      "reconciler",
+      "state"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "argo",
+        "workflows",
+        "persists"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "workflowcontroller",
+        "watches",
+        "workflow",
+        "pod",
+        "resource"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "WorkflowController watches Workflow and Pod resource events via informers. Each reconciliation pass (wfOperationCtx.operate()) evaluates template dependencies, advances node states in Workflow.Status.Nodes, and commits updates via Kubernetes API. On 409 Conflict, the workflow is requeued for a fresh pass. Known limits: Workflow CRD size is bounded by Kubernetes etcd 1.5MB object size limit; large workflows must enable status offloading to SQL database.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-002",
+      "EKU-WDE-003",
+      "EKU-WDE-006"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-002",
+      "CLM-003",
+      "CLM-006"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "workflow/controller/operator.go",
+      "lineRange": [
+        212,
+        260
+      ],
+      "queryOrCodeSnippet": "operate() is the primary state machine reconciliation entrypoint in wfOperationCtx. It assesses workflow execution deadline, checks pause/shutdown strategies, executes the entrypoint template, and commits updated status to the Kubernetes API.",
+      "symbol": "wfOperationCtx.operate"
+    },
+    "testProvenance": {
+      "filePath": "workflow/controller/operator_test.go",
+      "testName": "TestFailNodesWithoutCreatedPodsAfterDeadlineOrShutdown",
+      "assertionSnippet": "Asserts that retry wrapper nodes are marked Failed with Terminate or Stop message when workflow is stopped during active retry."
+    },
+    "historyProvenance": {
+      "commitHash": "4cb7eb4e89299595ba8fddd3b7f9d95872c3b39d",
+      "failureId": "HIST-ARGO-003",
+      "prOrIssue": "https://github.com/argoproj/argo-workflows/commit/4cb7eb4e89299595ba8fddd3b7f9d95872c3b39d",
+      "fixDescription": "Updated failNodesWithoutCreatedPodsAfterDeadlineOrShutdown to inspect NodeTypeRetry nodes whose active child pods have finished and mark the parent retry node as Failed."
+    },
+    "historyChainIds": [
+      "CHAIN-ARGO-003"
+    ]
+  },
+  {
+    "id": "REKU-ARGO-002",
+    "repository": "argo-workflows",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Workflow tasks advance based on declarative boolean dependency logic and conditional when guards evaluated over upstream node statuses in the reconciliation pass.",
+    "mechanism": "executeDAG evaluates depends logic expressions against upstream NodeStatus values (e.g. A.Succeeded && (B.Succeeded || B.Skipped)). If dependencies are satisfied and when conditions evaluate true, the downstream task is dispatched for execution.",
+    "applicabilityConditions": [
+      "DAG templates (executeDAG) and Steps templates (executeSteps)"
+    ],
+    "evidenceIds": [
+      "OBS-ARGO-003",
+      "OBS-ARGO-004",
+      "OBS-ARGO-005"
+    ],
+    "commonKeywords": [
+      "topological",
+      "dag",
+      "step",
+      "group",
+      "graph",
+      "evaluation",
+      "workflow",
+      "tasks"
+    ],
+    "uniqueKeywords": [
+      "reku_argo_002",
+      "argo-workflows",
+      "topological",
+      "dag",
+      "step",
+      "group",
+      "graph"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "workflow",
+        "tasks",
+        "advance"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "executedag",
+        "evaluates",
+        "depends",
+        "logic",
+        "expressions"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "executeDAG evaluates depends logic expressions against upstream NodeStatus values (e.g. A.Succeeded && (B.Succeeded || B.Skipped)). If dependencies are satisfied and when conditions evaluate true, the downstream task is dispatched for execution. Known limits: Cycles in DAG dependencies are rejected during workflow validation before submission.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-005"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-005"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "workflow/controller/operator.go",
+      "lineRange": [
+        1435,
+        1480
+      ],
+      "queryOrCodeSnippet": "executeTemplate evaluates the template type, checks template-level memoization/caching and synchronization locks, and invokes executeDAG, executeSteps, or executeContainer to advance workflow execution.",
+      "symbol": "wfOperationCtx.executeTemplate"
+    }
+  },
+  {
+    "id": "REKU-ARGO-003",
+    "repository": "argo-workflows",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Pod execution decouples main containers from orchestration concerns by injecting argoexec init and wait containers that handle artifact pulling, process lifecycle monitoring, exit code harvesting, and artifact offloading.",
+    "mechanism": "createWorkflowPod injects argoexec init container (downloads input artifacts from S3/GCS to emptyDir) and argoexec wait container (monitors main container PID, captures exit code, uploads output artifacts, and sets pod annotations for the controller).",
+    "applicabilityConditions": [
+      "All container and script templates executed as Kubernetes Pods"
+    ],
+    "evidenceIds": [
+      "OBS-ARGO-002",
+      "OBS-ARGO-006",
+      "OBS-ARGO-007"
+    ],
+    "commonKeywords": [
+      "injected",
+      "sidecar",
+      "pod",
+      "execution",
+      "architecture",
+      "argoexec",
+      "decouples",
+      "main"
+    ],
+    "uniqueKeywords": [
+      "reku_argo_003",
+      "argo-workflows",
+      "injected",
+      "sidecar",
+      "pod",
+      "execution",
+      "architecture"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "pod",
+        "execution",
+        "decouples"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "createworkflowpod",
+        "injects",
+        "argoexec",
+        "init",
+        "container"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "createWorkflowPod injects argoexec init container (downloads input artifacts from S3/GCS to emptyDir) and argoexec wait container (monitors main container PID, captures exit code, uploads output artifacts, and sets pod annotations for the controller). Known limits: Requires container runtime process namespace sharing or shared volume mounts between main container and argoexec sidecars.",
+    "linkedDomainEkus": [
+      "EKU-WDE-004",
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-004",
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "workflow/controller/operator.go",
+      "lineRange": [
+        1214,
+        1260
+      ],
+      "queryOrCodeSnippet": "podReconciliation iterates through all active Pods associated with the workflow, checks container exit codes and argoexec wait container completion, extracts output parameters and artifacts, and updates corresponding NodeStatus entries.",
+      "symbol": "wfOperationCtx.podReconciliation"
+    }
+  },
+  {
+    "id": "REKU-ARGO-004",
+    "repository": "argo-workflows",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Cross-workflow and step-level concurrency limits are coordinated via ConfigMap-backed semaphores and mutexes where slots are acquired and released atomically.",
+    "mechanism": "syncManager interacts with Kubernetes ConfigMaps recording active holder keys. internalSemaphore.Acquire appends holder keys if current count < limit; Release removes holder keys unconditionally, ensuring slots are not leaked even if limit fetching fails.",
+    "applicabilityConditions": [
+      "Templates with synchronization.semaphore or synchronization.mutex configurations"
+    ],
+    "evidenceIds": [
+      "OBS-ARGO-008",
+      "OBS-ARGO-009",
+      "HIST-ARGO-001",
+      "HIST-ARGO-005"
+    ],
+    "commonKeywords": [
+      "distributed",
+      "semaphore",
+      "mutex",
+      "synchronization",
+      "via",
+      "kubernetes",
+      "configmaps",
+      "cross-workflow"
+    ],
+    "uniqueKeywords": [
+      "reku_argo_004",
+      "argo-workflows",
+      "distributed",
+      "semaphore",
+      "mutex",
+      "synchronization",
+      "via"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "cross-workflow",
+        "step-level",
+        "concurrency"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "syncmanager",
+        "interacts",
+        "kubernetes",
+        "configmaps",
+        "recording"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "syncManager interacts with Kubernetes ConfigMaps recording active holder keys. internalSemaphore.Acquire appends holder keys if current count < limit; Release removes holder keys unconditionally, ensuring slots are not leaked even if limit fetching fails. Known limits: High semaphore churn generates frequent ConfigMap write API requests to Kubernetes API server.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002"
+    ],
+    "linkedClaims": [
+      "CLM-002"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "workflow/sync/semaphore.go",
+      "lineRange": [
+        80,
+        125
+      ],
+      "queryOrCodeSnippet": "Acquire checks current holder count against the configured limit in the semaphore ConfigMap, appends the workflow node key to the holders list if capacity is available, and returns whether the lock was acquired.",
+      "symbol": "internalSemaphore.Acquire"
+    },
+    "testProvenance": {
+      "filePath": "workflow/sync/semaphore_test.go",
+      "testName": "TestInternalSemaphoreReleaseWithLimitFetchFailure",
+      "assertionSnippet": "Asserts that semaphore release successfully removes holding keys and frees slots even when limit fetch fails."
+    },
+    "historyProvenance": {
+      "commitHash": "116ae4b37d75fd30238a619c1c174567ccfc77b1",
+      "failureId": "HIST-ARGO-001",
+      "prOrIssue": "https://github.com/argoproj/argo-workflows/commit/116ae4b37d75fd30238a619c1c174567ccfc77b1",
+      "fixDescription": "Ensured semaphore release unconditionally removes the holder key from the acquired list before returning any error from limit retrieval."
+    },
+    "historyChainIds": [
+      "CHAIN-ARGO-001",
+      "CHAIN-ARGO-005"
+    ]
+  },
+  {
+    "id": "REKU-ARGO-005",
+    "repository": "argo-workflows",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Controller high availability uses Kubernetes Leader Election leases to guarantee that exactly one active controller instance reconciles workflow workqueues.",
+    "mechanism": "Controller instances contend for a Kubernetes Coordination Lease (or ConfigMap). Only the winning leader starts informer event workers and processes the workflow workqueue; standby instances wait in lease renewal loops.",
+    "applicabilityConditions": [
+      "Multi-replica WorkflowController deployments"
+    ],
+    "evidenceIds": [
+      "OBS-ARGO-010"
+    ],
+    "commonKeywords": [
+      "leader-elected",
+      "active-passive",
+      "controller",
+      "high",
+      "availability",
+      "uses",
+      "kubernetes",
+      "leader"
+    ],
+    "uniqueKeywords": [
+      "reku_argo_005",
+      "argo-workflows",
+      "leader-elected",
+      "active-passive",
+      "controller",
+      "high",
+      "availability"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "controller",
+        "high",
+        "availability"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "controller",
+        "instances",
+        "contend",
+        "kubernetes",
+        "coordination"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "Controller instances contend for a Kubernetes Coordination Lease (or ConfigMap). Only the winning leader starts informer event workers and processes the workflow workqueue; standby instances wait in lease renewal loops. Known limits: Failover latency depends on lease renewal duration (default 15s) upon unexpected leader node crash.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "workflow/controller/controller.go",
+      "lineRange": [
+        450,
+        495
+      ],
+      "queryOrCodeSnippet": "processNextItem pops workflow keys from the workqueue, retrieves the latest Workflow object from the informer cache, instantiates a wfOperationCtx, and invokes operate() with rate-limited requeuing on transient errors.",
+      "symbol": "WorkflowController.processNextItem"
+    }
+  },
+  {
+    "id": "REKU-ARGO-006",
+    "repository": "argo-workflows",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Runtime dynamic task loops expand into parallel child nodes dynamically evaluated during DAG and Steps reconciliation.",
+    "mechanism": "wfOperationCtx evaluates collection expressions from inputs/XCom parameters, generates indexed child node names (<nodeName>(<index>)), and instantiates parallel execution sub-trees in NodeStatus.",
+    "applicabilityConditions": [
+      "Templates using withItems, withParam, or withSequence"
+    ],
+    "evidenceIds": [
+      "OBS-ARGO-004",
+      "OBS-ARGO-005"
+    ],
+    "commonKeywords": [
+      "dynamic",
+      "fan-out",
+      "matrix",
+      "expansion",
+      "withitems",
+      "withparam",
+      "runtime",
+      "task"
+    ],
+    "uniqueKeywords": [
+      "reku_argo_006",
+      "argo-workflows",
+      "dynamic",
+      "fan-out",
+      "matrix",
+      "expansion",
+      "withitems"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "runtime",
+        "dynamic",
+        "task"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "wfoperationctx",
+        "evaluates",
+        "collection",
+        "expressions",
+        "inputs"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "wfOperationCtx evaluates collection expressions from inputs/XCom parameters, generates indexed child node names (<nodeName>(<index>)), and instantiates parallel execution sub-trees in NodeStatus. Known limits: Wide expansions increase Workflow CRD node count; parallelism limits should be configured on template specs.",
+    "linkedDomainEkus": [
+      "EKU-WDE-003"
+    ],
+    "linkedClaims": [
+      "CLM-003"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "workflow/controller/dag.go",
+      "lineRange": [
+        270,
+        320
+      ],
+      "queryOrCodeSnippet": "executeDAG iterates over DAG tasks, checks upstream dependency logic (depends expressions, when conditions) and resolves task parameter substitutions before calling executeDAGTask for eligible tasks.",
+      "symbol": "wfOperationCtx.executeDAG"
+    }
+  },
+  {
+    "id": "REKU-ARGO-007",
+    "repository": "argo-workflows",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Completed workflow pods and status records are pruned via PodGC and archived to external SQL databases via dedicated retry workqueues to avoid etcd storage exhaustion.",
+    "mechanism": "WorkflowController prunes completed Pods according to PodGCStrategy and enqueues completed workflows to archiveQueue. archiveWorkflowAux offloads workflow execution histories to PostgreSQL/MySQL exactly once with exponential backoff retries.",
+    "applicabilityConditions": [
+      "Workflows with podGC strategies or archive enabled"
+    ],
+    "evidenceIds": [
+      "OBS-ARGO-010",
+      "OBS-ARGO-012",
+      "HIST-ARGO-004"
+    ],
+    "commonKeywords": [
+      "automated",
+      "pod",
+      "sql",
+      "archive",
+      "offloading",
+      "completed",
+      "workflow",
+      "pods"
+    ],
+    "uniqueKeywords": [
+      "reku_argo_007",
+      "argo-workflows",
+      "automated",
+      "pod",
+      "sql",
+      "archive",
+      "offloading"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "completed",
+        "workflow",
+        "pods"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "workflowcontroller",
+        "prunes",
+        "completed",
+        "pods",
+        "according"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "WorkflowController prunes completed Pods according to PodGCStrategy and enqueues completed workflows to archiveQueue. archiveWorkflowAux offloads workflow execution histories to PostgreSQL/MySQL exactly once with exponential backoff retries. Known limits: If external archive database is unreachable and retry queue exhausts attempts, archival must be re-triggered manually or via resync.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-004",
+      "EKU-WDE-009",
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-004",
+      "CLM-009",
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "workflow/controller/controller.go",
+      "lineRange": [
+        450,
+        495
+      ],
+      "queryOrCodeSnippet": "processNextItem pops workflow keys from the workqueue, retrieves the latest Workflow object from the informer cache, instantiates a wfOperationCtx, and invokes operate() with rate-limited requeuing on transient errors.",
+      "symbol": "WorkflowController.processNextItem"
+    },
+    "testProvenance": {
+      "filePath": "workflow/controller/controller_test.go",
+      "testName": "TestWorkflowController_archiveWorkflowAux_ArchivesOnce",
+      "assertionSnippet": "Asserts that workflow archival runs exactly once per workflow and retries on transient archive errors."
+    },
+    "historyProvenance": {
+      "commitHash": "9642f1e15b822e1e94511d2e4909b839d4b1dcdd",
+      "failureId": "HIST-ARGO-004",
+      "prOrIssue": "https://github.com/argoproj/argo-workflows/commit/9642f1e15b822e1e94511d2e4909b839d4b1dcdd",
+      "fixDescription": "Added a dedicated archive workqueue with exponential backoff retries and ensured each workflow is archived exactly once upon entering terminal phase."
+    },
+    "historyChainIds": [
+      "CHAIN-ARGO-004"
+    ]
+  },
+  {
+    "id": "REKU-ARGO-008",
+    "repository": "argo-workflows",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Retrying failed workflows deterministically purges failed child and dependent nodes in sorted node ID order while preserving successful upstream outputs and artifact caches.",
+    "mechanism": "FormulateRetryWorkflow sorts node IDs and removes failed nodes and downstream dependent sub-trees while keeping successful predecessor node records intact, resetting the workflow status to Running.",
+    "applicabilityConditions": [
+      "Workflow retries via argo retry CLI or controller API"
+    ],
+    "evidenceIds": [
+      "OBS-ARGO-011",
+      "HIST-ARGO-002"
+    ],
+    "commonKeywords": [
+      "deterministic",
+      "workflow",
+      "retry",
+      "resubmit",
+      "state",
+      "reformulation",
+      "retrying",
+      "failed"
+    ],
+    "uniqueKeywords": [
+      "reku_argo_008",
+      "argo-workflows",
+      "deterministic",
+      "workflow",
+      "retry",
+      "resubmit",
+      "state"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "retrying",
+        "failed",
+        "workflows"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "formulateretryworkflow",
+        "sorts",
+        "node",
+        "ids",
+        "removes"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "FormulateRetryWorkflow sorts node IDs and removes failed nodes and downstream dependent sub-trees while keeping successful predecessor node records intact, resetting the workflow status to Running. Known limits: Workflows with non-idempotent external side effects outside Kubernetes pods may require manual compensation before retry.",
+    "linkedDomainEkus": [
+      "EKU-WDE-005",
+      "EKU-WDE-007",
+      "EKU-WDE-008"
+    ],
+    "linkedClaims": [
+      "CLM-005",
+      "CLM-007",
+      "CLM-008"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "workflow/util/util.go",
+      "lineRange": [
+        1032,
+        1080
+      ],
+      "queryOrCodeSnippet": "FormulateRetryWorkflow traverses the Workflow.Status.Nodes map, deterministically identifies failed nodes and their dependent downstream subtrees, deletes them, and resets the workflow phase to Running for retry execution.",
+      "symbol": "FormulateRetryWorkflow"
+    },
+    "testProvenance": {
+      "filePath": "workflow/util/util_test.go",
+      "testName": "TestFormulateRetryWorkflowDeterministicReset",
+      "assertionSnippet": "Asserts that formulating a retry workflow resets node statuses in a deterministic, reproducible order."
+    },
+    "historyProvenance": {
+      "commitHash": "353a173de61a24983769d78dc741e84528905abb",
+      "failureId": "HIST-ARGO-002",
+      "prOrIssue": "https://github.com/argoproj/argo-workflows/commit/353a173de61a24983769d78dc741e84528905abb",
+      "fixDescription": "Sorted node IDs deterministically before deleting child/dependent nodes during workflow retry state reformulation."
+    },
+    "historyChainIds": [
+      "CHAIN-ARGO-002"
+    ]
+  },
+  {
+    "id": "REKU-ARGO-009",
+    "repository": "argo-workflows",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "FAILURE_RECOVERY_MECHANISM",
+    "claim": "When a workflow is terminated or stopped during active retries, the controller must mark intermediate retry wrapper nodes as Failed to prevent hanging Running nodes with orphaned child pods.",
+    "mechanism": "failNodesWithoutCreatedPodsAfterDeadlineOrShutdown scans NodeTypeRetry nodes whose active child pods have completed and marks the retry wrapper node as Failed, transitioning the entire workflow cleanly to terminal phase.",
+    "applicabilityConditions": [
+      "Workflow termination/stop handling with active retryStrategy nodes"
+    ],
+    "evidenceIds": [
+      "OBS-ARGO-001",
+      "OBS-ARGO-002",
+      "HIST-ARGO-003"
+    ],
+    "commonKeywords": [
+      "asynchronous",
+      "pod",
+      "reconciliation",
+      "external",
+      "shutdown",
+      "fencing",
+      "workflow",
+      "terminated"
+    ],
+    "uniqueKeywords": [
+      "reku_argo_009",
+      "argo-workflows",
+      "asynchronous",
+      "pod",
+      "reconciliation",
+      "external",
+      "shutdown"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "workflow",
+        "terminated",
+        "stopped"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "failnodeswithoutcreatedpodsafterdeadlineorshutdown",
+        "scans",
+        "nodetyperetry",
+        "nodes",
+        "whose"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "failNodesWithoutCreatedPodsAfterDeadlineOrShutdown scans NodeTypeRetry nodes whose active child pods have completed and marks the retry wrapper node as Failed, transitioning the entire workflow cleanly to terminal phase. Known limits: Stopping a workflow allows running pods to complete if shutdown strategy is Stop, whereas Terminate kills pods immediately.",
+    "linkedDomainEkus": [
+      "EKU-WDE-003",
+      "EKU-WDE-005",
+      "EKU-WDE-006"
+    ],
+    "linkedClaims": [
+      "CLM-003",
+      "CLM-005",
+      "CLM-006"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "workflow/controller/operator.go",
+      "lineRange": [
+        212,
+        260
+      ],
+      "queryOrCodeSnippet": "operate() is the primary state machine reconciliation entrypoint in wfOperationCtx. It assesses workflow execution deadline, checks pause/shutdown strategies, executes the entrypoint template, and commits updated status to the Kubernetes API.",
+      "symbol": "wfOperationCtx.operate"
+    },
+    "testProvenance": {
+      "filePath": "workflow/controller/operator_test.go",
+      "testName": "TestFailNodesWithoutCreatedPodsAfterDeadlineOrShutdown",
+      "assertionSnippet": "Asserts that retry wrapper nodes are marked Failed with Terminate or Stop message when workflow is stopped during active retry."
+    },
+    "historyProvenance": {
+      "commitHash": "4cb7eb4e89299595ba8fddd3b7f9d95872c3b39d",
+      "failureId": "HIST-ARGO-003",
+      "prOrIssue": "https://github.com/argoproj/argo-workflows/commit/4cb7eb4e89299595ba8fddd3b7f9d95872c3b39d",
+      "fixDescription": "Updated failNodesWithoutCreatedPodsAfterDeadlineOrShutdown to inspect NodeTypeRetry nodes whose active child pods have finished and mark the parent retry node as Failed."
+    },
+    "historyChainIds": [
+      "CHAIN-ARGO-003"
+    ]
+  }
+]

@@ -1,0 +1,802 @@
+[
+  {
+    "id": "REKU-CADENCE-001",
+    "repository": "cadence",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Cadence history shards enforce single-writer mutual exclusion and monotonic task sequencing across shard ownership handoffs using a persistent RangeID CAS lease and bit-shifted task sequence number ranges.",
+    "mechanism": "When acquiring or renewing a shard lease, renewRangeLocked increments RangeID using conditional update on PreviousRangeID. Successful lease acquisition allocates a disjoint sequence window [RangeID << RangeSizeBits, (RangeID + 1) << RangeSizeBits). Any concurrent write from a previous shard owner fails CAS and triggers immediate shutdown via ShardOwnershipLostError.",
+    "applicabilityConditions": [
+      "All history shard lifecycle transitions",
+      "Cassandra/SQL/NoSQL storage backends supporting conditional updates"
+    ],
+    "evidenceIds": [
+      "OBS-CADENCE-001",
+      "HIST-CADENCE-003"
+    ],
+    "commonKeywords": [
+      "monotonic",
+      "shard",
+      "lease",
+      "fencing",
+      "task",
+      "partitioning",
+      "cadence",
+      "history"
+    ],
+    "uniqueKeywords": [
+      "reku_cadence_001",
+      "cadence",
+      "monotonic",
+      "shard",
+      "lease",
+      "fencing",
+      "task"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "cadence",
+        "history",
+        "shards"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "acquiring",
+        "renewing",
+        "shard",
+        "lease",
+        "renewrangelocked"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "When acquiring or renewing a shard lease, renewRangeLocked increments RangeID using conditional update on PreviousRangeID. Successful lease acquisition allocates a disjoint sequence window [RangeID << RangeSizeBits, (RangeID + 1) << RangeSizeBits). Any concurrent write from a previous shard owner fails CAS and triggers immediate shutdown via ShardOwnershipLostError. Known limits: Storage engines must provide linearizable conditional update (CAS/LWT or ACID transaction). Eventual consistency backends cannot guarantee split-brain prevention without fencing tokens.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002"
+    ],
+    "linkedClaims": [
+      "CLM-002"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/shard/context.go",
+      "lineRange": [
+        1129,
+        1179
+      ],
+      "queryOrCodeSnippet": "When a history shard starts or exhausts its sequence number window, renewRangeLocked increments shardInfo.RangeID via persistence.UpdateShard with PreviousRangeID conditional check. Failure raises ShardOwnershipLostError, causing immediate shard closure. On success, taskSequenceNumber is initialized to RangeID << RangeSizeBits and maxTaskSequenceNumber to (RangeID + 1) << RangeSizeBits.",
+      "symbol": "renewRangeLocked"
+    },
+    "testProvenance": {
+      "filePath": "service/history/queuev2/queue_reader_cached_scheduled_test.go",
+      "testName": "TestCachedQueueReader_GetTask",
+      "assertionSnippet": "Asserts that when shard RangeID increments by >1, GetTask clears in-memory cache and falls back to base persistence reader."
+    },
+    "historyProvenance": {
+      "commitHash": "b9cf23dce146e570e00630c759b59ccbf79e1b3b",
+      "failureId": "HIST-CADENCE-003",
+      "prOrIssue": "https://github.com/cadence-workflow/cadence/commit/b9cf23dce146e570e00630c759b59ccbf79e1b3b",
+      "fixDescription": "Added hook to invalidate and clear CachedQueueReader cache immediately whenever shard RangeID changes by >1."
+    },
+    "historyChainIds": [
+      "CHAIN-CADENCE-003"
+    ]
+  },
+  {
+    "id": "REKU-CADENCE-002",
+    "repository": "cadence",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Repeated worker crashes or non-deterministic decision task failures do not write unbounded failure events to persistent workflow history; Cadence suppresses intermediate failure history events using transient decision tasks.",
+    "mechanism": "When a decision task fails or times out and DecisionAttempt is incremented, AddDecisionTaskScheduledEventAsHeartbeat avoids generating DecisionTaskScheduled and DecisionTaskStarted events in the persistent history builder. Only mutableState.executionInfo.DecisionAttempt is tracked. Full history events are persisted only when the decision task completes successfully or on the initial attempt 0.",
+    "applicabilityConditions": [
+      "Decision tasks failing repeatedly (DecisionAttempt > 0)",
+      "Workflows remaining within the active cluster without failover version changes"
+    ],
+    "evidenceIds": [
+      "OBS-CADENCE-003"
+    ],
+    "commonKeywords": [
+      "transient",
+      "decision",
+      "tasks",
+      "unbounded",
+      "worker",
+      "failure",
+      "suppression",
+      "repeated"
+    ],
+    "uniqueKeywords": [
+      "reku_cadence_002",
+      "cadence",
+      "transient",
+      "decision",
+      "tasks",
+      "unbounded",
+      "worker"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "repeated",
+        "worker",
+        "crashes"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "decision",
+        "task",
+        "fails",
+        "times",
+        "out"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "When a decision task fails or times out and DecisionAttempt is incremented, AddDecisionTaskScheduledEventAsHeartbeat avoids generating DecisionTaskScheduled and DecisionTaskStarted events in the persistent history builder. Only mutableState.executionInfo.DecisionAttempt is tracked. Full history events are persisted only when the decision task completes successfully or on the initial attempt 0. Known limits: If a cluster failover occurs while a transient decision is pending, the new cluster forces a non-transient decision to re-synchronize history versions across clusters.",
+    "linkedDomainEkus": [
+      "EKU-WDE-007"
+    ],
+    "linkedClaims": [
+      "CLM-007"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/execution/mutable_state_decision_task_manager.go",
+      "lineRange": [
+        427,
+        453
+      ],
+      "queryOrCodeSnippet": "When scheduling a decision task, if DecisionAttempt > 0 and no version change occurred, Cadence creates a transient decision task without appending DecisionTaskScheduled or DecisionTaskStarted events to the persistent history tree. History events are only committed if the decision task successfully completes or on the initial attempt 0.",
+      "symbol": "AddDecisionTaskScheduledEventAsHeartbeat"
+    }
+  },
+  {
+    "id": "REKU-CADENCE-003",
+    "repository": "cadence",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "External events occurring while a decision task is in flight on an external worker are buffered in mutable state without altering active history event IDs, and are transactionally committed and re-sequenced upon decision task completion.",
+    "mechanism": "mutableStateBuilder stages incoming events in bufferedEvents with BufferedEventID. When the worker responds with RespondDecisionTaskCompleted, FlushBufferedEvents reorders and deduplicates buffered events, assigns real sequential EventIDs, appends them after the DecisionTaskCompleted event, and deletes buffered events from storage in the same persistence transaction.",
+    "applicabilityConditions": [
+      "Signals, activity completions/failures, timer firings, and cancellation requests arriving while a DecisionTask is in flight"
+    ],
+    "evidenceIds": [
+      "OBS-CADENCE-002",
+      "OBS-CADENCE-010",
+      "HIST-CADENCE-002"
+    ],
+    "commonKeywords": [
+      "in-flight",
+      "decision",
+      "event",
+      "buffering",
+      "transactional",
+      "flushes",
+      "external",
+      "events"
+    ],
+    "uniqueKeywords": [
+      "reku_cadence_003",
+      "cadence",
+      "in-flight",
+      "decision",
+      "event",
+      "buffering",
+      "transactional"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "external",
+        "events",
+        "occurring"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "mutablestatebuilder",
+        "stages",
+        "incoming",
+        "events",
+        "bufferedevents"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "mutableStateBuilder stages incoming events in bufferedEvents with BufferedEventID. When the worker responds with RespondDecisionTaskCompleted, FlushBufferedEvents reorders and deduplicates buffered events, assigns real sequential EventIDs, appends them after the DecisionTaskCompleted event, and deletes buffered events from storage in the same persistence transaction. Known limits: If buffered events exceed MaximumBufferedEventsBatch threshold, the server forcibly fails the in-flight decision task to trigger an immediate flush and prevent unbounded memory buffering.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-006"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-006"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/execution/mutable_state_builder.go",
+      "lineRange": [
+        460,
+        510
+      ],
+      "queryOrCodeSnippet": "While HasInFlightDecision() is true, incoming history events (signals, activity completions, cancellations) are appended to bufferedEvents with BufferedEventID. When the in-flight decision completes, FlushBufferedEvents moves buffered events to committed history, assigns real sequential EventIDs, clears buffered events from DB, and persists the new batch.",
+      "symbol": "FlushBufferedEvents"
+    },
+    "testProvenance": {
+      "filePath": "service/history/execution/mutable_state_builder_test.go",
+      "testName": "Test__reorderAndFilterDuplicateEvents",
+      "assertionSnippet": "Asserts that duplicate child workflow terminated, cancel requested, and external signal events in bufferedEvents are deduplicated and logged before flush."
+    },
+    "historyProvenance": {
+      "commitHash": "3ef5687e9d2945844f643409bb8fcb489515e9b0",
+      "failureId": "HIST-CADENCE-002",
+      "prOrIssue": "https://github.com/cadence-workflow/cadence/commit/3ef5687e9d2945844f643409bb8fcb489515e9b0",
+      "fixDescription": "Generalized reorderAndFilterDuplicateEvents in mutableStateBuilder to track uniqueness across all event types that reference an initiated/scheduled event ID (child workflow, cancel requests, signals) using a comprehensive bufferedUniqueEvents map."
+    },
+    "historyChainIds": [
+      "CHAIN-CADENCE-002"
+    ]
+  },
+  {
+    "id": "REKU-CADENCE-004",
+    "repository": "cadence",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "External side-effects (activity dispatch, child workflow initiation, visibility indexing, signal routing) are decoupled from history writes via a durable transactional outbox queue (Transfer Queue).",
+    "mechanism": "When history events are written, corresponding TransferTask rows are inserted in the same atomic database transaction. Asynchronous transferQueueProcessor workers poll the transfer table, invoke RPCs to matching/history services, and advance the shard's transferAckLevel upon confirmation. Tasks are executed with at-least-once semantics, requiring idempotent consumers.",
+    "applicabilityConditions": [
+      "All workflow state transitions that produce outbound actions"
+    ],
+    "evidenceIds": [
+      "OBS-CADENCE-004",
+      "OBS-CADENCE-011"
+    ],
+    "commonKeywords": [
+      "outbox",
+      "transfer",
+      "queue",
+      "asynchronous",
+      "side-effect",
+      "decoupling",
+      "external",
+      "side-effects"
+    ],
+    "uniqueKeywords": [
+      "reku_cadence_004",
+      "cadence",
+      "outbox",
+      "transfer",
+      "queue",
+      "asynchronous",
+      "side-effect"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "external",
+        "side-effects",
+        "activity"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "history",
+        "events",
+        "written",
+        "corresponding",
+        "transfertask"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "When history events are written, corresponding TransferTask rows are inserted in the same atomic database transaction. Asynchronous transferQueueProcessor workers poll the transfer table, invoke RPCs to matching/history services, and advance the shard's transferAckLevel upon confirmation. Tasks are executed with at-least-once semantics, requiring idempotent consumers. Known limits: Downstream consumers must be idempotent because transfer task retries can deliver duplicate tasks following worker or network crashes.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-003",
+      "EKU-WDE-004",
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-003",
+      "CLM-004",
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/task/transfer_active_task_executor.go",
+      "lineRange": [
+        135,
+        170
+      ],
+      "queryOrCodeSnippet": "Transfer active task executor handles persistence.ActivityTask, DecisionTask, CloseExecutionTask, CancelExecutionTask, SignalExecutionTask, StartChildExecutionTask, and ResetWorkflowTask by dispatching RPCs to matching service or target history shards, with idempotent retries and visibility updates.",
+      "symbol": "transferActiveTaskExecutor.Execute"
+    }
+  },
+  {
+    "id": "REKU-CADENCE-005",
+    "repository": "cadence",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Task dispatching avoids database roundtrips entirely under normal load by matching task producers directly with long-polling workers in memory, persisting tasks only when worker capacity is exhausted.",
+    "mechanism": "newTaskMatcher maintains synchronous Go channels (taskC, isolatedTaskC). When a history transfer task is pushed to Matching, the matcher attempts a non-blocking channel send to a waiting worker goroutine (Sync Match). If no worker is polling, the task is committed to the task list database table (taskWriter) and subsequently drained by taskReader when pollers connect.",
+    "applicabilityConditions": [
+      "Matching engine task lists with active worker pollers"
+    ],
+    "evidenceIds": [
+      "OBS-CADENCE-006"
+    ],
+    "commonKeywords": [
+      "zero-persistence",
+      "sync",
+      "matching",
+      "database",
+      "backlog",
+      "fallback",
+      "task",
+      "dispatching"
+    ],
+    "uniqueKeywords": [
+      "reku_cadence_005",
+      "cadence",
+      "zero-persistence",
+      "sync",
+      "matching",
+      "database",
+      "backlog"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "task",
+        "dispatching",
+        "avoids"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "newtaskmatcher",
+        "maintains",
+        "synchronous",
+        "channels",
+        "taskc"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "newTaskMatcher maintains synchronous Go channels (taskC, isolatedTaskC). When a history transfer task is pushed to Matching, the matcher attempts a non-blocking channel send to a waiting worker goroutine (Sync Match). If no worker is polling, the task is committed to the task list database table (taskWriter) and subsequently drained by taskReader when pollers connect. Known limits: Sync match bypasses persistence write latency but does not persist tasks in the matching service memory; if the matching node crashes before handoff ACK, history transfer queue will re-dispatch the task.",
+    "linkedDomainEkus": [
+      "EKU-WDE-003"
+    ],
+    "linkedClaims": [
+      "CLM-003"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/matching/tasklist/matcher.go",
+      "lineRange": [
+        41,
+        100
+      ],
+      "queryOrCodeSnippet": "Task matcher uses Go channels (taskC, isolatedTaskC, queryTaskC) to directly match task producers from history service with active long-polling workers. If no poller is immediately waiting or rate limits are exceeded, tasks fall back to persistence task tables via taskWriter.",
+      "symbol": "newTaskMatcher"
+    }
+  },
+  {
+    "id": "REKU-CADENCE-006",
+    "repository": "cadence",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Cross-cluster replication conflicts resulting from network partitions and split-brain active-passive failovers are resolved deterministically using VersionHistories tree branching and historical StateRebuilder.",
+    "mechanism": "Every history event carries a cluster failover version. When replication tasks arrive from a remote cluster, conflictResolver compares VersionHistories. If the remote task has a higher version than the local branch, the engine creates a new branch token in the history tree, invokes stateRebuilder to replay from the common ancestor event, and updates the execution's current branch index without data loss.",
+    "applicabilityConditions": [
+      "Multi-cluster global domains with active-passive replication"
+    ],
+    "evidenceIds": [
+      "OBS-CADENCE-007",
+      "OBS-CADENCE-012"
+    ],
+    "commonKeywords": [
+      "versionhistories",
+      "tree",
+      "branching",
+      "active-passive",
+      "multi-cluster",
+      "replication",
+      "cross-cluster",
+      "conflicts"
+    ],
+    "uniqueKeywords": [
+      "reku_cadence_006",
+      "cadence",
+      "versionhistories",
+      "tree",
+      "branching",
+      "active-passive",
+      "multi-cluster"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "cross-cluster",
+        "replication",
+        "conflicts"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "every",
+        "history",
+        "event",
+        "carries",
+        "cluster"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "Every history event carries a cluster failover version. When replication tasks arrive from a remote cluster, conflictResolver compares VersionHistories. If the remote task has a higher version than the local branch, the engine creates a new branch token in the history tree, invokes stateRebuilder to replay from the common ancestor event, and updates the execution's current branch index without data loss. Known limits: Replication conflict resolution requires deterministic workflow code; if code is non-deterministic, replaying from ancestor events can diverge.",
+    "linkedDomainEkus": [
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/ndc/conflict_resolver.go",
+      "lineRange": [
+        75,
+        120
+      ],
+      "queryOrCodeSnippet": "When replication tasks arrive from another cluster, prepareMutableState inspects VersionHistories. If the incoming version is greater than the local branch version, it invokes stateRebuilder.Rebuild to reconstruct mutableState by replaying history events from the fork point, switching the current branch index to the winning branch.",
+      "symbol": "conflictResolverImpl.prepareMutableState"
+    }
+  },
+  {
+    "id": "REKU-CADENCE-007",
+    "repository": "cadence",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Cascading child workflow lifecycle policies (ParentClosePolicy: Terminate, Cancel, Abandon) are executed via a dedicated background system workflow rather than synchronous inline RPCs.",
+    "mechanism": "When a parent workflow closes, history service generates a CloseExecutionTask that enqueues child workflow IDs to the cadence-sys-parent-close-policy-workflow system workflow running on the worker service. The system workflow executes retryable activities to terminate or cancel child workflows across any domains asynchronously.",
+    "applicabilityConditions": [
+      "Parent workflows with active child workflows completing or terminating"
+    ],
+    "evidenceIds": [
+      "OBS-CADENCE-008"
+    ],
+    "commonKeywords": [
+      "system",
+      "workflow",
+      "delegation",
+      "cascading",
+      "parent",
+      "close",
+      "execution",
+      "child"
+    ],
+    "uniqueKeywords": [
+      "reku_cadence_007",
+      "cadence",
+      "system",
+      "workflow",
+      "delegation",
+      "cascading",
+      "parent"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "cascading",
+        "child",
+        "workflow"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "parent",
+        "workflow",
+        "closes",
+        "history",
+        "service"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "When a parent workflow closes, history service generates a CloseExecutionTask that enqueues child workflow IDs to the cadence-sys-parent-close-policy-workflow system workflow running on the worker service. The system workflow executes retryable activities to terminate or cancel child workflows across any domains asynchronously. Known limits: System workflow introduces slight asynchronous lag between parent termination and child termination; children are not atomically terminated in the exact same DB transaction as parent close.",
+    "linkedDomainEkus": [
+      "EKU-WDE-003",
+      "EKU-WDE-008"
+    ],
+    "linkedClaims": [
+      "CLM-003",
+      "CLM-008"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/worker/parentclosepolicy/workflow.go",
+      "lineRange": [
+        60,
+        100
+      ],
+      "queryOrCodeSnippet": "When a parent workflow terminates, child workflow cascading termination/cancellation requests are dispatched via the cadence-sys-parent-close-policy-workflow system workflow, which executes activities with retry policies to terminate/cancel child executions even across host reboots.",
+      "symbol": "ProcessorWorkflow"
+    }
+  },
+  {
+    "id": "REKU-CADENCE-008",
+    "repository": "cadence",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Workflows can be reset to arbitrary historical decision points without mutating or deleting prior execution history by creating a new history branch and new RunID.",
+    "mechanism": "ResetWorkflow forks the history tree at the base decision finish event ID into a new branch token, increments the RunID, reapplies buffered signals (if configured), and points the current execution record to the new RunID. The original branch remains intact in history storage for auditing.",
+    "applicabilityConditions": [
+      "Operational recovery from bad worker deployments or corrupted state machine states"
+    ],
+    "evidenceIds": [
+      "OBS-CADENCE-009"
+    ],
+    "commonKeywords": [
+      "non-destructive",
+      "history",
+      "tree",
+      "branching",
+      "workflow",
+      "reset",
+      "workflows",
+      "arbitrary"
+    ],
+    "uniqueKeywords": [
+      "reku_cadence_008",
+      "cadence",
+      "non-destructive",
+      "history",
+      "tree",
+      "branching",
+      "workflow"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "workflows",
+        "reset",
+        "arbitrary"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "resetworkflow",
+        "forks",
+        "history",
+        "tree",
+        "base"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "ResetWorkflow forks the history tree at the base decision finish event ID into a new branch token, increments the RunID, reapplies buffered signals (if configured), and points the current execution record to the new RunID. The original branch remains intact in history storage for auditing. Known limits: Resetting a workflow does not automatically undo external activity side-effects executed after the reset point; compensations must be handled at the application level.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-004",
+      "EKU-WDE-008"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-004",
+      "CLM-008"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/reset/resetter.go",
+      "lineRange": [
+        45,
+        99
+      ],
+      "queryOrCodeSnippet": "ResetWorkflow rebuilds mutable state from the history tree up to a target decision task finish event, forks a new history branch token, increments runID, reapplies buffered signals if configured, and writes the new branch as current execution without deleting prior event history.",
+      "symbol": "workflowResetterImpl.ResetWorkflow"
+    }
+  },
+  {
+    "id": "REKU-CADENCE-009",
+    "repository": "cadence",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "FAILURE_RECOVERY_MECHANISM",
+    "claim": "Timer queue tasks are cluster-local and never replicated; during active-passive cluster failovers, unstarted activity retries must be explicitly regenerated on the new active cluster to prevent lost retry timers.",
+    "mechanism": "When an activity fails retriably on cluster A, ActivityRetryTimerTask is created only in cluster A's timer queue. When cluster B becomes active, cluster A's standby timer processor silences the task. Cluster B's SyncActivity replicator must explicitly check for unstarted retry attempts and regenerate the ActivityRetryTimerTask in cluster B's timer queue.",
+    "applicabilityConditions": [
+      "Activities undergoing exponential backoff during multi-cluster domain failover"
+    ],
+    "evidenceIds": [
+      "OBS-CADENCE-005",
+      "HIST-CADENCE-001"
+    ],
+    "commonKeywords": [
+      "timer",
+      "task",
+      "cluster",
+      "locality",
+      "failover",
+      "retry",
+      "regeneration",
+      "queue"
+    ],
+    "uniqueKeywords": [
+      "reku_cadence_009",
+      "cadence",
+      "timer",
+      "task",
+      "cluster",
+      "locality",
+      "failover"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "timer",
+        "queue",
+        "tasks"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "activity",
+        "fails",
+        "retriably",
+        "cluster",
+        "activityretrytimertask"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "When an activity fails retriably on cluster A, ActivityRetryTimerTask is created only in cluster A's timer queue. When cluster B becomes active, cluster A's standby timer processor silences the task. Cluster B's SyncActivity replicator must explicitly check for unstarted retry attempts and regenerate the ActivityRetryTimerTask in cluster B's timer queue. Known limits: If SyncActivity replication is delayed or missed, activity retries remain dormant until the overall ScheduleToStart timeout expires.",
+    "linkedDomainEkus": [
+      "EKU-WDE-005",
+      "EKU-WDE-007",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-005",
+      "CLM-007",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/task/timer_active_task_executor.go",
+      "lineRange": [
+        95,
+        130
+      ],
+      "queryOrCodeSnippet": "Timer active task executor dispatches UserTimerTask, ActivityTimeoutTask (ScheduleToStart, StartToClose, Heartbeat), DecisionTimeoutTask, WorkflowTimeoutTask, ActivityRetryTimerTask, WorkflowBackoffTimerTask, and DeleteHistoryEventTask based on VisibilityTimestamp index.",
+      "symbol": "timerActiveTaskExecutor.Execute"
+    },
+    "testProvenance": {
+      "filePath": "service/history/ndc/activity_replicator_test.go",
+      "testName": "TestSyncActivity_RetryTimerTaskGeneration",
+      "assertionSnippet": "Asserts that SyncActivity generates an ActivityRetryTimerTask on the target cluster when startedID is empty and incoming attempt is greater than local attempt."
+    },
+    "historyProvenance": {
+      "commitHash": "c82f28fde7a703621e0d867ba00eeacd580cace2",
+      "failureId": "HIST-CADENCE-001",
+      "prOrIssue": "https://github.com/cadence-workflow/cadence/commit/c82f28fde7a703621e0d867ba00eeacd580cace2",
+      "fixDescription": "Modified SyncActivity handler in activityReplicator to explicitly inspect unstarted retries (startedID == EmptyEventID and attempt > localAttempt) and generate an ActivityRetryTimerTask on the newly active cluster."
+    },
+    "historyChainIds": [
+      "CHAIN-CADENCE-001"
+    ]
+  }
+]

@@ -1,0 +1,5040 @@
+[
+  {
+    "commitHash": "8f0d28008aaf288fe73bc380c174a8623d73a786",
+    "authorDate": "2026-08-26T15:31:40+08:00",
+    "subject": "docs: fix RBAC manifest links in security.md (#16818)",
+    "body": "Signed-off-by: Shurong Cao <170531907+CAOShurong@users.noreply.github.com>\nCo-authored-by: Shurong Cao <170531907+CAOShurong@users.noreply.github.com>",
+    "issueRefs": [
+      "#16818"
+    ],
+    "touchedFiles": [
+      "docs/security.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "38a61b47728472579ea86854385dfade087ad1a0",
+    "authorDate": "2026-08-25T16:24:02+04:00",
+    "subject": "fix: prevent panic in ParseProgress on input without a slash (#16537)",
+    "body": "Signed-off-by: semx <7532921+semx@users.noreply.github.com>\nSigned-off-by: Sergey Sannikov <sergey@sannikov.dev>\nCo-authored-by: semx <7532921+semx@users.noreply.github.com>",
+    "issueRefs": [
+      "#16537"
+    ],
+    "touchedFiles": [
+      "pkg/apis/workflow/v1alpha1/progress.go",
+      "pkg/apis/workflow/v1alpha1/progress_test.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "f6b1ca0f1155dcdd8367a0fce1495e6671eee240",
+    "authorDate": "2026-08-25T15:40:33+05:30",
+    "subject": "fix: GetNodeTemplate checks storedTemplates before live CWT informer (#15659)",
+    "body": "Signed-off-by: Tianchu Zhao <evantczhao@gmail.com>\nCo-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>\nCo-authored-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15659"
+    ],
+    "touchedFiles": [
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b8f140a74b550be2794f247689b9422a18aa0c57",
+    "authorDate": "2026-08-24T20:21:36+05:30",
+    "subject": "fix: allow semaphore initialization with a resolved limit of 0 (#16805)",
+    "body": "Signed-off-by: Sooraj Macbook <ops@skywalks.in>",
+    "issueRefs": [
+      "#16805"
+    ],
+    "touchedFiles": [
+      "workflow/sync/database_semaphore.go",
+      "workflow/sync/semaphore.go",
+      "workflow/sync/semaphore_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ea13baa232487f25edbecbd5990e876009e8985f",
+    "authorDate": "2026-08-21T08:15:20+01:00",
+    "subject": "fix: requeue workflow on transient sync lock errors instead of failing (#16745)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#16745"
+    ],
+    "touchedFiles": [
+      "util/sqldb/errors.go",
+      "util/sqldb/errors_test.go",
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_sync_transient_test.go",
+      "workflow/sync/sync_manager.go",
+      "workflow/sync/sync_manager_conflict_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "50e0c4fdb46e9d516b3b0a326a67cffa24a9e47d",
+    "authorDate": "2026-08-21T08:14:57+01:00",
+    "subject": "fix(server): use symmetric encryption for SSO session tokens. Fixes #16744 (#16748)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "Fixes #16744",
+      "#16748"
+    ],
+    "touchedFiles": [
+      "docs/upgrading.md",
+      "server/auth/sso/sso.go",
+      "server/auth/sso/sso_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1ca64b3ab74565c3f0324a83a690592e498a1dc8",
+    "authorDate": "2026-08-21T08:14:28+01:00",
+    "subject": "fix: fail nodes waiting for a sync lock on workflow shutdown (#16777)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#16777"
+    ],
+    "touchedFiles": [
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_concurrency_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "34a5b9d30cf3a36a5fe3e96d7af9a7b45d3745a6",
+    "authorDate": "2026-08-21T08:14:07+01:00",
+    "subject": "fix: fail, not succeed, workflows terminated while pending on a sync lock (#16776)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#16776"
+    ],
+    "touchedFiles": [
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_concurrency_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dbcd06b8d2ba0622ba3cd9013a26353a7f59dce5",
+    "authorDate": "2026-08-20T20:38:28+05:30",
+    "subject": "fix(controller): refuse reapplyUpdate when workflow UID has changed (#16775)",
+    "body": "Signed-off-by: Nitin Moningi <nitin.moningi@gmail.com>",
+    "issueRefs": [
+      "#16775"
+    ],
+    "touchedFiles": [
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_test.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "fbd1a5472f2948192e5f4b519fe4774d1b38026e",
+    "authorDate": "2026-08-20T08:02:41+01:00",
+    "subject": "fix: omit OpenTelemetry process owner detection (#16736)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#16736"
+    ],
+    "touchedFiles": [
+      "util/telemetry/resource.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dec81a9b4e4bf03712849928f4660d4ebe0165df",
+    "authorDate": "2026-08-19T09:31:28+01:00",
+    "subject": "fix: re-enter workingDir after init-less input artifact staging. Fixes #16728 (#16738)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "Fixes #16728",
+      "#16738"
+    ],
+    "touchedFiles": [
+      "cmd/argoexec/commands/emissary.go",
+      "cmd/argoexec/commands/emissary_link_artifacts_test.go",
+      "docs/initless-pod.md",
+      "test/e2e/artifacts_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "15e474d1bf4a394169c7972d6696e0df4db32e35",
+    "authorDate": "2026-08-17T08:29:16+01:00",
+    "subject": "fix: apply MySQL driver-level options from persistence config. Fixes #16707 (#16725)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "Fixes #16707",
+      "#16725"
+    ],
+    "touchedFiles": [
+      "util/sqldb/connection_timeout_test.go",
+      "util/sqldb/sqldb.go",
+      "util/sqldb/sqldb_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d1c740eaef39322ad998da5fd201ef362cf1b1cf",
+    "authorDate": "2026-08-16T23:40:13+01:00",
+    "subject": "fix(ui): don't put fontawesome base class on argo-icon glyphs (#16727)",
+    "body": "Signed-off-by: Brian Carey <brian.carey@protonmail.com>",
+    "issueRefs": [
+      "#16727"
+    ],
+    "touchedFiles": [
+      "ui/src/workflows/components/workflow-details/workflow-details.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6f8381bcced374407d92f5a237ede6a09a61a29b",
+    "authorDate": "2026-08-14T10:28:19+01:00",
+    "subject": "fix(logging): remove process-wide signal handler from the init logger. Fixes #15863 (#16693)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "Fixes #15863",
+      "#16693"
+    ],
+    "touchedFiles": [
+      "util/logging/init.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d61b2d96d4689363123af8c6b80dee70e99faedc",
+    "authorDate": "2026-08-14T08:22:59+01:00",
+    "subject": "fix(ci): create ~/.m2 before bind mounting it for Java SDK publish (#16701)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#16701"
+    ],
+    "touchedFiles": [
+      "sdks/java/Makefile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1053ebf73a5bccda1175367c7744523868fe4bea",
+    "authorDate": "2026-08-13T14:41:23+01:00",
+    "subject": "chore(deps): update module go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc to v1.45.0 (main) (#16681)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#16681"
+    ],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum",
+      "gomod2nix.toml"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "9275de302e06b08694100ee5a018df8abb9e29ff",
+    "authorDate": "2026-08-13T12:31:55+01:00",
+    "subject": "chore(deps): update module go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp to v1.45.0 (main) (#16682)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#16682"
+    ],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum",
+      "gomod2nix.toml"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "a0f0b37a5aa1ace4b70bc1f43e897355cb391430",
+    "authorDate": "2026-08-12T19:28:24+09:00",
+    "subject": "fix(sync): remove the acquiring key from the pending queue, not the front. Fixes #16567 (#16613)",
+    "body": "Signed-off-by: heewonham <78684994+heewonham@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #16567",
+      "#16613"
+    ],
+    "touchedFiles": [
+      "workflow/sync/semaphore.go",
+      "workflow/sync/semaphore_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6facc2271939662970f6e925344659fcb3b978aa",
+    "authorDate": "2026-08-11T11:19:08+01:00",
+    "subject": "feat: add argo-workflows-crdinstaller image. Fixes #16621 (#16622)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "Fixes #16621",
+      "#16622"
+    ],
+    "touchedFiles": [
+      ".dockerignore",
+      ".features/pending/crd-installer-image.md",
+      ".github/workflows/release.yaml",
+      "Dockerfile",
+      "Makefile",
+      "docs/crd-installer.md",
+      "docs/installation.md",
+      "properdocs.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "47a7a0866bbd1d361f1aece4841d77529b1e0c1f",
+    "authorDate": "2026-08-10T11:52:00+01:00",
+    "subject": "fix(test): de-flake TestParallelismUpdate on coarse-resolution clocks (#16224)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Opus 4.8 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#16224"
+    ],
+    "touchedFiles": [
+      "workflow/sync/multi_throttler_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "854f44fb1d1425a3ce92b970bc551ac6fc937db2",
+    "authorDate": "2026-08-07T04:15:35+02:00",
+    "subject": "fix: avoid nil pointer (#16608)",
+    "body": "Signed-off-by: spaced <spaced.wombat@gmail.com>",
+    "issueRefs": [
+      "#16608"
+    ],
+    "touchedFiles": [
+      "workflow/sync/sync_manager.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "c5cb81b7c3b4e2ffd1b18a9be66e1908d4e623ca",
+    "authorDate": "2026-07-31T23:37:08+08:00",
+    "subject": "feat: add first-class DRA resource claims. Fixes #16576 (#16587)",
+    "body": "Signed-off-by: thc1006 <84045975+thc1006@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #16576",
+      "#16587"
+    ],
+    "touchedFiles": [
+      ".features/pending/dra-resource-claims.md",
+      "api/jsonschema/schema.json",
+      "api/openapi-spec/swagger.json",
+      "docs/executor_swagger.md",
+      "docs/fields.md",
+      "examples/resource-claims-template-override.yaml",
+      "examples/resource-claims.yaml",
+      "manifests/base/crds/full/argoproj.io_clusterworkflowtemplates.yaml",
+      "manifests/base/crds/full/argoproj.io_cronworkflows.yaml",
+      "manifests/base/crds/full/argoproj.io_workflows.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtasksets.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtemplates.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflowtasksets.yaml",
+      "manifests/quick-start-minimal.yaml",
+      "manifests/quick-start-mysql.yaml",
+      "manifests/quick-start-postgres.yaml",
+      "manifests/quick-start-telemetry.yaml",
+      "pkg/apis/workflow/v1alpha1/generated.pb.go",
+      "pkg/apis/workflow/v1alpha1/generated.proto",
+      "pkg/apis/workflow/v1alpha1/openapi_generated.go",
+      "pkg/apis/workflow/v1alpha1/workflow_types.go",
+      "pkg/apis/workflow/v1alpha1/zz_generated.deepcopy.go",
+      "pkg/plugins/executor/swagger.yml",
+      "sdks/java/client/docs/IoArgoprojWorkflowV1alpha1Template.md",
+      "sdks/java/client/docs/IoArgoprojWorkflowV1alpha1WorkflowSpec.md",
+      "sdks/java/client/docs/PodResourceClaim.md",
+      "ui/src/shared/models/workflows.ts",
+      "workflow/controller/workflowpod.go",
+      "workflow/controller/workflowpod_submit.go",
+      "workflow/controller/workflowpod_test.go",
+      "workflow/util/merge_test.go",
+      "workflow/validate/validate.go",
+      "workflow/validate/validate_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9642f1e15b822e1e94511d2e4909b839d4b1dcdd",
+    "authorDate": "2026-07-31T16:59:17+08:00",
+    "subject": "fix(controller): archive each workflow once, and retry failed archives. Fixes #16575 (#16577)",
+    "body": "Signed-off-by: thc1006 <84045975+thc1006@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #16575",
+      "#16577"
+    ],
+    "touchedFiles": [
+      "workflow/controller/controller.go",
+      "workflow/controller/controller_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f86b3523be851bce8bddac7aefd60921a2865415",
+    "authorDate": "2026-07-31T11:16:49+08:00",
+    "subject": "fix(ui): show CronWorkflow errors in list. Fixes #10264 (#16578)",
+    "body": "Signed-off-by: hyzaw <2595133804wls@gmail.com>",
+    "issueRefs": [
+      "Fixes #10264",
+      "#16578"
+    ],
+    "touchedFiles": [
+      "ui/src/cron-workflows/cron-workflow-row.test.tsx",
+      "ui/src/cron-workflows/cron-workflow-row.tsx",
+      "ui/src/shared/conditions-panel.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a862e823b0ddc8bff4531acdc533a5b63ea38d45",
+    "authorDate": "2026-07-30T11:06:56+01:00",
+    "subject": "fix(controller): do not postpone already-Running workflows. Fixes #14123 (#16569)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "Fixes #14123",
+      "#16569"
+    ],
+    "touchedFiles": [
+      "workflow/controller/controller.go",
+      "workflow/controller/controller_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8498c4efbe604e81c68dcd17ecbb18c0915b072d",
+    "authorDate": "2026-07-30T10:18:51+01:00",
+    "subject": "feat(controller): strip managedFields from informer caches. Fixes #16564 (#16563)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "Fixes #16564",
+      "#16563"
+    ],
+    "touchedFiles": [
+      ".features/pending/strip-managed-fields.md",
+      "docs/scaling.md",
+      "docs/upgrading.md",
+      "util/informer/transform.go",
+      "util/informer/transform_test.go",
+      "workflow/controller/controller.go",
+      "workflow/controller/informer/tolerant_cluster_workflow_template_informer.go",
+      "workflow/controller/informer/tolerant_workflow_template_informer.go",
+      "workflow/controller/ns_watcher.go",
+      "workflow/controller/pod/controller.go",
+      "workflow/controller/taskresult.go",
+      "workflow/controller/workflowpod_test.go",
+      "workflow/cron/controller.go",
+      "workflow/util/util.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bf648dde474b3247beb7ca0f9cf91d2bd86aeccf",
+    "authorDate": "2026-07-30T18:15:24+09:00",
+    "subject": "fix(ui): keep markdown tooltips within the viewport (#16549)",
+    "body": "Signed-off-by: panicboat <panicboat@gmail.com>",
+    "issueRefs": [
+      "#16549"
+    ],
+    "touchedFiles": [
+      "ui/src/shared/components/tooltip.test.tsx",
+      "ui/src/shared/components/tooltip.tsx"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "b39b572bc71165ccad229fa627146758dfe35cf2",
+    "authorDate": "2026-07-30T14:41:13+05:30",
+    "subject": "perf(controller): avoid full Workflow DeepCopy for postponed workflows. Fixes #16559 (#16560)",
+    "body": "Signed-off-by: Juhef <117518034+juheff@users.noreply.github.com>\nCo-authored-by: Juhef <117518034+juheff@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #16559",
+      "#16560"
+    ],
+    "touchedFiles": [
+      "workflow/controller/controller.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1d8853c3b04833683918aa2e5c9f19eb7ec86ad8",
+    "authorDate": "2026-07-22T13:28:42+02:00",
+    "subject": "feat(cli): Extend gRPC and HTTP clients to support client certificate. Fixes #13437 (#13447)",
+    "body": "Signed-off-by: Miltiadis Alexis <alexmiltiadis@gmail.com>\nSigned-off-by: Anton Gilgur <4970083+agilgur5@users.noreply.github.com>\nCo-authored-by: Anton Gilgur <4970083+agilgur5@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #13437",
+      "#13447"
+    ],
+    "touchedFiles": [
+      ".features/pending/13437-client-tls-server-mode.md",
+      "cmd/argo/commands/client/conn.go",
+      "cmd/argo/commands/client/conn_test.go",
+      "cmd/argo/commands/cp.go",
+      "cmd/argo/commands/cp_test.go",
+      "docs/tls.md",
+      "pkg/apiclient/apiclient.go",
+      "pkg/apiclient/apiclient_test.go",
+      "pkg/apiclient/argo-server-client.go",
+      "pkg/apiclient/argo-server-opts.go",
+      "pkg/apiclient/argo-server-opts_test.go",
+      "pkg/apiclient/http1-client.go",
+      "pkg/apiclient/http1/facade.go",
+      "pkg/apiclient/http1/facade_test.go",
+      "test/e2e/cli_test.go",
+      "util/tls/testdata/valid_tls.crt",
+      "util/tls/testdata/valid_tls.key",
+      "util/tls/tls.go",
+      "util/tls/tls_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f9eeb64d0a26af6a47eecce570000408cb5ab631",
+    "authorDate": "2026-07-21T16:44:27+01:00",
+    "subject": "fix: replace configmap watchers with informers (#16408)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#16408"
+    ],
+    "touchedFiles": [
+      "config/controller.go",
+      "workflow/controller/cache_gc.go",
+      "workflow/controller/controller.go",
+      "workflow/controller/controller_test.go",
+      "workflow/controller/dag.go",
+      "workflow/controller/operator.go",
+      "workflow/controller/workflowpod.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bbfdd506d1fcbc7bcb6088e10d6bb54a89f93ff3",
+    "authorDate": "2026-07-21T14:46:36+01:00",
+    "subject": "chore: fix up release notes",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".features/pending/show-full-tag-value-on-hover.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f7f4676b52066ee32167f594dcf48f1ed84b2238",
+    "authorDate": "2026-07-21T08:42:43+01:00",
+    "subject": "fix: normalize GCS artifact keys to forward slashes on Windows. Fixes #16470 (#16476)",
+    "body": "Signed-off-by: krisling049 <chris_eckersley@hotmail.co.uk>",
+    "issueRefs": [
+      "Fixes #16470",
+      "#16476"
+    ],
+    "touchedFiles": [
+      "workflow/artifacts/gcs/gcs.go",
+      "workflow/artifacts/gcs/gcs_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f4398395dc690492fedf62c56f8873dbbe80024b",
+    "authorDate": "2026-07-20T21:25:27+08:00",
+    "subject": "fix(controller): mark reapply-failed on persist errors to keep throttler slot (#16482)",
+    "body": "Signed-off-by: shuangkun <tsk2013uestc@163.com>",
+    "issueRefs": [
+      "#16482"
+    ],
+    "touchedFiles": [
+      "workflow/common/common.go",
+      "workflow/controller/controller.go",
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_persist_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e31b6c1b7dff1e9a92549aabc60c42ec96971412",
+    "authorDate": "2026-07-20T16:37:30+08:00",
+    "subject": "fix(controller): treat client-go rate limiter wait deadline as transient (#16485)",
+    "body": "Signed-off-by: shuangkun <tsk2013uestc@163.com>",
+    "issueRefs": [
+      "#16485"
+    ],
+    "touchedFiles": [
+      "util/errors/errors.go",
+      "util/errors/errors_test.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "0fac33e12ee4d8ac01a04031f005c9ff662617c8",
+    "authorDate": "2026-07-20T16:36:53+08:00",
+    "subject": "fix(controller): allow onExit DAG handler to complete under Stop shutdown (#16488)",
+    "body": "Signed-off-by: shuangkun <tsk2013uestc@163.com>",
+    "issueRefs": [
+      "#16488"
+    ],
+    "touchedFiles": [
+      "workflow/controller/dag.go",
+      "workflow/controller/dag_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c92b436ac17d9a9006c832f7833f986b8a4d70ef",
+    "authorDate": "2026-07-20T15:14:31+08:00",
+    "subject": "fix(errors): treat client-go response body read failures as transient (#16484)",
+    "body": "Signed-off-by: shuangkun <tsk2013uestc@163.com>",
+    "issueRefs": [
+      "#16484"
+    ],
+    "touchedFiles": [
+      "util/errors/errors.go",
+      "util/errors/errors_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d38f3e12f562d9d5aebc0ee4dbf6ebf732ccc160",
+    "authorDate": "2026-07-20T00:13:18-07:00",
+    "subject": "docs: fix access-token.md namespace inconsistencies and errors (#16479)",
+    "body": "",
+    "issueRefs": [
+      "#16479"
+    ],
+    "touchedFiles": [
+      "docs/access-token.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d0ce6aeaf3b1fbada1d383454e6a912157bd4dda",
+    "authorDate": "2026-07-20T15:10:12+08:00",
+    "subject": "fix(errors): treat gRPC client request timeout as transient (#16487)",
+    "body": "Signed-off-by: shuangkun <tsk2013uestc@163.com>",
+    "issueRefs": [
+      "#16487"
+    ],
+    "touchedFiles": [
+      "util/errors/errors.go",
+      "util/errors/errors_test.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "4d4229011ec2701b791e85f2e6c103d9164d86db",
+    "authorDate": "2026-07-20T00:02:07-07:00",
+    "subject": "fix(ui): handle exceptions when retrieving user info (#16491)",
+    "body": "Signed-off-by: Mason Malone <651224+MasonM@users.noreply.github.com>",
+    "issueRefs": [
+      "#16491"
+    ],
+    "touchedFiles": [
+      "ui/src/app-router.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "116ae4b37d75fd30238a619c1c174567ccfc77b1",
+    "authorDate": "2026-07-16T07:59:24+01:00",
+    "subject": "fix: don't leak semaphore slots when limit fetch fails during release (#16405)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#16405"
+    ],
+    "touchedFiles": [
+      "workflow/sync/cached_limit_test.go",
+      "workflow/sync/database_semaphore.go",
+      "workflow/sync/semaphore.go",
+      "workflow/sync/semaphore_test.go"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "353a173de61a24983769d78dc741e84528905abb",
+    "authorDate": "2026-07-15T14:42:19+01:00",
+    "subject": "fix: make workflow retry reset deterministic. Fixes #16450 (#16451)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "Fixes #16450",
+      "#16451"
+    ],
+    "touchedFiles": [
+      "workflow/util/util.go",
+      "workflow/util/util_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "47edab814b6c3e45dd616db863b61139b023e363",
+    "authorDate": "2026-07-15T14:31:35+01:00",
+    "subject": "fix: complete orphaned TaskGroup nodes stuck Running. Fixes #16450 (#16454)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "Fixes #16450",
+      "#16454"
+    ],
+    "touchedFiles": [
+      "workflow/controller/dag.go",
+      "workflow/controller/dag_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "801c0d3512f9e6670ce85719266115245a2f76ca",
+    "authorDate": "2026-07-15T15:07:21+05:00",
+    "subject": "fix: log missing optional output parameter at warn level, not error. Fixes #16395 (#16402)",
+    "body": "Signed-off-by: Ali <alliasgher123@gmail.com>",
+    "issueRefs": [
+      "Fixes #16395",
+      "#16402"
+    ],
+    "touchedFiles": [
+      "cmd/argoexec/commands/emissary.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8414072c4b09ea514c059e4a4b0422116a298e2f",
+    "authorDate": "2026-07-14T13:53:31+03:00",
+    "subject": "fix(ui): resolve login logo paths with non-root baseHref (#16385)",
+    "body": "Signed-off-by: amarkdotdev <amarkdotdev@users.noreply.github.com>\nCo-authored-by: amarkdotdev <amarkdotdev@users.noreply.github.com>",
+    "issueRefs": [
+      "#16385"
+    ],
+    "touchedFiles": [
+      "ui/src/login/login.scss"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a8a875ceb63bb5d08f4c82a0dde8bc4bf49deb92",
+    "authorDate": "2026-07-13T07:05:13-07:00",
+    "subject": "feat: add pendingTimeout for non-deadline timeout  Fixes #10341 (#12762)",
+    "body": "Signed-off-by: Dennis Lawler <dlawler@gmail.com>\nSigned-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>\nCo-authored-by: coderabbitai[bot] <136622811+coderabbitai[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #10341",
+      "#12762"
+    ],
+    "touchedFiles": [
+      ".features/pending/pending-timeout.md",
+      "api/jsonschema/schema.json",
+      "api/openapi-spec/swagger.json",
+      "docs/executor_swagger.md",
+      "docs/fields.md",
+      "manifests/base/crds/full/argoproj.io_clusterworkflowtemplates.yaml",
+      "manifests/base/crds/full/argoproj.io_cronworkflows.yaml",
+      "manifests/base/crds/full/argoproj.io_workflows.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtasksets.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtemplates.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflowtasksets.yaml",
+      "manifests/quick-start-minimal.yaml",
+      "manifests/quick-start-mysql.yaml",
+      "manifests/quick-start-postgres.yaml",
+      "manifests/quick-start-telemetry.yaml",
+      "pkg/apis/workflow/v1alpha1/generated.pb.go",
+      "pkg/apis/workflow/v1alpha1/generated.proto",
+      "pkg/apis/workflow/v1alpha1/openapi_generated.go",
+      "pkg/apis/workflow/v1alpha1/workflow_types.go",
+      "pkg/plugins/executor/swagger.yml",
+      "sdks/java/client/docs/IoArgoprojWorkflowV1alpha1Template.md",
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_test.go",
+      "workflow/controller/workflowpod.go",
+      "workflow/validate/validate.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "4d81cb3b4379c0d85205b6ba0c73760c2ac23475",
+    "authorDate": "2026-07-09T17:13:14+10:00",
+    "subject": "feat: configurable compression algorithms for node compression. Fixes #16262 (#16261)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "Fixes #16262",
+      "#16261"
+    ],
+    "touchedFiles": [
+      ".cspell.json",
+      ".features/pending/configurable-node-status-compression.md",
+      "docs/environment-variables.md",
+      "docs/offloading-large-workflows.md",
+      "go.mod",
+      "util/file/fileutil.go",
+      "util/file/fileutil_test.go",
+      "workflow/packer/packer_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e7f5710e1d8ba8b0035960bc64776bb7d41d3a7d",
+    "authorDate": "2026-07-09T13:51:06+09:00",
+    "subject": "fix: prevent NaN display in cron workflow number input fields (#16275)",
+    "body": "Signed-off-by: nakatani-yo <yoshihito.nakatani@craftsman-software.com>\nSigned-off-by: nakatani-yo <32811020+nakatani-yo@users.noreply.github.com>\nCo-authored-by: coderabbitai[bot] <136622811+coderabbitai[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#16275"
+    ],
+    "touchedFiles": [
+      "ui/src/cron-workflows/cron-workflow-spec-editor.test.tsx",
+      "ui/src/shared/components/number-input.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d0ebcda1b0dc9b0068f01b462e0b8ed56a349fbf",
+    "authorDate": "2026-07-08T08:01:58+01:00",
+    "subject": "chore: teach Make how to vendor (#16394)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Copilot Autofix powered by AI <175728472+Copilot@users.noreply.github.com>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#16394"
+    ],
+    "touchedFiles": [
+      ".github/workflows/ci-build.yaml",
+      "Makefile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3c009935383ba76886e74c8f527f87049d51cd7f",
+    "authorDate": "2026-07-07T19:00:15+08:00",
+    "subject": "fix: add configurable database connection timeout (#16291)",
+    "body": "Signed-off-by: HsiuChuanHsu <hchsu2106@gmail.com>\nCo-authored-by: Claude Opus 4.8 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#16291"
+    ],
+    "touchedFiles": [
+      "config/config.go",
+      "config/config_test.go",
+      "docs/workflow-controller-configmap.md",
+      "docs/workflow-controller-configmap.yaml",
+      "util/sqldb/connection_timeout_test.go",
+      "util/sqldb/sqldb.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "b29f5a2b0de9f1d7ac903288a3e8adc18333301b",
+    "authorDate": "2026-07-07T12:30:40+02:00",
+    "subject": "fix(ui): Fixed Azure Queue Storage icon in event flow diagram Fixes #16384 (#16390)",
+    "body": "Signed-off-by: panaxging <panaxging@gmail.com>\nCo-authored-by: Tommaso TBA. BARBERIS <barberis@genoway.com>",
+    "issueRefs": [
+      "Fixes #16384",
+      "#16390"
+    ],
+    "touchedFiles": [
+      "ui/src/event-flow/icons.ts",
+      "ui/src/shared/models/event-source.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "37d0dd7fae84ae9a895e63af9be55d51062e0e98",
+    "authorDate": "2026-07-06T15:17:15+02:00",
+    "subject": "fix: log \"Max parallelism reached\" at info level, not error. Fixes #16378 (#16379)",
+    "body": "Signed-off-by: Knut Zuidema <k.zuidema@gridx.de>",
+    "issueRefs": [
+      "Fixes #16378",
+      "#16379"
+    ],
+    "touchedFiles": [
+      "workflow/controller/operator.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4284f07b226a5491014c5ef4cbb80000ed3c18c8",
+    "authorDate": "2026-07-03T10:41:42+01:00",
+    "subject": "fix(ci): unbreak cherry-pick automation after actions/checkout v7 bump (#16374)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#16374"
+    ],
+    "touchedFiles": [
+      ".github/workflows/cherry-pick-single.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a7a7a8dfb53a35314b81616ec35b5e3f7270b250",
+    "authorDate": "2026-07-03T09:08:55+01:00",
+    "subject": "fix: reject stale copies of completed workflows using resourceVersion comparison (#16357)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#16357"
+    ],
+    "touchedFiles": [
+      "workflow/common/common.go",
+      "workflow/controller/controller.go",
+      "workflow/controller/controller_test.go",
+      "workflow/controller/operator.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1e3039a88e3f884e03c4c6aa24c641ad06bafe2c",
+    "authorDate": "2026-07-02T19:18:45+10:00",
+    "subject": "fix: automatically document the availability & lifecycle of variables (#16043)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>\nSigned-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Opus 4.8 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#16043"
+    ],
+    "touchedFiles": [
+      ".cspell.json",
+      "Makefile",
+      "docs/fields.md",
+      "docs/variable-flow/variables.md",
+      "examples/variables-showcase.yaml",
+      "properdocs.yml",
+      "util/template/expression_template.go",
+      "util/variables/doc.go",
+      "util/variables/docgen.go",
+      "util/variables/docgen_test.go",
+      "util/variables/key.go",
+      "util/variables/key_test.go",
+      "util/variables/keys/cronworkflow.go",
+      "util/variables/keys/globals.go",
+      "util/variables/keys/inputs.go",
+      "util/variables/keys/loop.go",
+      "util/variables/keys/metrics.go",
+      "util/variables/keys/nodectx.go",
+      "util/variables/keys/noderef.go",
+      "util/variables/keys/retries.go",
+      "util/variables/keys/runtime.go",
+      "util/variables/kind.go",
+      "util/variables/kind_test.go",
+      "util/variables/scope.go",
+      "workflow/common/common.go",
+      "workflow/common/util.go",
+      "workflow/controller/dag.go",
+      "workflow/controller/exit_handler.go",
+      "workflow/controller/hooks.go",
+      "workflow/controller/hooks_test.go",
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_test.go",
+      "workflow/controller/operator_workflow_template_ref_test.go",
+      "workflow/controller/scope.go",
+      "workflow/controller/scope_test.go",
+      "workflow/controller/steps.go",
+      "workflow/controller/steps_test.go",
+      "workflow/controller/workflowpod.go",
+      "workflow/cron/operator.go",
+      "workflow/util/util.go",
+      "workflow/validate/validate.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dbcd931a699b29da73a155d4ab533eb4413ddea3",
+    "authorDate": "2026-07-01T14:46:10+01:00",
+    "subject": "fix(ci): build gomod2nix from repo flake so it uses the pinned Go",
+    "body": "The update-gomod2nix workflow installed gomod2nix via\n`nix profile install github:nix-community/gomod2nix`, which builds it\nagainst upstream gomod2nix's own stale nixpkgs (an older Go) with\nGOTOOLCHAIN=local. That Go — not the one on PATH — runs `go mod\ndownload`, so it failed with `go.mod requires go >= 1.26.1 (running go\n1.24.5)`.\n\nInstall from the repo's own dev/nix flake instead. Its overlay builds\ngomod2nix against the Go version pinned in dev/nix/conf.nix (single\nsource of truth, kept in sync with go.mod). Export gomod2nix from the\nflake's packages, bump the flake.lock nixpkgs so go_1_26 (>=1.26.1) is\navailable, and drop the now-redundant setup-go step.\n\nSigned-off-by: Alan Clucas <alan@clucas.org>\n\nCo-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".github/workflows/update-gomod2nix.yml",
+      "dev/nix/flake.lock",
+      "dev/nix/flake.nix"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4f5eb4f26553a37baec7f9ab441ef7d48b95fafa",
+    "authorDate": "2026-07-01T13:57:39+01:00",
+    "subject": "chore: fix gomod2nix action pinning",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [],
+    "touchedFiles": [
+      ".github/workflows/update-gomod2nix.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b471bb413ed37af5be506db01bdc0378157f4fd1",
+    "authorDate": "2026-07-01T08:59:26+02:00",
+    "subject": "fix: resolve race condition in custom metric initialization (#16238)",
+    "body": "Signed-off-by: Nebojsa Jacovic <nebojsa.jacovic@gmail.com>",
+    "issueRefs": [
+      "#16238"
+    ],
+    "touchedFiles": [
+      "util/telemetry/instrument.go",
+      "workflow/metrics/metrics.go",
+      "workflow/metrics/metrics_custom.go",
+      "workflow/metrics/metrics_custom_test.go"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "913be5f2c6b2c5f1cf360dc2323a1b4a7da51788",
+    "authorDate": "2026-06-30T23:31:46+01:00",
+    "subject": "fix(ci): trigger Codegen when its source inputs change (#16308)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Opus 4.8 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#16308"
+    ],
+    "touchedFiles": [
+      ".github/workflows/ci-build.yaml"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "acfb73a390337c370f046ba773c0669f28316ef6",
+    "authorDate": "2026-06-30T21:38:14+07:00",
+    "subject": "fix(auth): mask sensitive token in sso callback logs (#16268)",
+    "body": "Signed-off-by: RinZ27 <222222878+RinZ27@users.noreply.github.com>",
+    "issueRefs": [
+      "#16268"
+    ],
+    "touchedFiles": [
+      "server/auth/sso/sso.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "589e31aa6024d278327db2dba2db54386085d1b8",
+    "authorDate": "2026-06-30T16:11:35+05:30",
+    "subject": "fix: return 404 instead of panic when archived workflow is not yet persisted (#16302)",
+    "body": "Signed-off-by: liketosweep <liketosweep@gmail.com>",
+    "issueRefs": [
+      "#16302"
+    ],
+    "touchedFiles": [
+      "server/artifacts/artifact_server.go",
+      "server/artifacts/artifact_server_test.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "9577e45f23f48b5a6d573bd3b55e949803f2560c",
+    "authorDate": "2026-06-29T15:28:25+05:30",
+    "subject": "feat: add addressingStyle field to S3Bucket for virtual-hosted-style support (Fixes #10851) (#15734)",
+    "body": "Signed-off-by: Himesh Panchal <himeshp@users.noreply.github.com>\nCo-authored-by: Himesh Panchal <himeshp@users.noreply.github.com>\nCo-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>",
+    "issueRefs": [
+      "Fixes #10851",
+      "#15734"
+    ],
+    "touchedFiles": [
+      ".features/pending/s3-virtual-hosting.md",
+      "api/jsonschema/schema.json",
+      "api/openapi-spec/swagger.json",
+      "docs/configure-artifact-repository.md",
+      "docs/executor_swagger.md",
+      "docs/fields.md",
+      "manifests/base/crds/full/argoproj.io_clusterworkflowtemplates.yaml",
+      "manifests/base/crds/full/argoproj.io_cronworkflows.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowartifactgctasks.yaml",
+      "manifests/base/crds/full/argoproj.io_workfloweventbindings.yaml",
+      "manifests/base/crds/full/argoproj.io_workflows.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtaskresults.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtasksets.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtemplates.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflowartifactgctasks.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workfloweventbindings.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflowtaskresults.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflowtasksets.yaml",
+      "manifests/quick-start-minimal.yaml",
+      "manifests/quick-start-mysql.yaml",
+      "manifests/quick-start-postgres.yaml",
+      "manifests/quick-start-telemetry.yaml",
+      "pkg/apis/workflow/v1alpha1/generated.pb.go",
+      "pkg/apis/workflow/v1alpha1/generated.proto",
+      "pkg/apis/workflow/v1alpha1/openapi_generated.go",
+      "pkg/apis/workflow/v1alpha1/workflow_types.go",
+      "pkg/plugins/executor/swagger.yml",
+      "sdks/java/client/docs/IoArgoprojWorkflowV1alpha1S3Artifact.md",
+      "sdks/java/client/docs/IoArgoprojWorkflowV1alpha1S3ArtifactRepository.md",
+      "workflow/artifacts/artifacts.go",
+      "workflow/artifacts/artifacts_test.go",
+      "workflow/artifacts/s3/s3.go",
+      "workflow/artifacts/s3/s3_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "724f16e7ee7380f2349d0c971cb9cf2de459c167",
+    "authorDate": "2026-06-28T18:35:38-05:00",
+    "subject": "docs: fix duplicated words in stress-testing and estimated-duration (#16303)",
+    "body": "Signed-off-by: Nikhil Jathar <22786232+mailnike@users.noreply.github.com>",
+    "issueRefs": [
+      "#16303"
+    ],
+    "touchedFiles": [
+      "docs/estimated-duration.md",
+      "docs/stress-testing.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "326c5d77b773d918619c350122df30d7cfca8ac1",
+    "authorDate": "2026-06-23T17:50:41-07:00",
+    "subject": "fix(sso): fix \"asymmetric encryption algorithms not supported for JWT\". Fixes #16232 (#16292)",
+    "body": "Signed-off-by: Mason Malone <651224+MasonM@users.noreply.github.com>\nCo-authored-by: GPT 5.5 <noreply@openai.com>",
+    "issueRefs": [
+      "Fixes #16232",
+      "#16292"
+    ],
+    "touchedFiles": [
+      "server/auth/sso/sso.go",
+      "server/auth/sso/sso_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2e0513f61da1a3f449a1d38a5455d07e0c6553bb",
+    "authorDate": "2026-06-23T02:06:58+02:00",
+    "subject": "fix: honor ?? and ?. guards in strict missing-variable check (#16274)",
+    "body": "Signed-off-by: zvdy <cristian.030902@gmail.com>",
+    "issueRefs": [
+      "#16274"
+    ],
+    "touchedFiles": [
+      "util/template/expression_template.go",
+      "util/template/expression_template_test.go",
+      "util/template/replace_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4cb7eb4e89299595ba8fddd3b7f9d95872c3b39d",
+    "authorDate": "2026-06-19T11:03:26+05:30",
+    "subject": "fix: mark retry wrapper node as Failed when workflow is terminated during active retry (#15740)",
+    "body": "Signed-off-by: Nancy <9d.24.nancy.sangani@gmail.com>\nCo-authored-by: Isitha Subasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "#15740"
+    ],
+    "touchedFiles": [
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5bfb9c5f2412fe9989d4f5c46deaf4ed53f8fafd",
+    "authorDate": "2026-06-18T21:32:32+10:00",
+    "subject": "fix!: drop values when skipped arguments are being substituted (#16223)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>\nCo-authored-by: Claude Fable 5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#16223"
+    ],
+    "touchedFiles": [
+      "docs/fields.md",
+      "docs/lifecyclehook.md",
+      "docs/upgrading.md",
+      "docs/variables.md",
+      "docs/walk-through/output-parameters.md",
+      "examples/skipped-output-defaults/consumer-input-default.yaml",
+      "examples/skipped-output-defaults/expression-fallback.yaml",
+      "examples/skipped-output-defaults/producer-output-default.yaml",
+      "test/e2e/functional/dag-skipped-artifact-subpath-ref.yaml",
+      "test/e2e/functional/dag-skipped-consumer-default.yaml",
+      "test/e2e/functional/dag-skipped-producer-default.yaml",
+      "test/e2e/functional/dag-skipped-volume-default.yaml",
+      "test/e2e/functional/dag-skipped-withparam-default.yaml",
+      "test/e2e/functional/steps-skipped-consumer-default.yaml",
+      "test/e2e/functional/steps-skipped-producer-default.yaml",
+      "test/e2e/functional/steps-skipped-withparam-ref.yaml",
+      "test/e2e/functional_test.go",
+      "util/template/expression_template.go",
+      "util/template/expression_template_test.go",
+      "util/template/replace.go",
+      "util/template/replace_test.go",
+      "util/template/simple_template.go",
+      "util/template/template_test.go",
+      "workflow/common/common.go",
+      "workflow/common/util.go",
+      "workflow/common/util_test.go",
+      "workflow/controller/dag.go",
+      "workflow/controller/dag_test.go",
+      "workflow/controller/examples_skipped_defaults_test.go",
+      "workflow/controller/exit_handler.go",
+      "workflow/controller/hooks.go",
+      "workflow/controller/hooks_test.go",
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_test.go",
+      "workflow/controller/scope.go",
+      "workflow/controller/scope_test.go",
+      "workflow/controller/steps.go",
+      "workflow/controller/steps_test.go",
+      "workflow/controller/workflowpod.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f6c1bdde6702fbf9b662a80f55a0367283fbab94",
+    "authorDate": "2026-06-18T11:08:13+01:00",
+    "subject": "chore: bump devcontainer features to latest to fix breakage (#16284)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#16284"
+    ],
+    "touchedFiles": [
+      ".devcontainer/builder/devcontainer-lock.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dd13fbf8785dce8ebe8755a01372d9d46a8fd3c9",
+    "authorDate": "2026-06-18T18:40:57+09:00",
+    "subject": "docs: fix duplicated word in doc-changes (#16283)",
+    "body": "Signed-off-by: s3onghyun <s3onghyun.hong@gmail.com>",
+    "issueRefs": [
+      "#16283"
+    ],
+    "touchedFiles": [
+      "docs/doc-changes.md"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "8bf2a9be7911c05c5224d6bc6a47391b6e5e16b6",
+    "authorDate": "2026-06-15T17:02:40+10:00",
+    "subject": "fix: addressed a typo in devenv config (#16260)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "#16260"
+    ],
+    "touchedFiles": [
+      "devenv.nix"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "deef55979e913a4c5a6b07060533719bd9967916",
+    "authorDate": "2026-06-10T22:47:47+10:00",
+    "subject": "fix: automate nix dependecy updates. Fixes #11691 (#15557)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "Fixes #11691",
+      "#15557"
+    ],
+    "touchedFiles": [
+      ".github/workflows/update-gomod2nix.yml",
+      ".gitignore",
+      "Makefile",
+      "dev/nix/conf.nix",
+      "dev/nix/flake.lock",
+      "dev/nix/flake.nix",
+      "dev/nix/gomod2nix.toml",
+      "dev/nix/node-env.nix",
+      "devenv.lock",
+      "devenv.nix",
+      "devenv.yaml",
+      "gomod2nix.toml",
+      "sdks/java/Makefile",
+      "sdks/java/flake.nix"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a681fe1cb0881d12cabf2d6958622f85826f0070",
+    "authorDate": "2026-06-10T13:03:15+03:00",
+    "subject": "fix: WorkflowTaskSets size bloat for large workflows (#16075)",
+    "body": "Signed-off-by: arpechenin <arpechenin@avito.ru>\nCo-authored-by: arpechenin <arpechenin@avito.ru>",
+    "issueRefs": [
+      "#16075"
+    ],
+    "touchedFiles": [
+      "test/e2e/executor_plugins_test.go",
+      "test/e2e/fixtures/then.go",
+      "test/e2e/manifests/plugins/hello-executor-plugin-configmap.yaml",
+      "test/e2e/manifests/plugins/kustomization.yaml",
+      "test/e2e/manifests/plugins/massive-executor-plugin-configmap.yaml",
+      "test/e2e/testdata/plugins/executor/massive-executor-workflow.yaml",
+      "util/file/watch.go",
+      "workflow/controller/operator.go",
+      "workflow/controller/taskset.go",
+      "workflow/controller/taskset_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d81ac3f781050c8e5fe0ee6f98033d3f789c08c5",
+    "authorDate": "2026-06-10T17:15:42+10:00",
+    "subject": "fix: do not re-run `onExitNode`. Fixes #14392 (#16088)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "Fixes #14392",
+      "#16088"
+    ],
+    "touchedFiles": [
+      "workflow/controller/dag.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "631fd14d629ba0e18bda32fbd95e0f1de6bb8811",
+    "authorDate": "2026-06-10T12:41:21+05:30",
+    "subject": "fix: allow cron aliases in schedule validation (#16100)",
+    "body": "Signed-off-by: Pradeep Sagitra <sagitrapradeep2006@gmail.com>\nCo-authored-by: Mason Malone <651224+MasonM@users.noreply.github.com>",
+    "issueRefs": [
+      "#16100"
+    ],
+    "touchedFiles": [
+      "manifests/base/crds/full/argoproj.io_cronworkflows.yaml",
+      "manifests/quick-start-minimal.yaml",
+      "manifests/quick-start-mysql.yaml",
+      "manifests/quick-start-postgres.yaml",
+      "manifests/quick-start-telemetry.yaml",
+      "pkg/apis/workflow/v1alpha1/cron_workflow_types.go",
+      "pkg/apis/workflow/v1alpha1/generated.proto"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "97382fcc65c2709e0f0907b763a6f3768aa7193f",
+    "authorDate": "2026-06-09T10:51:36+10:00",
+    "subject": "fix: address semaphore/mutex unsoundness for Initalize (#16160)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "#16160"
+    ],
+    "touchedFiles": [
+      "workflow/controller/controller.go",
+      "workflow/sync/common.go",
+      "workflow/sync/database_semaphore.go",
+      "workflow/sync/mutex_test.go",
+      "workflow/sync/poison.go",
+      "workflow/sync/semaphore.go",
+      "workflow/sync/sync_manager.go",
+      "workflow/sync/sync_manager_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fd8faa158f7a977fca87e99017d3bf3c413e5b0e",
+    "authorDate": "2026-06-06T09:38:07-07:00",
+    "subject": "fix(ui): fix error on \"Graph\" tab when viewing CronWorkflow and add tests. Fixes #15275 (#16071)",
+    "body": "Signed-off-by: Mason Malone <651224+MasonM@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #15275",
+      "#16071"
+    ],
+    "touchedFiles": [
+      "ui/src/shared/components/editors/graph-viewer.test.tsx",
+      "ui/src/shared/components/editors/graph-viewer.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "eecd3289bcb327a45199b5d775fbaddb2f0a3467",
+    "authorDate": "2026-06-05T08:04:44+01:00",
+    "subject": "fix(ui): fix mixed bold/notbold markdown in title annotations (#16064)",
+    "body": "Signed-off-by: John Kelly <johnke@gmail.com>",
+    "issueRefs": [
+      "#16064"
+    ],
+    "touchedFiles": [
+      "ui/src/shared/components/workflows-utils.test.ts",
+      "ui/src/workflows/utils.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a3a6c463800f8da01e877062d0f48819a74c5316",
+    "authorDate": "2026-06-04T23:54:44+09:00",
+    "subject": "fix(ui): show full tag value on hover in TagsInput. Fixes #16096 (#16095)",
+    "body": "Signed-off-by: nakatani-yo <yoshihito.nakatani@craftsman-software.com>",
+    "issueRefs": [
+      "Fixes #16096",
+      "#16095"
+    ],
+    "touchedFiles": [
+      ".features/pending/show-full-tag-value-on-hover.md",
+      "ui/src/shared/components/tags-input/tags-input.test.tsx",
+      "ui/src/shared/components/tags-input/tags-input.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "85e490eb00be1f757626498cb4cd237fe2b4bdb3",
+    "authorDate": "2026-06-04T15:33:01+02:00",
+    "subject": "fix(crds): escape template variables in CRD descriptions to prevent Helm rendering errors (#16036)",
+    "body": "Signed-off-by: Ferhat Güneri <ferhatguneri@outlook.com>\nCo-authored-by: fguneri <ferhat.guneri@asml.com>",
+    "issueRefs": [
+      "#16036"
+    ],
+    "touchedFiles": [
+      "api/jsonschema/schema.json",
+      "api/openapi-spec/swagger.json",
+      "docs/executor_swagger.md",
+      "docs/fields.md",
+      "manifests/base/crds/full/argoproj.io_clusterworkflowtemplates.yaml",
+      "manifests/base/crds/full/argoproj.io_cronworkflows.yaml",
+      "manifests/base/crds/full/argoproj.io_workfloweventbindings.yaml",
+      "manifests/base/crds/full/argoproj.io_workflows.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtaskresults.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtasksets.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtemplates.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workfloweventbindings.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflowtaskresults.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflowtasksets.yaml",
+      "manifests/quick-start-minimal.yaml",
+      "manifests/quick-start-mysql.yaml",
+      "manifests/quick-start-postgres.yaml",
+      "manifests/quick-start-telemetry.yaml",
+      "pkg/apis/workflow/v1alpha1/generated.proto",
+      "pkg/apis/workflow/v1alpha1/openapi_generated.go",
+      "pkg/apis/workflow/v1alpha1/workflow_types.go",
+      "pkg/plugins/executor/swagger.yml",
+      "sdks/java/client/docs/IoArgoprojWorkflowV1alpha1Artifact.md",
+      "sdks/java/client/docs/IoArgoprojWorkflowV1alpha1ArtifactPaths.md",
+      "sdks/java/client/docs/IoArgoprojWorkflowV1alpha1Parameter.md",
+      "sdks/java/client/docs/IoArgoprojWorkflowV1alpha1ValueFrom.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c045a4d390fb77aa36a048ea881334ccaa1ea5e2",
+    "authorDate": "2026-06-04T08:03:05+00:00",
+    "subject": "chore(deps): update module go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc to v1.44.0 (main) (#16207)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#16207"
+    ],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "5ddf2e64530ee2cd94fc4ad171543288f133711e",
+    "authorDate": "2026-06-04T09:48:54+10:00",
+    "subject": "fix: retry for database transaction errors. Fixes #16101 (#16102)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "Fixes #16101",
+      "#16102"
+    ],
+    "touchedFiles": [
+      "workflow/sync/common.go",
+      "workflow/sync/database_mutex_test.go",
+      "workflow/sync/database_semaphore.go",
+      "workflow/sync/database_semaphore_test.go",
+      "workflow/sync/semaphore.go",
+      "workflow/sync/semaphore_test.go",
+      "workflow/sync/sync_manager.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0b94415f2a92b85c886e97d69d82bf3a8641a30f",
+    "authorDate": "2026-06-03T16:41:33+01:00",
+    "subject": "chore(deps): update module go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp to v1.44.0 (main) (#16208)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#16208"
+    ],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "eef18d1cdce83220ed6c226c74d0d6d19d63b9e5",
+    "authorDate": "2026-06-03T15:40:03+01:00",
+    "subject": "fix: replace deprecated h2c.NewHandler with http.Server.Protocols (#16220)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Opus 4.8 (1M context) <noreply@anthropic.com>",
+    "issueRefs": [
+      "#16220"
+    ],
+    "touchedFiles": [
+      "server/apiserver/argoserver.go",
+      "util/grpc/mux.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "134224f57b33c5abdadd515213ea9302d9ea704f",
+    "authorDate": "2026-06-02T08:20:39+02:00",
+    "subject": "fix: populate scope with empty values for outputs of skipped/omitted … (#15932)",
+    "body": "Signed-off-by: KowalczykBartek <bkowalczyyk@gmail.com>\nCo-authored-by: Isitha Subasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "#15932"
+    ],
+    "touchedFiles": [
+      "test/e2e/functional/steps-skipped-output-ref.yaml",
+      "test/e2e/functional_test.go",
+      "util/template/resolve_var.go",
+      "util/template/resolve_var_test.go",
+      "workflow/controller/dag.go",
+      "workflow/controller/operator.go",
+      "workflow/controller/scope.go",
+      "workflow/controller/scope_test.go",
+      "workflow/controller/steps.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2fc922d950bc5746001176edce8a095209ee4cee",
+    "authorDate": "2026-05-31T11:34:53+09:00",
+    "subject": "fix(ci): use client-id for GitHub Action \"Create GitHub App Token\" (#16156)",
+    "body": "Signed-off-by: nakatani-yo <yoshihito.nakatani@craftsman-software.com>",
+    "issueRefs": [
+      "#16156"
+    ],
+    "touchedFiles": [
+      ".github/workflows/cherry-pick-single.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8e52e7aa93ad68eee6275c8835d2f1383e13c4eb",
+    "authorDate": "2026-05-29T12:04:46+02:00",
+    "subject": "fix: change log level because behavior is expected (#16124)",
+    "body": "Signed-off-by: spaced <spaced.wombat@gmail.com>",
+    "issueRefs": [
+      "#16124"
+    ],
+    "touchedFiles": [
+      "workflow/controller/operator.go",
+      "workflow/executor/executor.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "96d1684b938fbf0bfda7bd2f80c3e960eb65f29c",
+    "authorDate": "2026-05-28T17:05:16+03:00",
+    "subject": "fix: MariaDB compatibility for JSON queries and native password auth. Fixes #15413 (#15936)",
+    "body": "Signed-off-by: Mario Apostolov <mario.apostolov@mariadb.com>",
+    "issueRefs": [
+      "Fixes #15413",
+      "#15936"
+    ],
+    "touchedFiles": [
+      ".spelling",
+      "docs/offloading-large-workflows.md",
+      "docs/synchronization-config.md",
+      "docs/synchronization.md",
+      "docs/workflow-archive.md",
+      "persist/sqldb/workflow_archive.go",
+      "persist/sqldb/workflow_archive_mysql_test.go",
+      "util/sqldb/mysql_test_helper.go",
+      "util/sqldb/sqldb.go",
+      "util/sqldb/sqldb_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "351d8cd6c81e4e4bab5b5fdd66aaeb73804ab3b7",
+    "authorDate": "2026-05-28T19:32:45+05:30",
+    "subject": "feat: added config option to disable agent pod creation. Fixes #7891 (#15844)",
+    "body": "Signed-off-by: workflow-automation <workflow-automation@msp.amadeus.net>\nCo-authored-by: workflow-automation <workflow-automation@msp.amadeus.net>",
+    "issueRefs": [
+      "Fixes #7891",
+      "#15844"
+    ],
+    "touchedFiles": [
+      ".features/pending/disable-agent-pod.md",
+      "config/config.go",
+      "docs/workflow-controller-configmap.md",
+      "docs/workflow-controller-configmap.yaml",
+      "workflow/controller/agent.go",
+      "workflow/controller/agent_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "89047a9a53ab54cbae39959becd94fe92b10ab5d",
+    "authorDate": "2026-05-28T08:11:12+05:30",
+    "subject": "fix: metadata merge. Fixes #15870 (#16103)",
+    "body": "Signed-off-by: Umang Tiwary <umang.tiwary@gmail.com>\nCo-authored-by: Umang Tiwary <umang.tiwary@gmail.com>",
+    "issueRefs": [
+      "Fixes #15870",
+      "#16103"
+    ],
+    "touchedFiles": [
+      "workflow/templateresolution/context.go",
+      "workflow/templateresolution/context_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3d5ebbc5c664f9b45e00e7567ca4807693fff9b6",
+    "authorDate": "2026-05-26T02:41:06+01:00",
+    "subject": "fix: remove redundant WaitForWorkflow in TestInputOnMount (#15982)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15982"
+    ],
+    "touchedFiles": [
+      "test/e2e/artifacts_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "202199b82033deba1a672062ae9d39cb88102293",
+    "authorDate": "2026-05-26T10:13:06+10:00",
+    "subject": "fix: ignore resource version (match) when continue token present (#16099)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "#16099"
+    ],
+    "touchedFiles": [
+      "util/unstructured/unstructured.go",
+      "workflow/controller/pod/controller.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "90a3252f386c9bcbf9fee9d53aede8a3cfa8f9fa",
+    "authorDate": "2026-05-18T09:37:22+03:00",
+    "subject": "fix(validate): validate placeholder step names (#15991)",
+    "body": "Signed-off-by: Ville Vesilehto <ville@vesilehto.fi>",
+    "issueRefs": [
+      "#15991"
+    ],
+    "touchedFiles": [
+      "workflow/validate/validate.go",
+      "workflow/validate/validate_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "80dc102f42b0867019e3464e9a341bc3e6bfa310",
+    "authorDate": "2026-05-01T14:38:31+09:00",
+    "subject": "fix(ui): toggle filter dropdown closed when clicking anchor (#16014)",
+    "body": "Signed-off-by: nakatani-yo <yoshihito.nakatani@craftsman-software.com>",
+    "issueRefs": [
+      "#16014"
+    ],
+    "touchedFiles": [
+      "ui/src/shared/components/dropdown/dropdown.test.tsx",
+      "ui/src/shared/components/dropdown/dropdown.tsx",
+      "ui/src/shared/components/filter-drop-down.test.tsx",
+      "ui/src/shared/components/filter-drop-down.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0eb6267ac9f3a6a4ae4c3a9e50b065b038b3a237",
+    "authorDate": "2026-04-29T00:45:06-07:00",
+    "subject": "feat(ui): Add namespace input to ClusterWorkflowTemplate submit. Fixes #10398 (#13596)",
+    "body": "Signed-off-by: Mason Malone <mmalone@adobe.com>\nSigned-off-by: Mason Malone <651224+MasonM@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #10398",
+      "#13596"
+    ],
+    "touchedFiles": [
+      ".features/pending/cluster-workflow-ns-input.md",
+      "ui/src/cluster-workflow-templates/cluster-workflow-template-details.tsx",
+      "ui/src/workflows/components/submit-workflow-panel.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "939efd3b53296b55007efc4d5f1d281622b5b538",
+    "authorDate": "2026-04-28T07:34:20+01:00",
+    "subject": "chore: lint fix (#16028)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#16028"
+    ],
+    "touchedFiles": [
+      "server/auth/webhook/interceptor_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7a7e60839796b0cb3a1343f2ec0968bd2ac2d694",
+    "authorDate": "2026-04-24T10:03:34+05:00",
+    "subject": "fix: classify bare 5xx S3 responses as transient. Fixes #15565 (#16016)",
+    "body": "Signed-off-by: Ali <alliasgher123@gmail.com>",
+    "issueRefs": [
+      "Fixes #15565",
+      "#16016"
+    ],
+    "touchedFiles": [
+      "workflow/artifacts/s3/errors.go",
+      "workflow/artifacts/s3/errors_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c7cdd0da828be1ce84c2ca02d3abefd00d4b04b7",
+    "authorDate": "2026-04-23T17:09:33+09:00",
+    "subject": "fix(ui): respect target field in workflow-list scope links (#16021)",
+    "body": "Signed-off-by: panicboat <panicboat@gmail.com>",
+    "issueRefs": [
+      "#16021"
+    ],
+    "touchedFiles": [
+      "ui/src/workflows/components/workflows-list/workflows-list.tsx"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "3ebc2aee49b04efbe79c10f59143b3536e1fabe7",
+    "authorDate": "2026-04-23T08:54:12+01:00",
+    "subject": "Merge commit from fork",
+    "body": "The configmap sync endpoints relied solely on the kube client's identity\nfor RBAC, which is only effective in Client auth mode. In Server or SSO\n(without RBAC) modes, the server's own privileged kube client is used,\nbypassing authorization entirely. Add explicit SelfSubjectAccessReview\nchecks for configmap permissions before each operation, matching the\npattern used by the database sync provider.\n\nFixes a security issue introduced in #14724.\n\nSigned-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Opus 4.6 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#14724"
+    ],
+    "touchedFiles": [
+      "server/sync/sync_cm.go",
+      "server/sync/sync_db.go",
+      "server/sync/sync_server_cm_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "203fc95178c79b63ec4863fce61b46958c2f3156",
+    "authorDate": "2026-04-23T10:46:36+03:00",
+    "subject": "Merge commit from fork",
+    "body": "Use strings.Cut instead of strings.Split to safely parse the\npod-gc-strategy annotation. The unchecked parts[1] access\ncaused an index-out-of-bounds panic when the annotation value\ncontained no \"/\" separator, crashing the controller process\nvia the informer goroutine which runs outside the recover scope.\n\nSigned-off-by: Ville Vesilehto <ville@vesilehto.fi>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "workflow/controller/pod/controller.go",
+      "workflow/controller/pod/controller_test.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "ab931dce79ff7b53c0d0196c4278333a7917ccb2",
+    "authorDate": "2026-04-21T23:35:02-07:00",
+    "subject": "fix: prevent `failed to get a template` when using inline template. Fixes #15051 (#15574)",
+    "body": "Signed-off-by: Mason Malone <651224+MasonM@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #15051",
+      "#15574"
+    ],
+    "touchedFiles": [
+      "pkg/apis/workflow/v1alpha1/workflow_types.go",
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_test.go",
+      "workflow/controller/retry_tweak.go",
+      "workflow/controller/workflowpod.go",
+      "workflow/util/util.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1fb836c8a49ad6b57fe03626124ecc06a13f29c1",
+    "authorDate": "2026-04-21T08:41:11+01:00",
+    "subject": "fix(controller): guard realtime workflow.duration against zero StartedAt (#15935)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Opus 4.6 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#15935"
+    ],
+    "touchedFiles": [
+      "workflow/controller/operator.go",
+      "workflow/controller/steps.go",
+      "workflow/controller/steps_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e291b59d757b903c1043ee2ffafc9c920de0f7aa",
+    "authorDate": "2026-04-21T15:24:05+09:00",
+    "subject": "fix(ui): sort user info groups alphabetically for readability (#15940)",
+    "body": "Signed-off-by: nakatani-yo <yoshihito.nakatani@craftsman-software.com>",
+    "issueRefs": [
+      "#15940"
+    ],
+    "touchedFiles": [
+      "ui/src/userinfo/user-info.test.tsx",
+      "ui/src/userinfo/user-info.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4b0fd63227281003d103c3c31cbb672d36fc5950",
+    "authorDate": "2026-04-19T22:49:22-07:00",
+    "subject": "fix: 401s when accessing artifact directories with SSO enabled. Fixes #15800 (#15994)",
+    "body": "Signed-off-by: Mason Malone <651224+MasonM@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #15800",
+      "#15994"
+    ],
+    "touchedFiles": [
+      "server/artifacts/artifact_server.go",
+      "server/artifacts/artifact_server_test.go",
+      "test/e2e/argo_server_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b6242a91baa61befe7e6b11b3c976f625b0e8980",
+    "authorDate": "2026-04-17T15:39:20+01:00",
+    "subject": "chore(deps): update module go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc to v1.43.0 (main) (#15975)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#15975"
+    ],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "51ea54b6cf6a34859e2c892c1ffee7b7f9a38f2f",
+    "authorDate": "2026-04-15T14:03:22+08:00",
+    "subject": "fix: delete stale TaskGroup children on retry with parameter override. Fixes #15802 (#15827)",
+    "body": "Signed-off-by: Stanley Shen <stanley.shen2003@gmail.com>\nSigned-off-by: Yu-Hong Shen <stanley.shen2003@gmail.com>\nCo-authored-by: Stanley Shen <stanley.shen2003@gmail.com>\nCo-authored-by: Claude Opus 4.6 (1M context) <noreply@anthropic.com>\nCo-authored-by: Isitha Subasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "Fixes #15802",
+      "#15827"
+    ],
+    "touchedFiles": [
+      "workflow/util/util.go",
+      "workflow/util/util_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dcc17b55ab13a2f06584d63e70ed7ae0fc9c3ce3",
+    "authorDate": "2026-04-13T18:24:02+05:30",
+    "subject": "chore(deps): update minio-go to include non-DualStack region fix (#2205) (#15838)",
+    "body": "Signed-off-by: Chaitanya ASK <achaitanya@salesforce.com>\nSigned-off-by: AsKc2000 <36111285+AsKc2000@users.noreply.github.com>\nCo-authored-by: Isitha Subasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "#2205",
+      "#15838"
+    ],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c365a1097a64d5ffe6768e237d2b7af53a5ec1ff",
+    "authorDate": "2026-04-13T08:57:09+00:00",
+    "subject": "chore(deps): bump go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp from 1.42.0 to 1.43.0 in the go_modules group across 1 directory (#15901)",
+    "body": "Signed-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#15901"
+    ],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "670ab1b6450462fe90fd5ce6f0e8932b1ba33ea6",
+    "authorDate": "2026-04-13T17:10:43+10:00",
+    "subject": "fix: changed log level (#15898)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "#15898"
+    ],
+    "touchedFiles": [
+      "workflow/controller/operator.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "065d443f37347c5d70ed49d0f35163a957b353ac",
+    "authorDate": "2026-04-13T08:05:15+09:00",
+    "subject": "fix(test): for \"CI / Windows Unit Tests\", skip TestSessionReconnect (#15895)",
+    "body": "Signed-off-by: nakatani-yo <yoshihito.nakatani@craftsman-software.com>",
+    "issueRefs": [
+      "#15895"
+    ],
+    "touchedFiles": [
+      "util/sqldb/session_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "88a2b50d1ec6b39dcdc4d310754defaec74508c6",
+    "authorDate": "2026-04-08T16:44:04+01:00",
+    "subject": "fix: downgrade serialization level (#15881)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "#15881"
+    ],
+    "touchedFiles": [
+      "persist/sqldb/workflow_archive.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b5e8a3e6d2edeab91657d4cd2d2863431b615631",
+    "authorDate": "2026-04-07T14:33:06+09:00",
+    "subject": "fix(ui): add `target='_blank' rel='noreferrer'` to existing external links (#15860)",
+    "body": "Signed-off-by: nakatani-yo <yoshihito.nakatani@craftsman-software.com>",
+    "issueRefs": [
+      "#15860"
+    ],
+    "touchedFiles": [
+      "ui/src/cluster-workflow-templates/cluster-workflow-template-list.tsx",
+      "ui/src/cron-workflows/cron-workflow-list.tsx",
+      "ui/src/event-flow/event-flow-page.tsx",
+      "ui/src/event-sources/event-source-creator.tsx",
+      "ui/src/event-sources/event-source-list.tsx",
+      "ui/src/login/login.tsx",
+      "ui/src/plugins/plugin-list.tsx",
+      "ui/src/reports/reports.tsx",
+      "ui/src/sensors/sensor-creator.tsx",
+      "ui/src/sensors/sensor-list.tsx",
+      "ui/src/shared/components/chat-button.tsx",
+      "ui/src/shared/components/cost-optimisation-nudge.tsx",
+      "ui/src/shared/components/example-manifests.tsx",
+      "ui/src/shared/components/object-editor.tsx",
+      "ui/src/shared/components/security-nudge.tsx",
+      "ui/src/shared/resources-duration.tsx",
+      "ui/src/widgets/widget-gallery.tsx",
+      "ui/src/workflow-event-bindings/workflow-event-bindings.tsx",
+      "ui/src/workflow-templates/workflow-template-list.tsx",
+      "ui/src/workflows/components/retry-workflow-panel.tsx",
+      "ui/src/workflows/components/workflow-logs-viewer/workflow-logs-viewer.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "8d62590a3319ba5302d31d33abe9d725e3c7f83e",
+    "authorDate": "2026-04-07T04:26:12+01:00",
+    "subject": "feat: retry connections on network errors. Fixes #15011 (#15006)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "Fixes #15011",
+      "#15006"
+    ],
+    "touchedFiles": [
+      ".features/pending/feat-refresh-connection.md",
+      "config/config.go",
+      "docs/workflow-controller-configmap.md",
+      "go.mod",
+      "hack/db/main.go",
+      "persist/sqldb/archived_workflow_labels.go",
+      "persist/sqldb/offload_node_status_repo.go",
+      "persist/sqldb/workflow_archive.go",
+      "server/apiserver/argoserver.go",
+      "server/sync/sync_server.go",
+      "test/e2e/fixtures/persistence.go",
+      "util/sqldb/db_type.go",
+      "util/sqldb/session.go",
+      "util/sqldb/session_test.go",
+      "util/sync/db/config.go",
+      "util/sync/db/mocks/SyncQueries.go",
+      "util/sync/db/queries.go",
+      "workflow/controller/config.go",
+      "workflow/controller/controller.go",
+      "workflow/controller/operator_concurrency_test.go",
+      "workflow/controller/operator_test.go",
+      "workflow/sync/common.go",
+      "workflow/sync/database_helper_test.go",
+      "workflow/sync/database_mutex.go",
+      "workflow/sync/database_mutex_test.go",
+      "workflow/sync/database_semaphore.go",
+      "workflow/sync/database_semaphore_test.go",
+      "workflow/sync/multiple_test.go",
+      "workflow/sync/mutex_test.go",
+      "workflow/sync/semaphore.go",
+      "workflow/sync/semaphore_test.go",
+      "workflow/sync/sync_manager.go",
+      "workflow/sync/sync_manager_multiple_test.go",
+      "workflow/sync/sync_manager_test.go",
+      "workflow/sync/transaction.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d9d23b4ed5634ceadffe2d300f53ce995b3fd26e",
+    "authorDate": "2026-04-07T09:11:22+09:00",
+    "subject": "fix(ui): add `target='_blank' rel='noreferrer'` to logs link (#15871)",
+    "body": "Signed-off-by: nakatani-yo <yoshihito.nakatani@craftsman-software.com>",
+    "issueRefs": [
+      "#15871"
+    ],
+    "touchedFiles": [
+      "ui/src/workflows/components/workflow-logs-viewer/workflow-logs-viewer.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6e0d9c1d62057c355900ddb6756a02f8f7bb285b",
+    "authorDate": "2026-04-02T14:04:42+03:00",
+    "subject": "fix(test): increase ListAll archive poll timeout (#15816)",
+    "body": "Signed-off-by: Ville Vesilehto <ville@vesilehto.fi>\nCo-authored-by: Isitha Subasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "#15816"
+    ],
+    "touchedFiles": [
+      "test/e2e/argo_server_test.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "0e742e6d7f4d23c9f242e60c4f39e8751f1bc9e1",
+    "authorDate": "2026-04-02T11:48:54+01:00",
+    "subject": "fix: tolerate expression template runtime failures when allowUnresolved is true. Fixes #15832, #15824 (#15839)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Opus 4.6 <noreply@anthropic.com>",
+    "issueRefs": [
+      "Fixes #15832",
+      "#15824",
+      "#15839"
+    ],
+    "touchedFiles": [
+      "test/e2e/functional/dag-when-expr-skip.yaml",
+      "test/e2e/functional/steps-when-expr-filter.yaml",
+      "test/e2e/functional_test.go",
+      "util/template/expression_template.go",
+      "workflow/controller/dag_test.go",
+      "workflow/controller/steps_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a7e51586b80c773f3d3d48a820deffaaedaad465",
+    "authorDate": "2026-04-02T13:39:45+03:00",
+    "subject": "fix(test): poll in TestWorkflowArchiveServiceList (#15818)",
+    "body": "Signed-off-by: Ville Vesilehto <ville@vesilehto.fi>\nCo-authored-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15818"
+    ],
+    "touchedFiles": [
+      "test/e2e/argo_server_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9a363465b085c77126743cc43ed3b6ee02b02d36",
+    "authorDate": "2026-04-02T09:49:13+01:00",
+    "subject": "fix: populate scope with empty values for outputs of skipped/omitted DAG ancestors (#15841)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Opus 4.6 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#15841"
+    ],
+    "touchedFiles": [
+      "docs/enhanced-depends-logic.md",
+      "docs/variables.md",
+      "test/e2e/functional/dag-omitted-output-ref.yaml",
+      "test/e2e/functional/dag-skipped-output-ref.yaml",
+      "test/e2e/functional_test.go",
+      "workflow/controller/dag.go",
+      "workflow/controller/dag_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "725f2dfe7317c32b8b586ad6f651041d5edbea94",
+    "authorDate": "2026-04-02T17:26:55+09:00",
+    "subject": "fix(ui): add tooltips to tab icons (#15840)",
+    "body": "Signed-off-by: nakatani-yo <yoshihito.nakatani@craftsman-software.com>",
+    "issueRefs": [
+      "#15840"
+    ],
+    "touchedFiles": [
+      "ui/src/workflows/components/workflow-details/workflow-details.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1ec82d0c48d8e10ed08363d5ac9e82da239a87df",
+    "authorDate": "2026-04-02T04:15:39+01:00",
+    "subject": "fix(ui): retain query parameters when closing workflow side panel. Fixes #15795 (#15797)",
+    "body": "Signed-off-by: Elliot Gunton <elliotgunton@gmail.com>\nSigned-off-by: Mason Malone <651224+MasonM@users.noreply.github.com>\nCo-authored-by: Mason Malone <651224+MasonM@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #15795",
+      "#15797"
+    ],
+    "touchedFiles": [
+      "ui/src/workflows/components/workflows-list/workflows-list.test.tsx",
+      "ui/src/workflows/components/workflows-list/workflows-list.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c5b41e5a9c9c96309f780d883ff73f5417205e43",
+    "authorDate": "2026-04-01T13:49:29+02:00",
+    "subject": "fix(log): honor stderrthreshold when logtostderr is enabled (#15814)",
+    "body": "Signed-off-by: Pierluigi Lenoci <pierluigi.lenoci@gmail.com>",
+    "issueRefs": [
+      "#15814"
+    ],
+    "touchedFiles": [
+      "util/cmd/glog.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dd9b143fba4dff124d342e2d5289618443838afa",
+    "authorDate": "2026-03-31T14:13:32+01:00",
+    "subject": "feat: added support for AWS RDS via IAM. Fixes #15834 (#15833)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "Fixes #15834",
+      "#15833"
+    ],
+    "touchedFiles": [
+      ".features/pending/aws-rds-iam-auth.md",
+      "config/config.go",
+      "docs/workflow-controller-configmap.md",
+      "docs/workflow-controller-configmap.yaml",
+      "go.mod",
+      "go.sum",
+      "util/sqldb/aws_rds_auth.go",
+      "util/sqldb/sqldb.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "17e58ee07a36976a66480d3479f108b0785013af",
+    "authorDate": "2026-03-31T19:53:52+09:00",
+    "subject": "fix(ui): add margin-top to WidgetGallery (#15826)",
+    "body": "Signed-off-by: nakatani-yo <yoshihito.nakatani@craftsman-software.com>",
+    "issueRefs": [
+      "#15826"
+    ],
+    "touchedFiles": [
+      "ui/src/widgets/widget-gallery.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "54c127b6512162931c58bc1a3fb5c1def8dc3a54",
+    "authorDate": "2026-03-31T13:50:11+03:00",
+    "subject": "fix(test): clean up sync configmap between re-runs (#15817)",
+    "body": "Signed-off-by: Ville Vesilehto <ville@vesilehto.fi>",
+    "issueRefs": [
+      "#15817"
+    ],
+    "touchedFiles": [
+      "test/e2e/argo_server_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "23266a7849a49fe92b20e62630a1ed70eee66fd9",
+    "authorDate": "2026-03-30T15:41:14+08:00",
+    "subject": "fix: remove holder from waiting list when semaphore lock is acquired. (#15239)",
+    "body": "Signed-off-by: shuangkun <tsk2013uestc@163.com>",
+    "issueRefs": [
+      "#15239"
+    ],
+    "touchedFiles": [
+      "pkg/apis/workflow/v1alpha1/workflow_types.go",
+      "pkg/apis/workflow/v1alpha1/workflow_types_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "17280a2cb471a8e94ff4392f1a4400cc4bc8c018",
+    "authorDate": "2026-03-30T12:56:16+09:00",
+    "subject": "fix(ui): add margin-top to workflow-creator (#15806)",
+    "body": "Signed-off-by: nakatani-yo <yoshihito.nakatani@craftsman-software.com>",
+    "issueRefs": [
+      "#15806"
+    ],
+    "touchedFiles": [
+      "ui/src/workflows/components/workflow-creator.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "acfaee6221041c901eab31c8abd3bf57e2aac995",
+    "authorDate": "2026-03-30T08:46:54+05:30",
+    "subject": "fix(ui): update webpack to 5.105.4 and webpack-dev-server to v5 (security) (#15799)",
+    "body": "Signed-off-by: Nancy <9d.24.nancy.sangani@gmail.com>",
+    "issueRefs": [
+      "#15799"
+    ],
+    "touchedFiles": [
+      "ui/package.json",
+      "ui/yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6c14b107a576c77cd096c9669fc0ebb4ea31b1b2",
+    "authorDate": "2026-03-29T23:17:16+01:00",
+    "subject": "fix(ui): populate URL filter parameters on first load. Fixes #15794 (#15796)",
+    "body": "Signed-off-by: Elliot Gunton <elliotgunton@gmail.com>",
+    "issueRefs": [
+      "Fixes #15794",
+      "#15796"
+    ],
+    "touchedFiles": [
+      "ui/src/cron-workflows/cron-workflow-list.tsx",
+      "ui/src/workflow-templates/workflow-template-list.tsx",
+      "ui/src/workflows/components/workflows-list/workflows-list.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "93385709f8dc309b092bef477d666a09fad41792",
+    "authorDate": "2026-03-25T12:26:42+02:00",
+    "subject": "fix: webhook dispatch applies template metadata (#15798)",
+    "body": "Signed-off-by: Ville Vesilehto <ville@vesilehto.fi>",
+    "issueRefs": [
+      "#15798"
+    ],
+    "touchedFiles": [
+      "server/event/dispatch/operation.go",
+      "server/event/dispatch/operation_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "673920c3723042cdcd31a0f324b36ceceeeef3b7",
+    "authorDate": "2026-03-25T07:12:41+00:00",
+    "subject": "fix(test): replace flaky sleep with WaitForPod in TestDeletingPendingPod (#15793)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Opus 4.6 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#15793"
+    ],
+    "touchedFiles": [
+      "test/e2e/functional_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cdc0347ce0dff0e9fb63d5945fbd5670fce69d39",
+    "authorDate": "2026-03-20T14:23:36+00:00",
+    "subject": "fix: retry workflow archiving on transient DB errors (#15780)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Opus 4.6 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#15780"
+    ],
+    "touchedFiles": [
+      "workflow/controller/controller.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3e50fd9d6f700fe60b976c76e40ad85d4e27d882",
+    "authorDate": "2026-03-20T07:19:15-07:00",
+    "subject": "fix: close stdout fd when combined log file open fails (#15790)",
+    "body": "Signed-off-by: Taylor <tbuley@forbes.com>",
+    "issueRefs": [
+      "#15790"
+    ],
+    "touchedFiles": [
+      "cmd/argoexec/commands/emissary.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "09ce7b009396de80b82befb6938f168b487160ea",
+    "authorDate": "2026-03-20T10:59:27+00:00",
+    "subject": "fix: poll for Persisted status in TestWorkflowServiceListArchived/ListAll (#15777)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Opus 4.6 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#15777"
+    ],
+    "touchedFiles": [
+      "test/e2e/argo_server_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "90bf686e9ed2375d2d8f333c619be9eec75e4dc4",
+    "authorDate": "2026-03-19T13:14:56+00:00",
+    "subject": "fix(test): prevent cascading subtest failures in ArgoServerSuite e2e tests (#15776)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15776"
+    ],
+    "touchedFiles": [
+      "test/e2e/argo_server_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3b00da0741a341d6caf829292886667970bcb0ae",
+    "authorDate": "2026-03-18T14:38:24+00:00",
+    "subject": "fix: add stepgroup and taskgroup to scope. Fixes #15737 (#15736)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "Fixes #15737",
+      "#15736"
+    ],
+    "touchedFiles": [
+      "workflow/controller/dag.go",
+      "workflow/controller/dag_test.go",
+      "workflow/controller/steps.go",
+      "workflow/controller/steps_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4d2a73bf2ca3167502f5dcb08bb32c839c98e396",
+    "authorDate": "2026-03-17T15:50:58+02:00",
+    "subject": "fix(templates): prevent inline placeholder leak (#15744)",
+    "body": "Signed-off-by: Ville Vesilehto <ville@vesilehto.fi>",
+    "issueRefs": [
+      "#15744"
+    ],
+    "touchedFiles": [
+      "workflow/templateresolution/context.go",
+      "workflow/validate/validate_test.go"
+    ],
+    "fixCategory": "memory_leak"
+  },
+  {
+    "commitHash": "c64c7d75528fde21ef7ef0a0f0660faa0a9600cf",
+    "authorDate": "2026-03-17T12:39:59+02:00",
+    "subject": "fix(validate): match internal placeholder prefix (#15743)",
+    "body": "Signed-off-by: Ville Vesilehto <ville@vesilehto.fi>",
+    "issueRefs": [
+      "#15743"
+    ],
+    "touchedFiles": [
+      "util/template/placeholder.go",
+      "workflow/validate/validate.go",
+      "workflow/validate/validate_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7ca7b1c3c94f25e0059c23d4b3d085900849dbf5",
+    "authorDate": "2026-03-16T09:29:41+00:00",
+    "subject": "chore(deps): update module go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp to v1.42.0 (main) (#15708)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#15708"
+    ],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "56d423ef175ee020b66357545537432aff04a9aa",
+    "authorDate": "2026-03-13T17:12:19+02:00",
+    "subject": "fix(cron): embed tzdata and validate timezone (#15732)",
+    "body": "Signed-off-by: Ville Vesilehto <ville@vesilehto.fi>",
+    "issueRefs": [
+      "#15732"
+    ],
+    "touchedFiles": [
+      "cmd/workflow-controller/main.go",
+      "workflow/validate/validate.go",
+      "workflow/validate/validate_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cacb1580d2de5151dfa53110942fe44c6cd620cf",
+    "authorDate": "2026-03-13T14:16:29+00:00",
+    "subject": "chore(deps): update module go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc to v1.42.0 (main) (#15707)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#15707"
+    ],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "74290d21d2dc9fac38c0e44f32b352d2b68c8f96",
+    "authorDate": "2026-03-12T14:58:54+00:00",
+    "subject": "chore(deps): update module go.opentelemetry.io/otel/trace to v1.42.0 (main) (#15713)",
+    "body": "Co-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#15713"
+    ],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum"
+    ],
+    "fixCategory": "race_condition"
+  },
+  {
+    "commitHash": "eba4e984e04771bc8ce598778b6a564cae099837",
+    "authorDate": "2026-03-12T14:42:35+05:30",
+    "subject": "ci: fix excessive GitHub workflow token permissions (#15674)",
+    "body": "Signed-off-by: Gagan H R <hrgagan4@gmail.com>",
+    "issueRefs": [
+      "#15674"
+    ],
+    "touchedFiles": [
+      ".github/workflows/cherry-pick-single.yml",
+      ".github/workflows/cherry-pick.yml",
+      ".github/workflows/devcontainer.yaml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4964e2286ca58a8254cc2e0a5b2407bb4cb56adc",
+    "authorDate": "2026-03-12T14:09:41+05:30",
+    "subject": "fix: include spec.arguments in archived and live workflow list responses. Fixes #13946 (#15669)",
+    "body": "Signed-off-by: Himesh Panchal <himeshp@users.noreply.github.com>\nCo-authored-by: Himesh Panchal <himeshp@users.noreply.github.com>\nCo-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>",
+    "issueRefs": [
+      "Fixes #13946",
+      "#15669"
+    ],
+    "touchedFiles": [
+      "persist/sqldb/workflow_archive.go",
+      "persist/sqldb/workflow_archive_test.go",
+      "ui/src/shared/services/workflows-service.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "19de7fd76896cffb255e973c3d0412d4e5fbd375",
+    "authorDate": "2026-03-11T11:54:30+00:00",
+    "subject": "fix: correct TTL strategy precedence comment in gc-ttl example (#15654)",
+    "body": "Signed-off-by: Heitor Pinto <heitor.pinto@ctw.bmwgroup.com>\nCo-authored-by: Heitor Pinto <heitor.pinto@ctw.bmwgroup.com>",
+    "issueRefs": [
+      "#15654"
+    ],
+    "touchedFiles": [
+      "examples/gc-ttl.yaml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5d3017406a7a6272c33e0a753a427c4387f01dcf",
+    "authorDate": "2026-03-11T10:31:47+00:00",
+    "subject": "chore: merge fix",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [],
+    "touchedFiles": [
+      "server/workflowtemplate/workflow_template_server_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f12355aa1a7cce69d99c9b938160cf2323cb53fc",
+    "authorDate": "2026-03-03T22:04:17+05:30",
+    "subject": "fix(docs): use server-side apply in quick-start guide for v4.0+ compatibility (#15650)",
+    "body": "Signed-off-by: Nancy <9d.24.nancy.sangani@gmail.com>",
+    "issueRefs": [
+      "#15650"
+    ],
+    "touchedFiles": [
+      "docs/quick-start.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "04382f59543d6828d9c0b9923ce8e69b961088ce",
+    "authorDate": "2026-03-03T08:14:47+00:00",
+    "subject": "docs: fix typo in workflow telemetry documentation (#15648)",
+    "body": "Signed-off-by: Tiago Silva <92639775+silvatiago1@users.noreply.github.com>",
+    "issueRefs": [
+      "#15648"
+    ],
+    "touchedFiles": [
+      "docs/workflow-telemetry.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ebc0c177400330d31a4640f2abed013e525b3a0a",
+    "authorDate": "2026-03-02T08:43:45-06:00",
+    "subject": "fix: move workflow field extraction inside s.Run closures to prevent nil pointer panic on test re-run (#15647)",
+    "body": "Signed-off-by: Andre Kurait <andrekurait@gmail.com>",
+    "issueRefs": [
+      "#15647"
+    ],
+    "touchedFiles": [
+      "test/e2e/argo_server_test.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "98b1aedf314940841ebc350e32233a62f797b5fe",
+    "authorDate": "2026-03-02T13:32:50+00:00",
+    "subject": "chore: fix feature file handling (#15644)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: coderabbitai[bot] <136622811+coderabbitai[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#15644"
+    ],
+    "touchedFiles": [
+      ".github/workflows/pr-feature.yaml",
+      ".github/workflows/pr.yaml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d84169f154879d4c1c2d99e4e0dd65585bee7522",
+    "authorDate": "2026-02-26T17:49:12+00:00",
+    "subject": "fix: requeue workflow if expected variables are missing. Fixes #15513 (#15442)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>\nSigned-off-by: Isitha Subasinghe <isitha@pipekit.io>\nCo-authored-by: coderabbitai[bot] <136622811+coderabbitai[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #15513",
+      "#15442"
+    ],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum",
+      "util/maps/maps.go",
+      "util/template/expression_asint_test.go",
+      "util/template/expression_placeholder_test.go",
+      "util/template/expression_template.go",
+      "util/template/expression_template_test.go",
+      "util/template/placeholder.go",
+      "util/template/replace.go",
+      "util/template/replace_test.go",
+      "util/template/simple_template.go",
+      "util/template/template.go",
+      "util/template/template_test.go",
+      "workflow/common/placeholder.go",
+      "workflow/common/placeholder_test.go",
+      "workflow/controller/dag.go",
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_data_test.go",
+      "workflow/controller/steps.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7e47fc7c486006099b5605b59413904eb6c596d3",
+    "authorDate": "2026-02-26T12:20:52+00:00",
+    "subject": "fix!: remove 1s sleep and INFORMER_WRITE_BACK from persistUpdates (#15627)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15627"
+    ],
+    "touchedFiles": [
+      "docs/environment-variables.md",
+      "docs/upgrading.md",
+      "workflow/controller/operator.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2f60d96fab57e524c609d2548554c8e40997c318",
+    "authorDate": "2026-02-25T13:42:26+00:00",
+    "subject": "fix(lint): enable shadow linter and fix issues (#15615)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15615"
+    ],
+    "touchedFiles": [
+      ".golangci.yml",
+      "cmd/argo/commands/archive/resubmit.go",
+      "cmd/argo/commands/archive/retry.go",
+      "cmd/argo/commands/clustertemplate/create.go",
+      "cmd/argo/commands/clustertemplate/update.go",
+      "cmd/argo/commands/cp.go",
+      "cmd/argo/commands/cron/create.go",
+      "cmd/argo/commands/cron/update.go",
+      "cmd/argo/commands/server.go",
+      "cmd/argo/commands/sync/create.go",
+      "cmd/argo/commands/sync/delete.go",
+      "cmd/argo/commands/sync/get.go",
+      "cmd/argo/commands/sync/update.go",
+      "cmd/argo/commands/template/create.go",
+      "cmd/argo/commands/template/update.go",
+      "cmd/argo/lint/lint.go",
+      "cmd/argoexec/commands/emissary.go",
+      "cmd/argoexec/commands/emissary_test.go",
+      "cmd/argoexec/executor/init.go",
+      "docs/cli/argo_cluster-template_create.md",
+      "docs/cli/argo_cluster-template_update.md",
+      "docs/cli/argo_cron_update.md",
+      "docs/cli/argo_sync_create.md",
+      "docs/cli/argo_sync_delete.md",
+      "docs/cli/argo_sync_get.md",
+      "docs/cli/argo_sync_update.md",
+      "docs/cli/argo_template_update.md",
+      "persist/sqldb/backfill_nodes.go",
+      "pkg/apis/workflow/v1alpha1/workflow_types_test.go",
+      "server/apiserver/argoserver.go",
+      "server/artifacts/artifact_server.go",
+      "server/auth/sso/sso.go",
+      "server/cronworkflow/cron_workflow_server.go",
+      "server/event/dispatch/operation.go",
+      "server/event/event_server.go",
+      "server/workflow/store/sqlite_store.go",
+      "server/workflow/workflow_server.go",
+      "server/workflowarchive/archived_workflow_server.go",
+      "test/e2e/fixtures/when.go",
+      "util/archive/archive.go",
+      "util/fields/fields.go",
+      "util/file/fileutil.go",
+      "util/kubeconfig/kubeconfig.go",
+      "util/logs/pods-logger.go",
+      "util/logs/workflow-logger.go",
+      "util/sqldb/migrate.go",
+      "util/telemetry/ratelimiter/instrumentation.go",
+      "util/template/simple_template.go",
+      "workflow/artifacts/azure/azure.go",
+      "workflow/artifacts/common/load_to_stream_test.go",
+      "workflow/artifacts/gcs/gcs.go",
+      "workflow/artifacts/git/git.go",
+      "workflow/artifacts/hdfs/util.go",
+      "workflow/artifacts/oss/oss.go",
+      "workflow/artifacts/s3/s3.go",
+      "workflow/controller/agent.go",
+      "workflow/controller/artifact_gc.go",
+      "workflow/controller/cache/configmap_cache.go",
+      "workflow/controller/config.go",
+      "workflow/controller/controller.go",
+      "workflow/controller/dag.go",
+      "workflow/controller/estimation/estimator_factory.go",
+      "workflow/controller/healthz.go",
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_test.go",
+      "workflow/controller/scope.go",
+      "workflow/controller/steps.go",
+      "workflow/controller/workflowpod.go",
+      "workflow/cron/operator.go",
+      "workflow/executor/agent.go",
+      "workflow/executor/emissary/emissary.go",
+      "workflow/executor/executor.go",
+      "workflow/executor/osspecific/command_unix.go",
+      "workflow/hydrator/hydrator.go",
+      "workflow/sync/cached_limit_test.go",
+      "workflow/sync/lock_name.go",
+      "workflow/sync/sync_manager.go",
+      "workflow/sync/sync_manager_test.go",
+      "workflow/tracing/workflow.go",
+      "workflow/util/util.go",
+      "workflow/validate/validate.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e5aa55a824b49f8d26c1a512f9fc580b573a0985",
+    "authorDate": "2026-02-25T12:12:39+00:00",
+    "subject": "fix: add metrics shutdown (#15586)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15586"
+    ],
+    "touchedFiles": [
+      "cmd/workflow-controller/main.go",
+      "util/telemetry/metrics.go",
+      "workflow/controller/controller.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c811f057f1ef059611294979ba60ba97b1494179",
+    "authorDate": "2026-02-24T14:33:28+00:00",
+    "subject": "fix: go module versioning (#15622)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "#15622"
+    ],
+    "touchedFiles": [
+      ".github/workflows/ci-build.yaml",
+      ".mockery.yaml",
+      "Makefile",
+      "cmd/argo/commands/archive/delete.go",
+      "cmd/argo/commands/archive/get.go",
+      "cmd/argo/commands/archive/list.go",
+      "cmd/argo/commands/archive/list_label_keys.go",
+      "cmd/argo/commands/archive/list_label_values.go",
+      "cmd/argo/commands/archive/resubmit.go",
+      "cmd/argo/commands/archive/retry.go",
+      "cmd/argo/commands/archive/util.go",
+      "cmd/argo/commands/archive/util_test.go",
+      "cmd/argo/commands/auth/token.go",
+      "cmd/argo/commands/client/conn.go",
+      "cmd/argo/commands/client/conn_test.go",
+      "cmd/argo/commands/clustertemplate/create.go",
+      "cmd/argo/commands/clustertemplate/delete.go",
+      "cmd/argo/commands/clustertemplate/get.go",
+      "cmd/argo/commands/clustertemplate/lint.go",
+      "cmd/argo/commands/clustertemplate/list.go",
+      "cmd/argo/commands/clustertemplate/update.go",
+      "cmd/argo/commands/clustertemplate/util.go",
+      "cmd/argo/commands/clustertemplate/util_test.go",
+      "cmd/argo/commands/common/common.go",
+      "cmd/argo/commands/common/get.go",
+      "cmd/argo/commands/common/get_test.go",
+      "cmd/argo/commands/common/logs.go",
+      "cmd/argo/commands/common/submit.go",
+      "cmd/argo/commands/common/wait.go",
+      "cmd/argo/commands/common/watch.go",
+      "cmd/argo/commands/convert.go",
+      "cmd/argo/commands/cp.go",
+      "cmd/argo/commands/cron/backfill.go",
+      "cmd/argo/commands/cron/create.go",
+      "cmd/argo/commands/cron/delete.go",
+      "cmd/argo/commands/cron/get.go",
+      "cmd/argo/commands/cron/lint.go",
+      "cmd/argo/commands/cron/list.go",
+      "cmd/argo/commands/cron/resume.go",
+      "cmd/argo/commands/cron/suspend.go",
+      "cmd/argo/commands/cron/update.go",
+      "cmd/argo/commands/cron/util.go",
+      "cmd/argo/commands/cron/util_test.go",
+      "cmd/argo/commands/delete.go",
+      "cmd/argo/commands/executorplugin/build.go",
+      "cmd/argo/commands/executorplugin/io.go",
+      "cmd/argo/commands/get.go",
+      "cmd/argo/commands/lint.go",
+      "cmd/argo/commands/lint_test.go",
+      "cmd/argo/commands/list.go",
+      "cmd/argo/commands/list_test.go",
+      "cmd/argo/commands/logs.go",
+      "cmd/argo/commands/node.go",
+      "cmd/argo/commands/resubmit.go",
+      "cmd/argo/commands/resubmit_test.go",
+      "cmd/argo/commands/resume.go",
+      "cmd/argo/commands/retry.go",
+      "cmd/argo/commands/retry_test.go",
+      "cmd/argo/commands/root.go",
+      "cmd/argo/commands/server.go",
+      "cmd/argo/commands/stop.go",
+      "cmd/argo/commands/stop_test.go",
+      "cmd/argo/commands/submit.go",
+      "cmd/argo/commands/submit_test.go",
+      "cmd/argo/commands/suspend.go",
+      "cmd/argo/commands/sync/create.go",
+      "cmd/argo/commands/sync/delete.go",
+      "cmd/argo/commands/sync/get.go",
+      "cmd/argo/commands/sync/update.go",
+      "cmd/argo/commands/sync/util.go",
+      "cmd/argo/commands/template/create.go",
+      "cmd/argo/commands/template/delete.go",
+      "cmd/argo/commands/template/get.go",
+      "cmd/argo/commands/template/lint.go",
+      "cmd/argo/commands/template/list.go",
+      "cmd/argo/commands/template/update.go",
+      "cmd/argo/commands/template/util.go",
+      "cmd/argo/commands/terminate.go",
+      "cmd/argo/commands/version.go",
+      "cmd/argo/commands/wait.go",
+      "cmd/argo/commands/watch.go",
+      "cmd/argo/lint/formatter_pretty.go",
+      "cmd/argo/lint/formatter_pretty_test.go",
+      "cmd/argo/lint/lint.go",
+      "cmd/argo/lint/lint_test.go",
+      "cmd/argo/main.go",
+      "cmd/argoexec/commands/agent.go",
+      "cmd/argoexec/commands/artifact/delete.go",
+      "cmd/argoexec/commands/artifact_plugin_init.go",
+      "cmd/argoexec/commands/artifact_plugin_sidecar.go",
+      "cmd/argoexec/commands/data.go",
+      "cmd/argoexec/commands/emissary.go",
+      "cmd/argoexec/commands/emissary_test.go",
+      "cmd/argoexec/commands/emissary_windows_test.go",
+      "cmd/argoexec/commands/init.go",
+      "cmd/argoexec/commands/resource.go",
+      "cmd/argoexec/commands/root.go",
+      "cmd/argoexec/commands/signal.go",
+      "cmd/argoexec/commands/wait.go",
+      "cmd/argoexec/executor/init.go",
+      "cmd/argoexec/main.go",
+      "cmd/workflow-controller/main.go",
+      "config/config.go",
+      "config/config_test.go",
+      "docs/client-libraries.md",
+      "docs/go-sdk-guide.md",
+      "errors/errors_test.go",
+      "examples/example-golang/main.go",
+      "go.mod",
+      "hack/api/swagger/secondaryswaggergen.go",
+      "hack/api/swagger/swaggify.sh",
+      "hack/db/main.go",
+      "hack/docs/cli.go",
+      "persist/sqldb/archived_workflow_labels.go",
+      "persist/sqldb/archived_workflow_labels_test.go",
+      "persist/sqldb/backfill_nodes.go",
+      "persist/sqldb/explosive_offload_node_status_repo.go",
+      "persist/sqldb/migrate.go",
+      "persist/sqldb/mocks/OffloadNodeStatusRepo.go",
+      "persist/sqldb/mocks/WorkflowArchive.go",
+      "persist/sqldb/null_workflow_archive.go",
+      "persist/sqldb/offload_node_status_repo.go",
+      "persist/sqldb/offload_node_status_repo_test.go",
+      "persist/sqldb/selector.go",
+      "persist/sqldb/sqldb.go",
+      "persist/sqldb/workflow_archive.go",
+      "pkg/apiclient/_.primary.swagger.json",
+      "pkg/apiclient/apiclient.go",
+      "pkg/apiclient/argo-kube-client.go",
+      "pkg/apiclient/argo-kube-cluster-workflow-template-service-client.go",
+      "pkg/apiclient/argo-kube-cron-workflow-service-client.go",
+      "pkg/apiclient/argo-kube-sync-service-client.go",
+      "pkg/apiclient/argo-kube-workflow-service-client.go",
+      "pkg/apiclient/argo-kube-workflow-template-service-client.go",
+      "pkg/apiclient/argo-server-client.go",
+      "pkg/apiclient/artifact/artifact.pb.go",
+      "pkg/apiclient/artifact/artifact.proto",
+      "pkg/apiclient/clusterworkflowtemplate/cluster-workflow-template.pb.go",
+      "pkg/apiclient/clusterworkflowtemplate/cluster-workflow-template.proto",
+      "pkg/apiclient/cronworkflow/cron-workflow.pb.go",
+      "pkg/apiclient/cronworkflow/cron-workflow.proto",
+      "pkg/apiclient/error-translating-cluster-workflow-template-service-client.go",
+      "pkg/apiclient/error-translating-cron-workflow-service-client.go",
+      "pkg/apiclient/error-translating-sync-service-client.go",
+      "pkg/apiclient/error-translating-workflow-service-client.go",
+      "pkg/apiclient/error-translating-workflow-template-service-client.go",
+      "pkg/apiclient/event/event.pb.go",
+      "pkg/apiclient/event/event.proto",
+      "pkg/apiclient/eventsource/eventsource.pb.go",
+      "pkg/apiclient/eventsource/eventsource.proto",
+      "pkg/apiclient/http1-client.go",
+      "pkg/apiclient/http1/archived-workflows-service-client.go",
+      "pkg/apiclient/http1/cluster-workflow-template-service-client.go",
+      "pkg/apiclient/http1/cron-workflow-service-client.go",
+      "pkg/apiclient/http1/facade.go",
+      "pkg/apiclient/http1/info-service-client.go",
+      "pkg/apiclient/http1/pod-logs-client.go",
+      "pkg/apiclient/http1/server-sent-events-client.go",
+      "pkg/apiclient/http1/sync-service-client.go",
+      "pkg/apiclient/http1/watch-workflows-client.go",
+      "pkg/apiclient/http1/workflow-service-client.go",
+      "pkg/apiclient/http1/workflow-template-service-client.go",
+      "pkg/apiclient/info/info.pb.go",
+      "pkg/apiclient/info/info.proto",
+      "pkg/apiclient/logs-intermediary.go",
+      "pkg/apiclient/offline-client.go",
+      "pkg/apiclient/offline-cluster-workflow-template-service-client.go",
+      "pkg/apiclient/offline-cron-workflow-service-client.go",
+      "pkg/apiclient/offline-workflow-service-client.go",
+      "pkg/apiclient/offline-workflow-template-service-client.go",
+      "pkg/apiclient/sensor/sensor.pb.go",
+      "pkg/apiclient/sensor/sensor.proto",
+      "pkg/apiclient/sync/sync.pb.go",
+      "pkg/apiclient/sync/sync.proto",
+      "pkg/apiclient/watch-intermediary.go",
+      "pkg/apiclient/workflow/mocks/WorkflowServiceClient.go",
+      "pkg/apiclient/workflow/workflow.pb.go",
+      "pkg/apiclient/workflow/workflow.proto",
+      "pkg/apiclient/workflowarchive/workflow-archive.pb.go",
+      "pkg/apiclient/workflowarchive/workflow-archive.proto",
+      "pkg/apiclient/workflowtemplate/mocks/WorkflowTemplateServiceClient.go",
+      "pkg/apiclient/workflowtemplate/workflow-template.pb.go",
+      "pkg/apiclient/workflowtemplate/workflow-template.proto",
+      "pkg/apis/api-rules/violation_exceptions.list",
+      "pkg/apis/workflow/v1alpha1/artifact_plugins_test.go",
+      "pkg/apis/workflow/v1alpha1/crd_examples_test.go",
+      "pkg/apis/workflow/v1alpha1/cron_workflow_types.go",
+      "pkg/apis/workflow/v1alpha1/generated.pb.go",
+      "pkg/apis/workflow/v1alpha1/generated.proto",
+      "pkg/apis/workflow/v1alpha1/item.go",
+      "pkg/apis/workflow/v1alpha1/openapi_generated.go",
+      "pkg/apis/workflow/v1alpha1/register.go",
+      "pkg/apis/workflow/v1alpha1/version_types.go",
+      "pkg/apis/workflow/v1alpha1/workflow_types.go",
+      "pkg/client/clientset/versioned/clientset.go",
+      "pkg/client/clientset/versioned/fake/clientset_generated.go",
+      "pkg/client/clientset/versioned/fake/register.go",
+      "pkg/client/clientset/versioned/scheme/register.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/clusterworkflowtemplate.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/cronworkflow.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/fake/fake_clusterworkflowtemplate.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/fake/fake_cronworkflow.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/fake/fake_workflow.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/fake/fake_workflow_client.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/fake/fake_workflowartifactgctask.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/fake/fake_workfloweventbinding.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/fake/fake_workflowtaskresult.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/fake/fake_workflowtaskset.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/fake/fake_workflowtemplate.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/workflow.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/workflow_client.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/workflowartifactgctask.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/workfloweventbinding.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/workflowtaskresult.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/workflowtaskset.go",
+      "pkg/client/clientset/versioned/typed/workflow/v1alpha1/workflowtemplate.go",
+      "pkg/client/informers/externalversions/factory.go",
+      "pkg/client/informers/externalversions/generic.go",
+      "pkg/client/informers/externalversions/internalinterfaces/factory_interfaces.go",
+      "pkg/client/informers/externalversions/workflow/interface.go",
+      "pkg/client/informers/externalversions/workflow/v1alpha1/clusterworkflowtemplate.go",
+      "pkg/client/informers/externalversions/workflow/v1alpha1/cronworkflow.go",
+      "pkg/client/informers/externalversions/workflow/v1alpha1/interface.go",
+      "pkg/client/informers/externalversions/workflow/v1alpha1/workflow.go",
+      "pkg/client/informers/externalversions/workflow/v1alpha1/workflowartifactgctask.go",
+      "pkg/client/informers/externalversions/workflow/v1alpha1/workfloweventbinding.go",
+      "pkg/client/informers/externalversions/workflow/v1alpha1/workflowtaskresult.go",
+      "pkg/client/informers/externalversions/workflow/v1alpha1/workflowtaskset.go",
+      "pkg/client/informers/externalversions/workflow/v1alpha1/workflowtemplate.go",
+      "pkg/client/listers/workflow/v1alpha1/clusterworkflowtemplate.go",
+      "pkg/client/listers/workflow/v1alpha1/cronworkflow.go",
+      "pkg/client/listers/workflow/v1alpha1/workflow.go",
+      "pkg/client/listers/workflow/v1alpha1/workflowartifactgctask.go",
+      "pkg/client/listers/workflow/v1alpha1/workfloweventbinding.go",
+      "pkg/client/listers/workflow/v1alpha1/workflowtaskresult.go",
+      "pkg/client/listers/workflow/v1alpha1/workflowtaskset.go",
+      "pkg/client/listers/workflow/v1alpha1/workflowtemplate.go",
+      "pkg/plugins/executor/template_executor_plugin.go",
+      "sdks/go/README.md",
+      "sdks/go/alternate_auth/go.mod",
+      "sdks/go/alternate_auth/main.go",
+      "sdks/go/basic-workflow/go.mod",
+      "sdks/go/basic-workflow/main.go",
+      "sdks/go/grpc-client/go.mod",
+      "sdks/go/grpc-client/main.go",
+      "sdks/go/watch-workflow/go.mod",
+      "sdks/go/watch-workflow/main.go",
+      "sdks/go/workflow-template/go.mod",
+      "sdks/go/workflow-template/main.go",
+      "server/apiserver/accesslog/interceptor.go",
+      "server/apiserver/accesslog/interceptor_test.go",
+      "server/apiserver/argoserver.go",
+      "server/apiserver/argoserver_test.go",
+      "server/artifacts/artifact_server.go",
+      "server/artifacts/artifact_server_test.go",
+      "server/auth/authorizer.go",
+      "server/auth/authorizer_test.go",
+      "server/auth/gatekeeper.go",
+      "server/auth/gatekeeper_test.go",
+      "server/auth/mode.go",
+      "server/auth/serviceaccount/claims.go",
+      "server/auth/sso/clients_test.go",
+      "server/auth/sso/mocks/Interface.go",
+      "server/auth/sso/null_sso.go",
+      "server/auth/sso/sso.go",
+      "server/auth/sso/sso_test.go",
+      "server/auth/types/claims_test.go",
+      "server/auth/webhook/interceptor.go",
+      "server/auth/webhook/interceptor_test.go",
+      "server/cache/resource_cache_test.go",
+      "server/clusterworkflowtemplate/cluster_workflow_template_server.go",
+      "server/clusterworkflowtemplate/cluster_workflow_template_server_test.go",
+      "server/clusterworkflowtemplate/informer.go",
+      "server/clusterworkflowtemplate/null_client_store.go",
+      "server/clusterworkflowtemplate/wf_client_store.go",
+      "server/cronworkflow/cron_workflow_server.go",
+      "server/cronworkflow/cron_workflow_server_test.go",
+      "server/event/dispatch/operation.go",
+      "server/event/dispatch/operation_test.go",
+      "server/event/event_server.go",
+      "server/event/event_server_test.go",
+      "server/eventsource/event_source_server.go",
+      "server/info/info_server.go",
+      "server/info/info_server_test.go",
+      "server/sensor/sensor_server.go",
+      "server/sensor/sensor_server_test.go",
+      "server/static/static.go",
+      "server/sync/sync_cm.go",
+      "server/sync/sync_db.go",
+      "server/sync/sync_server.go",
+      "server/sync/sync_server_cm_test.go",
+      "server/sync/sync_server_db_test.go",
+      "server/types/clients.go",
+      "server/types/store.go",
+      "server/utils/errors.go",
+      "server/utils/errors_test.go",
+      "server/workflow/store/lister.go",
+      "server/workflow/store/sqlite_store.go",
+      "server/workflow/store/sqlite_store_test.go",
+      "server/workflow/workflow_server.go",
+      "server/workflow/workflow_server_test.go",
+      "server/workflowarchive/archived_workflow_server.go",
+      "server/workflowarchive/archived_workflow_server_test.go",
+      "server/workflowtemplate/informer.go",
+      "server/workflowtemplate/wf_client_store.go",
+      "server/workflowtemplate/workflow_template_server.go",
+      "server/workflowtemplate/workflow_template_server_test.go",
+      "test/e2e/agent_test.go",
+      "test/e2e/argo_server_test.go",
+      "test/e2e/artifacts_test.go",
+      "test/e2e/cli_test.go",
+      "test/e2e/cluster_workflow_template_test.go",
+      "test/e2e/cron_test.go",
+      "test/e2e/daemon_pod_test.go",
+      "test/e2e/db_semaphore_test.go",
+      "test/e2e/estimated_duration_test.go",
+      "test/e2e/examples_test.go",
+      "test/e2e/executor_plugins_test.go",
+      "test/e2e/expr_lang_test.go",
+      "test/e2e/failed_main_test.go",
+      "test/e2e/fixtures/e2e_suite.go",
+      "test/e2e/fixtures/given.go",
+      "test/e2e/fixtures/persistence.go",
+      "test/e2e/fixtures/print.go",
+      "test/e2e/fixtures/then.go",
+      "test/e2e/fixtures/when.go",
+      "test/e2e/functional_test.go",
+      "test/e2e/hooks_test.go",
+      "test/e2e/http_artifacts_test.go",
+      "test/e2e/invalid_command_test.go",
+      "test/e2e/malformed_resources_test.go",
+      "test/e2e/metrics_test.go",
+      "test/e2e/ns_parallelism_test.go",
+      "test/e2e/pod_cleanup_test.go",
+      "test/e2e/pod_restart_test.go",
+      "test/e2e/progress_test.go",
+      "test/e2e/resource_template_test.go",
+      "test/e2e/retry_test.go",
+      "test/e2e/run_as_not_root_test.go",
+      "test/e2e/semaphore_test.go",
+      "test/e2e/signals_test.go",
+      "test/e2e/suspend_test.go",
+      "test/e2e/workflow_archive_test.go",
+      "test/e2e/workflow_configmap_substitution_test.go",
+      "test/e2e/workflow_inputs_orverridable_test.go",
+      "test/e2e/workflow_template_test.go",
+      "test/e2e/workflow_test.go",
+      "test/stress/tool/main.go",
+      "test/util/serviceaccount.go",
+      "test/util/workflow.go",
+      "util/archive/archive.go",
+      "util/archive/archive_test.go",
+      "util/auth/auth.go",
+      "util/auth/auth_test.go",
+      "util/cmd/cmd.go",
+      "util/cmd/cmd_test.go",
+      "util/cmd/logrus.go",
+      "util/context/context_test.go",
+      "util/deprecation/deprecation.go",
+      "util/deprecation/deprecation_test.go",
+      "util/diff/diff.go",
+      "util/env/env.go",
+      "util/env/env_test.go",
+      "util/errors/errors.go",
+      "util/errors/errors_test.go",
+      "util/expr/env/env.go",
+      "util/fields/fields_test.go",
+      "util/file/fileutil.go",
+      "util/file/fileutil_test.go",
+      "util/flatten/flatten.go",
+      "util/flatten/flatten_test.go",
+      "util/grpc/interceptor.go",
+      "util/grpc/interceptor_test.go",
+      "util/grpc/mux_test.go",
+      "util/help/topics.go",
+      "util/instanceid/service.go",
+      "util/instanceid/service_test.go",
+      "util/k8s/pod.go",
+      "util/k8s/pod_test.go",
+      "util/kubeconfig/kubeconfig_test.go",
+      "util/labels/labeler_test.go",
+      "util/logs/log-k8s-requests.go",
+      "util/logs/pods-logger.go",
+      "util/logs/workflow-logger.go",
+      "util/pprof/pprof.go",
+      "util/printer/workflow-printer.go",
+      "util/printer/workflow-printer_test.go",
+      "util/rbac/rbac.go",
+      "util/rbac/rbac_test.go",
+      "util/resource/duration.go",
+      "util/resource/duration_test.go",
+      "util/resource/summary.go",
+      "util/resource/updater.go",
+      "util/resource/updater_test.go",
+      "util/retry/retry.go",
+      "util/runtime/panic.go",
+      "util/secrets/secret_name.go",
+      "util/sqldb/migrate.go",
+      "util/sqldb/sqldb.go",
+      "util/sync/db/config.go",
+      "util/sync/db/migrate.go",
+      "util/sync/db/mocks/SyncQueries.go",
+      "util/telemetry/exporter_prometheus.go",
+      "util/telemetry/exporter_prometheus_test.go",
+      "util/telemetry/instrument.go",
+      "util/telemetry/metrics.go",
+      "util/telemetry/modifiers_test.go",
+      "util/telemetry/operators.go",
+      "util/telemetry/version.go",
+      "util/telemetry/version_test.go",
+      "util/template/expression_template.go",
+      "util/template/kind.go",
+      "util/template/replace_test.go",
+      "util/template/resolve_var.go",
+      "util/template/simple_template.go",
+      "util/template/template.go",
+      "util/template/template_test.go",
+      "util/tls/tls.go",
+      "util/unstructured/workflow/conditions.go",
+      "util/unstructured/workflow/conditions_test.go",
+      "util/util.go",
+      "util/util_test.go",
+      "version.go",
+      "workflow/artifactrepositories/artifactrepositories.go",
+      "workflow/artifactrepositories/artifactrepositories_test.go",
+      "workflow/artifactrepositories/mocks/Interface.go",
+      "workflow/artifactrepositories/mocks/default.go",
+      "workflow/artifacts/artifacts.go",
+      "workflow/artifacts/artifacts_test.go",
+      "workflow/artifacts/azure/azure.go",
+      "workflow/artifacts/azure/azure_test.go",
+      "workflow/artifacts/common/common.go",
+      "workflow/artifacts/common/load_to_stream.go",
+      "workflow/artifacts/common/load_to_stream_test.go",
+      "workflow/artifacts/gcs/gcs.go",
+      "workflow/artifacts/gcs/gcs_test.go",
+      "workflow/artifacts/git/git.go",
+      "workflow/artifacts/git/git_test.go",
+      "workflow/artifacts/hdfs/hdfs.go",
+      "workflow/artifacts/http/clients.go",
+      "workflow/artifacts/http/clients_test.go",
+      "workflow/artifacts/http/http.go",
+      "workflow/artifacts/http/http_test.go",
+      "workflow/artifacts/logging/driver.go",
+      "workflow/artifacts/oss/oss.go",
+      "workflow/artifacts/oss/oss_test.go",
+      "workflow/artifacts/plugin/plugin.go",
+      "workflow/artifacts/plugin/plugin_test.go",
+      "workflow/artifacts/raw/raw.go",
+      "workflow/artifacts/raw/raw_test.go",
+      "workflow/artifacts/s3/errors.go",
+      "workflow/artifacts/s3/errors_test.go",
+      "workflow/artifacts/s3/s3.go",
+      "workflow/artifacts/s3/s3_test.go",
+      "workflow/common/ancestry.go",
+      "workflow/common/ancestry_test.go",
+      "workflow/common/common.go",
+      "workflow/common/configmap.go",
+      "workflow/common/convert.go",
+      "workflow/common/convert_test.go",
+      "workflow/common/parse.go",
+      "workflow/common/util.go",
+      "workflow/common/util_test.go",
+      "workflow/controller/agent.go",
+      "workflow/controller/agent_test.go",
+      "workflow/controller/artifact_gc.go",
+      "workflow/controller/artifact_gc_test.go",
+      "workflow/controller/cache/cache.go",
+      "workflow/controller/cache/configmap_cache.go",
+      "workflow/controller/cache_gc.go",
+      "workflow/controller/cache_test.go",
+      "workflow/controller/config.go",
+      "workflow/controller/config_test.go",
+      "workflow/controller/container_set_template.go",
+      "workflow/controller/container_set_template_test.go",
+      "workflow/controller/controller.go",
+      "workflow/controller/controller_test.go",
+      "workflow/controller/dag.go",
+      "workflow/controller/dag_test.go",
+      "workflow/controller/entrypoint/cache_index.go",
+      "workflow/controller/entrypoint/config_index.go",
+      "workflow/controller/entrypoint/image.go",
+      "workflow/controller/estimation/dummy_estimator.go",
+      "workflow/controller/estimation/dummy_estimator_factory.go",
+      "workflow/controller/estimation/estimator.go",
+      "workflow/controller/estimation/estimator_factory.go",
+      "workflow/controller/estimation/estimator_factory_test.go",
+      "workflow/controller/estimation/estimator_test.go",
+      "workflow/controller/exec_control.go",
+      "workflow/controller/exec_control_test.go",
+      "workflow/controller/exit_handler.go",
+      "workflow/controller/exit_handler_test.go",
+      "workflow/controller/healthz.go",
+      "workflow/controller/healthz_test.go",
+      "workflow/controller/hooks.go",
+      "workflow/controller/hooks_test.go",
+      "workflow/controller/http_template.go",
+      "workflow/controller/http_template_test.go",
+      "workflow/controller/indexes/conditions_index.go",
+      "workflow/controller/indexes/conditions_index_test.go",
+      "workflow/controller/indexes/configmap_index.go",
+      "workflow/controller/indexes/configmap_index_test.go",
+      "workflow/controller/indexes/labels.go",
+      "workflow/controller/indexes/labels_test.go",
+      "workflow/controller/indexes/workflow_index.go",
+      "workflow/controller/indexes/workflow_index_test.go",
+      "workflow/controller/informer/cluster_workflow_template_convert.go",
+      "workflow/controller/informer/cluster_workflow_template_convert_test.go",
+      "workflow/controller/informer/tolerant_cluster_workflow_template_informer.go",
+      "workflow/controller/informer/tolerant_cluster_workflow_template_lister.go",
+      "workflow/controller/informer/tolerant_workflow_template_informer.go",
+      "workflow/controller/informer/tolerant_workflow_template_lister.go",
+      "workflow/controller/informer/tolerant_workflow_template_namespace_lister.co.go",
+      "workflow/controller/informer/workflow_template_convert.go",
+      "workflow/controller/informer/workflow_template_convert_test.go",
+      "workflow/controller/inline_test.go",
+      "workflow/controller/node_counters.go",
+      "workflow/controller/node_counters_test.go",
+      "workflow/controller/ns_watcher.go",
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_agent_test.go",
+      "workflow/controller/operator_concurrency_test.go",
+      "workflow/controller/operator_data_test.go",
+      "workflow/controller/operator_metrics_test.go",
+      "workflow/controller/operator_persist_test.go",
+      "workflow/controller/operator_template_scope_test.go",
+      "workflow/controller/operator_test.go",
+      "workflow/controller/operator_tmpl_default_test.go",
+      "workflow/controller/operator_wfdefault_test.go",
+      "workflow/controller/operator_workflow_template_ref_test.go",
+      "workflow/controller/phase_node.go",
+      "workflow/controller/plugin_template.go",
+      "workflow/controller/pod/cleanup.go",
+      "workflow/controller/pod/cleanup_test.go",
+      "workflow/controller/pod/controller.go",
+      "workflow/controller/pod/queue.go",
+      "workflow/controller/pod/queue_test.go",
+      "workflow/controller/pod_cleanup.go",
+      "workflow/controller/pod_restart.go",
+      "workflow/controller/pod_restart_test.go",
+      "workflow/controller/rate_limiters.go",
+      "workflow/controller/retry_tweak.go",
+      "workflow/controller/retry_tweak_test.go",
+      "workflow/controller/scope.go",
+      "workflow/controller/scope_test.go",
+      "workflow/controller/serviceaccount.go",
+      "workflow/controller/steps.go",
+      "workflow/controller/steps_test.go",
+      "workflow/controller/taskresult.go",
+      "workflow/controller/taskset.go",
+      "workflow/controller/taskset_test.go",
+      "workflow/controller/workflowpod.go",
+      "workflow/controller/workflowpod_test.go",
+      "workflow/convert/legacy_types.go",
+      "workflow/convert/legacy_types_test.go",
+      "workflow/creator/creator.go",
+      "workflow/creator/creator_test.go",
+      "workflow/cron/controller.go",
+      "workflow/cron/operator.go",
+      "workflow/cron/operator_test.go",
+      "workflow/data/data.go",
+      "workflow/data/data_test.go",
+      "workflow/events/event_recorder_logger.go",
+      "workflow/events/event_recorder_manager.go",
+      "workflow/executor/agent.go",
+      "workflow/executor/agent_test.go",
+      "workflow/executor/common/common.go",
+      "workflow/executor/common/common_test.go",
+      "workflow/executor/data.go",
+      "workflow/executor/emissary/binary.go",
+      "workflow/executor/emissary/emissary.go",
+      "workflow/executor/executor.go",
+      "workflow/executor/executor_data_source_processor.go",
+      "workflow/executor/executor_test.go",
+      "workflow/executor/osspecific/command_test.go",
+      "workflow/executor/osspecific/command_unix.go",
+      "workflow/executor/osspecific/command_windows.go",
+      "workflow/executor/osspecific/signal_darwin.go",
+      "workflow/executor/osspecific/signal_windows.go",
+      "workflow/executor/osspecific/signal_windows_test.go",
+      "workflow/executor/plugins/rpc/plugin.go",
+      "workflow/executor/resource.go",
+      "workflow/executor/resource_test.go",
+      "workflow/executor/retry/retry.go",
+      "workflow/executor/taskresult.go",
+      "workflow/gccontroller/gc_controller.go",
+      "workflow/gccontroller/gc_controller_test.go",
+      "workflow/gccontroller/heap_test.go",
+      "workflow/hydrator/fake/always.go",
+      "workflow/hydrator/fake/always_test.go",
+      "workflow/hydrator/fake/noop.go",
+      "workflow/hydrator/hydrator.go",
+      "workflow/hydrator/hydrator_test.go",
+      "workflow/metrics/counter_cronworkflow_policy.go",
+      "workflow/metrics/counter_cronworkflow_trigger.go",
+      "workflow/metrics/counter_error.go",
+      "workflow/metrics/counter_log.go",
+      "workflow/metrics/counter_pod_missing.go",
+      "workflow/metrics/counter_pod_pending.go",
+      "workflow/metrics/counter_pod_phase.go",
+      "workflow/metrics/counter_pod_restart.go",
+      "workflow/metrics/counter_template.go",
+      "workflow/metrics/counter_workflow_phase.go",
+      "workflow/metrics/gauge_pod_phase.go",
+      "workflow/metrics/gauge_workflow_condition.go",
+      "workflow/metrics/gauge_workflow_phase.go",
+      "workflow/metrics/histogram_durations.go",
+      "workflow/metrics/histogram_template.go",
+      "workflow/metrics/leader.go",
+      "workflow/metrics/leader_test.go",
+      "workflow/metrics/metrics.go",
+      "workflow/metrics/metrics_custom.go",
+      "workflow/metrics/metrics_k8s_request.go",
+      "workflow/metrics/metrics_test.go",
+      "workflow/metrics/resource_rate_limiter.go",
+      "workflow/metrics/test_helpers.go",
+      "workflow/metrics/util.go",
+      "workflow/metrics/work_queue.go",
+      "workflow/metrics/work_queue_test.go",
+      "workflow/packer/packer.go",
+      "workflow/packer/packer_test.go",
+      "workflow/progress/updater.go",
+      "workflow/progress/updater_test.go",
+      "workflow/signal/signal.go",
+      "workflow/sync/database_helper_test.go",
+      "workflow/sync/database_mutex.go",
+      "workflow/sync/database_mutex_test.go",
+      "workflow/sync/database_semaphore.go",
+      "workflow/sync/database_semaphore_test.go",
+      "workflow/sync/lock_name.go",
+      "workflow/sync/lock_name_test.go",
+      "workflow/sync/logger.go",
+      "workflow/sync/mocks/Throttler.go",
+      "workflow/sync/multi_throttler.go",
+      "workflow/sync/multi_throttler_test.go",
+      "workflow/sync/multiple_test.go",
+      "workflow/sync/mutex_test.go",
+      "workflow/sync/semaphore.go",
+      "workflow/sync/semaphore_test.go",
+      "workflow/sync/sync_manager.go",
+      "workflow/sync/sync_manager_multiple_test.go",
+      "workflow/sync/sync_manager_test.go",
+      "workflow/sync/syncitems.go",
+      "workflow/sync/syncitems_test.go",
+      "workflow/templateresolution/context.go",
+      "workflow/templateresolution/context_test.go",
+      "workflow/util/merge.go",
+      "workflow/util/merge_test.go",
+      "workflow/util/plugin/configmap.go",
+      "workflow/util/plugin/configmap_test.go",
+      "workflow/util/plugin/plugin.go",
+      "workflow/util/pod_name.go",
+      "workflow/util/retry/retry.go",
+      "workflow/util/retry/retry_test.go",
+      "workflow/util/util.go",
+      "workflow/util/util_test.go",
+      "workflow/validate/validate.go",
+      "workflow/validate/validate_dag_test.go",
+      "workflow/validate/validate_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dd7769e094216cc2bd06f18d44870963ca7b9d92",
+    "authorDate": "2026-02-23T17:03:22+00:00",
+    "subject": "fix(sync): variable shadowing causes semaphore holders to be lost on restart (#15609)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Opus 4.5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#15609"
+    ],
+    "touchedFiles": [
+      "workflow/sync/sync_manager.go",
+      "workflow/sync/sync_manager_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "fcfdd60e2d60b72ecce53ada377e98e058e7b4e8",
+    "authorDate": "2026-02-22T18:36:25-08:00",
+    "subject": "fix: correct 'taring' typo to 'tarring'. Fixes #15556 (#15608)",
+    "body": "Signed-off-by: rohansood10 <rohansood10@users.noreply.github.com>\nCo-authored-by: rohansood10 <rohansood10@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #15556",
+      "#15608"
+    ],
+    "touchedFiles": [
+      "util/archive/archive.go",
+      "workflow/executor/executor.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3fcf9ab1f620d5e027448984de74a69e1f6691da",
+    "authorDate": "2026-02-20T11:43:55+00:00",
+    "subject": "fix(test): skip flaky workflow-template retry-with-steps example (#15607)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Opus 4.6 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#15607"
+    ],
+    "touchedFiles": [
+      "examples/workflow-template/retry-with-steps.yaml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b07f96b4ebce76d52e8b61314a5b538a8ff35d48",
+    "authorDate": "2026-02-20T09:16:20+00:00",
+    "subject": "fix: add sleep before submit tests to wait for informer cache sync (#15601)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Opus 4.6 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#15601"
+    ],
+    "touchedFiles": [
+      "test/e2e/argo_server_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "06dd7771722a350c44aa28cef55d3fd722ef6080",
+    "authorDate": "2026-02-19T15:36:30+00:00",
+    "subject": "fix: use fixed reference time in SQLite store tests to prevent flakiness (#15599)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude Opus 4.6 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#15599"
+    ],
+    "touchedFiles": [
+      "server/workflow/store/sqlite_store_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "6a0aed9f5323de25ad39eb7949300d8c2fbbf0af",
+    "authorDate": "2026-02-19T12:02:13+00:00",
+    "subject": "feat!: allow for usage of workflow name in `archive` subcommand. Fixes #15199 (#15198)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "Fixes #15199",
+      "#15198"
+    ],
+    "touchedFiles": [
+      ".features/pending/archive-cli.md",
+      "api/openapi-spec/swagger.json",
+      "cmd/argo/commands/archive/delete.go",
+      "cmd/argo/commands/archive/get.go",
+      "cmd/argo/commands/archive/resubmit.go",
+      "cmd/argo/commands/archive/retry.go",
+      "cmd/argo/commands/archive/util.go",
+      "cmd/argo/commands/archive/util_test.go",
+      "docs/cli/argo_archive_delete.md",
+      "docs/cli/argo_archive_get.md",
+      "docs/cli/argo_archive_resubmit.md",
+      "docs/cli/argo_archive_retry.md",
+      "pkg/apiclient/workflowarchive/workflow-archive.pb.go",
+      "pkg/apiclient/workflowarchive/workflow-archive.proto",
+      "sdks/java/client/docs/ArchivedWorkflowServiceApi.md",
+      "server/workflowarchive/archived_workflow_server.go",
+      "server/workflowarchive/archived_workflow_server_test.go",
+      "test/e2e/cli_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "28d5f1c239df1dd84df213563468019c5024a6ce",
+    "authorDate": "2026-02-18T08:30:55+00:00",
+    "subject": "fix: use workflow key for semaphore nextWorkflow callback (#15558)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nSigned-off-by: Claude <noreply@anthropic.com>\nCo-authored-by: Claude <noreply@anthropic.com>",
+    "issueRefs": [
+      "#15558"
+    ],
+    "touchedFiles": [
+      "workflow/sync/database_semaphore.go",
+      "workflow/sync/semaphore_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0f377c5e5373e9d866d3194254d56ab9beeab50c",
+    "authorDate": "2026-02-17T14:15:19+05:30",
+    "subject": "feat: add support for azure postgres/entra. Fixes #15530 (#15511)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "Fixes #15530",
+      "#15511"
+    ],
+    "touchedFiles": [
+      ".features/pending/azure-postgres-entra-auth.md",
+      "config/config.go",
+      "docs/workflow-controller-configmap.md",
+      "docs/workflow-controller-configmap.yaml",
+      "go.mod",
+      "util/sqldb/azure_auth.go",
+      "util/sqldb/sqldb.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "837a6989fb9f658086dfc33bff062c28e571366e",
+    "authorDate": "2026-02-16T08:22:35+00:00",
+    "subject": "fix: configure logrus for `argoproj/pkg` internal usage (#15563)",
+    "body": "Signed-off-by: Claude <noreply@anthropic.com>\nSigned-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15563"
+    ],
+    "touchedFiles": [
+      "go.mod",
+      "util/cmd/cmd.go",
+      "util/cmd/logrus.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "aff93a7bd7267db60fe8708faed86950dac32459",
+    "authorDate": "2026-02-13T11:55:17+00:00",
+    "subject": "feat: add WorkflowTemplate name as label when using `workflowTemplateRef`. Fixes #12670 (#12677)",
+    "body": "Signed-off-by: eduardodbr <eduardodbr@hotmail.com>\nSigned-off-by: Eduardo Rodrigues <eduardodbr@hotmail.com>",
+    "issueRefs": [
+      "Fixes #12670",
+      "#12677"
+    ],
+    "touchedFiles": [
+      ".features/pending/wf-label-workflowTemplateRef.md",
+      "test/e2e/cluster_workflow_template_test.go",
+      "test/e2e/cron_test.go",
+      "test/e2e/workflow_template_test.go",
+      "workflow/controller/operator.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a84a927a48d9a7cb0780abdccce55a9ecf9c6f9b",
+    "authorDate": "2026-02-13T11:53:57+00:00",
+    "subject": "fix: make lint to work on macOS machine (#15562)",
+    "body": "Signed-off-by: Eduardo Rodrigues <eduardodbr@hotmail.com>",
+    "issueRefs": [
+      "#15562"
+    ],
+    "touchedFiles": [
+      "Makefile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2d95ada900e410de0c949c7b75bb1e76e44cacae",
+    "authorDate": "2026-02-11T08:34:09+00:00",
+    "subject": "fix: change RLock to Lock in sync manager methods (#15546)",
+    "body": "",
+    "issueRefs": [
+      "#15546"
+    ],
+    "touchedFiles": [
+      "workflow/sync/sync_manager.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "abaf1fdc3a38018c8d82d51c0b04007d88d1a899",
+    "authorDate": "2026-02-08T23:21:04+00:00",
+    "subject": "fix: Add optional UID query parameter to GetWorkflow (#15251)",
+    "body": "Signed-off-by: Eduardo Rodrigues <eduardodbr@hotmail.com>",
+    "issueRefs": [
+      "#15251"
+    ],
+    "touchedFiles": [
+      "api/openapi-spec/swagger.json",
+      "pkg/apiclient/workflow/workflow.pb.go",
+      "pkg/apiclient/workflow/workflow.proto",
+      "sdks/java/client/docs/WorkflowServiceApi.md",
+      "server/workflow/workflow_server.go",
+      "server/workflow/workflow_server_test.go",
+      "test/e2e/argo_server_test.go",
+      "ui/src/shared/services/workflows-service.ts",
+      "ui/src/workflows/components/workflow-details/workflow-details.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a739d3c68a11d50fbf8a226f01e59a631707675b",
+    "authorDate": "2026-02-06T05:26:39-05:00",
+    "subject": "fix: support large container args (#15265)",
+    "body": "Signed-off-by: Anay Sharma <anay20sharma11@gmail.com>\nCo-authored-by: Anay Sharma <anay20sharma11@gmail.com>",
+    "issueRefs": [
+      "#15265"
+    ],
+    "touchedFiles": [
+      ".spelling",
+      "cmd/argoexec/commands/emissary.go",
+      "docs/offloading-large-workflows.md",
+      "sdks/java/client/docs/GithubComArgoprojArgoEventsPkgApisEventsV1alpha1MNSEventSource.md",
+      "workflow/common/common.go",
+      "workflow/controller/workflowpod.go",
+      "workflow/controller/workflowpod_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c602ec568d8833eca26148e6b9a0e3f60654993e",
+    "authorDate": "2026-02-05T07:10:58+00:00",
+    "subject": "fix: preserve existing parameter value for suspend enum inputs (#15510)",
+    "body": "Signed-off-by: Eduardo Rodrigues <eduardodbr@hotmail.com>",
+    "issueRefs": [
+      "#15510"
+    ],
+    "touchedFiles": [
+      "ui/src/workflows/components/workflow-details/workflow-details.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "876f45441bf1bf7d7ab017617f772c17f88d0c24",
+    "authorDate": "2026-02-04T13:21:20+00:00",
+    "subject": "fix: use input.defaults for suspend templates (#15240)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15240"
+    ],
+    "touchedFiles": [
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1305c8a10618846efba9a375c52c2de5330a9789",
+    "authorDate": "2026-02-04T15:21:12+02:00",
+    "subject": "fix: Add instanceID label to WorkflowTaskSet. Fixes #15219 (#15220)",
+    "body": "Signed-off-by: Uziel Sulkies <10584010+usulkies@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #15219",
+      "#15220"
+    ],
+    "touchedFiles": [
+      "workflow/controller/taskset.go",
+      "workflow/controller/taskset_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b519c9054e66b2f0a25eec06709717bd1362f72e",
+    "authorDate": "2026-02-02T09:12:52+00:00",
+    "subject": "fix: emissary deadline handling (#15352)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: coderabbitai[bot] <136622811+coderabbitai[bot]@users.noreply.github.com>",
+    "issueRefs": [
+      "#15352"
+    ],
+    "touchedFiles": [
+      "workflow/executor/emissary/emissary.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "68ca98b13b8a128a17293c15400d52b14755a1e7",
+    "authorDate": "2026-01-30T08:10:26+00:00",
+    "subject": "fix: sync example is wrong for mutexes (#15431)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15431"
+    ],
+    "touchedFiles": [
+      "docs/synchronization.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1b74180ba36f3e4529ca80a04fc95ad904a22314",
+    "authorDate": "2026-01-28T13:43:49+00:00",
+    "subject": "fix(security): update qs to 6.14.1 (#15427)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15427"
+    ],
+    "touchedFiles": [
+      "ui/package.json",
+      "ui/yarn.lock"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "dfd351dd67a177d8800545295862a1bd0d3a6e80",
+    "authorDate": "2026-01-26T14:19:10+09:00",
+    "subject": "fix: optimize index to prevent 'out of sort memory' error Fixes #14240 (#15250)",
+    "body": "Signed-off-by: downfa11 <downfa11@naver.com>",
+    "issueRefs": [
+      "Fixes #14240",
+      "#15250"
+    ],
+    "touchedFiles": [
+      "persist/sqldb/migrate.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b8cf9ed856d9f1a1c6abd4a6efdbdf3a5e179099",
+    "authorDate": "2026-01-23T03:22:58-06:00",
+    "subject": "fix: prevent int64 overflow in retry backoff calculation (#15277)",
+    "body": "Signed-off-by: Andre Kurait <akurait@amazon.com>",
+    "issueRefs": [
+      "#15277"
+    ],
+    "touchedFiles": [
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2c6ea4872ce06fd9b7c8a19c8ad27f7564aa678c",
+    "authorDate": "2026-01-23T08:23:02+00:00",
+    "subject": "fix: don't lint on protobuf generation (#15072)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15072"
+    ],
+    "touchedFiles": [
+      "Makefile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a6bbd9a0ee578d0dbce9ac270fc31dae68a618dd",
+    "authorDate": "2026-01-23T13:50:04+05:30",
+    "subject": "fix(ci): bump `golang.x/tools` to `v0.35.0` to fix codegen (#15273)",
+    "body": "Signed-off-by: nitishfy <justnitish06@gmail.com>",
+    "issueRefs": [
+      "#15273"
+    ],
+    "touchedFiles": [
+      "Makefile",
+      "dev/nix/flake.nix",
+      "sdks/go/basic-workflow/go.mod",
+      "sdks/go/basic-workflow/go.sum",
+      "sdks/go/watch-workflow/go.mod",
+      "sdks/go/watch-workflow/go.sum",
+      "sdks/go/workflow-template/go.mod",
+      "sdks/go/workflow-template/go.sum"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "159a5c56285ecd4d3bb0a67aeef4507779a44e17",
+    "authorDate": "2026-01-20T09:31:20-08:00",
+    "subject": "fix(security): stored XSS in artifact directory listings (#15255)",
+    "body": "Signed-off-by: Mason Malone <651224+MasonM@users.noreply.github.com>",
+    "issueRefs": [
+      "#15255"
+    ],
+    "touchedFiles": [
+      "server/artifacts/artifact_server.go",
+      "server/artifacts/artifact_server_test.go",
+      "test/e2e/argo_server_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2824d21213830d2a17eb05cac070cf36c6678c47",
+    "authorDate": "2026-01-20T23:44:39+09:00",
+    "subject": "fix: ensure single trailing newline in feature generator output (MD047) (#15242)",
+    "body": "Signed-off-by: panicboat <panicboat@gmail.com>",
+    "issueRefs": [
+      "#15242"
+    ],
+    "touchedFiles": [
+      "hack/featuregen/contents.go",
+      "hack/featuregen/contents_test.go",
+      "hack/featuregen/main.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "b7670b6789577454a8478e8eb5e8d1b9529546dc",
+    "authorDate": "2026-01-20T08:58:17+00:00",
+    "subject": "fix: workflow controller to detect stale workflows (#15090)",
+    "body": "Signed-off-by: Eduardo Rodrigues <eduardodbr@hotmail.com>\nCo-authored-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15090"
+    ],
+    "touchedFiles": [
+      "workflow/common/common.go",
+      "workflow/controller/controller.go",
+      "workflow/controller/operator.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9872c296d29dcc5e9c78493054961ede9fc30797",
+    "authorDate": "2026-01-16T04:31:11-05:00",
+    "subject": "fix: Optimize DAG sort for retry (#15241)",
+    "body": "Signed-off-by: Scott Pruett <spruett345@gmail.com>",
+    "issueRefs": [
+      "#15241"
+    ],
+    "touchedFiles": [
+      "workflow/util/util.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9f3f13c5803249a028361d419c96f744cbbdc2a2",
+    "authorDate": "2026-01-08T08:21:14+00:00",
+    "subject": "fix: quick-start should not include artifact plugin (#15223)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15223"
+    ],
+    "touchedFiles": [
+      "manifests/quick-start-minimal.yaml",
+      "manifests/quick-start-mysql.yaml",
+      "manifests/quick-start-postgres.yaml",
+      "manifests/quick-start/base/artifact-repositories-configmap.yaml",
+      "test/e2e/manifests/components/base/artifact-repositories-configmap.yaml",
+      "test/e2e/manifests/components/base/kustomization.yaml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ec0f3619ca46004ed82aaabb089902b48e3d17ed",
+    "authorDate": "2026-01-07T23:59:25+08:00",
+    "subject": "fix: dedupe realtime metrics and handle delete tombstone (#15216)",
+    "body": "Signed-off-by: oninowang <oninowang@tencent.com>\nCo-authored-by: oninowang <oninowang@tencent.com>",
+    "issueRefs": [
+      "#15216"
+    ],
+    "touchedFiles": [
+      "workflow/controller/controller.go",
+      "workflow/metrics/metrics_custom.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9febcd2802eb4960c3037298ed643f4eeafe598c",
+    "authorDate": "2026-01-02T20:07:23+11:00",
+    "subject": "fix: server, label actor on retrywf (#15201)",
+    "body": "Signed-off-by: Tianchu Zhao <evantczhao@gmail.com>",
+    "issueRefs": [
+      "#15201"
+    ],
+    "touchedFiles": [
+      "server/workflow/workflow_server.go",
+      "server/workflow/workflow_server_test.go",
+      "workflow/creator/creator.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "980e99eaa67af25ecc7c4a5e7ec8e59e697c3b48",
+    "authorDate": "2026-01-02T16:30:48+08:00",
+    "subject": "fix: Docs reference a UI service that does not exist (#15204)",
+    "body": "Signed-off-by: majiayu000 <1835304752@qq.com>\nCo-authored-by: Claude Opus 4.5 <noreply@anthropic.com>",
+    "issueRefs": [
+      "#15204"
+    ],
+    "touchedFiles": [
+      "docs/argo-server.md",
+      "docs/quick-start.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "caed4ae01894d62a2eea243bb04fb58cea93ae69",
+    "authorDate": "2026-01-02T16:28:32+08:00",
+    "subject": "fix: Avoid resetting resourceVersion for watch. Fixes #15106 (#15107)",
+    "body": "Signed-off-by: jackcui <jackcui@tencent.com>",
+    "issueRefs": [
+      "Fixes #15106",
+      "#15107"
+    ],
+    "touchedFiles": [
+      "workflow/controller/controller.go",
+      "workflow/controller/informer/tolerant_cluster_workflow_template_informer.go",
+      "workflow/controller/informer/tolerant_workflow_template_informer.go",
+      "workflow/controller/taskresult.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5f7c7ec6f5f6d6589a2c0cbc20acd79ca078f76f",
+    "authorDate": "2025-12-22T14:33:08+05:30",
+    "subject": "fix: move logger context population before access (#15193)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "#15193"
+    ],
+    "touchedFiles": [
+      "server/artifacts/artifact_server.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4bece58bee16720874a9571583df853155fa64ab",
+    "authorDate": "2025-12-22T07:51:18+00:00",
+    "subject": "fix: test CheckWorkflowExistence check both mutex and sem (#15158)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15158"
+    ],
+    "touchedFiles": [
+      "workflow/sync/sync_manager_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7bfb4f26df7f90381b5d015b2da0fa18b9fe66be",
+    "authorDate": "2025-12-22T12:31:07+08:00",
+    "subject": "fix: remove pod finalizer in abnormal scenarios (#15164)",
+    "body": "Signed-off-by: guanguxiansheng <1439425373@qq.com>",
+    "issueRefs": [
+      "#15164"
+    ],
+    "touchedFiles": [
+      "workflow/controller/pod/controller.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "7fd533ac2dd6fb663d82b8f14ee9da9220cdf212",
+    "authorDate": "2025-12-18T08:17:31+00:00",
+    "subject": "fix: make CRDs smaller (in general) and fix cron schedule regex (#15175)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15175"
+    ],
+    "touchedFiles": [
+      "examples/cron-workflow-multiple-schedules.yaml",
+      "hack/manifests/crdgen.sh",
+      "hack/manifests/crds.go",
+      "hack/manifests/helpers.go",
+      "hack/manifests/helpers_test.go",
+      "hack/manifests/main.go",
+      "manifests/base/crds/full/argoproj.io_clusterworkflowtemplates.yaml",
+      "manifests/base/crds/full/argoproj.io_cronworkflows.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowartifactgctasks.yaml",
+      "manifests/base/crds/full/argoproj.io_workflows.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtasksets.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtemplates.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflowartifactgctasks.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflowtasksets.yaml",
+      "manifests/quick-start-minimal.yaml",
+      "manifests/quick-start-mysql.yaml",
+      "manifests/quick-start-postgres.yaml",
+      "pkg/apis/workflow/v1alpha1/cron_workflow_types.go",
+      "pkg/apis/workflow/v1alpha1/generated.proto"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "64caebb59a033fdf9ddb5d76a39e6934ea65381b",
+    "authorDate": "2025-12-17T11:49:51+01:00",
+    "subject": "fix(ui): fix column alignment in workflow list (#15185)",
+    "body": "Signed-off-by: Giovanni Campagna <giovanni@bardeen.ai>",
+    "issueRefs": [
+      "#15185"
+    ],
+    "touchedFiles": [
+      "ui/src/workflows/components/workflows-row/workflows-row.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0c774328ae758b0257582a59fbe874067be153f9",
+    "authorDate": "2025-12-16T23:18:12+08:00",
+    "subject": "fix: add timeout for database query in workflow estimation to prevent blocking. (#15116)",
+    "body": "Signed-off-by: shuangkun <tsk2013uestc@163.com>\nSigned-off-by: shuangkun tian <72060326+shuangkun@users.noreply.github.com>\nCo-authored-by: Mason Malone <651224+MasonM@users.noreply.github.com>",
+    "issueRefs": [
+      "#15116"
+    ],
+    "touchedFiles": [
+      "docs/environment-variables.md",
+      "persist/sqldb/workflow_archive.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "c8b66b244339803c16dbe78e43822fff085d040e",
+    "authorDate": "2025-12-16T13:23:27+01:00",
+    "subject": "fix: type-aware application of template defaults (#14899) (#15144)",
+    "body": "Signed-off-by: Fredrik Karlström <lak@outpost24.com>",
+    "issueRefs": [
+      "#14899",
+      "#15144"
+    ],
+    "touchedFiles": [
+      "pkg/apis/workflow/v1alpha1/workflow_types.go",
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_tmpl_default_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e621d1f34c5a618fde453610ef0519cd231a4cda",
+    "authorDate": "2025-12-16T10:34:22+01:00",
+    "subject": "fix: check ClusterWorkflowTemplate RBAC cluster wide instead of namespaced. Fixes #15071 (#15162)",
+    "body": "Signed-off-by: Eduardo Rodrigues <eduardodbr@hotmail.com>",
+    "issueRefs": [
+      "Fixes #15071",
+      "#15162"
+    ],
+    "touchedFiles": [
+      "pkg/apiclient/argo-kube-client.go",
+      "server/apiserver/argoserver.go",
+      "util/rbac/rbac.go",
+      "util/rbac/rbac_test.go",
+      "workflow/controller/controller.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4117a1ec14d34c8b0587f89b9f8a47e067fb1355",
+    "authorDate": "2025-12-16T01:28:25-08:00",
+    "subject": "fix: upgrade expr to bring in bugfix. Fixes #15093 (#15168)",
+    "body": "Signed-off-by: Mason Malone <651224+MasonM@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #15093",
+      "#15168"
+    ],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum",
+      "util/template/replace_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e991e6dc49c45ac00d2388b60abb9f5b21ce4247",
+    "authorDate": "2025-12-15T10:56:38+01:00",
+    "subject": "fix: use alpine 3.23 version in tests, examples, workflows (#15160)",
+    "body": "Signed-off-by: forzagreen <wael.tellat@gmail.com>",
+    "issueRefs": [
+      "#15160"
+    ],
+    "touchedFiles": [
+      "cmd/argo/commands/common/get_test.go",
+      "docs/container-set-template.md",
+      "docs/cron-workflows.md",
+      "docs/executor_plugins.md",
+      "docs/lifecyclehook.md",
+      "docs/metrics.md",
+      "docs/progress.md",
+      "docs/retries.md",
+      "docs/walk-through/artifacts.md",
+      "docs/walk-through/conditionals.md",
+      "docs/walk-through/dag.md",
+      "docs/walk-through/exit-handlers.md",
+      "docs/walk-through/loops.md",
+      "docs/walk-through/recursion.md",
+      "docs/walk-through/retrying-failed-or-errored-steps.md",
+      "docs/walk-through/scripts-and-results.md",
+      "docs/walk-through/secrets.md",
+      "docs/walk-through/timeouts.md",
+      "docs/walk-through/volumes.md",
+      "docs/workflow-concepts.md",
+      "docs/workflow-executors.md",
+      "examples/ci-output-artifact.yaml",
+      "examples/cluster-workflow-template/clustertemplates.yaml",
+      "examples/coinflip-recursive.yaml",
+      "examples/coinflip.yaml",
+      "examples/colored-logs.yaml",
+      "examples/conditional-artifacts.yaml",
+      "examples/conditional-parameters.yaml",
+      "examples/conditionals-complex.yaml",
+      "examples/container-set-template/outputs-result-workflow.yaml",
+      "examples/custom-metrics.yaml",
+      "examples/dag-coinflip.yaml",
+      "examples/dag-conditional-artifacts.yaml",
+      "examples/dag-conditional-parameters.yaml",
+      "examples/exit-code-output-variable.yaml",
+      "examples/exit-handler-slack.yaml",
+      "examples/exit-handler-with-artifacts.yaml",
+      "examples/exit-handler-with-param.yaml",
+      "examples/exit-handlers.yaml",
+      "examples/fibonacci-seq-conditional-param.yaml",
+      "examples/fun-with-gifs.yaml",
+      "examples/global-outputs.yaml",
+      "examples/handle-large-output-results.yaml",
+      "examples/hdfs-artifact.yaml",
+      "examples/init-container.yaml",
+      "examples/input-artifact-http.yaml",
+      "examples/input-artifact-raw.yaml",
+      "examples/k8s-jobs.yaml",
+      "examples/k8s-orchestration.yaml",
+      "examples/k8s-wait-wf.yaml",
+      "examples/life-cycle-hooks-tmpl-level.yaml",
+      "examples/life-cycle-hooks-wf-level.yaml",
+      "examples/loops-arbitrary-sequential-steps.yaml",
+      "examples/loops-param-result.yaml",
+      "examples/loops-sequence.yaml",
+      "examples/map-reduce.yaml",
+      "examples/nested-workflow.yaml",
+      "examples/node-selector.yaml",
+      "examples/parallelism-nested-dag.yaml",
+      "examples/parallelism-nested-workflow.yaml",
+      "examples/parallelism-nested.yaml",
+      "examples/parallelism-template-limit.yaml",
+      "examples/parameter-aggregation-dag.yaml",
+      "examples/parameter-aggregation-script.yaml",
+      "examples/parameter-aggregation.yaml",
+      "examples/pod-gc-strategy-with-label-selector.yaml",
+      "examples/pod-gc-strategy.yaml",
+      "examples/pod-spec-from-previous-step.yaml",
+      "examples/recursive-for-loop.yaml",
+      "examples/resubmit.yaml",
+      "examples/retry-backoff.yaml",
+      "examples/retry-conditional.yaml",
+      "examples/retry-container-to-completion.yaml",
+      "examples/retry-container.yaml",
+      "examples/retry-on-error.yaml",
+      "examples/retry-script.yaml",
+      "examples/retry-with-steps.yaml",
+      "examples/scripts-bash.yaml",
+      "examples/scripts-javascript.yaml",
+      "examples/scripts-python.yaml",
+      "examples/secrets.yaml",
+      "examples/sidecar.yaml",
+      "examples/status-reference.yaml",
+      "examples/step-level-timeout.yaml",
+      "examples/synchronization-db-mutex-tmpl-level.yaml",
+      "examples/synchronization-db-tmpl-level.yaml",
+      "examples/synchronization-mutex-tmpl-level.yaml",
+      "examples/synchronization-tmpl-level.yaml",
+      "examples/template-defaults.yaml",
+      "examples/timeouts-workflow.yaml",
+      "examples/volumes-emptydir.yaml",
+      "examples/volumes-existing.yaml",
+      "examples/volumes-pvc.yaml",
+      "examples/withsequence-nested-result.yaml",
+      "examples/workflow-template/templates.yaml",
+      "server/clusterworkflowtemplate/cluster_workflow_template_server_test.go",
+      "server/cronworkflow/cron_workflow_server_test.go",
+      "server/workflowtemplate/workflow_template_server_test.go",
+      "test/e2e/expectedfailures/dag-disable-failFast.yaml",
+      "test/e2e/expectedfailures/dag-fail.yaml",
+      "test/e2e/expectedfailures/dag-noroot-branch-failed.yaml",
+      "test/e2e/expectedfailures/exit-handler-failed.yaml",
+      "test/e2e/expectedfailures/failed-artifact-load.yaml",
+      "test/e2e/expectedfailures/failed-artifact-save.yaml",
+      "test/e2e/expectedfailures/failed-retries.yaml",
+      "test/e2e/expectedfailures/failed-step.yaml",
+      "test/e2e/expectedfailures/pod-termination-failure.yaml",
+      "test/e2e/expectedfailures/unschedulable.yaml",
+      "test/e2e/fixtures/given.go",
+      "test/e2e/functional/artifact-input-output-samedir.yaml",
+      "test/e2e/functional/dag-argument-passing.yaml",
+      "test/e2e/functional/dag-targets-input-param.yaml",
+      "test/e2e/functional/dag-with-retries.yaml",
+      "test/e2e/functional/global-outputs-dag.yaml",
+      "test/e2e/functional/global-outputs-variable.yaml",
+      "test/e2e/functional/global-param-sub-with-artifacts.yaml",
+      "test/e2e/functional/loop-sequence-empty.yaml",
+      "test/e2e/functional/loops-sequence-dag.yaml",
+      "test/e2e/functional/nested-dag-outputs.yaml",
+      "test/e2e/functional/output-input-artifact-optional.yaml",
+      "test/e2e/functional/param-sub-with-artifacts.yaml",
+      "test/e2e/functional/retry-with-artifacts.yaml",
+      "test/e2e/functional/script-with-input-art.yaml",
+      "test/e2e/functional/script-with-volume.yaml",
+      "test/e2e/functional/sidecar-force-kill.yaml",
+      "test/e2e/functional/suspend-dag-template.yaml",
+      "test/e2e/functional/template_level_host_aliases.yaml",
+      "test/e2e/functional/tty.yaml",
+      "test/e2e/functional/workflow_level_host_aliases.yaml",
+      "test/e2e/functional/workflow_template_level_host_aliases.yaml",
+      "test/e2e/manifests/plugins/hello-executor-plugin-configmap.yaml",
+      "test/e2e/smoke/with-items-with-hooks.yaml",
+      "test/e2e/testdata/convert/convert-legacy-sync.yaml",
+      "ui/test/ui/ui-memoize.yaml",
+      "ui/test/ui/ui-wacky-workflow.yaml",
+      "workflow/controller/controller_test.go",
+      "workflow/controller/dag_test.go",
+      "workflow/controller/exit_handler_test.go",
+      "workflow/controller/hooks_test.go",
+      "workflow/controller/operator_concurrency_test.go",
+      "workflow/controller/operator_data_test.go",
+      "workflow/controller/operator_metrics_test.go",
+      "workflow/controller/operator_template_scope_test.go",
+      "workflow/controller/operator_test.go",
+      "workflow/controller/operator_tmpl_default_test.go",
+      "workflow/controller/steps_test.go",
+      "workflow/controller/testdata/dag-disable-fail-fast.yaml",
+      "workflow/controller/testdata/dag_retry_succeeded.yaml",
+      "workflow/controller/testdata/dag_wftmpl_hook_with_retry.yaml",
+      "workflow/controller/testdata/dag_xfail.yaml",
+      "workflow/controller/testdata/steps-failed-retries.yaml",
+      "workflow/controller/workflowpod_test.go",
+      "workflow/cron/operator_test.go",
+      "workflow/sync/mutex_test.go",
+      "workflow/sync/sync_manager_test.go",
+      "workflow/templateresolution/context_test.go",
+      "workflow/util/util_test.go",
+      "workflow/validate/validate_dag_test.go",
+      "workflow/validate/validate_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "67db97f2eaca3f45ed20c5c6497df97d3ba37db8",
+    "authorDate": "2025-12-15T13:20:22+08:00",
+    "subject": "fix: set current platform as default platform when retrieving image entrypoint. Fixes #15058 (#15059)",
+    "body": "Signed-off-by: guamian-delicious <32569905@qq.com>\nCo-authored-by: jswxstw <385920199@qq.com>",
+    "issueRefs": [
+      "Fixes #15058",
+      "#15059"
+    ],
+    "touchedFiles": [
+      "workflow/controller/entrypoint/container_registry_index.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "76eda6f83d6ab0567806ca359151205fd35df124",
+    "authorDate": "2025-12-15T12:47:39+08:00",
+    "subject": "fix: handle escape chars in withParam/withItems. Fixes #13718 (#14864)",
+    "body": "Signed-off-by: Tzu-Ting <tzingshih@gmail.com>",
+    "issueRefs": [
+      "Fixes #13718",
+      "#14864"
+    ],
+    "touchedFiles": [
+      "workflow/controller/dag_test.go",
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_test.go",
+      "workflow/controller/steps_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "46b0dddf970953b42d67ce7fad3c5f32199548fb",
+    "authorDate": "2025-12-11T15:30:58+00:00",
+    "subject": "fix: if pod fails without container termination, don't mark node succeeded always (#15150)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15150"
+    ],
+    "touchedFiles": [
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0f31d8cd0d9f8ac6a9d1280fb3c87fa871a5c1e0",
+    "authorDate": "2025-12-09T12:43:52+00:00",
+    "subject": "fix: make executable (#15129)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15129"
+    ],
+    "touchedFiles": [
+      ".github/workflows/release.yaml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3e13180bf55b74c3bf4c61ea5b1f3f4c0d0f2b35",
+    "authorDate": "2025-12-09T09:58:43+00:00",
+    "subject": "fix: more release fixing (#15128)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15128"
+    ],
+    "touchedFiles": [
+      ".github/workflows/release.yaml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9b4e92f28573fdaf017e8ff09b085cddc224a1f2",
+    "authorDate": "2025-12-09T09:18:49+00:00",
+    "subject": "fix: release process bugs from #15124 (#15127)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15124",
+      "#15127"
+    ],
+    "touchedFiles": [
+      ".github/workflows/release.yaml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a5b57b126558f15ca9fd09ef557b77016bb7a01c",
+    "authorDate": "2025-12-08T08:16:36+00:00",
+    "subject": "fix: always `convert` singular to plural (#15092)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15092"
+    ],
+    "touchedFiles": [
+      "workflow/convert/legacy_types.go",
+      "workflow/convert/legacy_types_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4058937ee0313be01e3cc42b38d44e891d37941a",
+    "authorDate": "2025-12-01T05:10:59+01:00",
+    "subject": "fix: expose not equals to UI (#15089)",
+    "body": "Signed-off-by: Miltiadis Alexis <alexmiltiadis@gmail.com>",
+    "issueRefs": [
+      "#15089"
+    ],
+    "touchedFiles": [
+      ".features/pending/not-equals-filter.md",
+      "ui/src/workflows/components/workflow-filters/workflow-filters.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b9d18b15697a614d89901f3d47243b5a02698859",
+    "authorDate": "2025-11-26T08:32:42+00:00",
+    "subject": "fix: rename variables #15061 and add failure error (#15067)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15061",
+      "#15067"
+    ],
+    "touchedFiles": [
+      "util/telemetry/metrics.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "256b2c4e7c62e63c04fd86364ca311d75a258768",
+    "authorDate": "2025-11-25T20:41:52+08:00",
+    "subject": "fix: http template read response.Body after cancel(), sometimes it return a context canceled error (#14853)",
+    "body": "Signed-off-by: AnonyScorpio <freekicker520@gmail.com>",
+    "issueRefs": [
+      "#14853"
+    ],
+    "touchedFiles": [
+      "workflow/executor/agent.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "bee7b14301fe71758ebd87de406d2440ee87f29f",
+    "authorDate": "2025-11-24T01:44:48-08:00",
+    "subject": "fix(ui): fix BASE_HREF in production index.html. Fixes #15046 (#15066)",
+    "body": "Signed-off-by: Mason Malone <651224+MasonM@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #15046",
+      "#15066"
+    ],
+    "touchedFiles": [
+      "ui/webpack.config.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "59f9b7b06e00c24693904a6064d596b4321b2e76",
+    "authorDate": "2025-11-21T10:45:47+00:00",
+    "subject": "fix: fix CRDs and add test for #14991 (#15055)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#14991",
+      "#15055"
+    ],
+    "touchedFiles": [
+      "docs/executor_swagger.md",
+      "manifests/base/crds/full/argoproj.io_clusterworkflowtemplates.yaml",
+      "manifests/base/crds/full/argoproj.io_cronworkflows.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowartifactgctasks.yaml",
+      "manifests/base/crds/full/argoproj.io_workfloweventbindings.yaml",
+      "manifests/base/crds/full/argoproj.io_workflows.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtaskresults.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtasksets.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtemplates.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflowartifactgctasks.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workfloweventbindings.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflowtaskresults.yaml",
+      "manifests/quick-start-minimal.yaml",
+      "manifests/quick-start-mysql.yaml",
+      "manifests/quick-start-postgres.yaml",
+      "pkg/apis/workflow/v1alpha1/generated.proto",
+      "pkg/apis/workflow/v1alpha1/workflow_types.go",
+      "pkg/plugins/executor/swagger.yml",
+      "test/e2e/artifacts_test.go",
+      "test/e2e/testdata/exit-handler-parameterized-global-artifacts.yaml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "199a1373a525955ed13ff77fdf9337de139fddb5",
+    "authorDate": "2025-11-18T17:10:33+02:00",
+    "subject": "fix: Fixes parameterized global artifacts resolution in exit handlers. Fixes #11610 (#14991)",
+    "body": "Signed-off-by: ItielOlenick <etl676@gmail.com>\nSigned-off-by: ItielOlenick <67790309+ItielOlenick@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #11610",
+      "#14991"
+    ],
+    "touchedFiles": [
+      "workflow/validate/validate.go",
+      "workflow/validate/validate_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2672ba3be138ea37268f78c29e42e2f4b9fdbb09",
+    "authorDate": "2025-11-14T12:27:06+01:00",
+    "subject": "fix: preserve global scope variables in withSequence expressions (#14718)",
+    "body": "Signed-off-by: edaniel <edaniel@groupcls.com>\nCo-authored-by: edaniel <edaniel@groupcls.com>",
+    "issueRefs": [
+      "#14718"
+    ],
+    "touchedFiles": [
+      "workflow/controller/dag.go",
+      "workflow/controller/operator.go",
+      "workflow/controller/operator_test.go",
+      "workflow/controller/steps.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d3ca7c69444e51c8c8f0b9082c5531ac6c21716a",
+    "authorDate": "2025-11-14T19:03:18+08:00",
+    "subject": "fix: add archive location if artifact is needed in data source. Fixes #14990 (#15004)",
+    "body": "Signed-off-by: oninowang <oninowang@tencent.com>",
+    "issueRefs": [
+      "Fixes #14990",
+      "#15004"
+    ],
+    "touchedFiles": [
+      "docs/fields.md",
+      "examples/data-transformations.yaml",
+      "workflow/controller/workflowpod.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "f4eef2b55a477e025adc06bcd8d9a5dcbc8e49d9",
+    "authorDate": "2025-11-12T16:10:00+00:00",
+    "subject": "fix: add a special case for `item` variable during global expression replacement (#15033)",
+    "body": "Signed-off-by: Elliot Gunton <elliotgunton@gmail.com>",
+    "issueRefs": [
+      "#15033"
+    ],
+    "touchedFiles": [
+      "test/e2e/expr_lang_test.go",
+      "util/template/expression_template.go",
+      "util/template/expression_template_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e98b6b3396f66ed7f93cfa09531ba20f5b3f5d63",
+    "authorDate": "2025-11-12T11:24:54+00:00",
+    "subject": "fix!: return latest workflow for retried-persisted workflows (#15030)",
+    "body": "Signed-off-by: Elliot Gunton <elliotgunton@gmail.com>",
+    "issueRefs": [
+      "#15030"
+    ],
+    "touchedFiles": [
+      "persist/sqldb/workflow_archive.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "436a8d56fb1307b7c894a42331993dc970af235a",
+    "authorDate": "2025-11-11T10:31:10+00:00",
+    "subject": "fix: enforce metrics attributes, also fixing one doc (#14979)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Claude <noreply@anthropic.com>",
+    "issueRefs": [
+      "#14979"
+    ],
+    "touchedFiles": [
+      "Makefile",
+      "docs/metrics.md",
+      "util/telemetry/builder/builder.go",
+      "util/telemetry/builder/metrics_helpers.go",
+      "util/telemetry/builder/values.yaml",
+      "util/telemetry/counter_deprecations.go",
+      "util/telemetry/metrics_helpers.go",
+      "util/telemetry/version.go",
+      "workflow/metrics/counter_cronworkflow_policy.go",
+      "workflow/metrics/counter_cronworkflow_trigger.go",
+      "workflow/metrics/counter_error.go",
+      "workflow/metrics/counter_log.go",
+      "workflow/metrics/counter_pod_missing.go",
+      "workflow/metrics/counter_pod_pending.go",
+      "workflow/metrics/counter_pod_phase.go",
+      "workflow/metrics/counter_template.go",
+      "workflow/metrics/counter_workflow_phase.go",
+      "workflow/metrics/gauge_pod_phase.go",
+      "workflow/metrics/gauge_workflow_condition.go",
+      "workflow/metrics/gauge_workflow_phase.go",
+      "workflow/metrics/histogram_durations.go",
+      "workflow/metrics/histogram_template.go",
+      "workflow/metrics/leader.go",
+      "workflow/metrics/metrics_k8s_request.go",
+      "workflow/metrics/work_queue.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e372a0770807457dc0965efc42b2a43a70be02d2",
+    "authorDate": "2025-11-11T08:15:42+00:00",
+    "subject": "fix!: status->phase in the gauge metric (#14976)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#14976"
+    ],
+    "touchedFiles": [
+      "docs/metrics.md",
+      "util/telemetry/builder/values.yaml",
+      "util/telemetry/metrics_list.go",
+      "workflow/metrics/gauge_workflow_phase.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "9c2fd9593cb76682a8f7dccded4e23a771f28bee",
+    "authorDate": "2025-11-11T08:15:02+00:00",
+    "subject": "chore(ci): fix up generated docs in CI (#15013)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#15013"
+    ],
+    "touchedFiles": [
+      ".github/workflows/ci-build.yaml",
+      "Makefile"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "c9cba3b1927b860b0099f6160060e4d3dfa24a31",
+    "authorDate": "2025-10-29T13:36:44-07:00",
+    "subject": "fix: prevent nil pointer dereference in GetTemplateFromRef with podMetadata. Fixes #14968 (#14970)",
+    "body": "Signed-off-by: Bjoern Weidlich <bjoern.weidlich@anchorlabs.com>",
+    "issueRefs": [
+      "Fixes #14968",
+      "#14970"
+    ],
+    "touchedFiles": [
+      "workflow/templateresolution/context.go",
+      "workflow/templateresolution/context_test.go"
+    ],
+    "fixCategory": "crash"
+  },
+  {
+    "commitHash": "a2924e6f6299f97b8825a3712e8c6f08d99731b2",
+    "authorDate": "2025-10-24T10:39:52+01:00",
+    "subject": "fix: allow legacy name validation scheme for prometheus metrics (#14879)",
+    "body": "Signed-off-by: Eduardo Rodrigues <eduardodbr@hotmail.com>\nCo-authored-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#14879"
+    ],
+    "touchedFiles": [
+      ".spelling",
+      "docs/environment-variables.md",
+      "docs/metrics.md",
+      "util/telemetry/exporter_prometheus.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "b4c578f9c806c215748d2d2a9dff7d9e81ad5827",
+    "authorDate": "2025-10-24T11:00:10+02:00",
+    "subject": "docs: Update cron-backfill.yaml: regexpr has been fixed (#14376)",
+    "body": "Signed-off-by: Andrey Kuznetsov <ferus.tigris@gmail.com>\nCo-authored-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#14376"
+    ],
+    "touchedFiles": [
+      "examples/cron-backfill.yaml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "70f83369519619f221ffca2e123ffe7dec623be0",
+    "authorDate": "2025-10-23T09:07:04+01:00",
+    "subject": "fix: cherry picker message (#14975)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#14975"
+    ],
+    "touchedFiles": [
+      ".github/workflows/cherry-pick-single.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "de31059ac3e469ef7ac58d99cc1aab2a49e4ca78",
+    "authorDate": "2025-10-23T15:53:12+08:00",
+    "subject": "docs: fix http variables notes (#14965)",
+    "body": "Signed-off-by: wangxiaojian <17816869670@163.com>",
+    "issueRefs": [
+      "#14965"
+    ],
+    "touchedFiles": [
+      "docs/http-template.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2bd2fc20d5d97f3005b78ea79b439f08b3c869ab",
+    "authorDate": "2025-10-21T22:17:07+09:00",
+    "subject": "fix: call WaitGroup.Wait before goroutine launch (#14948)",
+    "body": "Signed-off-by: shota3506 <s.shota.710.3506@gmail.com>",
+    "issueRefs": [
+      "#14948"
+    ],
+    "touchedFiles": [
+      "workflow/executor/osspecific/signal_windows_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "231b40b30b82a3bde0f2116adb2858a99b93d949",
+    "authorDate": "2025-10-21T08:55:16+01:00",
+    "subject": "fix: missing quote (#14957)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#14957"
+    ],
+    "touchedFiles": [
+      ".github/workflows/cherry-pick-single.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0f74e76011d5758aa15544a07a39cb221fef0cd5",
+    "authorDate": "2025-10-21T08:17:16+01:00",
+    "subject": "fix: cherry-pick title with quotes (#14947)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#14947"
+    ],
+    "touchedFiles": [
+      ".github/workflows/cherry-pick-single.yml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "69f63d1fa0d0b9407335005b11b1e998dd0ac6f2",
+    "authorDate": "2025-10-20T22:51:00+08:00",
+    "subject": "docs: fix steps variable `hostNodeName` (#14952)",
+    "body": "Signed-off-by: oninowang <oninowang@tencent.com>",
+    "issueRefs": [
+      "#14952"
+    ],
+    "touchedFiles": [
+      "docs/variables.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "06edbe038fb2f73ea18e43757f381c79d6703f59",
+    "authorDate": "2025-10-20T02:02:57-07:00",
+    "subject": "fix: allow `labelsFrom` to be specified in `workflowDefaults`. Fixes #14927 (#14941)",
+    "body": "Signed-off-by: Mason Malone <651224+MasonM@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #14927",
+      "#14941"
+    ],
+    "touchedFiles": [
+      "workflow/util/merge.go",
+      "workflow/util/merge_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a48868cf8ff74fad0577efd9404c3b11bb2369b3",
+    "authorDate": "2025-10-20T16:54:31+09:00",
+    "subject": "fix: typo paramaters to parameters in cli help text (#14939)",
+    "body": "Signed-off-by: shota3506 <s.shota.710.3506@gmail.com>",
+    "issueRefs": [
+      "#14939"
+    ],
+    "touchedFiles": [
+      "cmd/argo/commands/archive/retry.go",
+      "cmd/argo/commands/node.go",
+      "cmd/argo/commands/resume.go",
+      "cmd/argo/commands/retry.go",
+      "cmd/argo/commands/stop.go",
+      "docs/cli/argo_archive_retry.md",
+      "docs/cli/argo_node.md",
+      "docs/cli/argo_resume.md",
+      "docs/cli/argo_retry.md",
+      "docs/cli/argo_stop.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "5d75b62e2ccd4498020dffc94c18bd15a0062578",
+    "authorDate": "2025-10-18T06:38:55-07:00",
+    "subject": "fix(ui): support base HREF in dev environment (#14894)",
+    "body": "Signed-off-by: Mason Malone <651224+MasonM@users.noreply.github.com>\nSigned-off-by: Alan Clucas <alan@clucas.org>\nCo-authored-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#14894"
+    ],
+    "touchedFiles": [
+      ".spelling",
+      "Makefile",
+      "docs/running-locally.md",
+      "hack/update-sso-redirect-url.sh",
+      "tasks.yaml",
+      "ui/src/index.html",
+      "ui/webpack.config.js"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d129ccbd714d0df6abc3f86eeb4a28365c24cb55",
+    "authorDate": "2025-10-18T06:25:13-07:00",
+    "subject": "fix(ui): login/logout bug when base HREF set. Fixes #14897 (#14909)",
+    "body": "Signed-off-by: Mason Malone <651224+MasonM@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #14897",
+      "#14909"
+    ],
+    "touchedFiles": [
+      "ui/src/login/login.test.tsx",
+      "ui/src/login/login.tsx",
+      "ui/src/shared/cookie.ts"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e611a1aaaaa2a50c38d7c3b9817f6ec0fb14320f",
+    "authorDate": "2025-10-17T16:50:00+08:00",
+    "subject": "fix(ui): avoid phantom dependencies with pnpm (#14890)",
+    "body": "Signed-off-by: AnonyScorpio <freekicker520@gmail.com>",
+    "issueRefs": [
+      "#14890"
+    ],
+    "touchedFiles": [
+      "ui/package.json"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "cebe4b3e7746765e80ebceec7c3bcbd44437d83b",
+    "authorDate": "2025-10-17T16:46:50+08:00",
+    "subject": "fix: fetch sa in delegate namespace when no sa matched. Fixes:#14610 (#14614)",
+    "body": "Signed-off-by: shuangkun <tsk2013uestc@163.com>",
+    "issueRefs": [
+      "#14610",
+      "#14614"
+    ],
+    "touchedFiles": [
+      "server/auth/gatekeeper.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "179571ee154c55c831b2d74e685420072cdea1ea",
+    "authorDate": "2025-10-17T16:40:41+08:00",
+    "subject": "feat(server): optimize pagination when counting workflows in archive. Fixes:#13948 (#14892)",
+    "body": "Signed-off-by: shuangkun <tsk2013uestc@163.com>",
+    "issueRefs": [
+      "#13948",
+      "#14892"
+    ],
+    "touchedFiles": [
+      ".features/pending/pagination-when-counting-workflows.md",
+      "persist/sqldb/mocks/WorkflowArchive.go",
+      "persist/sqldb/null_workflow_archive.go",
+      "persist/sqldb/workflow_archive.go",
+      "server/workflow/workflow_server.go",
+      "server/workflow/workflow_server_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "175ab6e3f4a55d71ec5fe9ab07a5b053423a4b0f",
+    "authorDate": "2025-10-15T05:15:03+09:00",
+    "subject": "docs(cli): add usage examples for argo auth token command Fixes #11898 (#14655)",
+    "body": "Signed-off-by: 민선 (minnie) <61786235+miinsun@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #11898",
+      "#14655"
+    ],
+    "touchedFiles": [
+      "cmd/argo/commands/auth/token.go",
+      "docs/cli/argo_auth_token.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "90cfa7e4f8b97368ef03a534769daf13e7d51103",
+    "authorDate": "2025-10-09T16:56:52+07:00",
+    "subject": "fix: cache calls to prevent exponential recursion. Fixes #14904 (#14920)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "Fixes #14904",
+      "#14920"
+    ],
+    "touchedFiles": [
+      "workflow/controller/operator.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "0ebee7878f05fa4fecaa944fb810bbab263a2be7",
+    "authorDate": "2025-10-09T10:01:11+01:00",
+    "subject": "fix: 3.7 version modal and docs (#14921)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#14921"
+    ],
+    "touchedFiles": [
+      "docs/releasing.md",
+      "ui/src/modals/new-version-modal.tsx"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "62653c890b86289639d93384cd5ac6a89b3edcf5",
+    "authorDate": "2025-10-08T03:05:13-04:00",
+    "subject": "docs: Fix typos and linguistic errors in documentation / hacktoberfest (#14908)",
+    "body": "Signed-off-by: shuangkun <tsk2013uestc@163.com>\nSigned-off-by: Sebastien Dionne <survivant00@gmail.com>\nSigned-off-by: Tianchu Zhao <evantczhao@gmail.com>\nCo-authored-by: shuangkun tian <72060326+shuangkun@users.noreply.github.com>\nCo-authored-by: lons <lonsdale8734@gmail.com>\nCo-authored-by: Tianchu Zhao <evantczhao@gmail.com>",
+    "issueRefs": [
+      "#14908"
+    ],
+    "touchedFiles": [
+      "README.md",
+      "api/jsonschema/schema.json",
+      "api/openapi-spec/swagger.json",
+      "config/config.go",
+      "docs/README.md",
+      "docs/access-token.md",
+      "docs/argo-server.md",
+      "docs/artifact-visualization.md",
+      "docs/cron-workflows.md",
+      "docs/debug-pause.md",
+      "docs/empty-dir.md",
+      "docs/executor_swagger.md",
+      "docs/fields.md",
+      "docs/workflow-controller-configmap.md",
+      "pkg/apis/workflow/v1alpha1/generated.proto",
+      "pkg/apis/workflow/v1alpha1/openapi_generated.go",
+      "pkg/apis/workflow/v1alpha1/workflow_types.go",
+      "pkg/plugins/executor/swagger.yml",
+      "sdks/java/client/docs/IoArgoprojWorkflowV1alpha1AzureArtifact.md",
+      "sdks/java/client/docs/IoArgoprojWorkflowV1alpha1GitArtifact.md",
+      "sdks/python/client/docs/IoArgoprojWorkflowV1alpha1AzureArtifact.md",
+      "sdks/python/client/docs/IoArgoprojWorkflowV1alpha1GitArtifact.md"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "d1b280ecec529e2aeb37485e2bc50f2820d8aae0",
+    "authorDate": "2025-10-06T21:01:19+11:00",
+    "subject": "fix: skip validate dynamic templateref (#14850)",
+    "body": "Signed-off-by: Tianchu Zhao <evantczhao@gmail.com>",
+    "issueRefs": [
+      "#14850"
+    ],
+    "touchedFiles": [
+      "workflow/validate/validate.go",
+      "workflow/validate/validate_dag_test.go",
+      "workflow/validate/validate_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "2c033c168d3898e77371d190119d24a3439a1422",
+    "authorDate": "2025-10-05T18:54:27+08:00",
+    "subject": "fix: avoid deleting from the throttle queue when reapply fails. (#14855)",
+    "body": "Signed-off-by: shuangkun <tsk2013uestc@163.com>\nCo-authored-by: lons <lonsdale8734@gmail.com>",
+    "issueRefs": [
+      "#14855"
+    ],
+    "touchedFiles": [
+      "workflow/common/common.go",
+      "workflow/controller/controller.go",
+      "workflow/controller/operator.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "4eb7b013ff7fa0d70b76c9f84d78046244b53c6d",
+    "authorDate": "2025-09-29T21:49:19-05:00",
+    "subject": "fix: linting pointer error when template name is invalid (#14896)",
+    "body": "Signed-off-by: jmeridth <jmeridth@gmail.com>",
+    "issueRefs": [
+      "#14896"
+    ],
+    "touchedFiles": [
+      "test/e2e/cli_test.go",
+      "test/e2e/expectedfailures/misreference-template-name.yaml",
+      "test/e2e/smoke/empty-template-steps.yaml",
+      "workflow/templateresolution/context.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "1d9d037ee8bc7419a13e8b45b8291ae57e4aa4c4",
+    "authorDate": "2025-09-29T15:39:53+08:00",
+    "subject": "fix: change retry workflow phase from running to unknown.  (#14854)",
+    "body": "Signed-off-by: shuangkun <tsk2013uestc@163.com>\nCo-authored-by: lons <lonsdale8734@gmail.com>",
+    "issueRefs": [
+      "#14854"
+    ],
+    "touchedFiles": [
+      "workflow/util/util.go",
+      "workflow/util/util_test.go"
+    ],
+    "fixCategory": "deadlock"
+  },
+  {
+    "commitHash": "6eeccb28034d6e4fdaf3a6c0a9fbcc3405d64e94",
+    "authorDate": "2025-09-29T15:39:21+08:00",
+    "subject": "fix: retry when occasionally timeout.  (#14868)",
+    "body": "Signed-off-by: shuangkun <tsk2013uestc@163.com>\nCo-authored-by: lons <lonsdale8734@gmail.com>",
+    "issueRefs": [
+      "#14868"
+    ],
+    "touchedFiles": [
+      "util/errors/errors.go"
+    ],
+    "fixCategory": "timeout"
+  },
+  {
+    "commitHash": "cb7ebd9393f3322abf455d906e39a3a976421b30",
+    "authorDate": "2025-09-23T17:34:24+08:00",
+    "subject": "fix: CVE-2025-47913. Fixes:#14866 (#14871)",
+    "body": "Signed-off-by: shuangkun <tsk2013uestc@163.com>",
+    "issueRefs": [
+      "#14866",
+      "#14871"
+    ],
+    "touchedFiles": [
+      "go.mod",
+      "go.sum"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ece9e9007a63971d73ebe7b81bd755fe22913e39",
+    "authorDate": "2025-09-22T16:06:15+02:00",
+    "subject": "feat: Add support for creating a configmap semaphore config using CLI. Fixes #14671 (#14724)",
+    "body": "Signed-off-by: Darko Janjic <darko@pipekit.io>\nSigned-off-by: isubasinghe <isitha@pipekit.io>\nCo-authored-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "Fixes #14671",
+      "#14724"
+    ],
+    "touchedFiles": [
+      ".features/pending/configmap-sync-cli.md",
+      ".gitignore",
+      "Makefile",
+      "api/jsonschema/schema.json",
+      "api/openapi-spec/swagger.json",
+      "cmd/argo/commands/root.go",
+      "cmd/argo/commands/sync/configmap/create.go",
+      "cmd/argo/commands/sync/configmap/delete.go",
+      "cmd/argo/commands/sync/configmap/get.go",
+      "cmd/argo/commands/sync/configmap/root.go",
+      "cmd/argo/commands/sync/configmap/update.go",
+      "cmd/argo/commands/sync/root.go",
+      "docs/cli/argo.md",
+      "docs/cli/argo_sync.md",
+      "docs/cli/argo_sync_configmap.md",
+      "docs/cli/argo_sync_configmap_create.md",
+      "docs/cli/argo_sync_configmap_delete.md",
+      "docs/cli/argo_sync_configmap_get.md",
+      "docs/cli/argo_sync_configmap_update.md",
+      "manifests/cluster-install-no-crds/argo-server-rbac/argo-server-clusterole.yaml",
+      "manifests/namespace-install/argo-server-rbac/argo-server-role.yaml",
+      "manifests/quick-start-minimal.yaml",
+      "manifests/quick-start-mysql.yaml",
+      "manifests/quick-start-postgres.yaml",
+      "mkdocs.yml",
+      "pkg/apiclient/apiclient.go",
+      "pkg/apiclient/argo-kube-client.go",
+      "pkg/apiclient/argo-kube-sync-service-client.go",
+      "pkg/apiclient/argo-server-client.go",
+      "pkg/apiclient/error-translating-sync-service-client.go",
+      "pkg/apiclient/http1-client.go",
+      "pkg/apiclient/http1/sync-service-client.go",
+      "pkg/apiclient/offline-client.go",
+      "pkg/apiclient/sync/sync.pb.go",
+      "pkg/apiclient/sync/sync.pb.gw.go",
+      "pkg/apiclient/sync/sync.proto",
+      "sdks/java/client/docs/SyncCreateSyncLimitRequest.md",
+      "sdks/java/client/docs/SyncServiceApi.md",
+      "sdks/java/client/docs/SyncSyncConfigType.md",
+      "sdks/java/client/docs/SyncSyncLimitResponse.md",
+      "sdks/java/client/docs/SyncUpdateSyncLimitRequest.md",
+      "sdks/python/client/argo_workflows/api/sync_service_api.py",
+      "sdks/python/client/argo_workflows/apis/__init__.py",
+      "sdks/python/client/argo_workflows/model/sync_create_sync_limit_request.py",
+      "sdks/python/client/argo_workflows/model/sync_sync_config_type.py",
+      "sdks/python/client/argo_workflows/model/sync_sync_limit_response.py",
+      "sdks/python/client/argo_workflows/model/sync_update_sync_limit_request.py",
+      "sdks/python/client/argo_workflows/models/__init__.py",
+      "sdks/python/client/docs/SyncCreateSyncLimitRequest.md",
+      "sdks/python/client/docs/SyncServiceApi.md",
+      "sdks/python/client/docs/SyncSyncConfigType.md",
+      "sdks/python/client/docs/SyncSyncLimitResponse.md",
+      "sdks/python/client/docs/SyncUpdateSyncLimitRequest.md",
+      "server/apiserver/argoserver.go",
+      "server/sync/sync_server.go",
+      "server/sync/sync_server_test.go",
+      "test/e2e/argo_server_test.go",
+      "test/e2e/cli_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "41a9328efd150a3763590dab2379c403da4841ef",
+    "authorDate": "2025-09-17T14:06:37+08:00",
+    "subject": "fix: don't need to add workflow to pending queue when running. (#14856)",
+    "body": "Signed-off-by: shuangkun <tsk2013uestc@163.com>\nCo-authored-by: lons <lonsdale8734@gmail.com>",
+    "issueRefs": [
+      "#14856"
+    ],
+    "touchedFiles": [
+      "workflow/sync/multi_throttler.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "ea3c5882f4f8d62e5796ac5a1cb22a5dfe5d07a3",
+    "authorDate": "2025-09-17T03:17:52+01:00",
+    "subject": "fix: fix WithFields and WithError in init logger (#14862)",
+    "body": "Signed-off-by: Alan Clucas <alan@clucas.org>",
+    "issueRefs": [
+      "#14862"
+    ],
+    "touchedFiles": [
+      "util/logging/init.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "a49773c7c422a1271fb8bd9148942cf16dc063ce",
+    "authorDate": "2025-09-11T04:02:38-07:00",
+    "subject": "fix(manifests): add descriptions to CRDs. Fixes #8190 (#14777)",
+    "body": "Signed-off-by: Mason Malone <651224+MasonM@users.noreply.github.com>",
+    "issueRefs": [
+      "Fixes #8190",
+      "#14777"
+    ],
+    "touchedFiles": [
+      "hack/manifests/crdgen.sh",
+      "hack/manifests/crds.go",
+      "hack/manifests/helpers.go",
+      "hack/manifests/helpers_test.go",
+      "manifests/base/crds/full/argoproj.io_clusterworkflowtemplates.yaml",
+      "manifests/base/crds/full/argoproj.io_cronworkflows.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowartifactgctasks.yaml",
+      "manifests/base/crds/full/argoproj.io_workfloweventbindings.yaml",
+      "manifests/base/crds/full/argoproj.io_workflows.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtaskresults.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtasksets.yaml",
+      "manifests/base/crds/full/argoproj.io_workflowtemplates.yaml",
+      "manifests/base/crds/minimal/argoproj.io_clusterworkflowtemplates.yaml",
+      "manifests/base/crds/minimal/argoproj.io_cronworkflows.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflowartifactgctasks.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workfloweventbindings.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflows.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflowtaskresults.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflowtasksets.yaml",
+      "manifests/base/crds/minimal/argoproj.io_workflowtemplates.yaml",
+      "manifests/quick-start-minimal.yaml",
+      "manifests/quick-start-mysql.yaml",
+      "manifests/quick-start-postgres.yaml"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "3e2c22149f103a7e38f09ce93c8e9fe54503cff7",
+    "authorDate": "2025-09-11T17:37:40+07:00",
+    "subject": "fix: reset the taskgroup. fixes #14769 (#14832)",
+    "body": "Signed-off-by: isubasinghe <isitha@pipekit.io>",
+    "issueRefs": [
+      "fixes #14769",
+      "#14832"
+    ],
+    "touchedFiles": [
+      "workflow/util/util.go",
+      "workflow/util/util_test.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "e1855be1a073f5ad399368f0bcc5594de73b7071",
+    "authorDate": "2025-09-10T12:24:17+08:00",
+    "subject": "fix: only reset failed or error retry node. Fixes #14796 (#14803)",
+    "body": "Signed-off-by: oninowang <oninowang@tencent.com>",
+    "issueRefs": [
+      "Fixes #14796",
+      "#14803"
+    ],
+    "touchedFiles": [
+      "workflow/util/util.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "74353577f83416e51d7aaf44ecab86f91a81e973",
+    "authorDate": "2025-09-08T11:30:39+09:00",
+    "subject": "fix: Add default value for creationtimestamp column addition. Fixes #… (#14797)",
+    "body": "Signed-off-by: Tetsuro Okazawa <tokazawa@lycorp.co.jp>",
+    "issueRefs": [
+      "#14797"
+    ],
+    "touchedFiles": [
+      "persist/sqldb/migrate.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "149db428a5962879517cafe2ca5212cd6ea187a7",
+    "authorDate": "2025-09-06T12:57:52+10:00",
+    "subject": "fix: Fixes git over azure devops Fixes #11705 (#13875)",
+    "body": "Co-authored-by: Yuan Tang <terrytangyuan@gmail.com>",
+    "issueRefs": [
+      "Fixes #11705",
+      "#13875"
+    ],
+    "touchedFiles": [
+      "workflow/artifacts/git/git.go"
+    ],
+    "fixCategory": "other"
+  },
+  {
+    "commitHash": "812308e7575b894461ee968f07142419018258fb",
+    "authorDate": "2025-09-03T19:05:36+01:00",
+    "subject": "fix: cluster workflow template store is not initialized in namespace mode. Fixes #14763 (#14766)",
+    "body": "Signed-off-by: Eduardo Rodrigues <eduardodbr@hotmail.com>\nSigned-off-by: Marcus Weiner <marcus.weiner@gmail.com>\nCo-authored-by: Marcus Weiner <marcus.weiner@gmail.com>",
+    "issueRefs": [
+      "Fixes #14763",
+      "#14766"
+    ],
+    "touchedFiles": [
+      "pkg/apiclient/argo-kube-client.go",
+      "server/apiserver/argoserver.go",
+      "server/clusterworkflowtemplate/informer.go",
+      "server/clusterworkflowtemplate/null_client_store.go"
+    ],
+    "fixCategory": "other"
+  }
+]

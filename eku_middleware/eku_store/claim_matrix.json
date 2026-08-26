@@ -1,1177 +1,900 @@
 {
   "corpus": [
-    "asynq",
-    "bullmq",
-    "pgmq",
-    "river",
-    "goqite",
-    "litequeue",
-    "nats-server",
-    "nsq",
-    "blazingmq",
-    "redpanda",
-    "rabbitmq",
-    "artemis",
-    "rocketmq"
+    "temporal",
+    "cadence",
+    "conductor",
+    "airflow",
+    "argo-workflows",
+    "dagster",
+    "prefect",
+    "kestra",
+    "restate",
+    "windmill",
+    "hatchet"
   ],
   "matrix": [
     {
-      "id": "EKU-QUEUE-001",
-      "title": "Atomic Dequeue and Distributed Lease Allocation",
+      "id": "EKU-WDE-001",
+      "title": "Authoritative Durable State Must Be Persisted Outside Workers",
       "repositoryAssessments": {
-        "asynq": {
+        "temporal": {
           "class": "SUPPORTS",
-          "rationale": "dequeueCmd atomic Lua script with RPOPLPUSH and ZADD lease"
+          "evidenceIds": [
+            "REKU-TEMPORAL-001"
+          ],
+          "rationale": "History/mutable-state/outbox transaction is the authoritative durable substrate."
         },
-        "bullmq": {
+        "cadence": {
           "class": "SUPPORTS",
-          "rationale": "moveToActive.lua atomic Lua script setting lock key and active list"
+          "evidenceIds": [
+            "REKU-CADENCE-003",
+            "REKU-CADENCE-004"
+          ],
+          "rationale": "History and mutable state persist workflow progress and queued work."
         },
-        "pgmq": {
+        "conductor": {
           "class": "SUPPORTS",
-          "rationale": "pgmq.read CTE with SELECT FOR UPDATE SKIP LOCKED + UPDATE vt"
+          "evidenceIds": [
+            "REKU-CONDUCTOR-001"
+          ],
+          "rationale": "Workflow/task DAO state drives decider progress."
         },
-        "river": {
+        "airflow": {
           "class": "SUPPORTS",
-          "rationale": "JobDeq CTE with SELECT FOR UPDATE SKIP LOCKED + UPDATE running"
+          "evidenceIds": [
+            "REKU-AIRFLOW-002",
+            "REKU-AIRFLOW-004"
+          ],
+          "rationale": "DagRun/TaskInstance rows and deferred states persist lifecycle outside workers."
         },
-        "goqite": {
+        "argo-workflows": {
           "class": "SUPPORTS",
-          "rationale": "Single-statement UPDATE ... RETURNING with embedded subquery"
+          "evidenceIds": [
+            "REKU-ARGO-001"
+          ],
+          "rationale": "Workflow CRD status and node maps are the durable reconciler substrate."
         },
-        "litequeue": {
+        "dagster": {
           "class": "SUPPORTS",
-          "rationale": "Single-statement UPDATE Queue SET status=1, claim_id=claim_id+1 ... RETURNING *"
+          "evidenceIds": [
+            "REKU-DAGSTER-002"
+          ],
+          "rationale": "Run storage and event log encode execution progress."
         },
-        "nats-server": {
+        "prefect": {
           "class": "SUPPORTS",
-          "rationale": "JetStream Consumer ack pending tracking under locked state machine"
+          "evidenceIds": [
+            "REKU-PREFECT-001"
+          ],
+          "rationale": "Server-side orchestration policies validate durable state transitions."
         },
-        "nsq": {
+        "kestra": {
           "class": "SUPPORTS",
-          "rationale": "Channel Go channel read and inFlightPQ push under Mutex"
+          "evidenceIds": [
+            "REKU-KESTRA-001",
+            "REKU-KESTRA-002"
+          ],
+          "rationale": "Flow/Execution records and queue-backed Executor/Worker state persist lifecycle outside workers."
         },
-        "blazingmq": {
+        "restate": {
           "class": "SUPPORTS",
-          "rationale": "RootQueueEngine single-threaded event dispatching"
+          "evidenceIds": [
+            "REKU-RESTATE-001",
+            "REKU-RESTATE-003"
+          ],
+          "rationale": "Event-sourced journals and partition databases are the authoritative durable substrate."
         },
-        "redpanda": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Streaming log partition offset pull without per-message lease state transitions"
-        },
-        "rabbitmq": {
+        "windmill": {
           "class": "SUPPORTS",
-          "rationale": "RabbitAmqqueueProcess actor mailbox serial dequeue / Raft state machine"
+          "evidenceIds": [
+            "REKU-WINDMILL-001",
+            "REKU-WINDMILL-006"
+          ],
+          "rationale": "OpenFlow step checkpoints and suspended states persist progress in PostgreSQL."
         },
-        "artemis": {
+        "hatchet": {
           "class": "SUPPORTS",
-          "rationale": "QueueImpl synchronized MessageReference delivery transition"
-        },
-        "rocketmq": {
-          "class": "SUPPORTS",
-          "rationale": "PopMessageProcessor PopCheckPoint reservation and REVIVE_TOPIC append"
+          "evidenceIds": [
+            "REKU-HATCHET-001",
+            "REKU-HATCHET-004"
+          ],
+          "rationale": "Workflow DAG status and durable event waits persist lifecycle outside workers."
         }
       }
     },
     {
-      "id": "EKU-QUEUE-002",
-      "title": "Token-Fenced Ownership Validation on State Finalization",
+      "id": "EKU-WDE-002",
+      "title": "Single-Writer Progress Requires Fencing, Leases, Locks, or Reconciliation Tokens",
       "repositoryAssessments": {
-        "asynq": {
-          "class": "COUNTEREXAMPLE",
-          "rationale": "doneCmd executes unconditional LREM and DEL by msg_id without token or lease check"
-        },
-        "bullmq": {
+        "temporal": {
           "class": "SUPPORTS",
-          "rationale": "removeLock.lua checks lock token == ARGV[1]; returns -6 if token mismatch"
+          "evidenceIds": [
+            "REKU-TEMPORAL-002",
+            "REKU-TEMPORAL-009"
+          ],
+          "rationale": "RangeID shard ownership and workflow lease boundaries fence writes/reads."
         },
-        "pgmq": {
-          "class": "COUNTEREXAMPLE",
-          "rationale": "pgmq.delete executes unconditional DELETE WHERE msg_id = $1 without token check"
-        },
-        "river": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Checks state = 'running' in SQL transaction boundary, but does not use explicit worker UUID token"
-        },
-        "goqite": {
-          "class": "COUNTEREXAMPLE",
-          "rationale": "Delete executes DELETE FROM goqite WHERE id = ? without token or lease check"
-        },
-        "litequeue": {
+        "cadence": {
           "class": "SUPPORTS",
-          "rationale": "done executes UPDATE Queue ... WHERE claim_id = ?; returns False on mismatch"
+          "evidenceIds": [
+            "REKU-CADENCE-001"
+          ],
+          "rationale": "RangeID is a monotonic shard ownership fence."
         },
-        "nats-server": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "JetStream +ACK validates consumer sequence token and stream sequence"
-        },
-        "nsq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "FIN command validates message presence in client connection inFlightPQ"
-        },
-        "blazingmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "CONFIRM event validates consumer instance GUID"
-        },
-        "redpanda": {
+        "conductor": {
           "class": "SUPPORTS",
-          "rationale": "rm_stm validates producer_epoch and rejects stale producer transactions"
+          "evidenceIds": [
+            "REKU-CONDUCTOR-004"
+          ],
+          "rationale": "Workflow execution locking serializes decider progress."
         },
-        "rabbitmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Channel process drops delivery tags from closed/timed-out channels; Raft term in Quorum"
-        },
-        "artemis": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Broker maintains delivery reference state machine; rejects duplicate acks"
-        },
-        "rocketmq": {
+        "airflow": {
           "class": "SUPPORTS",
-          "rationale": "RebalanceLockManager validates 60s lease per client before committing offsets"
+          "evidenceIds": [
+            "REKU-AIRFLOW-001",
+            "REKU-AIRFLOW-009"
+          ],
+          "rationale": "Row locks and revalidation fence multi-scheduler races."
+        },
+        "argo-workflows": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "evidenceIds": [
+            "REKU-ARGO-001",
+            "REKU-ARGO-005"
+          ],
+          "rationale": "Kubernetes leader election and optimistic resource-version reconciliation replace DB row locks."
+        },
+        "dagster": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-DAGSTER-004"
+          ],
+          "rationale": "Daemon-run queueing and tag concurrency limits gate launch ownership."
+        },
+        "prefect": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-PREFECT-005",
+            "REKU-PREFECT-010"
+          ],
+          "rationale": "Server leases and DB isolation gate concurrency slots and transitions."
+        },
+        "kestra": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-KESTRA-004",
+            "REKU-KESTRA-005"
+          ],
+          "rationale": "Flow concurrency counters and transaction retry logic fence concurrent execution/accounting races."
+        },
+        "restate": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-RESTATE-006",
+            "REKU-RESTATE-004"
+          ],
+          "rationale": "Virtual queues serialize actor execution and Bifrost consensus fences partition leadership."
+        },
+        "windmill": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-WINDMILL-002",
+            "REKU-WINDMILL-004"
+          ],
+          "rationale": "PostgreSQL SKIP LOCKED leases and DRR workspace scheduling fence concurrent workers."
+        },
+        "hatchet": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-HATCHET-002",
+            "REKU-HATCHET-005"
+          ],
+          "rationale": "Slot pools, concurrency groups, and tenant fences constrain concurrent progress."
         }
       }
     },
     {
-      "id": "EKU-QUEUE-003",
-      "title": "Clock-Skew Defended Sweep and Multi-Phase Crash Recovery",
+      "id": "EKU-WDE-003",
+      "title": "State Mutation and Async Work Dispatch Must Be Ordered Together",
       "repositoryAssessments": {
-        "asynq": {
+        "temporal": {
           "class": "SUPPORTS",
-          "rationale": "recoverLeaseExpiredTasks enforces explicit 30s safety margin buffer (score < now - 30s)"
+          "evidenceIds": [
+            "REKU-TEMPORAL-001"
+          ],
+          "rationale": "Mutable state and outbox task generation commit transactionally."
         },
-        "bullmq": {
+        "cadence": {
           "class": "SUPPORTS",
-          "rationale": "moveStalledJobsToWait uses Two-Phase Mark-and-Sweep with 1-cycle grace period"
+          "evidenceIds": [
+            "REKU-CADENCE-004"
+          ],
+          "rationale": "Transfer queue is a transactional outbox for side-effect tasks."
         },
-        "pgmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Relies on PostgreSQL server clock_timestamp() during dequeue query"
-        },
-        "river": {
+        "conductor": {
           "class": "SUPPORTS",
-          "rationale": "JobRescuer evaluates updated_at < now() - worker_timeout with default 1-hour rescue buffer"
+          "evidenceIds": [
+            "REKU-CONDUCTOR-009"
+          ],
+          "rationale": "Task state must be persisted before queue removal to avoid repair duplication."
         },
-        "goqite": {
+        "airflow": {
           "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Relies on database engine datetime('now') during dequeue query"
+          "evidenceIds": [
+            "REKU-AIRFLOW-007",
+            "REKU-AIRFLOW-009"
+          ],
+          "rationale": "Executor dispatch and scheduler revalidation provide ordered recovery, not a classic outbox."
         },
-        "litequeue": {
+        "argo-workflows": {
           "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "retry_expired queries SQLite unixepoch() in seconds"
+          "evidenceIds": [
+            "REKU-ARGO-001",
+            "REKU-ARGO-009"
+          ],
+          "rationale": "Reconciliation from CRD/pod status couples observed state to follow-up actions."
         },
-        "nats-server": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "JetStream server-side ack wait timers evaluated on server monotonic clock"
+        "dagster": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-DAGSTER-008"
+          ],
+          "rationale": "Failure metadata and run status updates require atomic ordering."
         },
-        "nsq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "queueScanLoop probabilistic scan based on local monotonic tick timers"
+        "prefect": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-PREFECT-001"
+          ],
+          "rationale": "State proposals are accepted/rejected/mutated by server policy before commit."
         },
-        "blazingmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "RootQueueEngine internal timers track unconfirmed message leases"
+        "kestra": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-KESTRA-002"
+          ],
+          "rationale": "Typed queues decouple work dispatch while preserving execution state transitions."
         },
-        "redpanda": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Raft leader heartbeat timers with election timeout grace intervals"
+        "restate": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-RESTATE-003",
+            "REKU-RESTATE-009"
+          ],
+          "rationale": "Journal updates and transactional outbox records are persisted together before dispatch."
         },
-        "rabbitmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Erlang process timers for consumer ack timeouts"
+        "windmill": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-WINDMILL-001",
+            "REKU-WINDMILL-002"
+          ],
+          "rationale": "Step checkpoints and queue lease assignment couple state progress with worker dispatch."
         },
-        "artemis": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "ActiveMQServerImpl scheduled executor sweeps unacknowledged delivery refs"
-        },
-        "rocketmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "PopMessageProcessor scan scheduled tasks with 10s revive scan interval"
+        "hatchet": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-HATCHET-001",
+            "REKU-HATCHET-003"
+          ],
+          "rationale": "Orchestrator status authority orders DAG state with gRPC action dispatch."
         }
       }
     },
     {
-      "id": "EKU-QUEUE-004",
-      "title": "Atomic Delivery Thresholding and Poison-Pill Dead-Letter Quarantine",
+      "id": "EKU-WDE-004",
+      "title": "External Effects Are At-Least-Once Unless Application Idempotency Proves Otherwise",
       "repositoryAssessments": {
-        "asynq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "EnqueueUnique enforces uniqueness via NX key, but standard Enqueue appends unconditionally"
-        },
-        "bullmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "add() supports custom jobId deduplication, but default adds generate unique IDs"
-        },
-        "pgmq": {
-          "class": "COUNTEREXAMPLE",
-          "rationale": "send() appends unconditional sequence-incremented rows to partition table"
-        },
-        "river": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "UniqueOpts enforces unique insert window, but standard Insert creates new job row"
-        },
-        "goqite": {
-          "class": "COUNTEREXAMPLE",
-          "rationale": "Send() executes unconditional INSERT INTO goqite (id, body) VALUES (?, ?)"
-        },
-        "litequeue": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "put() idempotently returns existing message if identical payload re-sent"
-        },
-        "nats-server": {
+        "temporal": {
           "class": "SUPPORTS",
-          "rationale": "JetStream consumer deduplication tracking sequence window"
+          "evidenceIds": [
+            "REKU-TEMPORAL-001"
+          ],
+          "rationale": "Activity/external side effects are not exactly-once absent application idempotency."
         },
-        "nsq": {
-          "class": "COUNTEREXAMPLE",
-          "rationale": "nsqd PutMessage() appends unconditionally to memory queue / diskqueue"
-        },
-        "blazingmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "MessageGUID tracking in session queue engine"
-        },
-        "redpanda": {
+        "cadence": {
           "class": "SUPPORTS",
-          "rationale": "Idempotent producer state machine validates (producer_id, sequence) in rm_stm"
+          "evidenceIds": [
+            "REKU-CADENCE-004"
+          ],
+          "rationale": "Async task dispatch is at-least-once and downstream handlers must be idempotent."
         },
-        "rabbitmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "RabbitMQ Stream deduplication tracking publish sequence"
+        "conductor": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-CONDUCTOR-003"
+          ],
+          "rationale": "Queue visibility leases/redelivery imply at-least-once worker tasks."
         },
-        "artemis": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "_AMQ_DUPL_ID header deduplication cache"
+        "airflow": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-AIRFLOW-007"
+          ],
+          "rationale": "Executor dispatch is at-least-once and requires idempotent task side effects."
         },
-        "rocketmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "IndexFile user key indexing for query deduplication"
+        "argo-workflows": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-ARGO-003"
+          ],
+          "rationale": "Pods/container execution can retry after ambiguous external effects."
+        },
+        "dagster": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-DAGSTER-003"
+          ],
+          "rationale": "Durable outputs and IOManagers are needed for safe retries/re-execution."
+        },
+        "prefect": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-PREFECT-006"
+          ],
+          "rationale": "Transactions isolate hooks but external APIs still require compensation/idempotency."
+        },
+        "kestra": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-KESTRA-003",
+            "REKU-KESTRA-006"
+          ],
+          "rationale": "StorageInterface references and subflow linkage isolate side-effect payloads and cancellation."
+        },
+        "restate": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-RESTATE-007",
+            "REKU-RESTATE-009"
+          ],
+          "rationale": "Ingress idempotency keys and transactional outbox records bound external effects."
+        },
+        "windmill": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-WINDMILL-003",
+            "REKU-WINDMILL-008"
+          ],
+          "rationale": "Workspace-scoped tokens and content hashes bound external/script effects."
+        },
+        "hatchet": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-HATCHET-004",
+            "REKU-HATCHET-006"
+          ],
+          "rationale": "Durable event scope isolation and namespaced child keys provide idempotency boundaries."
         }
       }
     },
     {
-      "id": "EKU-QUEUE-005",
-      "title": "Credit-Based Flow Control and Producer Ingestion Backpressure",
+      "id": "EKU-WDE-005",
+      "title": "Long Waits and Timers Need Durable Rehydration Paths",
       "repositoryAssessments": {
-        "asynq": {
+        "temporal": {
           "class": "SUPPORTS",
-          "rationale": "requeueCmd pushes to retry zset with computed exponential backoff score"
+          "evidenceIds": [
+            "REKU-TEMPORAL-007"
+          ],
+          "rationale": "Activity retry timer regeneration preserves deadlines across replicated retries."
         },
-        "bullmq": {
+        "cadence": {
           "class": "SUPPORTS",
-          "rationale": "moveToFinished-12.lua moves job to wait or delayed with backoff delay"
+          "evidenceIds": [
+            "REKU-CADENCE-009",
+            "HIST-CADENCE-001"
+          ],
+          "rationale": "Cluster-local timer retry tasks must be regenerated after failover."
         },
-        "pgmq": {
+        "conductor": {
           "class": "SUPPORTS",
-          "rationale": "pgmq.read increments read_ct and sets vt = clock_timestamp() + backoff_delay"
+          "evidenceIds": [
+            "REKU-CONDUCTOR-006"
+          ],
+          "rationale": "Delayed queues encode retry/backoff timing."
         },
-        "river": {
+        "airflow": {
           "class": "SUPPORTS",
-          "rationale": "JobSetStateRetry increments attempt, sets state='retry', calculates backoff delay"
+          "evidenceIds": [
+            "REKU-AIRFLOW-004",
+            "REKU-AIRFLOW-008"
+          ],
+          "rationale": "Deferred triggers and retry states persist wait intent."
         },
-        "goqite": {
+        "argo-workflows": {
           "class": "SUPPORTS",
-          "rationale": "Receive() sets timeout = datetime('now', ? || ' seconds') and increments received"
+          "evidenceIds": [
+            "REKU-ARGO-008",
+            "REKU-ARGO-009"
+          ],
+          "rationale": "Retry/suspend state is represented in workflow/node status and reconciled."
         },
-        "litequeue": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "retry_expired() increments status back to 0 without backoff interval"
-        },
-        "nats-server": {
+        "dagster": {
           "class": "SUPPORTS",
-          "rationale": "JetStream Consumer -NAK supports backoff header for redelivery delay"
+          "evidenceIds": [
+            "REKU-DAGSTER-004",
+            "REKU-DAGSTER-009"
+          ],
+          "rationale": "Daemon loops and reconciliation evaluate queued/deferred work."
         },
-        "nsq": {
+        "prefect": {
           "class": "SUPPORTS",
-          "rationale": "REQ command with timeout duration argument reschedules in-flight message"
+          "evidenceIds": [
+            "REKU-PREFECT-003",
+            "REKU-PREFECT-004"
+          ],
+          "rationale": "AwaitingRetry and Suspended states persist delay/resumption intent."
         },
-        "blazingmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Consumer NACK reschedules message routing with domain backoff policy"
-        },
-        "redpanda": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Storage log engine with client-managed retry offsets"
-        },
-        "rabbitmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Dead-letter exchange with TTL per queue message"
-        },
-        "artemis": {
+        "kestra": {
           "class": "SUPPORTS",
-          "rationale": "AddressSettings redelivery-delay and redelivery-multiplier configuration"
+          "evidenceIds": [
+            "REKU-KESTRA-004",
+            "REKU-KESTRA-008"
+          ],
+          "rationale": "SLA timeouts and duration-bound configs persist timer/cancellation intent."
         },
-        "rocketmq": {
+        "restate": {
           "class": "SUPPORTS",
-          "rationale": "Consumer sends back message to %RETRY% topic with delayLevel increment"
+          "evidenceIds": [
+            "REKU-RESTATE-008"
+          ],
+          "rationale": "TimerQueue and PromiseTable persist sleeps and awakeable callbacks."
+        },
+        "windmill": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-WINDMILL-006",
+            "REKU-WINDMILL-005"
+          ],
+          "rationale": "Suspended approvals/webhooks and zombie monitoring rehydrate long waits and crashed jobs."
+        },
+        "hatchet": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-HATCHET-004",
+            "REKU-HATCHET-007"
+          ],
+          "rationale": "Event waits, cron triggers, and lease sweeping rehydrate suspended/timed workflows."
         }
       }
     },
     {
-      "id": "EKU-QUEUE-006",
-      "title": "Fast-Shedding Latency Gating and Storage Saturation Protection",
+      "id": "EKU-WDE-006",
+      "title": "Callbacks and External Events Require Dedupe and Deterministic Ordering Boundaries",
       "repositoryAssessments": {
-        "asynq": {
+        "temporal": {
           "class": "SUPPORTS",
-          "rationale": "killCmd moves task from retry to archived set when retries exhausted"
+          "evidenceIds": [
+            "REKU-TEMPORAL-004",
+            "REKU-TEMPORAL-008"
+          ],
+          "rationale": "Workflow task/event buffering and update validation serialize external input."
         },
-        "bullmq": {
+        "cadence": {
           "class": "SUPPORTS",
-          "rationale": "moveToFailed moves job to failed set; client dead-letter listeners consume event"
+          "evidenceIds": [
+            "REKU-CADENCE-003",
+            "HIST-CADENCE-002"
+          ],
+          "rationale": "Buffered events are deduped and flushed after in-flight decisions."
         },
-        "pgmq": {
-          "class": "SUPPORTS",
-          "rationale": "pgmq.archive moves message to archive table or drops if archive disabled"
-        },
-        "river": {
-          "class": "SUPPORTS",
-          "rationale": "JobSetStateDiscard moves job to state='discarded' with finalized error trace"
-        },
-        "goqite": {
+        "conductor": {
           "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "No dead-letter table; application must Delete() or job loops forever"
+          "evidenceIds": [
+            "REKU-CONDUCTOR-008"
+          ],
+          "rationale": "Events/subworkflow callbacks target task/workflow state rather than history buffering."
         },
-        "litequeue": {
+        "airflow": {
           "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "prune_failed() deletes expired uncompleted tasks without quarantine"
+          "evidenceIds": [
+            "REKU-AIRFLOW-004"
+          ],
+          "rationale": "Deferrable trigger events resume tasks but do not create Temporal-style signal buffering."
         },
-        "nats-server": {
-          "class": "SUPPORTS",
-          "rationale": "JetStream Consumer max_deliver threshold drops or terminates message"
-        },
-        "nsq": {
+        "argo-workflows": {
           "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "max_attempts threshold in client library initiates FIN and dead-letter log"
+          "evidenceIds": [
+            "REKU-ARGO-001",
+            "REKU-ARGO-009"
+          ],
+          "rationale": "Controller reconciliation orders pod/status observations."
         },
-        "blazingmq": {
+        "dagster": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "evidenceIds": [
+            "REKU-DAGSTER-009"
+          ],
+          "rationale": "Asset reconciliation and sensor/event logs provide ordering at run/materialization boundaries."
+        },
+        "prefect": {
           "class": "SUPPORTS",
-          "rationale": "Poison message detection routes unconfirmed message to DLQ cluster queue"
+          "evidenceIds": [
+            "REKU-PREFECT-001",
+            "REKU-PREFECT-008"
+          ],
+          "rationale": "Server state policy and dynamic keys isolate concurrent transitions/subflows."
         },
-        "redpanda": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Storage engine does not discard unconsumed log segments on retry exhaustion"
-        },
-        "rabbitmq": {
+        "kestra": {
           "class": "SUPPORTS",
-          "rationale": "x-dead-letter-exchange and x-delivery-limit routing on quorum queues"
+          "evidenceIds": [
+            "REKU-KESTRA-002",
+            "REKU-KESTRA-006"
+          ],
+          "rationale": "Queue events and subflow cancellation paths carry ordered external lifecycle events."
         },
-        "artemis": {
+        "restate": {
           "class": "SUPPORTS",
-          "rationale": "AddressSettings dead-letter-address and expiry-address routing"
+          "evidenceIds": [
+            "REKU-RESTATE-002",
+            "REKU-RESTATE-008"
+          ],
+          "rationale": "Service protocol suspension and awakeable resolution order external callbacks."
         },
-        "rocketmq": {
+        "windmill": {
           "class": "SUPPORTS",
-          "rationale": "When reconsumeTimes > 16, routes message to %DLQ% topic"
+          "evidenceIds": [
+            "REKU-WINDMILL-006"
+          ],
+          "rationale": "Webhook and approval resumptions wake suspended flow state without holding workers."
+        },
+        "hatchet": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-HATCHET-004"
+          ],
+          "rationale": "Hierarchical event scope isolation prevents cross-workflow wakeups."
         }
       }
     },
     {
-      "id": "EKU-QUEUE-007",
-      "title": "Relational Lock-Free Task Dequeue via MVCC Row-Level Skipping",
+      "id": "EKU-WDE-007",
+      "title": "Retry Semantics Must Be Part of the State Machine, Not Blind Re-Enqueue",
       "repositoryAssessments": {
-        "asynq": {
+        "temporal": {
           "class": "SUPPORTS",
-          "rationale": "Redis connection pool with size limiter and acquire timeout bounds"
+          "evidenceIds": [
+            "REKU-TEMPORAL-003",
+            "REKU-TEMPORAL-007"
+          ],
+          "rationale": "Transient workflow tasks and timer regeneration encode safe retry semantics."
         },
-        "bullmq": {
+        "cadence": {
           "class": "SUPPORTS",
-          "rationale": "IORedis connection pool with maxRetriesPerRequest and offline queue bounds"
+          "evidenceIds": [
+            "REKU-CADENCE-002"
+          ],
+          "rationale": "Transient decision tasks prevent unbounded history growth on repeated worker failures."
         },
-        "pgmq": {
+        "conductor": {
           "class": "SUPPORTS",
-          "rationale": "PostgreSQL max_connections server-side bound with pgBouncer pool limits"
+          "evidenceIds": [
+            "REKU-CONDUCTOR-006"
+          ],
+          "rationale": "Retries use delayed queue scheduling and workflow/task state."
         },
-        "river": {
+        "airflow": {
           "class": "SUPPORTS",
-          "rationale": "pgxpool.Pool MaxConns and MaxConnIdleTime pool bounds"
+          "evidenceIds": [
+            "REKU-AIRFLOW-008"
+          ],
+          "rationale": "Retry eligibility and backoff are TaskInstance state transitions."
         },
-        "goqite": {
+        "argo-workflows": {
           "class": "SUPPORTS",
-          "rationale": "sql.DB SetMaxOpenConns(1) to serialize SQLite WAL writes"
+          "evidenceIds": [
+            "REKU-ARGO-008",
+            "HIST-ARGO-003"
+          ],
+          "rationale": "Retry/resubmit reformulates node state and must terminate wrapper nodes on shutdown."
         },
-        "litequeue": {
+        "dagster": {
           "class": "SUPPORTS",
-          "rationale": "SQLite busy_timeout=5000ms with single-writer WAL concurrency model"
+          "evidenceIds": [
+            "REKU-DAGSTER-007"
+          ],
+          "rationale": "Partial re-execution restarts failed subtrees while reusing completed outputs."
         },
-        "nats-server": {
+        "prefect": {
           "class": "SUPPORTS",
-          "rationale": "Client max_pending output buffer limits with slow consumer disconnection"
+          "evidenceIds": [
+            "REKU-PREFECT-003"
+          ],
+          "rationale": "Server policy mutates Failed into AwaitingRetry with delay/jitter."
         },
-        "nsq": {
+        "kestra": {
           "class": "SUPPORTS",
-          "rationale": "max_in_flight RDY flow control per client connection"
+          "evidenceIds": [
+            "REKU-KESTRA-005",
+            "REKU-KESTRA-008"
+          ],
+          "rationale": "Deadlock retry and parse-time duration bounds encode retry/time behavior in the state machine."
         },
-        "blazingmq": {
+        "restate": {
           "class": "SUPPORTS",
-          "rationale": "Watermark-based credit flow control per consumer channel"
+          "evidenceIds": [
+            "REKU-RESTATE-005",
+            "REKU-RESTATE-008"
+          ],
+          "rationale": "Budget deadlock recovery and durable timers are explicit runtime states."
         },
-        "redpanda": {
+        "windmill": {
           "class": "SUPPORTS",
-          "rationale": "Memory tracking semaphores bound RPC buffers and active log append requests"
+          "evidenceIds": [
+            "REKU-WINDMILL-005",
+            "REKU-WINDMILL-002"
+          ],
+          "rationale": "Zombie detection and queue leases drive retry/recovery instead of blind requeue."
         },
-        "rabbitmq": {
+        "hatchet": {
           "class": "SUPPORTS",
-          "rationale": "credit_flow Erlang module throttles producer processes across actor mailboxes"
-        },
-        "artemis": {
-          "class": "SUPPORTS",
-          "rationale": "AddressSettings max-size-bytes and address-full-policy (BLOCK, FAIL, PAGE)"
-        },
-        "rocketmq": {
-          "class": "SUPPORTS",
-          "rationale": "BrokerFastFailure sweeps expired requests from queue when page cache busy"
+          "evidenceIds": [
+            "REKU-HATCHET-007",
+            "REKU-HATCHET-008"
+          ],
+          "rationale": "Ticker lease sweeping and SDK heartbeats drive retry/recovery state."
         }
       }
     },
     {
-      "id": "EKU-QUEUE-008",
-      "title": "Sector-Aligned Append-Only Direct I/O Journal Ingestion",
+      "id": "EKU-WDE-008",
+      "title": "Reset, Resume, and Re-Execution Must Preserve Prior Evidence",
       "repositoryAssessments": {
-        "asynq": {
+        "temporal": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "evidenceIds": [
+            "REKU-TEMPORAL-003",
+            "REKU-TEMPORAL-010"
+          ],
+          "rationale": "Continue/retry/parent-close mechanisms preserve history but current EKUs do not encode reset branching as directly as Cadence."
+        },
+        "cadence": {
           "class": "SUPPORTS",
-          "rationale": "Heartbeat and lease renewals execute in background goroutine per active task"
+          "evidenceIds": [
+            "REKU-CADENCE-008"
+          ],
+          "rationale": "Workflow reset branches history non-destructively."
         },
-        "bullmq": {
+        "conductor": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "evidenceIds": [
+            "REKU-CONDUCTOR-008"
+          ],
+          "rationale": "Subworkflow lifecycle synchronization resumes parent tasks without history branching."
+        },
+        "airflow": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "evidenceIds": [
+            "REKU-AIRFLOW-005",
+            "REKU-AIRFLOW-008"
+          ],
+          "rationale": "Clearing/retry and XCom/object storage can preserve outputs but not event-history branch semantics."
+        },
+        "argo-workflows": {
           "class": "SUPPORTS",
-          "rationale": "extendLock.lua called periodically by lock manager timer per active job"
+          "evidenceIds": [
+            "REKU-ARGO-008"
+          ],
+          "rationale": "Retry/resubmit state reformulation preserves deterministic graph state."
         },
-        "pgmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "pgmq.set_vt() can be called periodically by application worker"
-        },
-        "river": {
+        "dagster": {
           "class": "SUPPORTS",
-          "rationale": "JobHeartbeat goroutine periodically executes UPDATE ... SET updated_at = now()"
+          "evidenceIds": [
+            "REKU-DAGSTER-007"
+          ],
+          "rationale": "Partial re-execution resumes from failed subtrees and reloads completed upstream outputs."
         },
-        "goqite": {
+        "prefect": {
           "class": "SUPPORTS",
-          "rationale": "Extend() method executes UPDATE goqite SET timeout = datetime('now', ? || ' seconds')"
+          "evidenceIds": [
+            "REKU-PREFECT-004",
+            "REKU-PREFECT-002"
+          ],
+          "rationale": "Suspension/resumption and result records preserve continuation boundaries."
         },
-        "litequeue": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "No periodic heartbeat; application must touch/update claim"
-        },
-        "nats-server": {
+        "kestra": {
           "class": "SUPPORTS",
-          "rationale": "JetStream Consumer +WPI (work in progress) resets ack timer"
+          "evidenceIds": [
+            "REKU-KESTRA-006"
+          ],
+          "rationale": "Subflow linkage preserves parent/child evidence across cancellation and resume."
         },
-        "nsq": {
+        "restate": {
           "class": "SUPPORTS",
-          "rationale": "TOUCH command resets in-flight message timeout in nsqd channel"
+          "evidenceIds": [
+            "REKU-RESTATE-001"
+          ],
+          "rationale": "Event-sourced journals preserve replay evidence for virtual actors."
         },
-        "blazingmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Heartbeat at session connection level rather than per-message lease"
+        "windmill": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-WINDMILL-001",
+            "REKU-WINDMILL-009"
+          ],
+          "rationale": "Step checkpoints and asset lineage preserve evidence for resumed/backfill runs."
         },
-        "redpanda": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Raft leader heartbeat maintains cluster leadership lease"
-        },
-        "rabbitmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "AMQP heartbeat at connection level; consumer ack timeouts are fixed"
-        },
-        "artemis": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Client connection ping/pong keeps session alive"
-        },
-        "rocketmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "HeartbeatData keeps client channel registered with broker"
+        "hatchet": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-HATCHET-006"
+          ],
+          "rationale": "Namespaced child spawn keys preserve idempotent DAG re-execution evidence."
         }
       }
     },
     {
-      "id": "EKU-QUEUE-009",
-      "title": "Decoupled Physical Storage CommitLog and Lightweight Logical Queue Offsets",
+      "id": "EKU-WDE-009",
+      "title": "High Availability Is Not a Uniform Multi-Region Semantics",
       "repositoryAssessments": {
-        "asynq": {
+        "temporal": {
           "class": "SUPPORTS",
-          "rationale": "Strict priority scheduling dequeues highest-priority queue first before lower queues"
+          "evidenceIds": [
+            "REKU-TEMPORAL-006",
+            "REKU-TEMPORAL-007"
+          ],
+          "rationale": "Multi-cluster conflict resolution and retry timer regeneration are explicit EKU facts."
         },
-        "bullmq": {
+        "cadence": {
           "class": "SUPPORTS",
-          "rationale": "Priority queues use Redis sorted sets with priority score ordering"
+          "evidenceIds": [
+            "REKU-CADENCE-006",
+            "REKU-CADENCE-009"
+          ],
+          "rationale": "Active-passive multi-cluster requires version histories and timer regeneration."
         },
-        "pgmq": {
+        "conductor": {
           "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Relies on FIFO order; priority requires separate partitioned queue tables"
+          "evidenceIds": [
+            "REKU-CONDUCTOR-003"
+          ],
+          "rationale": "Durability depends on persistence/queue deployment rather than repo-local version-history conflict semantics."
         },
-        "river": {
-          "class": "SUPPORTS",
-          "rationale": "JobDeq query orders by priority ASC, id ASC for weighted multi-queue priority"
-        },
-        "goqite": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Single-table SQLite queue without priority ordering"
-        },
-        "litequeue": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Single-table SQLite queue without priority ordering"
-        },
-        "nats-server": {
+        "airflow": {
           "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "JetStream subject filtering and consumer group routing"
+          "evidenceIds": [
+            "REKU-AIRFLOW-001"
+          ],
+          "rationale": "Multi-scheduler HA uses relational locks, not multi-region history conflict resolution."
         },
-        "nsq": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "In-memory channel FIFO queue without priority levels"
-        },
-        "blazingmq": {
+        "argo-workflows": {
           "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Domain priority routing and high-priority event dispatchers"
+          "evidenceIds": [
+            "REKU-ARGO-005"
+          ],
+          "rationale": "Leader-elected controller HA differs from replicated workflow history."
         },
-        "redpanda": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Strict log partition append and consume order"
-        },
-        "rabbitmq": {
-          "class": "SUPPORTS",
-          "rationale": "x-max-priority queue argument enables Erlang priority heap"
-        },
-        "artemis": {
-          "class": "SUPPORTS",
-          "rationale": "PriorityMessageGroups and 10 JMS priority buckets in QueueImpl"
-        },
-        "rocketmq": {
+        "dagster": {
           "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Dedicated topic routing per priority class"
+          "evidenceIds": [
+            "REKU-DAGSTER-004"
+          ],
+          "rationale": "Daemon/launcher HA is not workflow-history multi-region failover."
+        },
+        "prefect": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "evidenceIds": [
+            "REKU-PREFECT-005"
+          ],
+          "rationale": "Concurrency leases and work-pool recovery do not equal cross-region workflow conflict resolution."
+        },
+        "kestra": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "evidenceIds": [
+            "REKU-KESTRA-002",
+            "REKU-KESTRA-009"
+          ],
+          "rationale": "Queue-backed microservices and gRPC worker capacity tracking provide HA semantics via queue substrate."
+        },
+        "restate": {
+          "class": "SUPPORTS",
+          "evidenceIds": [
+            "REKU-RESTATE-004",
+            "REKU-RESTATE-003"
+          ],
+          "rationale": "Bifrost replicated loglets and partition storage define explicit failover semantics."
+        },
+        "windmill": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "evidenceIds": [
+            "REKU-WINDMILL-002",
+            "REKU-WINDMILL-004"
+          ],
+          "rationale": "PostgreSQL worker leases and workspace fairness define HA/overload behavior without event-history replication."
+        },
+        "hatchet": {
+          "class": "ALTERNATIVE_MECHANISM",
+          "evidenceIds": [
+            "REKU-HATCHET-002",
+            "REKU-HATCHET-009"
+          ],
+          "rationale": "In-memory slot pools and tenant fences provide HA/overload semantics distinct from replicated history."
         }
       }
     },
     {
-      "id": "EKU-QUEUE-010",
-      "title": "Epoch-Scoped Consensus State Machine Fencing",
+      "id": "EKU-WDE-010",
+      "title": "Large or Durable Payloads Should Be Referenced, Not Hidden in Execution Memory",
       "repositoryAssessments": {
-        "asynq": {
+        "temporal": {
           "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Redis RDB snapshots and AOF fsync=everysec provide durability"
+          "evidenceIds": [
+            "REKU-TEMPORAL-001"
+          ],
+          "rationale": "Current EKUs emphasize history/outbox transactions, not a payload-offload solution family."
         },
-        "bullmq": {
+        "cadence": {
           "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Redis AOF/RDB persistence configured independently of client library"
+          "evidenceIds": [
+            "REKU-CADENCE-004"
+          ],
+          "rationale": "Current EKUs emphasize task/outbox persistence, not payload offload."
         },
-        "pgmq": {
+        "conductor": {
           "class": "SUPPORTS",
-          "rationale": "PostgreSQL WAL fsync on transaction commit guarantees crash durability"
+          "evidenceIds": [
+            "REKU-CONDUCTOR-007"
+          ],
+          "rationale": "External payload offloading separates large workflow state from execution rows."
         },
-        "river": {
+        "airflow": {
           "class": "SUPPORTS",
-          "rationale": "PostgreSQL WAL synchronous_commit ensures durable transaction boundary"
+          "evidenceIds": [
+            "REKU-AIRFLOW-005"
+          ],
+          "rationale": "XCom metadata can offload large payloads to object storage."
         },
-        "goqite": {
+        "argo-workflows": {
           "class": "SUPPORTS",
-          "rationale": "SQLite WAL journal_mode=WAL with synchronous=NORMAL/FULL fsync"
+          "evidenceIds": [
+            "REKU-ARGO-007"
+          ],
+          "rationale": "SQL archive/offloading handles workflow status scale."
         },
-        "litequeue": {
+        "dagster": {
           "class": "SUPPORTS",
-          "rationale": "SQLite WAL mode with fsync on transaction commit"
+          "evidenceIds": [
+            "REKU-DAGSTER-003"
+          ],
+          "rationale": "IOManagers persist outputs for memoization/re-execution."
         },
-        "nats-server": {
+        "prefect": {
           "class": "SUPPORTS",
-          "rationale": "JetStream file storage engine executes msync/fsync on message blocks"
+          "evidenceIds": [
+            "REKU-PREFECT-002"
+          ],
+          "rationale": "ResultRecords load cached outputs from storage blocks."
         },
-        "nsq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "diskqueue writes to disk; memory queue drops unwritten messages on crash"
-        },
-        "blazingmq": {
-          "class": "SUPPORTS",
-          "rationale": "Journal file storage engine with synchronous disk writes and CRC32"
-        },
-        "redpanda": {
-          "class": "SUPPORTS",
-          "rationale": "Direct I/O O_DIRECT/O_DSYNC segment appender bypassing OS page cache"
-        },
-        "rabbitmq": {
-          "class": "SUPPORTS",
-          "rationale": "RabbitMQ Quorum Queues execute Raft log fsync via ra Erlang library"
-        },
-        "artemis": {
-          "class": "SUPPORTS",
-          "rationale": "AIOJournal uses Linux libaio direct I/O for synchronous journal flush"
-        },
-        "rocketmq": {
-          "class": "SUPPORTS",
-          "rationale": "CommitLog flush options: ASYNC_FLUSH (PageCache) or SYNC_FLUSH (fsync)"
-        }
-      }
-    },
-    {
-      "id": "EKU-QUEUE-011",
-      "title": "Monotonic Time-Ordered Identity Generation with Skew Defense",
-      "repositoryAssessments": {
-        "asynq": {
-          "class": "SUPPORTS",
-          "rationale": "Redis MULTI/EXEC pipeline wraps lease mutation and list pops"
-        },
-        "bullmq": {
-          "class": "SUPPORTS",
-          "rationale": "Single Redis EVAL script executes full dequeue/lease state transition atomically"
-        },
-        "pgmq": {
-          "class": "SUPPORTS",
-          "rationale": "BEGIN ... CTE with SELECT FOR UPDATE SKIP LOCKED + UPDATE vt ... COMMIT"
-        },
-        "river": {
-          "class": "SUPPORTS",
-          "rationale": "PostgreSQL transaction wrapping JobDeq CTE mutation"
-        },
-        "goqite": {
-          "class": "SUPPORTS",
-          "rationale": "Single SQL UPDATE ... RETURNING * executed in implicit transaction"
-        },
-        "litequeue": {
-          "class": "SUPPORTS",
-          "rationale": "Single SQL UPDATE ... RETURNING * executed in implicit transaction"
-        },
-        "nats-server": {
-          "class": "SUPPORTS",
-          "rationale": "JetStream consumer lock mutex serializes state transition and sequence commit"
-        },
-        "nsq": {
-          "class": "SUPPORTS",
-          "rationale": "Channel Mutex serializes memoryMsgChan read and inFlightPQ push"
-        },
-        "blazingmq": {
-          "class": "SUPPORTS",
-          "rationale": "Dispatcher thread single-threaded execution queue per partition"
-        },
-        "redpanda": {
-          "class": "SUPPORTS",
-          "rationale": "Raft replicated state machine executes log commit before state update"
-        },
-        "rabbitmq": {
-          "class": "SUPPORTS",
-          "rationale": "Erlang actor process mailbox serializes message delivery and ack transitions"
-        },
-        "artemis": {
-          "class": "SUPPORTS",
-          "rationale": "QueueImpl synchronized delivery block and Journal transaction log"
-        },
-        "rocketmq": {
-          "class": "SUPPORTS",
-          "rationale": "PopMessageProcessor locks consume queue offset before appending to ReviveTopic"
-        }
-      }
-    },
-    {
-      "id": "EKU-QUEUE-012",
-      "title": "Graceful Shutdown In-Flight Drain with Non-Faulting Task Re-enqueue",
-      "repositoryAssessments": {
-        "asynq": {
-          "class": "SUPPORTS",
-          "rationale": "Server.Shutdown() initiates graceful drain with configurable timeout"
-        },
-        "bullmq": {
-          "class": "SUPPORTS",
-          "rationale": "Worker.close() stops fetching, waits for in-flight handlers, or force-cancels"
-        },
-        "pgmq": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Stateless PostgreSQL extension without daemon process"
-        },
-        "river": {
-          "class": "SUPPORTS",
-          "rationale": "JobExecutor drains in-flight jobs; requeues remainder via JobSetStateInterrupted"
-        },
-        "goqite": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Context cancellation in runner loop; lease expires naturally"
-        },
-        "litequeue": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Relies on client connection close; expired lease recovered on sweep"
-        },
-        "nats-server": {
-          "class": "SUPPORTS",
-          "rationale": "Shutdown drains clients and checkpoints JetStream state"
-        },
-        "nsq": {
-          "class": "SUPPORTS",
-          "rationale": "Exit() flushes memory channels to disk queue and unregisters from nsqlookupd"
-        },
-        "blazingmq": {
-          "class": "SUPPORTS",
-          "rationale": "Dispatcher and RootQueueEngine orderly session drain"
-        },
-        "redpanda": {
-          "class": "SUPPORTS",
-          "rationale": "Seastar shutdown coordinates shard-local actor termination"
-        },
-        "rabbitmq": {
-          "class": "SUPPORTS",
-          "rationale": "rabbit.erl stops listeners, drains channel actors, flushes Raft logs"
-        },
-        "artemis": {
-          "class": "SUPPORTS",
-          "rationale": "ActiveMQServerImpl stops acceptors, drains sessions, flushes journals"
-        },
-        "rocketmq": {
-          "class": "SUPPORTS",
-          "rationale": "BrokerController shutdown hook unregisters routes, flushes PageCache"
-        }
-      }
-    },
-    {
-      "id": "EKU-QUEUE-013",
-      "title": "Sliding-Window Task Deduplication and Uniqueness Reservation",
-      "repositoryAssessments": {
-        "asynq": {
-          "class": "SUPPORTS",
-          "rationale": "SET asynq:{q}:unique:<key> <task_id> NX EX <duration> in enqueue script"
-        },
-        "bullmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Custom jobId deduplication via HEXISTS bull:<q>:<jobId>"
-        },
-        "pgmq": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "PGMQ core table does not enforce uniqueness"
-        },
-        "river": {
-          "class": "SUPPORTS",
-          "rationale": "PostgreSQL partial unique index river_job_unique_idx over unique_key"
-        },
-        "goqite": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Goqite core table does not enforce uniqueness"
-        },
-        "litequeue": {
-          "class": "SUPPORTS",
-          "rationale": "Idempotent put replay returns original message ID if data matches"
-        },
-        "nats-server": {
-          "class": "SUPPORTS",
-          "rationale": "JetStream Nats-Msg-Id sliding deduplication window (default 2 min)"
-        },
-        "nsq": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Strictly at-least-once with zero built-in deduplication"
-        },
-        "blazingmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "MessageGUID deduplication in relay queue engine"
-        },
-        "redpanda": {
-          "class": "SUPPORTS",
-          "rationale": "rm_stm transactional state machine tracks producer_id and sequence"
-        },
-        "rabbitmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "RabbitMQ Stream deduplication tracking publish sequence"
-        },
-        "artemis": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "_AMQ_DUPL_ID header deduplication cache"
-        },
-        "rocketmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "IndexFile user key indexing for query deduplication"
-        }
-      }
-    },
-    {
-      "id": "EKU-QUEUE-014",
-      "title": "Out-of-Band Real-Time Control Plane and Cancellation Propagation",
-      "repositoryAssessments": {
-        "asynq": {
-          "class": "SUPPORTS",
-          "rationale": "Subscribes to Redis PubSub asynq:cancel; cancels worker context immediately"
-        },
-        "bullmq": {
-          "class": "SUPPORTS",
-          "rationale": "Redis PubSub / Streams event channel for administrative control"
-        },
-        "pgmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Trigger-driven pg_notify for inserts; cancellation is polling-based"
-        },
-        "river": {
-          "class": "SUPPORTS",
-          "rationale": "Publishes JSON payload via pg_notify('river_control', ...) to cancel job context"
-        },
-        "goqite": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "No out-of-band control plane"
-        },
-        "litequeue": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "No out-of-band control plane"
-        },
-        "nats-server": {
-          "class": "SUPPORTS",
-          "rationale": "$SYS subject hierarchy and JetStream direct advisory control channels"
-        },
-        "nsq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "HTTP administrative API on dedicated port 4151 vs TCP 4150"
-        },
-        "blazingmq": {
-          "class": "SUPPORTS",
-          "rationale": "Dispatcher control event queue with higher priority than data events"
-        },
-        "redpanda": {
-          "class": "SUPPORTS",
-          "rationale": "Raft controller topic for cluster metadata and partition control"
-        },
-        "rabbitmq": {
-          "class": "SUPPORTS",
-          "rationale": "rabbit_control.erl Erlang actor direct message passing to processes"
-        },
-        "artemis": {
-          "class": "SUPPORTS",
-          "rationale": "JMX / Management address out-of-band actor messaging"
-        },
-        "rocketmq": {
-          "class": "SUPPORTS",
-          "rationale": "AdminBrokerProcessor dedicated Netty remoting channel for admin commands"
-        }
-      }
-    },
-    {
-      "id": "EKU-QUEUE-015",
-      "title": "Fenced Domain Result Promotion & Outbox Emission",
-      "repositoryAssessments": {
-        "bullmq": {
-          "class": "SUPPORTS",
-          "rationale": "Atomic lock token check prevents superseded worker from marking job finished (OBS-BULLMQ-002)"
-        },
-        "litequeue": {
-          "class": "SUPPORTS",
-          "rationale": "mark_done requires claim_id equality to avoid stale completion (OBS-LITEQUEUE-002)"
-        },
-        "river": {
-          "class": "COUNTEREXAMPLE",
-          "rationale": "Job completion SQL checks state='running' without worker generation token check (OBS-RIVER-006)"
-        },
-        "asynq": {
-          "class": "COUNTEREXAMPLE",
-          "rationale": "markDone checks key existence in active set without unique worker generation token (OBS-ASYNQ-001)"
-        },
-        "pgmq": {
-          "class": "COUNTEREXAMPLE",
-          "rationale": "pgmq.delete relies solely on msg_id without generation fencing (OBS-PGMQ-001)"
-        },
-        "goqite": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Application heartbeat lease extension without outbox fencing"
-        },
-        "blazingmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Cluster node epoch fencing on broker failover"
-        },
-        "nats-server": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Broker streaming server without application outbox ledger table"
-        },
-        "nsq": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "In-memory channel broker without transactional domain projection"
-        },
-        "redpanda": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Storage log engine with Raft leader epoch fencing"
-        },
-        "rabbitmq": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "AMQP channel consumer ack model"
-        },
-        "artemis": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "JMS transaction branch acknowledgment"
-        },
-        "rocketmq": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Consumer group offset commit model"
-        }
-      }
-    },
-    {
-      "id": "EKU-QUEUE-016",
-      "title": "Authoritative Storage-Time Lease Recovery",
-      "repositoryAssessments": {
-        "pgmq": {
-          "class": "SUPPORTS",
-          "rationale": "Uses clock_timestamp() for visibility time calculation (OBS-PGMQ-001)"
-        },
-        "asynq": {
-          "class": "SUPPORTS",
-          "rationale": "Redis server time via Lua/server commands for score evaluation (OBS-ASYNQ-001)"
-        },
-        "bullmq": {
-          "class": "SUPPORTS",
-          "rationale": "Redis EVAL scripts use server-side timestamp argument (OBS-BULLMQ-001)"
-        },
-        "river": {
-          "class": "COUNTEREXAMPLE",
-          "rationale": "Historically accepted caller-supplied now parameter in recovery queries (OBS-RIVER-007)"
-        },
-        "goqite": {
-          "class": "SUPPORTS",
-          "rationale": "SQLite datetime('now') evaluated in database query"
-        },
-        "litequeue": {
-          "class": "SUPPORTS",
-          "rationale": "SQLite strftime('%s', 'now') in claim and prune queries (OBS-LITEQUEUE-001)"
-        },
-        "nats-server": {
-          "class": "SUPPORTS",
-          "rationale": "Server-side timer wheel governs ack wait expiration (OBS-NATS-001)"
-        },
-        "nsq": {
-          "class": "SUPPORTS",
-          "rationale": "nsqd process monotonic timer governs message timeout (OBS-NSQ-001)"
-        },
-        "blazingmq": {
-          "class": "SUPPORTS",
-          "rationale": "Broker domain timer manages delivery timeouts"
-        },
-        "redpanda": {
-          "class": "SUPPORTS",
-          "rationale": "Storage segment timer manages compaction and retention (OBS-REDPANDA-001)"
-        },
-        "rabbitmq": {
-          "class": "SUPPORTS",
-          "rationale": "Erlang monotonic time for consumer ack timeout (OBS-RABBITMQ-001)"
-        },
-        "artemis": {
-          "class": "SUPPORTS",
-          "rationale": "Server-side journal timer tracks transaction expiration (OBS-ARTEMIS-001)"
-        },
-        "rocketmq": {
-          "class": "SUPPORTS",
-          "rationale": "Broker monotonic clock tracks request timeout in fast-failure (OBS-ROCKETMQ-002)"
-        }
-      }
-    },
-    {
-      "id": "EKU-QUEUE-017",
-      "title": "Separate Attempt, Failure, And Worker-Loss Counters",
-      "repositoryAssessments": {
-        "bullmq": {
-          "class": "SUPPORTS",
-          "rationale": "Maintains attemptsMade, failedReason, and maxStalledCount independently (OBS-BULLMQ-004)"
-        },
-        "river": {
-          "class": "SUPPORTS",
-          "rationale": "Tracks attempt counter, error payload array, and distinct state machine (OBS-RIVER-001)"
-        },
-        "asynq": {
-          "class": "SUPPORTS",
-          "rationale": "Tracks retried count vs max_retry and archive state (OBS-ASYNQ-001)"
-        },
-        "pgmq": {
-          "class": "COUNTEREXAMPLE",
-          "rationale": "Single read_ct counter increments on every pop without failure reason tracking (OBS-PGMQ-001)"
-        },
-        "goqite": {
-          "class": "COUNTEREXAMPLE",
-          "rationale": "received integer column incremented without failure category isolation"
-        },
-        "litequeue": {
-          "class": "COUNTEREXAMPLE",
-          "rationale": "No internal retry counter; relies on deletion or pruning (OBS-LITEQUEUE-001)"
-        },
-        "nats-server": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "JetStream consumer redelivery counter tracked in stream metadata (OBS-NATS-001)"
-        },
-        "nsq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "tracks attempts count on in-flight message (OBS-NSQ-001)"
-        },
-        "blazingmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Tracks delivery attempt count per routing token"
-        },
-        "rabbitmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "x-delivery-count header for quorum queues (OBS-RABBITMQ-001)"
-        },
-        "artemis": {
-          "class": "SUPPORTS",
-          "rationale": "Delivery count tracked separately from DLQ expiration headers (OBS-ARTEMIS-001)"
-        },
-        "rocketmq": {
-          "class": "SUPPORTS",
-          "rationale": "ReconsumeTimes tracked separately from retry topic routing (OBS-ROCKETMQ-001)"
-        },
-        "redpanda": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Log append engine without task attempt semantics"
-        }
-      }
-    },
-    {
-      "id": "EKU-QUEUE-018",
-      "title": "Poison Payload Isolation From Repeatable Stall Exemptions",
-      "repositoryAssessments": {
-        "bullmq": {
-          "class": "SUPPORTS",
-          "rationale": "Fixes crash loop where repeatable tasks bypassed stall counts on poison payloads (OBS-BULLMQ-005)"
-        },
-        "river": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Periodic jobs instantiate new unique job rows with fresh attempt counters (OBS-RIVER-001)"
-        },
-        "asynq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Scheduler enqueues distinct task instances with independent retry budgets (OBS-ASYNQ-001)"
-        },
-        "pgmq": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "No built-in cron scheduler engine"
-        },
-        "goqite": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Minimal queue without cron scheduler"
-        },
-        "litequeue": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Single-table SQLite queue without cron engine"
-        },
-        "nats-server": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Message streaming broker without task scheduler"
-        },
-        "nsq": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Topic/channel broker without recurring job scheduler"
-        },
-        "blazingmq": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Broker messaging engine without task scheduler"
-        },
-        "redpanda": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Streaming log engine without recurring task scheduler"
-        },
-        "rabbitmq": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Broker engine without native recurring cron scheduler"
-        },
-        "artemis": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Broker engine without recurring task scheduler"
-        },
-        "rocketmq": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Broker engine without recurring task scheduler"
-        }
-      }
-    },
-    {
-      "id": "EKU-QUEUE-019",
-      "title": "Bounded Admission Waiters In Publish Overload",
-      "repositoryAssessments": {
-        "redpanda": {
-          "class": "SUPPORTS",
-          "rationale": "Rejects excess semaphore waiters immediately when storage is saturated (OBS-REDPANDA-003)"
-        },
-        "rocketmq": {
-          "class": "SUPPORTS",
-          "rationale": "BrokerFastFailure cleans expired queue requests and returns SYSTEM_BUSY (OBS-ROCKETMQ-002)"
-        },
-        "nats-server": {
-          "class": "SUPPORTS",
-          "rationale": "MaxPending buffers drop slow consumer/publisher connections (OBS-NATS-001)"
-        },
-        "rabbitmq": {
-          "class": "SUPPORTS",
-          "rationale": "Credit flow mechanism throttles and suspends publisher socket reads (OBS-RABBITMQ-001)"
-        },
-        "artemis": {
-          "class": "SUPPORTS",
-          "rationale": "Address-full policy BLOCK or FAIL with bounded queue memory (OBS-ARTEMIS-001)"
-        },
-        "blazingmq": {
-          "class": "SUPPORTS",
-          "rationale": "High watermark capacity limits reject publisher writes"
-        },
-        "nsq": {
-          "class": "SUPPORTS",
-          "rationale": "Channel queue size bounds overflow to disk or rejects (OBS-NSQ-001)"
-        },
-        "river": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "PostgreSQL connection pool max_connections limits concurrency (OBS-RIVER-001)"
-        },
-        "pgmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "PostgreSQL transaction admission control (OBS-PGMQ-001)"
-        },
-        "asynq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Redis connection pool limits concurrency (OBS-ASYNQ-001)"
-        },
-        "bullmq": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "IORedis connection pool limits concurrency (OBS-BULLMQ-001)"
-        },
-        "goqite": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "SQLite busy_timeout limits concurrency"
-        },
-        "litequeue": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "SQLite WAL lock timeout limits concurrency (OBS-LITEQUEUE-001)"
-        }
-      }
-    },
-    {
-      "id": "EKU-QUEUE-020",
-      "title": "Decoupled Worker-Drain And Broker-Socket Shutdown Contracts",
-      "repositoryAssessments": {
-        "nats-server": {
-          "class": "SUPPORTS",
-          "rationale": "Lame duck mode drains client connections before process exit (OBS-NATS-002)"
-        },
-        "river": {
+        "kestra": {
           "class": "SUPPORTS",
-          "rationale": "Graceful shutdown stops fetcher and waits for active worker completion deadline (OBS-RIVER-005)"
+          "evidenceIds": [
+            "REKU-KESTRA-003"
+          ],
+          "rationale": "StorageInterface `kestra://` references keep large inter-task payloads out of queues."
         },
-        "nsq": {
+        "restate": {
           "class": "SUPPORTS",
-          "rationale": "Exit handler closes TCP listeners before flushing in-flight channels to disk (OBS-NSQ-001)"
+          "evidenceIds": [
+            "REKU-RESTATE-003",
+            "REKU-RESTATE-005"
+          ],
+          "rationale": "Partition storage and stream-buffer decoupling keep durable payload ownership explicit."
         },
-        "bullmq": {
+        "windmill": {
           "class": "SUPPORTS",
-          "rationale": "close() stops fetching new jobs and waits for running handlers or force-closes (OBS-BULLMQ-001)"
+          "evidenceIds": [
+            "REKU-WINDMILL-008",
+            "REKU-WINDMILL-001"
+          ],
+          "rationale": "Immutable script hashes and PostgreSQL checkpoints avoid hiding durable payload identity in worker memory."
         },
-        "asynq": {
+        "hatchet": {
           "class": "SUPPORTS",
-          "rationale": "Shutdown initiates graceful worker drain with configurable timeout (OBS-ASYNQ-001)"
-        },
-        "blazingmq": {
-          "class": "SUPPORTS",
-          "rationale": "Session drain sequence disconnects producers before cluster shutdown"
-        },
-        "redpanda": {
-          "class": "SUPPORTS",
-          "rationale": "Raft leader stepdown and storage flush on shutdown (OBS-REDPANDA-001)"
-        },
-        "rabbitmq": {
-          "class": "SUPPORTS",
-          "rationale": "Application stop drains queue processes and closes network listeners (OBS-RABBITMQ-001)"
-        },
-        "artemis": {
-          "class": "SUPPORTS",
-          "rationale": "Server stop halts acceptor ports and completes in-flight journal transactions (OBS-ARTEMIS-001)"
-        },
-        "rocketmq": {
-          "class": "SUPPORTS",
-          "rationale": "Shutdown hook unregisters broker from nameserver and flushes CommitLog (OBS-ROCKETMQ-001)"
-        },
-        "goqite": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Context cancellation propagates to active worker loops"
-        },
-        "litequeue": {
-          "class": "ALTERNATIVE_MECHANISM",
-          "rationale": "Application loop governs worker termination (OBS-LITEQUEUE-001)"
-        },
-        "pgmq": {
-          "class": "NOT_APPLICABLE",
-          "rationale": "Stateless PostgreSQL extension without daemon process"
+          "evidenceIds": [
+            "REKU-HATCHET-003"
+          ],
+          "rationale": "Worker action dispatch streams payload references through control channels rather than making memory authoritative."
         }
       }
     }

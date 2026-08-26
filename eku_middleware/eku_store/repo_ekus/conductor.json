@@ -1,0 +1,839 @@
+[
+  {
+    "id": "REKU-CONDUCTOR-001",
+    "repository": "conductor",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Conductor advances workflow executions by evaluating discrete task states against JSON DAG specifications (WorkflowDef), scheduling subsequent tasks via DeciderService without worker coroutine replay.",
+    "mechanism": "DeciderService.decide(workflow) inspects current task states in WorkflowModel. Executable downstream tasks are mapped using specialized TaskMappers and emitted in DeciderOutcome for queue dispatch and DAO persistence.",
+    "applicabilityConditions": [
+      "All Conductor workflow executions",
+      "Workflows composed of SIMPLE, FORK_JOIN, DECISION/SWITCH, DO_WHILE, and SUB_WORKFLOW tasks"
+    ],
+    "evidenceIds": [
+      "OBS-CONDUCTOR-001",
+      "OBS-CONDUCTOR-002"
+    ],
+    "commonKeywords": [
+      "centralized",
+      "dag",
+      "decider",
+      "state",
+      "machine",
+      "conductor",
+      "advances",
+      "workflow"
+    ],
+    "uniqueKeywords": [
+      "reku_conductor_001",
+      "conductor",
+      "centralized",
+      "dag",
+      "decider",
+      "state",
+      "machine"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "conductor",
+        "advances",
+        "workflow"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "deciderservice",
+        "decide",
+        "workflow",
+        "inspects",
+        "current"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "DeciderService.decide(workflow) inspects current task states in WorkflowModel. Executable downstream tasks are mapped using specialized TaskMappers and emitted in DeciderOutcome for queue dispatch and DAO persistence. Known limits: Workflows must be expressible as predefined JSON DAG structures; dynamic imperative code branching is limited to script/switch task evaluations.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-006"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-006"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "lineRange": [
+        1008,
+        1055
+      ],
+      "queryOrCodeSnippet": "WorkflowExecutor.decide(String workflowId) acquires an execution lock on workflowId, fetches the WorkflowModel from DAO, invokes DeciderService.decide(workflow) to compute next task transitions, persists updated tasks, adds new tasks to QueueDAO, and schedules the workflow for next sweep.",
+      "symbol": "WorkflowExecutor.decide"
+    }
+  },
+  {
+    "id": "REKU-CONDUCTOR-002",
+    "repository": "conductor",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Workflow progression and timeout enforcement do not rely solely on real-time worker callbacks; a background reconciliation sweeper (WorkflowSweeper) periodically re-evaluates active workflows from delayed queues.",
+    "mechanism": "When a workflow or task is scheduled, its ID is pushed to deciderQueue with a delay offset. WorkflowSweeper polls the queue, acquires the execution lock, checks task timeouts and unacknowledged leases, repairs missing queue messages via WorkflowRepairService, and triggers decide().",
+    "applicabilityConditions": [
+      "All active running workflows in Conductor clusters"
+    ],
+    "evidenceIds": [
+      "OBS-CONDUCTOR-004",
+      "OBS-CONDUCTOR-005",
+      "HIST-CONDUCTOR-001"
+    ],
+    "commonKeywords": [
+      "reconciliation",
+      "sweeper",
+      "timeout",
+      "evaluation",
+      "dead",
+      "task",
+      "recovery",
+      "workflow"
+    ],
+    "uniqueKeywords": [
+      "reku_conductor_002",
+      "conductor",
+      "reconciliation",
+      "sweeper",
+      "timeout",
+      "evaluation",
+      "dead"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "workflow",
+        "progression",
+        "timeout"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "workflow",
+        "task",
+        "scheduled",
+        "its",
+        "pushed"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "When a workflow or task is scheduled, its ID is pushed to deciderQueue with a delay offset. WorkflowSweeper polls the queue, acquires the execution lock, checks task timeouts and unacknowledged leases, repairs missing queue messages via WorkflowRepairService, and triggers decide(). Known limits: Sweeper introduces a polling interval delay for timeout detection (typically 30-60s) unless short sweep intervals are configured.",
+    "linkedDomainEkus": [
+      "EKU-WDE-005"
+    ],
+    "linkedClaims": [
+      "CLM-005"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowSweeper.java",
+      "lineRange": [
+        76,
+        118
+      ],
+      "queryOrCodeSnippet": "WorkflowSweeper periodically drains workflow IDs from the decider queue, verifies whether the workflow is still running, acquires the execution lock, evaluates task timeouts and unacknowledged leases, and triggers decide() to recover stuck executions.",
+      "symbol": "WorkflowSweeper.sweep"
+    },
+    "testProvenance": {
+      "filePath": "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowRepairService.java",
+      "testName": "verifyAndRepairSystemTask",
+      "assertionSnippet": "Asserts that WorkflowRepairService correctly inspects async system task status and does not generate duplicate queue messages for active tasks."
+    },
+    "historyProvenance": {
+      "commitHash": "de2ca100f7aefa2a2d2c3041139fad089f56a734",
+      "failureId": "HIST-CONDUCTOR-001",
+      "prOrIssue": "https://github.com/Netflix/conductor/commit/de2ca100f7aefa2a2d2c3041139fad089f56a734",
+      "fixDescription": "Modified AsyncSystemTaskExecutor to persist updated task status in ExecutionDAOFacade before removing the message from QueueDAO."
+    },
+    "historyChainIds": [
+      "CHAIN-CONDUCTOR-001"
+    ]
+  },
+  {
+    "id": "REKU-CONDUCTOR-003",
+    "repository": "conductor",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Task distribution is mediated by queue abstractions (QueueDAO) with unacknowledged visibility timeout leases, ensuring task redelivery if workers crash before completing.",
+    "mechanism": "WorkflowExecutor pushes task IDs to QueueDAO. Workers poll for tasks and receive a temporary unack timeout lease. If the worker completes, updateTask removes the task; if the worker crashes, the queue unack timeout expires, re-exposing the task for subsequent worker polling.",
+    "applicabilityConditions": [
+      "All asynchronous worker tasks (SIMPLE tasks)"
+    ],
+    "evidenceIds": [
+      "OBS-CONDUCTOR-003",
+      "OBS-CONDUCTOR-010"
+    ],
+    "commonKeywords": [
+      "queue-based",
+      "task",
+      "polling",
+      "visibility",
+      "leases",
+      "distribution",
+      "mediated",
+      "queue"
+    ],
+    "uniqueKeywords": [
+      "reku_conductor_003",
+      "conductor",
+      "queue-based",
+      "task",
+      "polling",
+      "visibility",
+      "leases"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "task",
+        "distribution",
+        "mediated"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "workflowexecutor",
+        "pushes",
+        "task",
+        "ids",
+        "queuedao"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "WorkflowExecutor pushes task IDs to QueueDAO. Workers poll for tasks and receive a temporary unack timeout lease. If the worker completes, updateTask removes the task; if the worker crashes, the queue unack timeout expires, re-exposing the task for subsequent worker polling. Known limits: Workers must be idempotent because unack timeout expirations during long-running tasks can cause concurrent duplicate execution by another worker.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-004",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-004",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "lineRange": [
+        707,
+        760
+      ],
+      "queryOrCodeSnippet": "When a worker calls updateTask with a TaskResult, WorkflowExecutor updates task output data, status (COMPLETED, FAILED, IN_PROGRESS), checks concurrency limits, handles retries with backoff if failed, and immediately invokes decide() to advance the workflow state machine.",
+      "symbol": "WorkflowExecutor.updateTask"
+    }
+  },
+  {
+    "id": "REKU-CONDUCTOR-004",
+    "repository": "conductor",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Concurrent evaluation triggers for the same workflow instance (from parallel task completions, external events, or sweeper ticks) are serialized using distributed execution locks.",
+    "mechanism": "WorkflowExecutor.decide acquires an execution lock on workflowId via ExecutionLockService (backed by RedisLock, ZookeeperLock, or LocalOnlyLock). The lock is reentrant and auto-released after evaluation completion or lease expiry.",
+    "applicabilityConditions": [
+      "All decide() evaluations across multi-node Conductor clusters"
+    ],
+    "evidenceIds": [
+      "OBS-CONDUCTOR-001",
+      "OBS-CONDUCTOR-007",
+      "HIST-CONDUCTOR-003"
+    ],
+    "commonKeywords": [
+      "distributed",
+      "execution",
+      "locking",
+      "single-decider",
+      "concurrency",
+      "control",
+      "concurrent",
+      "evaluation"
+    ],
+    "uniqueKeywords": [
+      "reku_conductor_004",
+      "conductor",
+      "distributed",
+      "execution",
+      "locking",
+      "single-decider",
+      "concurrency"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "concurrent",
+        "evaluation",
+        "triggers"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "workflowexecutor",
+        "decide",
+        "acquires",
+        "execution",
+        "lock"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "WorkflowExecutor.decide acquires an execution lock on workflowId via ExecutionLockService (backed by RedisLock, ZookeeperLock, or LocalOnlyLock). The lock is reentrant and auto-released after evaluation completion or lease expiry. Known limits: Lock acquisition timeouts can cause decider evaluations to be delayed until the next sweeper cycle under heavy concurrent lock contention.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "lineRange": [
+        1008,
+        1055
+      ],
+      "queryOrCodeSnippet": "WorkflowExecutor.decide(String workflowId) acquires an execution lock on workflowId, fetches the WorkflowModel from DAO, invokes DeciderService.decide(workflow) to compute next task transitions, persists updated tasks, adds new tasks to QueueDAO, and schedules the workflow for next sweep.",
+      "symbol": "WorkflowExecutor.decide"
+    },
+    "testProvenance": {
+      "filePath": "core/src/test/java/com/netflix/conductor/core/sync/local/LocalOnlyLockTest.java",
+      "testName": "testLockUnlock",
+      "assertionSnippet": "Asserts that LocalOnlyLock allows reentrant lock acquisitions on the same thread without deadlocking."
+    },
+    "historyProvenance": {
+      "commitHash": "eb55096d82e06d40310a196a3ca1a4864c2ad451",
+      "failureId": "HIST-CONDUCTOR-003",
+      "prOrIssue": "https://github.com/Netflix/conductor/commit/eb55096d82e06d40310a196a3ca1a4864c2ad451",
+      "fixDescription": "Refactored LocalOnlyLock using ReentrantLock semantics tracking thread ownership and hold counts."
+    },
+    "historyChainIds": [
+      "CHAIN-CONDUCTOR-003"
+    ]
+  },
+  {
+    "id": "REKU-CONDUCTOR-005",
+    "repository": "conductor",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Operational workflow and task state is isolated in high-throughput transactional/KV storage, while audit history and search queries are decoupled via ExecutionDAOFacade to Elasticsearch.",
+    "mechanism": "ExecutionDAOFacade writes primary workflow and task models synchronously to ExecutionDAO (Redis, Cassandra, Postgres, MySQL) and asynchronously enqueues search index updates to IndexDAO (Elasticsearch/OpenSearch).",
+    "applicabilityConditions": [
+      "All workflow creation, update, and search operations"
+    ],
+    "evidenceIds": [
+      "OBS-CONDUCTOR-008",
+      "HIST-CONDUCTOR-002"
+    ],
+    "commonKeywords": [
+      "decoupled",
+      "execution",
+      "persistence",
+      "asynchronous",
+      "search",
+      "indexing",
+      "operational",
+      "workflow"
+    ],
+    "uniqueKeywords": [
+      "reku_conductor_005",
+      "conductor",
+      "decoupled",
+      "execution",
+      "persistence",
+      "asynchronous",
+      "search"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "operational",
+        "workflow",
+        "task"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "executiondaofacade",
+        "writes",
+        "primary",
+        "workflow",
+        "task"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "ExecutionDAOFacade writes primary workflow and task models synchronously to ExecutionDAO (Redis, Cassandra, Postgres, MySQL) and asynchronously enqueues search index updates to IndexDAO (Elasticsearch/OpenSearch). Known limits: Search visibility is eventually consistent; recently started or completed workflows may take hundreds of milliseconds to appear in search queries.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001"
+    ],
+    "linkedClaims": [
+      "CLM-001"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/com/netflix/conductor/core/dal/ExecutionDAOFacade.java",
+      "lineRange": [
+        251,
+        285
+      ],
+      "queryOrCodeSnippet": "ExecutionDAOFacade.createWorkflow writes the workflow instance and root tasks to primary storage (Redis, Cassandra, SQL), indexes the initial workflow summary in Elasticsearch/OpenSearch, and increments workflow metrics.",
+      "symbol": "ExecutionDAOFacade.createWorkflow"
+    },
+    "testProvenance": {
+      "filePath": "redis-persistence/src/test/java/com/netflix/conductor/redis/dao/RedisEventHandlerDAOTest.java",
+      "testName": "testEventHandlers",
+      "assertionSnippet": "Asserts that event handler updates correctly remove stale index entries and update active event subscriptions."
+    },
+    "historyProvenance": {
+      "commitHash": "be790a45341495a319badc739d2c1beb07bb1a7d",
+      "failureId": "HIST-CONDUCTOR-002",
+      "prOrIssue": "https://github.com/Netflix/conductor/commit/be790a45341495a319badc739d2c1beb07bb1a7d",
+      "fixDescription": "Explicitly remove previous index references in RedisEventHandlerDAO when the event name changes during updateEventHandler."
+    },
+    "historyChainIds": [
+      "CHAIN-CONDUCTOR-002"
+    ]
+  },
+  {
+    "id": "REKU-CONDUCTOR-006",
+    "repository": "conductor",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Failed retriable tasks avoid busy-polling by scheduling replacement task instances with delayed visibility into QueueDAO.",
+    "mechanism": "When updateTask processes a failed taskResult with retries remaining, WorkflowExecutor creates a new task instance, calculates backoff delay using linear or exponential formulas, and pushes the task to QueueDAO with delaySeconds.",
+    "applicabilityConditions": [
+      "Task failures where retryCount < taskDef.getRetryCount()"
+    ],
+    "evidenceIds": [
+      "OBS-CONDUCTOR-003",
+      "OBS-CONDUCTOR-009"
+    ],
+    "commonKeywords": [
+      "delayed",
+      "queue",
+      "scheduling",
+      "task",
+      "retries",
+      "exponential",
+      "backoff",
+      "failed"
+    ],
+    "uniqueKeywords": [
+      "reku_conductor_006",
+      "conductor",
+      "delayed",
+      "queue",
+      "scheduling",
+      "task",
+      "retries"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "failed",
+        "retriable",
+        "tasks"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "updatetask",
+        "processes",
+        "failed",
+        "taskresult",
+        "retries"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "When updateTask processes a failed taskResult with retries remaining, WorkflowExecutor creates a new task instance, calculates backoff delay using linear or exponential formulas, and pushes the task to QueueDAO with delaySeconds. Known limits: Underlying queue backend must support delayed message delivery (e.g. Redis sorted sets, SQS delay seconds, DynoQueue delayed buckets).",
+    "linkedDomainEkus": [
+      "EKU-WDE-005",
+      "EKU-WDE-007"
+    ],
+    "linkedClaims": [
+      "CLM-005",
+      "CLM-007"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/com/netflix/conductor/core/execution/WorkflowExecutor.java",
+      "lineRange": [
+        707,
+        760
+      ],
+      "queryOrCodeSnippet": "When a worker calls updateTask with a TaskResult, WorkflowExecutor updates task output data, status (COMPLETED, FAILED, IN_PROGRESS), checks concurrency limits, handles retries with backoff if failed, and immediately invokes decide() to advance the workflow state machine.",
+      "symbol": "WorkflowExecutor.updateTask"
+    }
+  },
+  {
+    "id": "REKU-CONDUCTOR-007",
+    "repository": "conductor",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Large workflow and task input/output payloads exceeding size thresholds are offloaded to blob stores, persisting only storage URIs in execution databases.",
+    "mechanism": "ExecutionDAOFacade checks payload size against maxPayloadSize. Large payloads are uploaded via ExternalPayloadStorage (S3, GCS, Azure) and replaced with an externalStoragePath URI in the database model. TaskModel preserves active in-memory outputData during iterative evaluations.",
+    "applicabilityConditions": [
+      "Workflows and tasks with input/output payloads exceeding payloadStorage threshold (e.g. 5MB)"
+    ],
+    "evidenceIds": [
+      "OBS-CONDUCTOR-012",
+      "HIST-CONDUCTOR-004",
+      "HIST-CONDUCTOR-005"
+    ],
+    "commonKeywords": [
+      "dual-store",
+      "external",
+      "payload",
+      "offloading",
+      "large",
+      "workflow",
+      "state",
+      "task"
+    ],
+    "uniqueKeywords": [
+      "reku_conductor_007",
+      "conductor",
+      "dual-store",
+      "external",
+      "payload",
+      "offloading",
+      "large"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "large",
+        "workflow",
+        "task"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "executiondaofacade",
+        "checks",
+        "payload",
+        "size",
+        "against"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "ExecutionDAOFacade checks payload size against maxPayloadSize. Large payloads are uploaded via ExternalPayloadStorage (S3, GCS, Azure) and replaced with an externalStoragePath URI in the database model. TaskModel preserves active in-memory outputData during iterative evaluations. Known limits: External storage failure or network latency during payload download directly delays task dispatch and decider evaluations.",
+    "linkedDomainEkus": [
+      "EKU-WDE-004",
+      "EKU-WDE-008",
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-004",
+      "CLM-008",
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/com/netflix/conductor/core/storage/DummyPayloadStorage.java",
+      "lineRange": [
+        60,
+        95
+      ],
+      "queryOrCodeSnippet": "DummyPayloadStorage provides stream retrieval for payload objects, preventing large task data from saturating in-memory caches and execution database rows.",
+      "symbol": "DummyPayloadStorage.downloadPayload"
+    },
+    "testProvenance": {
+      "filePath": "core/src/test/java/com/netflix/conductor/core/execution/TestDeciderService.java",
+      "testName": "TestDeciderService",
+      "assertionSnippet": "Asserts that DeciderService correctly preserves task outputs across iterative evaluation cycles."
+    },
+    "historyProvenance": {
+      "commitHash": "2285531925bd8666685e1bd3a52db050bcc0497d",
+      "failureId": "HIST-CONDUCTOR-004",
+      "prOrIssue": "https://github.com/Netflix/conductor/commit/2285531925bd8666685e1bd3a52db050bcc0497d",
+      "fixDescription": "Preserved in-memory outputData as authoritative over stale external payload references during task model serialization."
+    },
+    "historyChainIds": [
+      "CHAIN-CONDUCTOR-004",
+      "CHAIN-CONDUCTOR-005"
+    ]
+  },
+  {
+    "id": "REKU-CONDUCTOR-008",
+    "repository": "conductor",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Child workflows execute as autonomous top-level executions linked to parent SUB_WORKFLOW tasks; child completion triggers asynchronous parent decider re-evaluations.",
+    "mechanism": "AsyncSystemTaskExecutor starts the sub-workflow and records subWorkflowId in the parent task. When the sub-workflow terminates, WorkflowExecutor.updateParentWorkflowTask updates the parent task status with child outputs and enqueues the parent workflow for immediate decide().",
+    "applicabilityConditions": [
+      "Workflows containing SUB_WORKFLOW tasks"
+    ],
+    "evidenceIds": [
+      "OBS-CONDUCTOR-006",
+      "OBS-CONDUCTOR-009"
+    ],
+    "commonKeywords": [
+      "sub-workflow",
+      "lifecycle",
+      "synchronization",
+      "parent",
+      "task",
+      "resumption",
+      "child",
+      "workflows"
+    ],
+    "uniqueKeywords": [
+      "reku_conductor_008",
+      "conductor",
+      "sub-workflow",
+      "lifecycle",
+      "synchronization",
+      "parent",
+      "task"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "child",
+        "workflows",
+        "execute"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "asyncsystemtaskexecutor",
+        "starts",
+        "sub-workflow",
+        "records",
+        "subworkflowid"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "AsyncSystemTaskExecutor starts the sub-workflow and records subWorkflowId in the parent task. When the sub-workflow terminates, WorkflowExecutor.updateParentWorkflowTask updates the parent task status with child outputs and enqueues the parent workflow for immediate decide(). Known limits: Terminating a parent workflow does not automatically cascade termination to running sub-workflows unless explicitly configured.",
+    "linkedDomainEkus": [
+      "EKU-WDE-006",
+      "EKU-WDE-008"
+    ],
+    "linkedClaims": [
+      "CLM-006",
+      "CLM-008"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/com/netflix/conductor/core/execution/AsyncSystemTaskExecutor.java",
+      "lineRange": [
+        63,
+        125
+      ],
+      "queryOrCodeSnippet": "AsyncSystemTaskExecutor pulls async system tasks, invokes the registered WorkflowSystemTask handler (start/execute), persists the updated task status to ExecutionDAOFacade, removes the task from the queue upon completion, and calls decide() on completion.",
+      "symbol": "AsyncSystemTaskExecutor.execute"
+    }
+  },
+  {
+    "id": "REKU-CONDUCTOR-009",
+    "repository": "conductor",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "FAILURE_RECOVERY_MECHANISM",
+    "claim": "When executing asynchronous tasks in systems with concurrent background reconcilers, task status must be committed to the execution DAO before deleting queue messages to prevent spurious task re-queuing.",
+    "mechanism": "AsyncSystemTaskExecutor persists the updated TaskModel to ExecutionDAOFacade prior to invoking queueDAO.remove(queueName, taskId), ensuring WorkflowRepairService sees the active task status rather than flagging a missing queue message.",
+    "applicabilityConditions": [
+      "Asynchronous system tasks (SUB_WORKFLOW, HTTP, EVENT) in Conductor"
+    ],
+    "evidenceIds": [
+      "OBS-CONDUCTOR-005",
+      "OBS-CONDUCTOR-006",
+      "HIST-CONDUCTOR-001"
+    ],
+    "commonKeywords": [
+      "task",
+      "state",
+      "mutation",
+      "precedence",
+      "queue",
+      "removal",
+      "reconcilers",
+      "executing"
+    ],
+    "uniqueKeywords": [
+      "reku_conductor_009",
+      "conductor",
+      "task",
+      "state",
+      "mutation",
+      "precedence",
+      "queue"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "executing",
+        "asynchronous",
+        "tasks"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "asyncsystemtaskexecutor",
+        "persists",
+        "updated",
+        "taskmodel",
+        "executiondaofacade"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "AsyncSystemTaskExecutor persists the updated TaskModel to ExecutionDAOFacade prior to invoking queueDAO.remove(queueName, taskId), ensuring WorkflowRepairService sees the active task status rather than flagging a missing queue message. Known limits: If the server crashes between DAO update and queue removal, the task remains in queue and will be removed as a no-op on next executor poll.",
+    "linkedDomainEkus": [
+      "EKU-WDE-003",
+      "EKU-WDE-007"
+    ],
+    "linkedClaims": [
+      "CLM-003",
+      "CLM-007"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "core/src/main/java/com/netflix/conductor/core/reconciliation/WorkflowRepairService.java",
+      "lineRange": [
+        116,
+        160
+      ],
+      "queryOrCodeSnippet": "WorkflowRepairService inspects running workflow tasks against QueueDAO. If a task is SCHEDULED or async IN_PROGRESS in the execution DAO but missing from the queue message store, it re-pushes the task to QueueDAO to restore worker dispatching.",
+      "symbol": "WorkflowRepairService.verifyAndRepairWorkflowTasks"
+    },
+    "testProvenance": {
+      "filePath": "core/src/test/java/com/netflix/conductor/core/reconciliation/TestWorkflowRepairService.java",
+      "testName": "verifyAndRepairSystemTask",
+      "assertionSnippet": "Asserts that WorkflowRepairService correctly inspects async system task status and does not generate duplicate queue messages for active tasks."
+    },
+    "historyProvenance": {
+      "commitHash": "de2ca100f7aefa2a2d2c3041139fad089f56a734",
+      "failureId": "HIST-CONDUCTOR-001",
+      "prOrIssue": "https://github.com/Netflix/conductor/commit/de2ca100f7aefa2a2d2c3041139fad089f56a734",
+      "fixDescription": "Modified AsyncSystemTaskExecutor to persist updated task status in ExecutionDAOFacade before removing the message from QueueDAO."
+    },
+    "historyChainIds": [
+      "CHAIN-CONDUCTOR-001"
+    ]
+  }
+]

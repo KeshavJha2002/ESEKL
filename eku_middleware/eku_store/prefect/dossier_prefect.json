@@ -1,0 +1,42 @@
+{
+  "repo": "prefect",
+  "targetRepo": "PrefectHQ/prefect",
+  "commit": "57ee2c2c10f662fee32807c126a117adce32dd28",
+  "domain": "workflow_durable_execution",
+  "architectureSummary": {
+    "systemRole": "Prefect is an open-source workflow orchestration and durable execution framework providing Python-native flow/task execution, client-server state orchestration, and distributed concurrency controls.",
+    "coreSubsystems": [
+      {
+        "name": "Engine Core",
+        "package": "src/prefect/flow_engine.py, src/prefect/task_engine.py",
+        "role": "Client-side execution loops managing state machine proposals, parameter resolution, and cancellation/suspension."
+      },
+      {
+        "name": "Orchestration Server",
+        "package": "src/prefect/server/orchestration",
+        "role": "State machine transition policy engine validating and mutating proposed states (CoreFlowPolicy, CoreTaskPolicy)."
+      },
+      {
+        "name": "Results & Caching",
+        "package": "src/prefect/results.py, src/prefect/cache_policies.py",
+        "role": "Deterministic cache key calculation, result record persistence to external storage blocks, and replay avoidance."
+      },
+      {
+        "name": "Concurrency Engine",
+        "package": "src/prefect/concurrency, src/prefect/server/services/repossessor.py",
+        "role": "Distributed concurrency limit leases with heartbeat renewal and automatic crash repossession."
+      },
+      {
+        "name": "Database Persistence",
+        "package": "src/prefect/server/database, src/prefect/server/models",
+        "role": "Relational state history persistence with optimistic transaction isolation on PostgreSQL and SQLite."
+      }
+    ]
+  },
+  "evidenceCounts": {
+    "observations": 10,
+    "historicalFailures": 8,
+    "historyChains": 3,
+    "repoEkus": 10
+  }
+}

@@ -1,0 +1,926 @@
+[
+  {
+    "id": "REKU-TEMPORAL-001",
+    "repository": "temporal",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Workflow mutable state updates, durable history event appends, and asynchronous execution task generation (transfer, timer, visibility, replication) are committed in a single atomic persistence transaction guarded by the shard RangeID.",
+    "mechanism": "The history engine executes mutations through TransactionImpl.UpdateWorkflowExecution. In closeTransactionPrepareTasks, pending task definitions are converted into execution tasks and serialized into the same persistence request as the mutable state mutation and history event batch.",
+    "applicabilityConditions": [
+      "All active workflow execution state transitions (activity scheduled, timer started, workflow completion, signal handling, child workflow spawn)",
+      "Both SQL and NoSQL persistence implementations adhering to Temporal execution manager contracts"
+    ],
+    "evidenceIds": [
+      "OBS-TEMPORAL-002",
+      "OBS-TEMPORAL-009"
+    ],
+    "commonKeywords": [
+      "transactionally",
+      "coupled",
+      "state",
+      "mutation",
+      "outbox",
+      "task",
+      "generation",
+      "workflow"
+    ],
+    "uniqueKeywords": [
+      "reku_temporal_001",
+      "temporal",
+      "transactionally",
+      "coupled",
+      "state",
+      "mutation",
+      "outbox"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "workflow",
+        "mutable",
+        "state"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "history",
+        "engine",
+        "executes",
+        "mutations",
+        "through"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "The history engine executes mutations through TransactionImpl.UpdateWorkflowExecution. In closeTransactionPrepareTasks, pending task definitions are converted into execution tasks and serialized into the same persistence request as the mutable state mutation and history event batch. Known limits: Speculative workflow tasks (used for synchronous update/query evaluation) deliberately bypass persistence and do not generate transactional tasks until committed. Task generation assumes the database transaction provides atomic all-or-nothing guarantees across mutable state and outbox tables.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-003",
+      "EKU-WDE-004",
+      "EKU-WDE-010"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-003",
+      "CLM-004",
+      "CLM-010"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/workflow/transaction_impl.go",
+      "lineRange": [
+        167,
+        221
+      ],
+      "queryOrCodeSnippet": "Persists history events, updates workflow mutable state mutation, and generates transactional outbox tasks (transfer, timer, visibility) in a single transactional database call guarded by the shard RangeID.",
+      "symbol": "TransactionImpl.UpdateWorkflowExecution"
+    }
+  },
+  {
+    "id": "REKU-TEMPORAL-002",
+    "repository": "temporal",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "History shards enforce mutual exclusion and fence zombie hosts using a monotonically increasing persistent RangeID. Any persistence write attempted by a host with an outdated RangeID fails immediately, triggering engine shutdown.",
+    "mechanism": "Shard context maintains a lease RangeID. All execution updates pass the current RangeID. When persistence detects a RangeID mismatch or ShardOwnershipLostError, handleWriteErrorLocked triggers a contextRequestStop transition, terminating the history engine and clearing in-memory cached workflow states.",
+    "applicabilityConditions": [
+      "History service shard lifecycle management during node restarts, cluster rebalancing, network partitions, and host crashes"
+    ],
+    "evidenceIds": [
+      "OBS-TEMPORAL-001",
+      "HIST-TEMPORAL-003"
+    ],
+    "commonKeywords": [
+      "rangeid-based",
+      "shard",
+      "ownership",
+      "fencing",
+      "against",
+      "split-brain",
+      "execution",
+      "history"
+    ],
+    "uniqueKeywords": [
+      "reku_temporal_002",
+      "temporal",
+      "rangeid-based",
+      "shard",
+      "ownership",
+      "fencing",
+      "against",
+      "rangeid"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "history",
+        "shards",
+        "enforce"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "shard",
+        "context",
+        "maintains",
+        "lease",
+        "rangeid"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "Shard context maintains a lease RangeID. All execution updates pass the current RangeID. When persistence detects a RangeID mismatch or ShardOwnershipLostError, handleWriteErrorLocked triggers a contextRequestStop transition, terminating the history engine and clearing in-memory cached workflow states. Known limits: In-flight uncommitted memory computations prior to persistence write attempts are discarded, relying on idempotency of client retries. Requires database supporting atomic conditional updates on shard records (e.g. Cassandra lightweight transactions or SQL row locks).",
+    "linkedDomainEkus": [
+      "EKU-WDE-002",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-002",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/shard/context_impl.go",
+      "lineRange": [
+        1501,
+        1550
+      ],
+      "queryOrCodeSnippet": "Validates incoming write request RangeID against the shard lease RangeID. If ShardOwnershipLostError is returned from persistence, triggers an immediate shard transition to stop engine execution to prevent split-brain state mutations.",
+      "symbol": "ContextImpl.handleWriteErrorLocked"
+    },
+    "testProvenance": {
+      "filePath": "service/history/chasm_engine_test.go",
+      "testName": "TestPollComponent_ShardClosed",
+      "assertionSnippet": "Asserts long-poll returns immediately with ShardOwnershipLostError when shard context is canceled."
+    },
+    "historyProvenance": {
+      "commitHash": "71d375e764e2931e2e9b959bc07ad8447b02ca08",
+      "failureId": "HIST-TEMPORAL-003",
+      "prOrIssue": "https://github.com/temporalio/temporal/commit/71d375e764e2931e2e9b959bc07ad8447b02ca08",
+      "fixDescription": "Added select case on shard lifecycle context in PollComponent to immediately abort with ShardOwnershipLostError."
+    },
+    "historyChainIds": [
+      "CHAIN-TEMPORAL-003"
+    ]
+  },
+  {
+    "id": "REKU-TEMPORAL-003",
+    "repository": "temporal",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Failed or timed-out workflow tasks on attempt > 1 do not append failure events to persistent history. Instead, retry attempts are tracked ephemerally in mutable state as transient workflow tasks, preventing history bloat under poison workloads.",
+    "mechanism": "When a workflow task fails or times out, ApplyTransientWorkflowTaskScheduled increments the attempt count in mutable state but suppresses writing WorkflowTaskScheduled and WorkflowTaskStarted events to history. Only upon final successful task completion are the started and completed events appended.",
+    "applicabilityConditions": [
+      "Workflow task execution failures caused by worker crashes, transient bugs, network timeouts, or non-deterministic code changes on retry"
+    ],
+    "evidenceIds": [
+      "OBS-TEMPORAL-003"
+    ],
+    "commonKeywords": [
+      "transient",
+      "workflow",
+      "tasks",
+      "crash",
+      "resilience",
+      "history",
+      "hygiene",
+      "failed"
+    ],
+    "uniqueKeywords": [
+      "reku_temporal_003",
+      "temporal",
+      "transient",
+      "workflow",
+      "tasks",
+      "crash",
+      "resilience"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "failed",
+        "timed-out",
+        "workflow"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "workflow",
+        "task",
+        "fails",
+        "times",
+        "out"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "When a workflow task fails or times out, ApplyTransientWorkflowTaskScheduled increments the attempt count in mutable state but suppresses writing WorkflowTaskScheduled and WorkflowTaskStarted events to history. Only upon final successful task completion are the started and completed events appended. Known limits: If a failover happens while a transient task is scheduled, the standby cluster reconciles the attempt counter and converts the task back to a standard scheduled task. Permanent workflow code bugs will retry indefinitely (unless WorkflowTaskScheduleToStart/Close timeouts or max attempts are configured).",
+    "linkedDomainEkus": [
+      "EKU-WDE-007",
+      "EKU-WDE-008"
+    ],
+    "linkedClaims": [
+      "CLM-007",
+      "CLM-008"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/workflow/workflow_task_state_machine.go",
+      "lineRange": [
+        120,
+        167
+      ],
+      "queryOrCodeSnippet": "When a workflow task fails or times out (attempt > 1), creates an in-memory transient workflow task without persisting WorkflowTaskScheduled or WorkflowTaskStarted events to durable history, preserving history determinism and bounding event growth.",
+      "symbol": "workflowTaskStateMachine.ApplyTransientWorkflowTaskScheduled"
+    }
+  },
+  {
+    "id": "REKU-TEMPORAL-004",
+    "repository": "temporal",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "External events (signals, cancellations, activity completions) arriving while a workflow task is actively executing on a worker are buffered in mutable state rather than appended to history, preserving deterministic replay.",
+    "mechanism": "MutableStateImpl diverts new events to bufferEventsInDB while a workflow task is in Started status. In closeTransactionPrepareEvents, buffered events are flushed into history only after the running task completes or times out, triggering a subsequent workflow task if necessary.",
+    "applicabilityConditions": [
+      "Concurrent signals, external cancellation requests, child workflow completions, and activity completions arriving during active workflow task execution"
+    ],
+    "evidenceIds": [
+      "OBS-TEMPORAL-004"
+    ],
+    "commonKeywords": [
+      "external",
+      "event",
+      "buffering",
+      "during",
+      "in-flight",
+      "workflow",
+      "task",
+      "execution"
+    ],
+    "uniqueKeywords": [
+      "reku_temporal_004",
+      "temporal",
+      "external",
+      "event",
+      "buffering",
+      "during",
+      "in-flight"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "external",
+        "events",
+        "signals"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "mutablestateimpl",
+        "diverts",
+        "new",
+        "events",
+        "buffereventsindb"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "MutableStateImpl diverts new events to bufferEventsInDB while a workflow task is in Started status. In closeTransactionPrepareEvents, buffered events are flushed into history only after the running task completes or times out, triggering a subsequent workflow task if necessary. Known limits: Buffered events are committed in batch after workflow task completion, creating discrete state transition boundaries. Excessive buffered events are bounded by mutable state size checks to prevent memory exhaustion.",
+    "linkedDomainEkus": [
+      "EKU-WDE-001",
+      "EKU-WDE-006"
+    ],
+    "linkedClaims": [
+      "CLM-001",
+      "CLM-006"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/workflow/mutable_state_impl.go",
+      "lineRange": [
+        8547,
+        8589
+      ],
+      "queryOrCodeSnippet": "External events arriving while a workflow task is in Started status on a worker are diverted to buffered events in mutable state, ensuring the running worker executes against a consistent history snapshot without race conditions.",
+      "symbol": "MutableStateImpl.closeTransactionPrepareEvents"
+    }
+  },
+  {
+    "id": "REKU-TEMPORAL-005",
+    "repository": "temporal",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "The Matching service achieves sub-millisecond task dispatch latency by matching producer push with long-polling worker pull over unbuffered Go channels (taskC), spilling to persistent task queue tables only when pollers are absent.",
+    "mechanism": "TaskMatcher.Offer attempts synchronous hand-off to waiting pollers on taskC. If no poller receives the task within the configured timeout or if rate limits apply, the task is committed to the database backlog via taskWriter and loaded by taskReader as pollers arrive.",
+    "applicabilityConditions": [
+      "Workflow task and activity task dispatch in the Matching service under normal and overloaded operating conditions"
+    ],
+    "evidenceIds": [
+      "OBS-TEMPORAL-005",
+      "HIST-TEMPORAL-006"
+    ],
+    "commonKeywords": [
+      "synchronous",
+      "matching",
+      "channel",
+      "hand-off",
+      "backlog",
+      "spillover",
+      "service",
+      "achieves"
+    ],
+    "uniqueKeywords": [
+      "reku_temporal_005",
+      "temporal",
+      "synchronous",
+      "matching",
+      "channel",
+      "hand-off",
+      "backlog"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "matching",
+        "service",
+        "achieves"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "taskmatcher",
+        "offer",
+        "attempts",
+        "synchronous",
+        "hand-off"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "TaskMatcher.Offer attempts synchronous hand-off to waiting pollers on taskC. If no poller receives the task within the configured timeout or if rate limits apply, the task is committed to the database backlog via taskWriter and loaded by taskReader as pollers arrive. Known limits: When no pollers are connected for a queue, all tasks incur persistence round-trips. Requires partitioned task queues to scale poller throughput across multiple matching hosts.",
+    "linkedDomainEkus": [
+      "EKU-WDE-003"
+    ],
+    "linkedClaims": [
+      "CLM-003"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/matching/matcher.go",
+      "lineRange": [
+        23,
+        67
+      ],
+      "queryOrCodeSnippet": "TaskMatcher coordinates producer push from history service and consumer pull from worker pollers using unbuffered Go channels (taskC), bypassing database persistence when pollers are actively waiting and falling back to database backlog when unmatched.",
+      "symbol": "TaskMatcher"
+    },
+    "testProvenance": {
+      "filePath": "service/matching/backlog_manager_test.go",
+      "testName": "TestUpdateAckLevel_DoesNotMoveBackwards",
+      "assertionSnippet": "Asserts task reader ack level strictly never regresses below previously reported watermark."
+    },
+    "historyProvenance": {
+      "commitHash": "83b35dc3bac4ea05296154e0b50055026d200150",
+      "failureId": "HIST-TEMPORAL-006",
+      "prOrIssue": "https://github.com/temporalio/temporal/commit/83b35dc3bac4ea05296154e0b50055026d200150",
+      "fixDescription": "Enforced monotonic advancement invariant on read and ack watermarks in priTaskReader."
+    }
+  },
+  {
+    "id": "REKU-TEMPORAL-006",
+    "repository": "temporal",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "During active-passive multi-cluster failover with divergent history branches, Temporal identifies the last common ancestor using version history trees, rebuilds mutable state to the winning branch, and automatically salvages and reapplies orphaned external signals.",
+    "mechanism": "ConflictResolver uses version history comparison to find branch fork points. StateRebuilder reconstructs mutable state from history events up to the fork point. EventsReapplier iterates over events on the abandoned branch and re-injects signals and external updates into the new active branch.",
+    "applicabilityConditions": [
+      "Multi-cluster active-passive replication topologies during disaster recovery failovers, network splits, and namespace active cluster migrations"
+    ],
+    "evidenceIds": [
+      "OBS-TEMPORAL-006",
+      "HIST-TEMPORAL-004",
+      "HIST-TEMPORAL-005"
+    ],
+    "commonKeywords": [
+      "deterministic",
+      "multi-cluster",
+      "conflict",
+      "resolution",
+      "event",
+      "reapplication",
+      "during",
+      "active-passive"
+    ],
+    "uniqueKeywords": [
+      "reku_temporal_006",
+      "temporal",
+      "deterministic",
+      "multi-cluster",
+      "conflict",
+      "resolution",
+      "event"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "during",
+        "active-passive",
+        "multi-cluster"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "conflictresolver",
+        "uses",
+        "version",
+        "history",
+        "comparison"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "ConflictResolver uses version history comparison to find branch fork points. StateRebuilder reconstructs mutable state from history events up to the fork point. EventsReapplier iterates over events on the abandoned branch and re-injects signals and external updates into the new active branch. Known limits: Only external signals and idempotent updates can be safely reapplied; non-idempotent side effects executed in external systems must be handled by application-level sagas. Workflows that closed on an orphaned branch cannot have closed statuses overturned without explicit admin reset.",
+    "linkedDomainEkus": [
+      "EKU-WDE-006",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-006",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED",
+      "TEST_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/ndc/events_reapplier.go",
+      "lineRange": [
+        53,
+        92
+      ],
+      "queryOrCodeSnippet": "When active-passive cluster failover causes history branch divergence, reapplies uncommitted external signals and events from the abandoned branch onto the new active branch to prevent signal loss across failover boundaries.",
+      "symbol": "EventsReapplierImpl.ReapplyEvents"
+    },
+    "testProvenance": {
+      "filePath": "service/history/ndc/resetter_test.go",
+      "testName": "TestResetWorkflow_NoError_BaseBranchToken_Nil",
+      "assertionSnippet": "Asserts history reset correctly falls back to caller token when BaseBranchToken is nil."
+    },
+    "historyProvenance": {
+      "commitHash": "6805caea59e35d0611ed96be69641b8d86bff11c",
+      "failureId": "HIST-TEMPORAL-004",
+      "prOrIssue": "https://github.com/temporalio/temporal/commit/6805caea59e35d0611ed96be69641b8d86bff11c",
+      "fixDescription": "Returned BaseBranchToken in ForkHistoryBranchResponse and updated resetters to rebuild using the returned token."
+    }
+  },
+  {
+    "id": "REKU-TEMPORAL-007",
+    "repository": "temporal",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "FAILURE_RECOVERY_MECHANISM",
+    "claim": "Activity timer regeneration during replicated retry loops must compare exact calculated deadline timestamps rather than relying on attempt or stamp increments, preventing redundant duplicate timer tasks from overloading queues.",
+    "mechanism": "timerSequenceImpl evaluates four deadline points (schedule-to-close, schedule-to-start, start-to-close, heartbeat) before and after state transitions and computes a changedMask. Timer status bits are cleared and tasks recreated only for deadlines whose actual timestamp changed.",
+    "applicabilityConditions": [
+      "Activity retry scheduling, long-running activities with schedule-to-close timeouts, and passive cluster replication loops"
+    ],
+    "evidenceIds": [
+      "OBS-TEMPORAL-007",
+      "HIST-TEMPORAL-002"
+    ],
+    "commonKeywords": [
+      "deadline-preserving",
+      "activity",
+      "timer",
+      "regeneration",
+      "across",
+      "replicated",
+      "retries",
+      "during"
+    ],
+    "uniqueKeywords": [
+      "reku_temporal_007",
+      "temporal",
+      "deadline-preserving",
+      "activity",
+      "timer",
+      "regeneration",
+      "across"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "activity",
+        "timer",
+        "regeneration"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "timersequenceimpl",
+        "evaluates",
+        "four",
+        "deadline",
+        "points"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "timerSequenceImpl evaluates four deadline points (schedule-to-close, schedule-to-start, start-to-close, heartbeat) before and after state transitions and computes a changedMask. Timer status bits are cleared and tasks recreated only for deadlines whose actual timestamp changed. Known limits: Cross-cluster version changes still invalidate and reset all timer task masks to ensure task provenance. State-based replication relies on FirstScheduledTime anchors to maintain invariant schedule-to-close deadlines across retries.",
+    "linkedDomainEkus": [
+      "EKU-WDE-004",
+      "EKU-WDE-005",
+      "EKU-WDE-007",
+      "EKU-WDE-009"
+    ],
+    "linkedClaims": [
+      "CLM-004",
+      "CLM-005",
+      "CLM-007",
+      "CLM-009"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/workflow/timer_sequence.go",
+      "lineRange": [
+        1,
+        50
+      ],
+      "queryOrCodeSnippet": "Activity timer regeneration compares schedule-to-close, schedule-to-start, start-to-close, and heartbeat deadlines before and after state transitions, preserving active timer status bits when deadlines remain unchanged to avoid timer task storms.",
+      "symbol": "timerSequenceImpl"
+    },
+    "testProvenance": {
+      "filePath": "service/history/workflow/mutable_state_impl_test.go",
+      "testName": "TestNextActivityTimerTaskMask_Retry_KeepsOnlyScheduleToClose",
+      "assertionSnippet": "Asserts schedule-to-close timer task status is preserved during activity retries when deadline does not move."
+    },
+    "historyProvenance": {
+      "commitHash": "f667755b7bdf52057b169514299739bf4797a6fe",
+      "failureId": "HIST-TEMPORAL-002",
+      "prOrIssue": "https://github.com/temporalio/temporal/commit/f667755b7bdf52057b169514299739bf4797a6fe",
+      "fixDescription": "Refactored timer regeneration to calculate exact changedMask across 4 deadlines, preserving unchanged timer task status bits."
+    },
+    "historyChainIds": [
+      "CHAIN-TEMPORAL-002"
+    ]
+  },
+  {
+    "id": "REKU-TEMPORAL-008",
+    "repository": "temporal",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "IMPLEMENTATION_PATTERN",
+    "claim": "Synchronous workflow updates provide atomic request-validation-execution semantics where validation failures are rejected in worker memory without polluting persistent history, while accepted updates commit durable progress.",
+    "mechanism": "Update registry coordinates a two-phase protocol: Phase 1 dispatches a validation invocation to the SDK worker; if validation fails, an error is returned synchronously to the caller with zero history events generated. Phase 2 generates WorkflowExecutionUpdateAccepted event upon validation success.",
+    "applicabilityConditions": [
+      "Synchronous query-and-mutate workflows, financial balance checks, atomic approvals, and interactive workflow modifications"
+    ],
+    "evidenceIds": [
+      "OBS-TEMPORAL-008",
+      "HIST-TEMPORAL-001"
+    ],
+    "commonKeywords": [
+      "multi-stage",
+      "synchronous",
+      "workflow",
+      "update",
+      "ephemeral",
+      "validation",
+      "rejection",
+      "updates"
+    ],
+    "uniqueKeywords": [
+      "reku_temporal_008",
+      "temporal",
+      "multi-stage",
+      "synchronous",
+      "workflow",
+      "update",
+      "ephemeral"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "synchronous",
+        "workflow",
+        "updates"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "update",
+        "registry",
+        "coordinates",
+        "two-phase",
+        "protocol"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "Update registry coordinates a two-phase protocol: Phase 1 dispatches a validation invocation to the SDK worker; if validation fails, an error is returned synchronously to the caller with zero history events generated. Phase 2 generates WorkflowExecutionUpdateAccepted event upon validation success. Known limits: Requires worker support for update handlers and speculative execution protocol. Speculative update tasks must be cleared from memory if the workflow execution is evicted or evicted before completion.",
+    "linkedDomainEkus": [
+      "EKU-WDE-006"
+    ],
+    "linkedClaims": [
+      "CLM-006"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/workflow/update/update.go",
+      "lineRange": [
+        560,
+        602
+      ],
+      "queryOrCodeSnippet": "Executes workflow update handler validation in SDK worker memory without recording rejected update attempts in persistent history, persisting only accepted update state transitions.",
+      "symbol": "Update.Send"
+    },
+    "testProvenance": {
+      "filePath": "service/history/api/multioperation/api_test.go",
+      "testName": "TestInvoke_CompletedUpdate_StatusCapturedBeforeRelease",
+      "assertionSnippet": "Asserts no data race occurs under -race when concurrent goroutine modifies execution status."
+    },
+    "historyProvenance": {
+      "commitHash": "5e43259a3624a98048cb3bc277006fb4a73bb75f",
+      "failureId": "HIST-TEMPORAL-001",
+      "prOrIssue": "https://github.com/temporalio/temporal/commit/5e43259a3624a98048cb3bc277006fb4a73bb75f",
+      "fixDescription": "Captured ExecutionState.Status into local variable prior to calling workflowLease.GetReleaseFn()."
+    }
+  },
+  {
+    "id": "REKU-TEMPORAL-009",
+    "repository": "temporal",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "FAILURE_RECOVERY_MECHANISM",
+    "claim": "Reading mutable state fields after invoking the workflow lease release function creates high-concurrency data races with incoming signals or updates; mutable state data must be copied by value before releasing the execution semaphore.",
+    "mechanism": "Workflow execution locks protect mutable state integrity. In UpdateWithStart (Invoke), reading ExecutionState.Status after workflowLease.GetReleaseFn()(nil) allowed concurrent writers to race on the status field. The fix captures status into a stack-allocated variable before releasing the lock.",
+    "applicabilityConditions": [
+      "Internal history API handlers, multi-operation endpoints, and asynchronous callback dispatchers interacting with workflow context"
+    ],
+    "evidenceIds": [
+      "HIST-TEMPORAL-001",
+      "OBS-TEMPORAL-010"
+    ],
+    "commonKeywords": [
+      "post-lease-release",
+      "mutable",
+      "state",
+      "read",
+      "data",
+      "race",
+      "vulnerability",
+      "pattern"
+    ],
+    "uniqueKeywords": [
+      "reku_temporal_009",
+      "temporal",
+      "post-lease-release",
+      "mutable",
+      "state",
+      "read",
+      "data"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "reading",
+        "mutable",
+        "state"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "workflow",
+        "execution",
+        "locks",
+        "protect",
+        "mutable"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "Workflow execution locks protect mutable state integrity. In UpdateWithStart (Invoke), reading ExecutionState.Status after workflowLease.GetReleaseFn()(nil) allowed concurrent writers to race on the status field. The fix captures status into a stack-allocated variable before releasing the lock. Known limits: Applies to all Go goroutines accessing cached mutable state objects. Compilers and linters without active thread sanitizer flags (-race) will not catch unsynchronized pointer reads post-release.",
+    "linkedDomainEkus": [
+      "EKU-WDE-002"
+    ],
+    "linkedClaims": [
+      "CLM-002"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED",
+      "HISTORY_SUPPORTED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/workflow/context.go",
+      "lineRange": [
+        667,
+        724
+      ],
+      "queryOrCodeSnippet": "Checks history size, history event count, and mutable state byte limits prior to persistence transactions, returning ResourceExhausted errors and force-terminating oversized workflows to protect shard throughput and storage stability.",
+      "symbol": "ContextImpl.UpdateWorkflowExecutionAsActive"
+    },
+    "testProvenance": {
+      "filePath": "service/history/api/multioperation/api_test.go",
+      "testName": "TestInvoke_CompletedUpdate_StatusCapturedBeforeRelease",
+      "assertionSnippet": "Asserts no data race occurs under -race when concurrent goroutine modifies execution status."
+    },
+    "historyProvenance": {
+      "commitHash": "5e43259a3624a98048cb3bc277006fb4a73bb75f",
+      "failureId": "HIST-TEMPORAL-001",
+      "prOrIssue": "https://github.com/temporalio/temporal/commit/5e43259a3624a98048cb3bc277006fb4a73bb75f",
+      "fixDescription": "Captured ExecutionState.Status into local variable prior to calling workflowLease.GetReleaseFn()."
+    },
+    "historyChainIds": [
+      "CHAIN-TEMPORAL-001"
+    ]
+  },
+  {
+    "id": "REKU-TEMPORAL-010",
+    "repository": "temporal",
+    "domain": "Workflow / Durable Execution Systems",
+    "substrate": "native",
+    "objectType": "BEHAVIORAL_INVARIANT",
+    "claim": "Parent close policies (TERMINATE, ABANDON, REQUEST_CANCEL) for child workflows are decoupled from parent workflow completion transactions via asynchronous transfer tasks, guaranteeing parent close latency is bounded regardless of child hierarchy depth.",
+    "mechanism": "When a parent workflow closes, GenerateWorkflowCloseTasks writes parent close policy records into child workflow transfer tasks. Dedicated worker queue processors (service/worker/parentclosepolicy) consume the tasks and execute cancellation/termination RPCs asynchronously.",
+    "applicabilityConditions": [
+      "Parent workflows orchestrating child workflows across multiple namespaces, clusters, or execution partitions"
+    ],
+    "evidenceIds": [
+      "OBS-TEMPORAL-009"
+    ],
+    "commonKeywords": [
+      "parent-child",
+      "workflow",
+      "close",
+      "policy",
+      "asynchronous",
+      "task",
+      "decoupling",
+      "parent"
+    ],
+    "uniqueKeywords": [
+      "reku_temporal_010",
+      "temporal",
+      "parent-child",
+      "workflow",
+      "close",
+      "policy",
+      "asynchronous"
+    ],
+    "keywordFacets": {
+      "concurrencyControl": [
+        "parent",
+        "close",
+        "policies"
+      ],
+      "stateStorage": [
+        "native"
+      ],
+      "ownershipModel": [
+        "repo_specific"
+      ],
+      "failureRecovery": [
+        "parent",
+        "workflow",
+        "closes",
+        "generateworkflowclosetasks",
+        "writes"
+      ],
+      "scheduling": [
+        "workflow_orchestration"
+      ],
+      "substrate": [
+        "native"
+      ]
+    },
+    "localContext": "When a parent workflow closes, GenerateWorkflowCloseTasks writes parent close policy records into child workflow transfer tasks. Dedicated worker queue processors (service/worker/parentclosepolicy) consume the tasks and execute cancellation/termination RPCs asynchronously. Known limits: ABANDON policy requires no action and produces no transfer task. Under extreme system worker backlog, child termination may lag behind parent close by queue processing latency.",
+    "linkedDomainEkus": [
+      "EKU-WDE-003",
+      "EKU-WDE-008"
+    ],
+    "linkedClaims": [
+      "CLM-003",
+      "CLM-008"
+    ],
+    "epistemicLabels": [
+      "SOURCE_OBSERVED"
+    ],
+    "abstractionLevel": "REPO_LOCAL",
+    "status": "ACTIVE",
+    "sourceProvenance": {
+      "filePath": "service/history/workflow/task_generator.go",
+      "lineRange": [
+        33,
+        98
+      ],
+      "queryOrCodeSnippet": "Defines the generation interface for all asynchronous execution outbox tasks (activity dispatch, timers, child workflows, cancellation requests, visibility upserts, and replication batches) coupled to workflow state transitions.",
+      "symbol": "TaskGenerator"
+    }
+  }
+]
